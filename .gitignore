@@ -1,0 +1,16 @@
+*.ap_
+*.apk
+bin/
+build/
+captures/
+*.class
+*.dex
+gen/
+.gradle/
+.idea/
+*.iml
+*.jks
+local.properties
+.navigation/
+out/
+proguard/
