@@ -2,22 +2,17 @@ package io.github.lonamiwebs.stringlate;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.lonamiwebs.stringlate.Interfaces.Callback;
+import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.Utilities.GitHub;
 import io.github.lonamiwebs.stringlate.Utilities.RepoHandler;
 
@@ -30,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     EditText mUrlEditText;
 
     Pattern mOwnerProjectPattern; // Match user and repository name from a GitHub url
-    Pattern mValuesLocalePattern; // Match locale from "res/values-(...)/strings.xml"
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
         mOwnerProjectPattern = Pattern.compile(
                 "(?:https?://github\\.com/|git@github.com:)([\\w-]+)/([\\w-]+)(?:\\.git)?");
-
-        mValuesLocalePattern = Pattern.compile(
-                "res/values(?:-([\\w-]+))?/strings\\.xml");
     }
 
     public void onContinueClick(final View v) {
@@ -72,7 +63,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Please enter a project owner and name or an URL.",
                     Toast.LENGTH_SHORT).show();
         } else {
-            checkRepositoryOK(owner, repository);
+            // Determine whether we already have this repo or if it's a new one
+            if (new RepoHandler(this, owner, repository).isEmpty())
+                checkRepositoryOK(owner, repository);
+            else
+                launchTranslateActivity(owner, repository);
         }
     }
 
@@ -86,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCallback(Boolean ok) {
                 if (ok) {
-                    scanStringsXml(owner, repository, progress);
+                    scanDownloadStrings(owner, repository, progress);
                 } else {
                     showToast("The input repository doesn't seem valid.");
                     progress.dismiss();
@@ -95,85 +90,35 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Step 2
-    private void scanStringsXml(final String owner, final String repository,
-                                final ProgressDialog progress) {
-        progress.setTitle("Scanning repository...");
-        progress.setMessage("Looking for strings.xml files in the repository...");
-        GitHub.gGetTopTree(owner, repository, true, new Callback<Object>() {
+    private void scanDownloadStrings(final String owner, final String repository,
+                                     final ProgressDialog progress) {
+        RepoHandler handler = new RepoHandler(this, owner, repository).init();
+        handler.updateStrings(new ProgressUpdateCallback() {
             @Override
-            public void onCallback(Object o) {
-                ArrayList<String> paths = new ArrayList<>();
-                ArrayList<String> locales = new ArrayList<>();
-                try {
-                    JSONObject json = (JSONObject) o;
-                    JSONArray tree = json.getJSONArray("tree");
-                    for (int i = 0; i < tree.length(); i++) {
-                        JSONObject item = tree.getJSONObject(i);
-                        Matcher m = mValuesLocalePattern.matcher(item.getString("path"));
-                        if (m.find()) {
-                            paths.add(item.getString("path"));
-                            locales.add(m.group(1));
-                        }
-                    }
-                    if (paths.size() == 0) {
-                        showToast("No strings.xml files were found in this repository.");
-                        progress.dismiss();
-                    } else {
-                        downloadLocales(owner, repository, paths, locales, progress);
-                    }
-                } catch (JSONException e) {
-                    showToast("Error parsing the JSON from the API request.");
-                    progress.dismiss();
-                }
+            public void onProgressUpdate(String title, String description) {
+                progress.setTitle(title);
+                progress.setMessage(description);
+            }
+
+            @Override
+            public void onProgressFinished(String description, boolean status) {
+                progress.dismiss();
+                showToast(description);
+                if (status)
+                    launchTranslateActivity(owner, repository);
             }
         });
     }
 
-    // Step 3
-    private void downloadLocales(final String owner, final String repository,
-                                 final ArrayList<String> paths, final ArrayList<String> locales,
-                                 final ProgressDialog progress) {
-        progress.setTitle("Downloading locales...");
-        progress.setMessage("Downloading strings.xml files for you to translate...");
-        final RepoHandler repoHandler = new RepoHandler(this, owner, repository);
-
-        new AsyncTask<Void, Integer, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                for (int i = 0; i < paths.size(); i++) {
-                    publishProgress(i);
-                    repoHandler.downloadLocale(paths.get(i), locales.get(i));
-                }
-                return null;
-            }
-
-            @Override
-            protected void onProgressUpdate(Integer... values) {
-                int i = values[0];
-                String locale = locales.get(i) == null ? "default" : locales.get(i);
-
-                progress.setTitle(String.format("Downloading %d/%d locale (%s)...",
-                        i+1, paths.size(), locale));
-
-                super.onProgressUpdate(values);
-            }
-
-            @Override
-            protected void onPostExecute(Void v) {
-                progress.dismiss();
-
-                Intent intent = new Intent(getApplicationContext(), TranslateActivity.class);
-                intent.putExtra(EXTRA_REPO_OWNER, owner);
-                intent.putExtra(EXTRA_REPO_NAME, repository);
-                startActivity(intent);
-
-                super.onPostExecute(v);
-            }
-        }.execute();
+    void launchTranslateActivity(String owner, String repository) {
+        Intent intent = new Intent(getApplicationContext(), TranslateActivity.class);
+        intent.putExtra(EXTRA_REPO_OWNER, owner);
+        intent.putExtra(EXTRA_REPO_NAME, repository);
+        startActivity(intent);
     }
 
     void showToast(String text) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+        if (text != null)
+            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 }

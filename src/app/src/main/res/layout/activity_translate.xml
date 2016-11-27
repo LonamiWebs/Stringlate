@@ -23,7 +23,8 @@
 
         <Spinner
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:id="@+id/stringIdSpinner"/>
 
     </LinearLayout>
 
@@ -39,15 +40,15 @@
 
         <Spinner
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:id="@+id/localeSpinner"/>
 
     </LinearLayout>
     
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/original_string"
-        android:id="@+id/textView" />
+        android:text="@string/original_string" />
 
     <EditText
         android:layout_width="match_parent"
@@ -59,8 +60,7 @@
     <TextView
         android:text="@string/translated_string"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView2" />
+        android:layout_height="wrap_content" />
 
     <EditText
         android:layout_width="match_parent"
