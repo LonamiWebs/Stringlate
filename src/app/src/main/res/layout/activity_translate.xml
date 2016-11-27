@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Current string ID:"/>
+            android:text="@string/current_string_id"/>
 
         <Spinner
             android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Selected locale:"/>
+            android:text="@string/selected_locale"/>
 
         <Spinner
             android:layout_width="wrap_content"
@@ -58,13 +58,14 @@
         android:editable="false" />
 
     <TextView
-        android:text="@string/translated_string"
+        android:text="@string/translated_string_colon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/translated_string"
         android:id="@+id/translatedStringEditText" />
 
     <Button

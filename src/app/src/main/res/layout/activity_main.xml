@@ -14,7 +14,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to Stringlate! Enter a project name and its owner or paste the repository's GitHub URL below to continue." />
+        android:text="@string/welcome" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,19 +24,19 @@
         <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="owner"
+            android:hint="@string/owner_hint"
             android:id="@+id/ownerEditText"
             android:layout_weight="1" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="/" />
+            android:text="@string/slash" />
 
         <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="repository"
+            android:hint="@string/repository_hint"
             android:id="@+id/repositoryEditText"
             android:layout_weight="1" />
 
@@ -46,19 +46,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="or" />
+        android:text="@string/or" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="https://github.com/owner/repository"
+        android:hint="@string/github_repo_url_hint"
         android:id="@+id/urlEditText"
         android:inputType="textUri" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Continue"
+        android:text="@string/next"
         android:onClick="onContinueClick" />
 
 </LinearLayout>

@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 public class Resources implements Iterable<ResourcesString> {
 
-    ArrayList<ResourcesString> mStrings;
+    private final ArrayList<ResourcesString> mStrings;
 
     public Resources(ArrayList<ResourcesString> strings) {
         mStrings = strings;

@@ -1,9 +1,9 @@
 package io.github.lonamiwebs.stringlate.ResourcesStrings;
 
 public class ResourcesString {
-    private String mId;
+    private final String mId;
     private String mContent;
-    private boolean mTranslatable;
+    private final boolean mTranslatable;
 
     ResourcesString(String id, String content, boolean translatable) {
         mId = id;

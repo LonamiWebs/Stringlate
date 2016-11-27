@@ -23,7 +23,9 @@ public class ResourcesParser {
             parser.nextTag();
             return new Resources(readResources(parser));
         } finally {
-            in.close();
+            try {
+                in.close();
+            } catch (IOException e) { }
         }
     }
 

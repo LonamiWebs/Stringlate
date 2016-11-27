@@ -21,10 +21,10 @@ import io.github.lonamiwebs.stringlate.Utilities.RepoHandler;
 
 public class TranslateActivity extends AppCompatActivity {
 
-    EditText mOriginalStringEditText;
-    EditText mTranslatedStringEditText;
+    private EditText mOriginalStringEditText;
+    private EditText mTranslatedStringEditText;
 
-    RepoHandler mRepo;
+    private RepoHandler mRepo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class TranslateActivity extends AppCompatActivity {
         String owner = intent.getStringExtra(MainActivity.EXTRA_REPO_OWNER);
         String repoName = intent.getStringExtra(MainActivity.EXTRA_REPO_NAME);
 
-        mRepo = new RepoHandler(this, owner, repoName).init();
+        mRepo = new RepoHandler(this, owner, repoName);
         loadSpinners();
     }
 
@@ -60,8 +60,9 @@ public class TranslateActivity extends AppCompatActivity {
         }
     }
 
-    void updateStrings() {
-        final ProgressDialog progress = ProgressDialog.show(this, "Loading...", null, true);
+    private void updateStrings() {
+        final ProgressDialog progress = ProgressDialog.show(this,
+                getString(R.string.loading_ellipsis), null, true);
 
         mRepo.updateStrings(new ProgressUpdateCallback() {
             @Override
@@ -79,7 +80,7 @@ public class TranslateActivity extends AppCompatActivity {
         });
     }
 
-    void loadSpinners() {
+    private void loadSpinners() {
         // Load the string IDs spinner ("name" attribute on strings.xml)
         try {
             ArrayList<String> idSpinnerArray = new ArrayList<>();
@@ -93,9 +94,7 @@ public class TranslateActivity extends AppCompatActivity {
             idAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             ((Spinner) findViewById(R.id.stringIdSpinner)).setAdapter(idAdapter);
         } catch (FileNotFoundException e) {
-            Toast.makeText(this,
-                    "No strings.xml files were found, please update the strings.xml.",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.no_strings_found_update, Toast.LENGTH_LONG).show();
         }
 
         // Load the locales spinner

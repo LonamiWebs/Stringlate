@@ -3,8 +3,6 @@ package io.github.lonamiwebs.stringlate.Utilities;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStreamReader;
-
 import io.github.lonamiwebs.stringlate.Interfaces.Callback;
 import io.github.lonamiwebs.stringlate.Tasks.DownloadJSONTask;
 
@@ -21,15 +19,6 @@ public class GitHub {
         }.execute(API_URL+call);
     }
 
-    public static void gGetContents(String owner, String repo,
-                             Callback<Object> callback) {
-        gGetContents(owner, repo, "", callback);
-    }
-    public static void gGetContents(String owner, String repo, String path,
-                             Callback<Object> callback) {
-        gCall(String.format("repos/%s/%s/contents/%s", owner, repo, path), callback);
-    }
-
     public static void gCheckOwnerRepoOK(String owner, String repo,
                                   final Callback<Boolean> callback) {
         gCall(String.format("repos/%s/%s", owner, repo), new Callback<Object>() {
@@ -38,17 +27,6 @@ public class GitHub {
                 callback.onCallback(object != null);
             }
         });
-    }
-
-    public static void gGetRawFileStream(String owner, String repo, String path,
-                                  Callback<InputStreamReader> callback) {
-// todo idk lol
-    }
-
-    public static void gGetFileString(String owner, String repo, String path,
-                               Callback<Object> callback) {
-        gGetContents(owner, repo, path, callback);
-        // if file encoding == base64...
     }
 
     public static void gGetTree(String owner, String repo, String sha, boolean recursive,

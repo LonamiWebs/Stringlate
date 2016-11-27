@@ -23,46 +23,38 @@ import java.util.regex.Pattern;
 
 import io.github.lonamiwebs.stringlate.Interfaces.Callback;
 import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.ResourcesStrings.Resources;
 import io.github.lonamiwebs.stringlate.ResourcesStrings.ResourcesParser;
 
 public class RepoHandler {
-    Context mContext;
-    String mOwner, mRepo;
+    private final Context mContext;
+    private final String mOwner, mRepo;
 
-    File mRoot;
+    private final File mRoot;
 
-    Pattern mValuesLocalePattern; // Match locale from "res/values-(...)/strings.xml"
-    Pattern mLocalesPattern; // Match locale from "strings-(...).xml"
-    ArrayList<String> mLocales;
+    private final Pattern mValuesLocalePattern; // Match locale from "res/values-(...)/strings.xml"
+    private final Pattern mLocalesPattern; // Match locale from "strings-(...).xml"
+    private final ArrayList<String> mLocales;
+
+    private static final String BASE_DIR = "repos";
+    private static final String RAW_FILE_URL = "https://raw.githubusercontent.com/%s/%s/master/%s";
 
     public static final String DEFAULT_LOCALE = "default";
-
-    static final String BASE_DIR = "repos";
-    static final String RAW_FILE_URL = "https://raw.githubusercontent.com/%s/%s/master/%s";
 
     public RepoHandler(Context context, String owner, String repo) {
         mContext = context;
         mOwner = owner;
         mRepo = repo;
 
+        mRoot = new File(mContext.getFilesDir(), BASE_DIR+"/"+mOwner+"/"+mRepo);
+
         mValuesLocalePattern = Pattern.compile(
                 "res/values(?:-([\\w-]+))?/strings\\.xml");
 
         mLocalesPattern = Pattern.compile("strings(?:-([\\w-]+))?\\.xml");
         mLocales = new ArrayList<>();
-
-        mRoot = new File(mContext.getFilesDir(), BASE_DIR+"/"+mOwner+"/"+mRepo);
-        // We do not want to create any directory by default, so don't call init()
-    }
-
-    public RepoHandler init() {
-        if (mRoot.isDirectory()) {
-            loadLocales();
-        } else {
-            mRoot.mkdirs();
-        }
-        return this;
+        loadLocales();
     }
 
     //region Loading single resource files
@@ -95,11 +87,13 @@ public class RepoHandler {
 
     private void loadLocales() {
         mLocales.clear();
-        for (File f : mRoot.listFiles()) {
-            String path = f.getAbsolutePath();
-            Matcher m = mLocalesPattern.matcher(path);
-            if (m.find())
-                mLocales.add(m.group(1) == null ? DEFAULT_LOCALE : m.group(1));
+        if (mRoot.isDirectory()) {
+            for (File f : mRoot.listFiles()) {
+                String path = f.getAbsolutePath();
+                Matcher m = mLocalesPattern.matcher(path);
+                if (m.find())
+                    mLocales.add(m.group(1) == null ? DEFAULT_LOCALE : m.group(1));
+            }
         }
     }
 
@@ -107,7 +101,7 @@ public class RepoHandler {
         return mLocales;
     }
 
-    public boolean isEmpty() { return !mRoot.isDirectory() || mLocales.size() == 0; }
+    public boolean isEmpty() { return mLocales.isEmpty(); }
 
     //endregion
 
@@ -121,8 +115,8 @@ public class RepoHandler {
     // Step 1
     private void scanStringsXml(final ProgressUpdateCallback callback) {
         callback.onProgressUpdate(
-                "Scanning repository...",
-                "Looking for strings.xml files in the repository...");
+                mContext.getString(R.string.scanning_repository),
+                mContext.getString(R.string.scanning_repository_long));
 
         GitHub.gGetTopTree(mOwner, mRepo, true, new Callback<Object>() {
             @Override
@@ -137,18 +131,18 @@ public class RepoHandler {
                         Matcher m = mValuesLocalePattern.matcher(item.getString("path"));
                         if (m.find()) {
                             remotePaths.add(item.getString("path"));
-                            locales.add(m.group(1));
+                            locales.add(m.group(1) == null ? DEFAULT_LOCALE : m.group(1));
                         }
                     }
                     if (remotePaths.size() == 0) {
                         callback.onProgressFinished(
-                                "No strings.xml files were found in this repository.", false);
+                                mContext.getString(R.string.no_strings_found), false);
                     } else {
                         downloadLocales(remotePaths, locales, callback);
                     }
                 } catch (JSONException e) {
                     callback.onProgressFinished(
-                            "Error parsing the JSON from the API request.", false);
+                            mContext.getString(R.string.error_parsing_json), false);
                 }
             }
         });
@@ -159,8 +153,8 @@ public class RepoHandler {
                                  final ArrayList<String> locales,
                                  final ProgressUpdateCallback callback) {
         callback.onProgressUpdate(
-                String.format("Downloading locales 0/%d...", remotePaths.size()),
-                "Downloading strings.xml files for you to translate...");
+                mContext.getString(R.string.downloading_strings_locale, 0, remotePaths.size()),
+                mContext.getString(R.string.downloading_to_translate));
 
         new AsyncTask<Void, Integer, Void>() {
             @Override
@@ -176,14 +170,15 @@ public class RepoHandler {
             protected void onProgressUpdate(Integer... values) {
                 int i = values[0];
                 callback.onProgressUpdate(
-                        String.format("Downloading locales %d/%d...", i+1, remotePaths.size()),
-                        String.format("Downloading values-%s/strings.xml", locales.get(i)));
+                        mContext.getString(R.string.downloading_strings_locale, i+1, remotePaths.size()),
+                        mContext.getString(R.string.downloading_strings_locale_description, locales.get(i)));
 
                 super.onProgressUpdate(values);
             }
 
             @Override
             protected void onPostExecute(Void v) {
+                loadLocales();
                 callback.onProgressFinished(null, true);
                 super.onPostExecute(v);
             }
@@ -191,6 +186,9 @@ public class RepoHandler {
     }
 
     public void downloadLocale(String remotePath, String locale) {
+        if (!mRoot.isDirectory())
+            mRoot.mkdirs();
+
         final String urlString = String.format(RAW_FILE_URL, mOwner, mRepo, remotePath);
         final File outputFile = getResourcesFile(locale);
 

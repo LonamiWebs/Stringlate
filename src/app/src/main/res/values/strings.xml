@@ -1,6 +1,30 @@
 <resources>
     <string name="app_name" translatable="false">Stringlate</string>
     <string name="original_string">Original string:</string>
-    <string name="translated_string">Translated string:</string>
+    <string name="translated_string_colon">Translated string:</string>
     <string name="next">Next</string>
+    <string name="current_string_id">Current string ID:</string>
+    <string name="selected_locale">Selected locale:</string>
+    <string name="welcome">Welcome to Stringlate! Enter a project name and its owner or paste the repository\'s GitHub URL below to continue.</string>
+    <string name="owner_hint">owner</string>
+    <string name="slash" translatable="false">/</string>
+    <string name="repository_hint">repository</string>
+    <string name="or">or</string>
+    <string name="github_repo_url_hint">https://github.com/owner/repository</string>
+    <string name="update_strings">Update strings.xml</string>
+    <string name="add_locale">Add new locale</string>
+    <string name="loading_ellipsis">Loading…</string>
+    <string name="no_strings_found_update">No strings.xml files were found, please update the strings.xml.</string>
+    <string name="no_strings_found">No strings.xml files were found in this repository.</string>
+    <string name="error_parsing_json">Error parsing the JSON from the API request.</string>
+    <string name="scanning_repository">Scanning repository…</string>
+    <string name="scanning_repository_long">Looking for strings.xml files in the repository…</string>
+    <string name="downloading_strings_locale">Downloading strings for locale %1$d/%2$d…</string>
+    <string name="downloading_to_translate">Downloading strings.xml files for you to translate…</string>
+    <string name="downloading_strings_locale_description">Downloading values-%s/strings.xml</string>
+    <string name="repo_or_url_required">Please enter a project owner and name or an URL.</string>
+    <string name="checking_repo_ok">Checking values correctness…</string>
+    <string name="checking_repo_ok_long">Checking for the owner and repository existence…</string>
+    <string name="invalid_repo">The input repository doesn\'t seem valid.</string>
+    <string name="translated_string">Translated string</string>
 </resources>
