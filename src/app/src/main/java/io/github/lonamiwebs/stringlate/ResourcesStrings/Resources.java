@@ -35,8 +35,7 @@ public class Resources implements Iterable<ResourcesString> {
         InputStream is = null;
         try {
             is = new FileInputStream(file);
-            ResourcesParser parser = new ResourcesParser();
-            return new Resources(file, parser.parseFromXml(is));
+            return new Resources(file, ResourcesParser.parseFromXml(is));
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
         } finally {
@@ -105,9 +104,8 @@ public class Resources implements Iterable<ResourcesString> {
         if (mSavedChanges)
             return true;
 
-        ResourcesParser parser = new ResourcesParser();
         try {
-            if (parser.parseToXml(this, new FileWriter(mFile))) {
+            if (ResourcesParser.parseToXml(this, new FileWriter(mFile))) {
                 return mSavedChanges = true;
             }
         } catch (IOException e) {
@@ -148,8 +146,7 @@ public class Resources implements Iterable<ResourcesString> {
     @Override
     public String toString() {
         StringWriter writer = new StringWriter();
-        ResourcesParser parser = new ResourcesParser();
-        parser.parseToXml(this, writer);
+        ResourcesParser.parseToXml(this, writer);
         return writer.toString();
     }
 

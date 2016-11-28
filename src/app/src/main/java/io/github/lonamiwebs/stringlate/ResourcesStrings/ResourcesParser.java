@@ -18,7 +18,7 @@ public class ResourcesParser {
 
     //region Xml -> Resources
 
-    public ArrayList<ResourcesString> parseFromXml(InputStream in)
+    public static ArrayList<ResourcesString> parseFromXml(InputStream in)
             throws XmlPullParserException, IOException {
 
         try {
@@ -35,7 +35,7 @@ public class ResourcesParser {
     }
 
     // Reads the <resources> tag and returns a list of its <string> tags
-    private ArrayList<ResourcesString> readResources(XmlPullParser parser)
+    private static ArrayList<ResourcesString> readResources(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
         ArrayList<ResourcesString> strings = new ArrayList<>();
@@ -55,7 +55,7 @@ public class ResourcesParser {
     }
 
     // Reads a <string name="...">...</string> tag from the xml
-    private ResourcesString readResourceString(XmlPullParser parser)
+    private static ResourcesString readResourceString(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
         String id, content;
@@ -74,7 +74,7 @@ public class ResourcesParser {
     }
 
     // Reads the text from an xml tag
-    private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private static String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
         String result = "";
         if (parser.next() == XmlPullParser.TEXT) {
             result = parser.getText();
@@ -84,7 +84,7 @@ public class ResourcesParser {
     }
 
     // Skips a tag in the xml
-    private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
         if (parser.getEventType() != XmlPullParser.START_TAG)
             throw new IllegalStateException();
 
@@ -101,7 +101,7 @@ public class ResourcesParser {
 
     //region Resources -> Xml
 
-    public boolean parseToXml(Resources resources, Writer out) {
+    public static boolean parseToXml(Resources resources, Writer out) {
         XmlSerializer serializer = Xml.newSerializer();
         try {
             serializer.setOutput(out);
