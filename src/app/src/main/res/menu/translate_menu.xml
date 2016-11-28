@@ -10,9 +10,23 @@
     <item android:id="@+id/addLocale"
         android:title="@string/add_locale" />
 
+    <item android:id="@+id/delete"
+        android:title="@string/delete_ellipsis">
+        <menu>
+            <item android:id="@+id/deleteString"
+                android:title="@string/delete_string" />
+
+            <item android:id="@+id/deleteLocale"
+                android:title="@string/delete_locale" />
+
+            <item android:id="@+id/deleteRepo"
+                android:title="@string/delete_repository" />
+        </menu>
+    </item>
+
     <item
         android:id="@+id/showTranslatedCheckBox"
-        android:title="Show translated strings"
+        android:title="@string/show_translated_strings"
         android:checkable="true"
         android:checked="false" />
 </menu>

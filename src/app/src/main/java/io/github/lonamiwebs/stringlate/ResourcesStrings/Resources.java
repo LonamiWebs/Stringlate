@@ -67,6 +67,18 @@ public class Resources implements Iterable<ResourcesString> {
 
     //endregion
 
+    //region Deleting content
+
+    public void deleteId(String resourceId) {
+        for (ResourcesString rs : mStrings)
+            if (rs.getId().equals(resourceId)) {
+                mStrings.remove(rs);
+                break;
+            }
+    }
+
+    //endregion
+
     //region Iterator wrapper
 
     @Override

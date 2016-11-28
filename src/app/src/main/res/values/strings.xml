@@ -34,8 +34,18 @@
     <string name="save_success">strings.xml file saved successfully.</string>
     <string name="add_locale_to_start">Add a new locale to get started.</string>
     <string name="enter_locale">Enter locale name</string>
-    <string name="enter_locale_long">Enter the locale name for which the strings.xml file will be created (i.e. \"es\", \"en-UK\"):</string>
+    <string name="enter_locale_long">Enter the locale name for which the strings.xml file will be created (your current locale is \"%s\"):</string>
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
     <string name="create_locale_error">Could not create the new locale file.</string>
+    <string name="show_translated_strings">Show translated strings</string>
+    <string name="delete_ellipsis">Delete…</string>
+    <string name="delete_string">Delete string</string>
+    <string name="delete_locale">Delete locale</string>
+    <string name="delete_repository">Delete repository</string>
+    <string name="no_locale_selected">There is no locale selected.</string>
+    <string name="sure_question">Are you sure?</string>
+    <string name="delete_locale_confirm_long">Do you really wish to delete the locale \"%s\"? All its strings will be lost.</string>
+    <string name="delete_repository_confirm_long">Do you really wish to delete the repository \"%s\"? The local clone will be erased from the phone memory, although it can be added again.</string>
+    <string name="invalid_locale">The input locale does not seem valid.</string>
 </resources>

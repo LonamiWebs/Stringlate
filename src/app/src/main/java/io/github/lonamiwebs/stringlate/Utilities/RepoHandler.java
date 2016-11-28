@@ -94,6 +94,16 @@ public class RepoHandler {
     // Determines whether the repository is empty (has no saved locales) or not
     public boolean isEmpty() { return mLocales.isEmpty(); }
 
+    // Deletes the repository erasing its existence from Earth. Forever. (Unless added again)
+    public void delete() {
+        for (String locale : mLocales)
+            getResourcesFile(locale).delete();
+
+        mRoot.delete();
+        if (mRoot.getParentFile().listFiles().length == 0)
+            mRoot.getParentFile().delete();
+    }
+
     //endregion
 
     //region Locales
@@ -118,7 +128,7 @@ public class RepoHandler {
 
     //endregion
 
-    //region Creating locale files
+    //region Creating and deleting locale files
 
     public boolean createLocale(String locale) {
         if (hasLocale(locale))
@@ -129,6 +139,13 @@ public class RepoHandler {
 
         mLocales.add(locale);
         return true;
+    }
+
+    public void deleteLocale(String locale) {
+        if (hasLocale(locale)) {
+            getResourcesFile(locale).delete();
+            mLocales.remove(locale);
+        }
     }
 
     //endregion
@@ -288,6 +305,16 @@ public class RepoHandler {
             e.printStackTrace();
         }
         return false;
+    }
+
+    //endregion
+
+    //endregion
+
+    //region To string
+
+    public String toString() {
+        return mOwner+"/"+mRepo;
     }
 
     //endregion
