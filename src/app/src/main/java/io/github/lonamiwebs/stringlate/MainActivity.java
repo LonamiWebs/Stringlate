@@ -18,6 +18,8 @@ import io.github.lonamiwebs.stringlate.Utilities.RepoHandler;
 
 public class MainActivity extends AppCompatActivity {
 
+    //region Members
+
     public final static String EXTRA_REPO_OWNER = "io.github.lonamiwebs.stringlate.REPO_OWNER";
     public final static String EXTRA_REPO_NAME = "io.github.lonamiwebs.stringlate.REPO_NAME";
 
@@ -25,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText mUrlEditText;
 
     private Pattern mOwnerProjectPattern; // Match user and repository name from a GitHub url
+
+    //endregion
+
+    //region Initialization
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,21 +46,27 @@ public class MainActivity extends AppCompatActivity {
                 "(?:https?://github\\.com/|git@github.com:)([\\w-]+)/([\\w-]+)(?:/|\\.git)?");
     }
 
+    //endregion
+
+    //region UI events
+
     public void onNextClick(final View v) {
         String owner, repository;
         String url;
 
+        owner = repository = null;
         url = mUrlEditText.getText().toString().trim();
 
+        // If an URL was entered, try to extract the owner and repository
         if (!url.isEmpty()) {
             Matcher m = mOwnerProjectPattern.matcher(url);
             if (m.matches()) {
-                owner = m.group(1);
-                repository = m.group(2);
-            } else {
-                owner = repository = "";
+                owner = m.group(1).trim();
+                repository = m.group(2).trim();
             }
-        } else {
+        }
+        // If we don't have any owner (and thus repository) yet, retrieve it from the EditTexts
+        if (owner == null) {
             owner = mOwnerEditText.getText().toString().trim();
             repository = mRepositoryEditText.getText().toString().trim();
         }
@@ -70,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
                 launchTranslateActivity(owner, repository);
         }
     }
+
+    //endregion
+
+    //region Checking and adding a new local "repository"
 
     // Step 1
     private void checkRepositoryOK(final String owner, final String repository) {
@@ -91,10 +107,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // Steps 2 a 3
     private void scanDownloadStrings(final String owner, final String repository,
                                      final ProgressDialog progress) {
         RepoHandler handler = new RepoHandler(this, owner, repository);
-        handler.updateStrings(new ProgressUpdateCallback() {
+        handler.syncResources(new ProgressUpdateCallback() {
             @Override
             public void onProgressUpdate(String title, String description) {
                 progress.setTitle(title);
@@ -112,10 +129,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //endregion
+
+    //region Utilities
+
     private void launchTranslateActivity(String owner, String repository) {
         Intent intent = new Intent(getApplicationContext(), TranslateActivity.class);
         intent.putExtra(EXTRA_REPO_OWNER, owner);
         intent.putExtra(EXTRA_REPO_NAME, repository);
         startActivity(intent);
     }
+
+    //endregion
 }

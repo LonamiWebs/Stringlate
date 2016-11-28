@@ -27,7 +27,22 @@ import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.ResourcesStrings.Resources;
 import io.github.lonamiwebs.stringlate.ResourcesStrings.ResourcesParser;
 
+// Class used to inter-operate with locally saved GitHub "repositories"
+// What is stored are simply the strings.xml file under a tree directory structure:
+/*
+owner1/
+       repo1/
+             strings.xml
+             strings-es.xml
+       repo2/
+             ...
+owner2/
+       ...
+* */
 public class RepoHandler {
+
+    //region Members
+
     private final Context mContext;
     private final String mOwner, mRepo;
 
@@ -41,6 +56,10 @@ public class RepoHandler {
     private static final String RAW_FILE_URL = "https://raw.githubusercontent.com/%s/%s/master/%s";
 
     public static final String DEFAULT_LOCALE = "default";
+
+    //endregion
+
+    //region Constructors
 
     public RepoHandler(Context context, String owner, String repo) {
         mContext = context;
@@ -57,8 +76,11 @@ public class RepoHandler {
         loadLocales();
     }
 
-    //region Loading single resource files
+    //endregion
 
+    //region Utilities
+
+    // Retrieves the File object for the given locale
     private File getResourcesFile(String locale) {
         if (locale == null || locale.equals(DEFAULT_LOCALE))
             return new File(mRoot, "strings.xml");
@@ -66,43 +88,17 @@ public class RepoHandler {
             return new File(mRoot, "strings-"+locale+".xml");
     }
 
+    // Determines whether a given locale is saved or not
     public boolean hasLocale(String locale) { return getResourcesFile(locale).isFile(); }
 
-    public Resources loadResources(String locale) {
-        InputStream is = null;
-        try {
-            is = new FileInputStream(getResourcesFile(locale));
-            ResourcesParser parser = new ResourcesParser();
-            return parser.parseFromXml(is);
-        } catch (IOException | XmlPullParserException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (is != null)
-                    is.close();
-            } catch (IOException e) { }
-        }
-        return null;
-    }
-
-    public boolean saveResources(Resources resources, String locale) {
-        ResourcesParser parser = new ResourcesParser();
-        try {
-            File file = getResourcesFile(locale);
-            if (parser.parseToXml(resources, new FileWriter(file)))
-                return true;
-
-            if (file.isFile())
-                file.delete();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+    // Determines whether the repository is empty (has no saved locales) or not
+    public boolean isEmpty() { return mLocales.isEmpty(); }
 
     //endregion
 
-    //region Loading and creating locale files
+    //region Locales
+
+    //region Loading locale files
 
     private void loadLocales() {
         mLocales.clear();
@@ -116,6 +112,14 @@ public class RepoHandler {
         }
     }
 
+    public ArrayList<String> getLocales() {
+        return mLocales;
+    }
+
+    //endregion
+
+    //region Creating locale files
+
     public boolean createLocale(String locale) {
         if (hasLocale(locale))
             return true;
@@ -127,22 +131,18 @@ public class RepoHandler {
         return true;
     }
 
-    public ArrayList<String> getLocales() {
-        return mLocales;
-    }
-
-    public boolean isEmpty() { return mLocales.isEmpty(); }
-
     //endregion
 
-    //region Downloading locales
+    //region Downloading locale files
 
     // TODO Add some check to avoid overwriting files, i.e. was locale modified?
-    public void updateStrings(ProgressUpdateCallback callback) {
+    public void syncResources(ProgressUpdateCallback callback) {
         scanStringsXml(callback);
     }
 
-    // Step 1
+    // Step 1: Scans the current repository to find strings.xml files
+    //         If any file is found, its remote path and locale name is added to a list,
+    //         and the Step 2. is called (downloadLocales).
     private void scanStringsXml(final ProgressUpdateCallback callback) {
         callback.onProgressUpdate(
                 mContext.getString(R.string.scanning_repository),
@@ -178,7 +178,8 @@ public class RepoHandler {
         });
     }
 
-    // Step 2
+    // Step 2: Given the remote paths of the strings.xml files,
+    //         download them to our local "repository".
     private void downloadLocales(final ArrayList<String> remotePaths,
                                  final ArrayList<String> locales,
                                  final ProgressUpdateCallback callback) {
@@ -215,6 +216,7 @@ public class RepoHandler {
         }.execute();
     }
 
+    // Downloads a single locale file to our local "repository"
     public void downloadLocale(String remotePath, String locale) {
         if (!mRoot.isDirectory())
             mRoot.mkdirs();
@@ -250,6 +252,42 @@ public class RepoHandler {
             if (connection != null)
                 connection.disconnect();
         }
+    }
+
+    //endregion
+
+    //region Loading and saving resources
+
+    public Resources loadResources(String locale) {
+        InputStream is = null;
+        try {
+            is = new FileInputStream(getResourcesFile(locale));
+            ResourcesParser parser = new ResourcesParser();
+            return parser.parseFromXml(is);
+        } catch (IOException | XmlPullParserException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (is != null)
+                    is.close();
+            } catch (IOException e) { }
+        }
+        return null;
+    }
+
+    public boolean saveResources(Resources resources, String locale) {
+        ResourcesParser parser = new ResourcesParser();
+        try {
+            File file = getResourcesFile(locale);
+            if (parser.parseToXml(resources, new FileWriter(file)))
+                return true;
+
+            if (file.isFile())
+                file.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     //endregion

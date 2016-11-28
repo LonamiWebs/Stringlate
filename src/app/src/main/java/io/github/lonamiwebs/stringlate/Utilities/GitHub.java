@@ -6,9 +6,18 @@ import org.json.JSONObject;
 import io.github.lonamiwebs.stringlate.Interfaces.Callback;
 import io.github.lonamiwebs.stringlate.Tasks.DownloadJSONTask;
 
+// Static GitHub API interface that uses AsyncTasks
 public class GitHub {
+
+    //region Members
+
     static final String API_URL = "https://api.github.com/";
 
+    //endregion
+
+    //region Private methods
+
+    // Calls the given function and invokes callback() as result
     private static void gCall(final String call, final Callback<Object> callback) {
         new DownloadJSONTask() {
             @Override
@@ -19,6 +28,11 @@ public class GitHub {
         }.execute(API_URL+call);
     }
 
+    //endregion
+
+    //region Public methods
+
+    // Determines whether the given combination of owner/repo is OK or not
     public static void gCheckOwnerRepoOK(String owner, String repo,
                                   final Callback<Boolean> callback) {
         gCall(String.format("repos/%s/%s", owner, repo), new Callback<Object>() {
@@ -29,6 +43,7 @@ public class GitHub {
         });
     }
 
+    // Retrieves the (possibly truncated) tree of owner/repo
     public static void gGetTree(String owner, String repo, String sha, boolean recursive,
                          Callback<Object> callback) {
         gCall(String.format(
@@ -36,6 +51,7 @@ public class GitHub {
                 owner, repo, sha, recursive ? "1" : "0"), callback);
     }
 
+    // Retrieves the (possibly truncated) top tree of owner/repo
     public static void gGetTopTree(final String owner, final String repo, final boolean recursive,
                             final Callback<Object> callback) {
         // TODO Handle truncated trees on large repositories
@@ -56,4 +72,6 @@ public class GitHub {
                     }
                 });
     }
+
+    //endregion
 }

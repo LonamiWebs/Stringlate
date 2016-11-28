@@ -43,6 +43,8 @@ public class TranslateActivity extends AppCompatActivity {
 
     //endregion
 
+    //region Initialization
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +59,7 @@ public class TranslateActivity extends AppCompatActivity {
         mLocaleSpinner.setOnItemSelectedListener(eOnLocaleSelected);
         mStringIdSpinner.setOnItemSelectedListener(eOnStringIdSelected);
 
+        // Retrieve the owner and repository name
         Intent intent = getIntent();
         String owner = intent.getStringExtra(MainActivity.EXTRA_REPO_OWNER);
         String repoName = intent.getStringExtra(MainActivity.EXTRA_REPO_NAME);
@@ -70,17 +73,14 @@ public class TranslateActivity extends AppCompatActivity {
             checkTranslationVisibility();
         } else {
             // This should never happen since it's checked when creating the repository
-            Toast.makeText(this, R.string.no_strings_found_update, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.no_strings_found_update,
+                    Toast.LENGTH_LONG).show();
         }
     }
 
-    void checkTranslationVisibility() {
-        if (mLocaleSpinner.getCount() == 0) {
-            Toast.makeText(this, R.string.add_locale_to_start, Toast.LENGTH_SHORT).show();
-        } else {
-            findViewById(R.id.translationLayout).setVisibility(View.VISIBLE);
-        }
-    }
+    //endregion
+
+    //region Menu
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,79 +94,60 @@ public class TranslateActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.updateStrings:
-                updateStrings();
-                return true;
-            case R.id.addLocale:
-                final EditText et = new EditText(this);
-                AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                        .setTitle(R.string.enter_locale)
-                        .setMessage(R.string.enter_locale_long)
-                        .setView(et)
-                        .setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                String locale = et.getText().toString();
-                                if (mRepo.createLocale(locale)) {
-                                    loadLocalesSpinner();
-                                    setCurrentLocale(locale);
-                                } else {
-                                    Toast.makeText(getApplicationContext(),
-                                            R.string.create_locale_error, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, null);
-
-                AlertDialog ad = builder.create();
-                ad.show();
-
-                return true;
-            case R.id.showTranslatedCheckBox:
-                mShowTranslated = !mShowTranslated;
-                item.setChecked(mShowTranslated);
-                loadStringIDsSpinner();
-                return true;
+            case R.id.updateStrings: updateStrings(); return true;
+            case R.id.addLocale: promptAddLocale(); return true;
+            case R.id.showTranslatedCheckBox: toggleShowTranslated(item); return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    public void onPreviousClick(final View v) {
-        incrementStringIdIndex(-1);
+    //endregion
+
+    //region UI events
+
+    //region Menu events
+
+    // Prompts the user to add a new locale. If it exists,
+    // no new file is created but the entered locale is selected.
+    private void promptAddLocale() {
+        final EditText et = new EditText(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(R.string.enter_locale)
+                .setMessage(R.string.enter_locale_long)
+                .setView(et)
+                .setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String locale = et.getText().toString();
+                        if (mRepo.createLocale(locale)) {
+                            loadLocalesSpinner();
+                            setCurrentLocale(locale);
+                        } else {
+                            Toast.makeText(getApplicationContext(),
+                                    R.string.create_locale_error, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null);
+
+        AlertDialog ad = builder.create();
+        ad.show();
     }
 
-    public void onSaveClick(final View v) {
-        // TODO hmm when changing locale it will ask Save changes?
-        if (mRepo.saveResources(mSelectedLocaleResources, mSelectedLocale))
-            Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(this, R.string.save_error, Toast.LENGTH_SHORT).show();
+    // Toggles the "Show translated strings" checkbox and updates the spinner
+    private void toggleShowTranslated(MenuItem item) {
+        mShowTranslated = !mShowTranslated;
+        item.setChecked(mShowTranslated);
+        loadStringIDsSpinner();
     }
 
-    public void onNextClick(final View v) {
-        incrementStringIdIndex(+1);
-    }
-
-    private void incrementStringIdIndex(int di) {
-        int i = mStringIdSpinner.getSelectedItemPosition() + di;
-        if (i > -1) {
-            if (i < mStringIdSpinner.getCount()) {
-                String resourceId = (String)mStringIdSpinner.getSelectedItem();
-                String content = mTranslatedStringEditText.getText().toString();
-                mSelectedLocaleResources.setContent(resourceId, content);
-
-                mStringIdSpinner.setSelection(i);
-            } else {
-                Toast.makeText(this, R.string.no_strings_left, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
+    // Synchronize our local strings.xml files with the remote GitHub repository
     private void updateStrings() {
-        final ProgressDialog progress = ProgressDialog.show(this, getString(R.string.loading_ellipsis), null, true);
+        final ProgressDialog progress = ProgressDialog.show(this,
+                getString(R.string.loading_ellipsis), null, true);
 
-        mRepo.updateStrings(new ProgressUpdateCallback() {
+        mRepo.syncResources(new ProgressUpdateCallback() {
             @Override
             public void onProgressUpdate(String title, String description) {
                 progress.setTitle(title);
@@ -184,6 +165,59 @@ public class TranslateActivity extends AppCompatActivity {
             }
         });
     }
+
+    //endregion
+
+    //region Button events
+
+    public void onPreviousClick(final View v) {
+        incrementStringIdIndex(-1);
+    }
+
+    public void onNextClick(final View v) {
+        incrementStringIdIndex(+1);
+    }
+
+    public void onSaveClick(final View v) {
+        // TODO hmm when changing locale it will ask Save changes?
+        if (mRepo.saveResources(mSelectedLocaleResources, mSelectedLocale))
+            Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, R.string.save_error, Toast.LENGTH_SHORT).show();
+    }
+
+    //endregion
+
+    //region Spinner events
+
+    AdapterView.OnItemSelectedListener
+            eOnLocaleSelected = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
+            setCurrentLocale((String)parent.getItemAtPosition(i));
+        }
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) { }
+    };
+
+    AdapterView.OnItemSelectedListener
+            eOnStringIdSelected = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
+            String id = (String)parent.getItemAtPosition(i);
+            mOriginalStringEditText.setText(mDefaultResources.getContent(id));
+            mTranslatedStringEditText.setText(mSelectedLocaleResources.getContent(id));
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) { }
+    };
+
+    //endregion
+
+    //endregion
+
+    //region Spinner loading
 
     private void loadLocalesSpinner() {
         ArrayList<String> spinnerArray = new ArrayList<>();
@@ -222,49 +256,65 @@ public class TranslateActivity extends AppCompatActivity {
         ((Spinner) findViewById(R.id.stringIdSpinner)).setAdapter(idAdapter);
     }
 
-    //region Events
+    //endregion
 
-    AdapterView.OnItemSelectedListener
-            eOnLocaleSelected = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
-            setCurrentLocale((String)parent.getItemAtPosition(i));
-        }
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) { }
-    };
+    //region String and locale handling
 
-    private void setCurrentLocale(String locale) { setCurrentLocale(locale, true); }
+    private void setCurrentLocale(String locale) {
+        setCurrentLocale(locale, true);
+    }
 
+    // Sets the current locale, optionally updating the spinner as well
+    // (we won't want to update the spinner selection if the spinner called this)
     private void setCurrentLocale(String locale, boolean setSpinnerSelection) {
-        if (setSpinnerSelection) {
+        if (setSpinnerSelection)
             mLocaleSpinner.setSelection(getItemIndex(mLocaleSpinner, locale));
-        }
+
         mSelectedLocale = locale;
         mSelectedLocaleResources = mRepo.loadResources(mSelectedLocale);
         checkTranslationVisibility();
         loadStringIDsSpinner();
     }
 
+    //endregion
+
+    //region Utilities
+
+    // Checks whether the translation layout (EditText and previous/next buttons)
+    // should be visible (there is at least one non-default locale) or not.
+    void checkTranslationVisibility() {
+        if (mLocaleSpinner.getCount() == 0) {
+            Toast.makeText(this, R.string.add_locale_to_start, Toast.LENGTH_SHORT).show();
+        } else {
+            findViewById(R.id.translationLayout).setVisibility(View.VISIBLE);
+        }
+    }
+
+    // Increments the mStringIdSpinner index by delta i (di),
+    // clamping the value if it's less than 0 or value ≥ IDs count.
+    private void incrementStringIdIndex(int di) {
+        int i = mStringIdSpinner.getSelectedItemPosition() + di;
+        if (i > -1) {
+            if (i < mStringIdSpinner.getCount()) {
+                String resourceId = (String)mStringIdSpinner.getSelectedItem();
+                String content = mTranslatedStringEditText.getText().toString();
+                mSelectedLocaleResources.setContent(resourceId, content);
+
+                mStringIdSpinner.setSelection(i);
+            } else {
+                Toast.makeText(this, R.string.no_strings_left, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    // Sadly, the spinners don't provide any method to retrieve
+    // an item position given its value. This method helps that
     private int getItemIndex(Spinner spinner, String str) {
         for (int i = 0; i < spinner.getCount(); i++)
             if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(str))
                 return i;
         return -1;
     }
-
-    AdapterView.OnItemSelectedListener
-            eOnStringIdSelected = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
-            String id = (String)parent.getItemAtPosition(i);
-            mOriginalStringEditText.setText(mDefaultResources.getContent(id));
-            mTranslatedStringEditText.setText(mSelectedLocaleResources.getContent(id));
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) { }
-    };
 
     //endregion
 }

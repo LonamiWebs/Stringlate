@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 
+// Task used to download a JSON string from a given remote URL
 public class DownloadJSONTask extends AsyncTask<String, Void, Object> {
     @Override
     protected Object doInBackground(String... params) {
