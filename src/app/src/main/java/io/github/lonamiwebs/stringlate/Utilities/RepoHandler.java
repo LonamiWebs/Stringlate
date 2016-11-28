@@ -6,12 +6,9 @@ import android.os.AsyncTask;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,7 +22,6 @@ import io.github.lonamiwebs.stringlate.Interfaces.Callback;
 import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.ResourcesStrings.Resources;
-import io.github.lonamiwebs.stringlate.ResourcesStrings.ResourcesParser;
 
 // Class used to inter-operate with locally saved GitHub "repositories"
 // What is stored are simply the strings.xml file under a tree directory structure:
@@ -134,7 +130,8 @@ public class RepoHandler {
         if (hasLocale(locale))
             return true;
 
-        if (!saveResources(new Resources(), locale))
+        Resources resources = Resources.fromFile(getResourcesFile(locale));
+        if (resources == null || !resources.save())
             return false;
 
         mLocales.add(locale);
@@ -273,38 +270,10 @@ public class RepoHandler {
 
     //endregion
 
-    //region Loading and saving resources
+    //region Loading resources
 
     public Resources loadResources(String locale) {
-        InputStream is = null;
-        try {
-            is = new FileInputStream(getResourcesFile(locale));
-            ResourcesParser parser = new ResourcesParser();
-            return parser.parseFromXml(is);
-        } catch (IOException | XmlPullParserException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (is != null)
-                    is.close();
-            } catch (IOException e) { }
-        }
-        return null;
-    }
-
-    public boolean saveResources(Resources resources, String locale) {
-        ResourcesParser parser = new ResourcesParser();
-        try {
-            File file = getResourcesFile(locale);
-            if (parser.parseToXml(resources, new FileWriter(file)))
-                return true;
-
-            if (file.isFile())
-                file.delete();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return Resources.fromFile(getResourcesFile(locale));
     }
 
     //endregion
@@ -313,6 +282,7 @@ public class RepoHandler {
 
     //region To string
 
+    @Override
     public String toString() {
         return mOwner+"/"+mRepo;
     }

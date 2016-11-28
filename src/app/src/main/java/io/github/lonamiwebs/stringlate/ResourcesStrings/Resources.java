@@ -1,5 +1,13 @@
 package io.github.lonamiwebs.stringlate.ResourcesStrings;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -9,7 +17,8 @@ public class Resources implements Iterable<ResourcesString> {
 
     //region Members
 
-    private final ArrayList<ResourcesString> mStrings;
+    private File mFile; // Keep track of the original file to be able to save()
+    private ArrayList<ResourcesString> mStrings;
 
     // Internally keep track if the changes are saved not to look
     // over all the resources strings individually
@@ -19,9 +28,28 @@ public class Resources implements Iterable<ResourcesString> {
 
     //region Constructors
 
-    public Resources() { this(new ArrayList<ResourcesString>()); }
+    public static Resources fromFile(File file) {
+        if (!file.isFile())
+            return new Resources(file, new ArrayList<ResourcesString>());
 
-    public Resources(ArrayList<ResourcesString> strings) {
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            ResourcesParser parser = new ResourcesParser();
+            return new Resources(file, parser.parseFromXml(is));
+        } catch (IOException | XmlPullParserException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (is != null)
+                    is.close();
+            } catch (IOException e) { }
+        }
+        return null;
+    }
+
+    private Resources(File file, ArrayList<ResourcesString> strings) {
+        mFile = file;
         mStrings = strings;
         mSavedChanges = true;
     }
@@ -46,6 +74,10 @@ public class Resources implements Iterable<ResourcesString> {
         return "";
     }
 
+    public boolean areSaved() {
+        return mSavedChanges;
+    }
+
     //endregion
 
     //region Updating (setting) content
@@ -61,8 +93,31 @@ public class Resources implements Iterable<ResourcesString> {
                 break;
             }
 
-        if (!found)
+        if (!found) {
             mStrings.add(new ResourcesString(resourceId, content));
+            mSavedChanges = false;
+        }
+    }
+
+    // If there are unsaved changes, saves the file
+    // If the file was saved successfully or there were no changes to save, returns true
+    public boolean save() {
+        if (mSavedChanges)
+            return true;
+
+        ResourcesParser parser = new ResourcesParser();
+        try {
+            if (parser.parseToXml(this, new FileWriter(mFile))) {
+                return mSavedChanges = true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // We do not want empty files, if it exists and it's empty delete it
+        if (mFile.isFile() && mFile.length() == 0)
+            mFile.delete();
+
+        return false;
     }
 
     //endregion
@@ -84,6 +139,18 @@ public class Resources implements Iterable<ResourcesString> {
     @Override
     public Iterator<ResourcesString> iterator() {
         return mStrings.iterator();
+    }
+
+    //endregion
+
+    //region To string
+
+    @Override
+    public String toString() {
+        StringWriter writer = new StringWriter();
+        ResourcesParser parser = new ResourcesParser();
+        parser.parseToXml(this, writer);
+        return writer.toString();
     }
 
     //endregion

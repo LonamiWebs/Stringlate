@@ -10,6 +10,23 @@
     <item android:id="@+id/addLocale"
         android:title="@string/add_locale" />
 
+    <item android:id="@+id/export"
+        android:title="@string/export_ellipsis">
+        <menu>
+            <item android:id="@+id/exportToSdcard"
+                android:title="@string/export_sd_card" />
+
+            <item android:id="@+id/exportToGist"
+                android:title="@string/export_gist" />
+
+            <item android:id="@+id/exportToPr"
+                android:title="@string/export_pr" />
+
+            <item android:id="@+id/exportShare"
+                android:title="@string/export_share" />
+        </menu>
+    </item>
+
     <item android:id="@+id/delete"
         android:title="@string/delete_ellipsis">
         <menu>

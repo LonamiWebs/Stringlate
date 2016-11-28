@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import io.github.lonamiwebs.stringlate.Interfaces.Callback;
 import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.ResourcesStrings.Resources;
 import io.github.lonamiwebs.stringlate.ResourcesStrings.ResourcesString;
@@ -95,14 +96,31 @@ public class TranslateActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            // Synchronizing repository
             case R.id.updateStrings:
                 updateStrings();
                 return true;
 
+            // Adding locales
             case R.id.addLocale:
                 promptAddLocale();
                 return true;
 
+            // Exporting resources
+            case R.id.exportToSdcard:
+                exportToSd();
+                return true;
+            case R.id.exportToGist:
+                exportToGist();
+                return true;
+            case R.id.exportToPr:
+                exportToPullRequest();
+                return true;
+            case R.id.exportShare:
+                exportToShare();
+                return true;
+
+            // Deleting resources
             case R.id.deleteString:
                 deleteString();
                 return true;
@@ -113,6 +131,7 @@ public class TranslateActivity extends AppCompatActivity {
                 promptDeleteRepo();
                 return true;
 
+            // Toggling visibility
             case R.id.showTranslatedCheckBox:
                 toggleShowTranslated(item);
                 return true;
@@ -121,11 +140,23 @@ public class TranslateActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        checkResourcesSaved(new Callback<Boolean>() {
+            @Override
+            public void onCallback(Boolean saved) {
+                finish();
+            }
+        });
+    }
+
     //endregion
 
     //region UI events
 
     //region Menu events
+
+    //region Repository synchronizing menu events
 
     // Synchronize our local strings.xml files with the remote GitHub repository
     private void updateStrings() {
@@ -150,6 +181,10 @@ public class TranslateActivity extends AppCompatActivity {
             }
         });
     }
+
+    //endregion
+
+    //region Adding locales menu events
 
     // Prompts the user to add a new locale. If it exists,
     // no new file is created but the entered locale is selected.
@@ -183,6 +218,43 @@ public class TranslateActivity extends AppCompatActivity {
                 .setNegativeButton(R.string.cancel, null)
                 .show();
     }
+
+    //endregion
+
+    //region Exporting menu events
+
+    // There is no need to check if the resources are saved when exporting.
+    // The exported values are always the in-memory values, which are also
+    // always up-to-date.
+
+    // Exports the currently selected locale resources to the SD card
+    private void exportToSd() {
+        Toast.makeText(this, "Not implemented. Sorry about that!", Toast.LENGTH_SHORT).show();
+    }
+
+    // Exports the currently selected locale resources to a GitHub Gist
+    private void exportToGist() {
+        Toast.makeText(this, "Not implemented. Sorry about that!", Toast.LENGTH_SHORT).show();
+    }
+
+    // Exports the currently selected locale resources to a GitHub Pull Request
+    private void exportToPullRequest() {
+        Toast.makeText(this, "Not implemented. Sorry about that!", Toast.LENGTH_SHORT).show();
+    }
+
+    // Exports the currently selected locale resources to a plain text share intent
+    private void exportToShare() {
+        String xml = mSelectedLocaleResources.toString();
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, xml);
+        startActivity(Intent.createChooser(sharingIntent,
+                getString(R.string.export_share)));
+    }
+
+    //endregion
+
+    //region Deleting menu events
 
     // Deletes the currently selected string ID, this needs no warning
     private void deleteString() {
@@ -228,12 +300,18 @@ public class TranslateActivity extends AppCompatActivity {
                 .show();
     }
 
+    //endregion
+
+    //region Toggling visibility menu events
+
     // Toggles the "Show translated strings" checkbox and updates the spinner
     private void toggleShowTranslated(MenuItem item) {
         mShowTranslated = !mShowTranslated;
         item.setChecked(mShowTranslated);
         loadStringIDsSpinner();
     }
+
+    //endregion
 
     //endregion
 
@@ -249,7 +327,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     public void onSaveClick(final View v) {
         // TODO hmm when changing locale it will ask Save changes?
-        if (mRepo.saveResources(mSelectedLocaleResources, mSelectedLocale))
+        if (mSelectedLocaleResources.save())
             Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
         else
             Toast.makeText(this, R.string.save_error, Toast.LENGTH_SHORT).show();
@@ -351,6 +429,43 @@ public class TranslateActivity extends AppCompatActivity {
             findViewById(R.id.translationLayout).setVisibility(View.GONE);
         } else {
             findViewById(R.id.translationLayout).setVisibility(View.VISIBLE);
+        }
+    }
+
+    // Checks whether the current resources are saved or not
+    // If they're not, the user is asked to save them first
+    void checkResourcesSaved(final Callback<Boolean> callback) {
+        if (!ensureLocaleSelected()) {
+            callback.onCallback(false);
+            return;
+        }
+
+        if (mSelectedLocaleResources.areSaved())
+            callback.onCallback(true);
+        else {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.save_resources_question)
+                    .setMessage(R.string.save_resources_question_long)
+                    .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (mSelectedLocaleResources.save())
+                                callback.onCallback(true);
+                            else {
+                                Toast.makeText(getApplicationContext(),
+                                        R.string.save_error, Toast.LENGTH_SHORT).show();
+
+                                callback.onCallback(false);
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            callback.onCallback(false);
+                        }
+                    })
+                    .show();
         }
     }
 

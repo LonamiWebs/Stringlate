@@ -48,4 +48,11 @@
     <string name="delete_locale_confirm_long">Do you really wish to delete the locale \"%s\"? All its strings will be lost.</string>
     <string name="delete_repository_confirm_long">Do you really wish to delete the repository \"%s\"? The local clone will be erased from the phone memory, although it can be added again.</string>
     <string name="invalid_locale">The input locale does not seem valid.</string>
+    <string name="export_ellipsis">Export…</string>
+    <string name="export_sd_card">Export to SD card</string>
+    <string name="export_gist">Export to GitHub Gist</string>
+    <string name="export_pr">Export to Pull Request</string>
+    <string name="export_share">Share generated xml</string>
+    <string name="save_resources_question">Save resources?</string>
+    <string name="save_resources_question_long">The resources for the current locale have been modified, but the changes weren\'t saved. Do you want to save them now?</string>
 </resources>

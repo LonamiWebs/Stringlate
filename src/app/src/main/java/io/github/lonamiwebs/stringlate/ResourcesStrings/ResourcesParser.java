@@ -18,7 +18,7 @@ public class ResourcesParser {
 
     //region Xml -> Resources
 
-    public Resources parseFromXml(InputStream in)
+    public ArrayList<ResourcesString> parseFromXml(InputStream in)
             throws XmlPullParserException, IOException {
 
         try {
@@ -26,7 +26,7 @@ public class ResourcesParser {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
-            return new Resources(readResources(parser));
+            return readResources(parser);
         } finally {
             try {
                 in.close();
