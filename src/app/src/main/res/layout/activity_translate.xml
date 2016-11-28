@@ -19,23 +19,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/current_string_id"/>
-
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/stringIdSpinner"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/selected_locale"/>
 
         <Spinner
@@ -44,34 +27,85 @@
             android:id="@+id/localeSpinner"/>
 
     </LinearLayout>
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/original_string" />
 
-    <EditText
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/originalStringEditText"
-        android:inputType="none"
-        android:editable="false" />
+        android:orientation="vertical"
+        android:id="@+id/translationLayout"
+        android:visibility="gone">
 
-    <TextView
-        android:text="@string/translated_string_colon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/translated_string"
-        android:id="@+id/translatedStringEditText" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/current_string_id"/>
 
-    <Button
-        android:text="@string/next"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/nextButton" />
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/stringIdSpinner"/>
 
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/original_string" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/originalStringEditText"
+            android:inputType="none"
+            android:editable="false" />
+
+        <TextView
+            android:text="@string/translated_string_colon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/translated_string"
+            android:id="@+id/translatedStringEditText" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:text="@string/previous"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:id="@+id/previousButton"
+                android:onClick="onPreviousClick"/>
+
+            <Button
+                android:text="@string/save"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_weight="1"
+                android:id="@+id/saveButton"
+                android:onClick="onSaveClick"/>
+
+            <Button
+                android:text="@string/next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:layout_gravity="end"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:id="@+id/nextButton"
+                android:onClick="onNextClick"/>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

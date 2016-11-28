@@ -4,16 +4,18 @@ import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.util.ArrayList;
 
 public class ResourcesParser {
     // We don't use namespaces
     private static final String ns = null;
 
-    public Resources parse(InputStream in)
+    public Resources parseFromXml(InputStream in)
             throws XmlPullParserException, IOException {
 
         try {
@@ -26,6 +28,35 @@ public class ResourcesParser {
             try {
                 in.close();
             } catch (IOException e) { }
+        }
+    }
+
+    public boolean parseToXml(Resources resources, Writer out) {
+        XmlSerializer serializer = Xml.newSerializer();
+        try {
+            serializer.setOutput(out);
+            //strings.xml do not have the default start declaration
+            //serializer.startDocument("UTF-8", true);
+            serializer.startTag(ns, "resources");
+
+            for (ResourcesString rs : resources) {
+                if (!rs.hasContent())
+                    continue;
+
+                serializer.startTag(ns, "string");
+                serializer.attribute(ns, "name", rs.getId());
+                if (!rs.isTranslatable())
+                    serializer.attribute(ns, "translatable", "false");
+
+                serializer.text(rs.getContent());
+                serializer.endTag(ns, "string");
+            }
+            serializer.endTag(ns, "resources");
+            serializer.flush();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

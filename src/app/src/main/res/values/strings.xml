@@ -27,4 +27,15 @@
     <string name="checking_repo_ok_long">Checking for the owner and repository existence…</string>
     <string name="invalid_repo">The input repository doesn\'t seem valid.</string>
     <string name="translated_string">Translated string</string>
+    <string name="previous">Previous</string>
+    <string name="no_strings_left">There are no more strings left.</string>
+    <string name="save">Save</string>
+    <string name="save_error">Could not save changes.</string>
+    <string name="save_success">strings.xml file saved successfully.</string>
+    <string name="add_locale_to_start">Add a new locale to get started.</string>
+    <string name="enter_locale">Enter locale name</string>
+    <string name="enter_locale_long">Enter the locale name for which the strings.xml file will be created (i.e. \"es\", \"en-UK\"):</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="create_locale_error">Could not create the new locale file.</string>
 </resources>

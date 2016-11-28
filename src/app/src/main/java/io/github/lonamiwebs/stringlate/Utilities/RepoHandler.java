@@ -10,8 +10,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -66,24 +66,43 @@ public class RepoHandler {
             return new File(mRoot, "strings-"+locale+".xml");
     }
 
-    public Resources loadResources(String locale) throws FileNotFoundException {
-        InputStream is = new FileInputStream(getResourcesFile(locale));
+    public boolean hasLocale(String locale) { return getResourcesFile(locale).isFile(); }
+
+    public Resources loadResources(String locale) {
+        InputStream is = null;
         try {
+            is = new FileInputStream(getResourcesFile(locale));
             ResourcesParser parser = new ResourcesParser();
-            return parser.parse(is);
+            return parser.parseFromXml(is);
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
         } finally {
             try {
-                is.close();
+                if (is != null)
+                    is.close();
             } catch (IOException e) { }
         }
         return null;
     }
 
+    public boolean saveResources(Resources resources, String locale) {
+        ResourcesParser parser = new ResourcesParser();
+        try {
+            File file = getResourcesFile(locale);
+            if (parser.parseToXml(resources, new FileWriter(file)))
+                return true;
+
+            if (file.isFile())
+                file.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     //endregion
 
-    //region Loading available locale files
+    //region Loading and creating locale files
 
     private void loadLocales() {
         mLocales.clear();
@@ -95,6 +114,17 @@ public class RepoHandler {
                     mLocales.add(m.group(1) == null ? DEFAULT_LOCALE : m.group(1));
             }
         }
+    }
+
+    public boolean createLocale(String locale) {
+        if (hasLocale(locale))
+            return true;
+
+        if (!saveResources(new Resources(), locale))
+            return false;
+
+        mLocales.add(locale);
+        return true;
     }
 
     public ArrayList<String> getLocales() {

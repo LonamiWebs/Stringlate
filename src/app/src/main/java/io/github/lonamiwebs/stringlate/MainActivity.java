@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 "(?:https?://github\\.com/|git@github.com:)([\\w-]+)/([\\w-]+)(?:/|\\.git)?");
     }
 
-    public void onContinueClick(final View v) {
+    public void onNextClick(final View v) {
         String owner, repository;
         String url;
 
