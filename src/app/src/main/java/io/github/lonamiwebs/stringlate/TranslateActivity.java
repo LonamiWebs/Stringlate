@@ -262,8 +262,10 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Deletes the currently selected string ID, this needs no warning
     private void deleteString() {
-        if (!ensureLocaleSelected())
+        if (!isLocaleSelected()) {
+            showNoLocaleSelected();
             return;
+        }
 
         mSelectedLocaleResources.deleteId((String)mStringIdSpinner.getSelectedItem());
         mTranslatedStringEditText.setText("");
@@ -272,6 +274,10 @@ public class TranslateActivity extends AppCompatActivity {
     // Prompts the user whether they want to delete the selected locale or not
     // This does need warning since deleting a whole locale is a big deal
     private void promptDeleteLocale() {
+        if (mLocaleSpinner.getCount() == 0) {
+            Toast.makeText(this, R.string.delete_no_locale_bad_joke, Toast.LENGTH_LONG).show();
+            return;
+        }
         new AlertDialog.Builder(this)
                 .setTitle(R.string.sure_question)
                 .setMessage(getString(R.string.delete_locale_confirm_long, mSelectedLocale))
@@ -281,6 +287,10 @@ public class TranslateActivity extends AppCompatActivity {
                         mRepo.deleteLocale(mSelectedLocale);
                         loadLocalesSpinner();
                         checkTranslationVisibility();
+
+                        // We need to clear the selected locale if it's now empty
+                        if (mLocaleSpinner.getCount() == 0)
+                            setCurrentLocale(null);
                     }
                 })
                 .setNegativeButton(getString(R.string.cancel), null)
@@ -364,12 +374,15 @@ public class TranslateActivity extends AppCompatActivity {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
             final String selectedLocale = (String)parent.getItemAtPosition(i);
-            checkResourcesSaved(new Callback<Boolean>() {
-                @Override
-                public void onCallback(Boolean saved) {
-                    setCurrentLocale(selectedLocale);
-                }
-            });
+            if (isLocaleSelected()) {
+                checkResourcesSaved(new Callback<Boolean>() {
+                    @Override
+                    public void onCallback(Boolean saved) {
+                        setCurrentLocale(selectedLocale);
+                    }
+                });
+            }
+            // If it's the first time we're selecting a locale, we don't care unsaved changes
         }
         @Override
         public void onNothingSelected(AdapterView<?> parent) { }
@@ -406,7 +419,7 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     private void loadStringIDsSpinner() {
-        if (!ensureLocaleSelected())
+        if (!isLocaleSelected())
             return;
 
         ArrayList<String> spinnerArray = new ArrayList<>();
@@ -435,10 +448,15 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Sets the current locale also updating the spinner selection
     private void setCurrentLocale(String locale) {
-        mLocaleSpinner.setSelection(getItemIndex(mLocaleSpinner, locale));
-
         mSelectedLocale = locale;
-        mSelectedLocaleResources = mRepo.loadResources(mSelectedLocale);
+
+        if (locale != null) {
+            mLocaleSpinner.setSelection(getItemIndex(mLocaleSpinner, locale));
+            mSelectedLocaleResources = mRepo.loadResources(locale);
+        } else {
+            mSelectedLocaleResources = null;
+        }
+
         checkTranslationVisibility();
         loadStringIDsSpinner();
     }
@@ -461,7 +479,7 @@ public class TranslateActivity extends AppCompatActivity {
     // Checks whether the current resources are saved or not
     // If they're not, the user is asked to save them first
     void checkResourcesSaved(final Callback<Boolean> callback) {
-        if (!ensureLocaleSelected()) {
+        if (!isLocaleSelected()) {
             callback.onCallback(false);
             return;
         }
@@ -495,13 +513,14 @@ public class TranslateActivity extends AppCompatActivity {
         }
     }
 
-    // Ensures that there is at least a locale selected, otherwise shows a warning
-    boolean ensureLocaleSelected() {
-        if (mSelectedLocaleResources == null) {
-            Toast.makeText(this, R.string.no_locale_selected, Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
+    // Ensures that there is at least a locale selected
+    boolean isLocaleSelected() {
+        return mSelectedLocaleResources != null;
+    }
+
+    // Shows the "No locale selected" warning
+    void showNoLocaleSelected() {
+        Toast.makeText(this, R.string.no_locale_selected, Toast.LENGTH_SHORT).show();
     }
 
     boolean isValidLocale(String locale) {
@@ -522,9 +541,6 @@ public class TranslateActivity extends AppCompatActivity {
     // Increments the mStringIdSpinner index by delta i (di),
     // clamping the value if it's less than 0 or value ≥ IDs count.
     private void incrementStringIdIndex(int di) {
-        if (!ensureLocaleSelected())
-            return;
-
         int i = mStringIdSpinner.getSelectedItemPosition() + di;
         if (i > -1) {
             if (i < mStringIdSpinner.getCount()) {

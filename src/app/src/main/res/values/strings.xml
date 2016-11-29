@@ -55,4 +55,5 @@
     <string name="export_share">Share generated xml</string>
     <string name="save_resources_question">Save resources?</string>
     <string name="save_resources_question_long">The resources for the current locale have been modified, but the changes weren\'t saved. Do you want to save them now?</string>
+    <string name="delete_no_locale_bad_joke">You first need to have a locale before you can remove its existence from this planet ;-)</string>
 </resources>
