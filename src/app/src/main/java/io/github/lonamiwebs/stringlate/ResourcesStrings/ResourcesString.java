@@ -1,14 +1,12 @@
 package io.github.lonamiwebs.stringlate.ResourcesStrings;
 
-public class ResourcesString {
+public class ResourcesString implements Comparable<ResourcesString> {
 
     //region Members
 
     private final String mId;
     private String mContent;
     private final boolean mTranslatable;
-
-    private boolean mSavedChanges;
 
     //endregion
 
@@ -23,7 +21,6 @@ public class ResourcesString {
         mId = id.trim();
         mContent = content.trim();
         mTranslatable = translatable;
-        mSavedChanges = true;
     }
 
     //endregion
@@ -43,6 +40,19 @@ public class ResourcesString {
         return mTranslatable;
     }
 
+    @Override
+    public int hashCode() {
+        return mId.hashCode();
+    }
+
+    @Override
+    public int compareTo(ResourcesString resourcesString) {
+        if (resourcesString == null)
+            return -1;
+
+        return mId.compareTo(resourcesString.mId);
+    }
+
     //endregion
 
     //region Setters
@@ -52,7 +62,6 @@ public class ResourcesString {
         content = content.trim();
         if (!mContent.equals(content)) {
             mContent = content;
-            mSavedChanges = false;
             return true;
         } else {
             return false;

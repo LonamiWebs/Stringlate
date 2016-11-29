@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,6 +38,7 @@ public class TranslateActivity extends AppCompatActivity {
     private Spinner mStringIdSpinner;
 
     private String mSelectedLocale;
+    private String mSelectedResourceId;
     private boolean mShowTranslated;
 
     private Resources mDefaultResources;
@@ -54,6 +57,7 @@ public class TranslateActivity extends AppCompatActivity {
 
         mOriginalStringEditText = (EditText)findViewById(R.id.originalStringEditText);
         mTranslatedStringEditText = (EditText)findViewById(R.id.translatedStringEditText);
+        mTranslatedStringEditText.addTextChangedListener(onTranslationChanged);
 
         mLocaleSpinner = (Spinner)findViewById(R.id.localeSpinner);
         mStringIdSpinner = (Spinner)findViewById(R.id.stringIdSpinner);
@@ -335,13 +339,37 @@ public class TranslateActivity extends AppCompatActivity {
 
     //endregion
 
+    //region EditText events
+
+    private TextWatcher onTranslationChanged = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            String content = mTranslatedStringEditText.getText().toString();
+            mSelectedLocaleResources.setContent(mSelectedResourceId, content);
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) { }
+    };
+
+    //endregion
+
     //region Spinner events
 
     AdapterView.OnItemSelectedListener
             eOnLocaleSelected = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
-            setCurrentLocale((String)parent.getItemAtPosition(i));
+            final String selectedLocale = (String)parent.getItemAtPosition(i);
+            checkResourcesSaved(new Callback<Boolean>() {
+                @Override
+                public void onCallback(Boolean saved) {
+                    setCurrentLocale(selectedLocale);
+                }
+            });
         }
         @Override
         public void onNothingSelected(AdapterView<?> parent) { }
@@ -351,9 +379,7 @@ public class TranslateActivity extends AppCompatActivity {
             eOnStringIdSelected = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
-            String id = (String)parent.getItemAtPosition(i);
-            mOriginalStringEditText.setText(mDefaultResources.getContent(id));
-            mTranslatedStringEditText.setText(mSelectedLocaleResources.getContent(id));
+            updateSelectedResourceId((String)parent.getItemAtPosition(i));
         }
 
         @Override
@@ -502,15 +528,19 @@ public class TranslateActivity extends AppCompatActivity {
         int i = mStringIdSpinner.getSelectedItemPosition() + di;
         if (i > -1) {
             if (i < mStringIdSpinner.getCount()) {
-                String resourceId = (String)mStringIdSpinner.getSelectedItem();
-                String content = mTranslatedStringEditText.getText().toString();
-                mSelectedLocaleResources.setContent(resourceId, content);
-
                 mStringIdSpinner.setSelection(i);
+                updateSelectedResourceId((String)mStringIdSpinner.getSelectedItem());
             } else {
                 Toast.makeText(this, R.string.no_strings_left, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    // Updates the selected resource ID and also the EditTexts for its contents
+    private void updateSelectedResourceId(String resourceId) {
+        mSelectedResourceId = resourceId;
+        mOriginalStringEditText.setText(mDefaultResources.getContent(resourceId));
+        mTranslatedStringEditText.setText(mSelectedLocaleResources.getContent(resourceId));
     }
 
     // Sadly, the spinners don't provide any method to retrieve

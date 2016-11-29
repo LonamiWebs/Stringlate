@@ -9,7 +9,7 @@ import org.xmlpull.v1.XmlSerializer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 // Class used to parse strings.xml files into Resources objects
 public class ResourcesParser {
@@ -18,7 +18,7 @@ public class ResourcesParser {
 
     //region Xml -> Resources
 
-    public static ArrayList<ResourcesString> parseFromXml(InputStream in)
+    public static HashSet<ResourcesString> parseFromXml(InputStream in)
             throws XmlPullParserException, IOException {
 
         try {
@@ -35,10 +35,10 @@ public class ResourcesParser {
     }
 
     // Reads the <resources> tag and returns a list of its <string> tags
-    private static ArrayList<ResourcesString> readResources(XmlPullParser parser)
+    private static HashSet<ResourcesString> readResources(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
-        ArrayList<ResourcesString> strings = new ArrayList<>();
+        HashSet<ResourcesString> strings = new HashSet<>();
 
         parser.require(XmlPullParser.START_TAG, ns, "resources");
         while (parser.next() != XmlPullParser.END_TAG) {

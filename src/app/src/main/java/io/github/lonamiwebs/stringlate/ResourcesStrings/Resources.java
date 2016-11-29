@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 
 // Class to manage multiple ResourcesString,
@@ -18,7 +20,7 @@ public class Resources implements Iterable<ResourcesString> {
     //region Members
 
     private File mFile; // Keep track of the original file to be able to save()
-    private ArrayList<ResourcesString> mStrings;
+    private HashSet<ResourcesString> mStrings;
 
     // Internally keep track if the changes are saved not to look
     // over all the resources strings individually
@@ -30,7 +32,7 @@ public class Resources implements Iterable<ResourcesString> {
 
     public static Resources fromFile(File file) {
         if (!file.isFile())
-            return new Resources(file, new ArrayList<ResourcesString>());
+            return new Resources(file, new HashSet<ResourcesString>());
 
         InputStream is = null;
         try {
@@ -47,10 +49,10 @@ public class Resources implements Iterable<ResourcesString> {
         return null;
     }
 
-    private Resources(File file, ArrayList<ResourcesString> strings) {
+    private Resources(File file, HashSet<ResourcesString> strings) {
         mFile = file;
         mStrings = strings;
-        mSavedChanges = true;
+        mSavedChanges = file.isFile();
     }
 
     //endregion
@@ -92,7 +94,9 @@ public class Resources implements Iterable<ResourcesString> {
                 break;
             }
 
-        if (!found) {
+        // We don't want to set an empty string unless we're
+        // clearing an existing one since it's unnecessary
+        if (!found && !content.isEmpty()) {
             mStrings.add(new ResourcesString(resourceId, content));
             mSavedChanges = false;
         }
@@ -136,7 +140,9 @@ public class Resources implements Iterable<ResourcesString> {
 
     @Override
     public Iterator<ResourcesString> iterator() {
-        return mStrings.iterator();
+        ArrayList<ResourcesString> strings = new ArrayList<>(mStrings);
+        Collections.sort(strings);
+        return strings.iterator();
     }
 
     //endregion
