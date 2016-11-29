@@ -51,6 +51,8 @@ public class RepoHandler {
     private static final String BASE_DIR = "repos";
     private static final String RAW_FILE_URL = "https://raw.githubusercontent.com/%s/%s/master/%s";
 
+    private static final String GITHUB_REPO_URL = "https://github.com/%s/%s";
+
     public static final String DEFAULT_LOCALE = "default";
 
     //endregion
@@ -277,6 +279,48 @@ public class RepoHandler {
     }
 
     //endregion
+
+    //endregion
+
+    //region Static repository listing
+
+    // Lists all the owners under the base directory
+    public static ArrayList<String> listOwners(Context context) {
+        ArrayList<String> owners = new ArrayList<>();
+
+        File root = new File(context.getFilesDir(), BASE_DIR);
+        if (root.isDirectory())
+            for (File f : root.listFiles())
+                if (f.isDirectory())
+                    owners.add(f.getName());
+
+        return owners;
+    }
+
+    // Lists all the repositories of the given owner
+    public static ArrayList<String> listRepositories(Context context, String owner) {
+        ArrayList<String> repositories = new ArrayList<>();
+
+        File root = new File(context.getFilesDir(), BASE_DIR+"/"+owner);
+        if (root.isDirectory())
+            for (File f : root.listFiles())
+                if (f.isDirectory())
+                    repositories.add(f.getName());
+
+        return repositories;
+    }
+
+    // Lists all the repositories of all the owners under the base directory
+    // and returns a list to their URLs at GitHub
+    public static ArrayList<String> listRepositories(Context context) {
+        ArrayList<String> repositories = new ArrayList<>();
+        for (String owner : listOwners(context)) {
+            for (String repository : listRepositories(context, owner)) {
+                repositories.add(String.format(GITHUB_REPO_URL, owner, repository));
+            }
+        }
+        return repositories;
+    }
 
     //endregion
 

@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <EditText
+        <AutoCompleteTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/owner_hint"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:text="@string/slash" />
 
-        <EditText
+        <AutoCompleteTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/repository_hint"
@@ -48,7 +48,7 @@
         android:textAlignment="center"
         android:text="@string/or" />
 
-    <EditText
+    <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/github_repo_url_hint"

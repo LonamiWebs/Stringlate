@@ -4,8 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import java.util.regex.Matcher;
@@ -23,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
     public final static String EXTRA_REPO_OWNER = "io.github.lonamiwebs.stringlate.REPO_OWNER";
     public final static String EXTRA_REPO_NAME = "io.github.lonamiwebs.stringlate.REPO_NAME";
 
-    private EditText mOwnerEditText, mRepositoryEditText;
-    private EditText mUrlEditText;
+    private AutoCompleteTextView mOwnerEditText, mRepositoryEditText;
+    private AutoCompleteTextView mUrlEditText;
 
     private Pattern mOwnerProjectPattern; // Match user and repository name from a GitHub url
 
@@ -37,13 +40,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mOwnerEditText = (EditText)findViewById(R.id.ownerEditText);
-        mRepositoryEditText = (EditText)findViewById(R.id.repositoryEditText);
+        mOwnerEditText = (AutoCompleteTextView)findViewById(R.id.ownerEditText);
+        mRepositoryEditText = (AutoCompleteTextView)findViewById(R.id.repositoryEditText);
+        mOwnerEditText.addTextChangedListener(onOwnerChanged);
 
-        mUrlEditText = (EditText)findViewById(R.id.urlEditText);
+        mUrlEditText = (AutoCompleteTextView)findViewById(R.id.urlEditText);
 
         mOwnerProjectPattern = Pattern.compile(
                 "(?:https?://github\\.com/|git@github.com:)([\\w-]+)/([\\w-]+)(?:/|\\.git)?");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadOwnerAutocomplete();
+        loadUrlAutocomplete();
     }
 
     //endregion
@@ -128,6 +139,45 @@ public class MainActivity extends AppCompatActivity {
                     launchTranslateActivity(owner, repository);
             }
         });
+    }
+
+    //endregion
+
+    //region Local repository handling
+
+    private TextWatcher onOwnerChanged = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            loadRepositoryAutocomplete();
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) { }
+    };
+
+    private void loadOwnerAutocomplete() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, RepoHandler.listOwners(this));
+
+        mOwnerEditText.setAdapter(adapter);
+    }
+
+    private void loadRepositoryAutocomplete() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line,
+                RepoHandler.listRepositories(this, mOwnerEditText.getText().toString()));
+
+        mRepositoryEditText.setAdapter(adapter);
+    }
+
+    private void loadUrlAutocomplete() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, RepoHandler.listRepositories(this));
+
+        mUrlEditText.setAdapter(adapter);
     }
 
     //endregion
