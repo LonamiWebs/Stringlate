@@ -164,16 +164,19 @@ public class RepoHandler {
                 mContext.getString(R.string.scanning_repository),
                 mContext.getString(R.string.scanning_repository_long));
 
-        GitHub.gGetTopTree(mOwner, mRepo, true, new Callback<Object>() {
+        // We want to find files on the owner/repo repository
+        // containing 'resources' ('<resources>') on them and the filename
+        // being 'strings.xml'. Some day Java will have named parameters...
+        GitHub.gFindFiles(mOwner, mRepo, "resources", "strings.xml", new Callback<Object>() {
             @Override
             public void onCallback(Object o) {
                 ArrayList<String> remotePaths = new ArrayList<>();
                 ArrayList<String> locales = new ArrayList<>();
                 try {
                     JSONObject json = (JSONObject) o;
-                    JSONArray tree = json.getJSONArray("tree");
-                    for (int i = 0; i < tree.length(); i++) {
-                        JSONObject item = tree.getJSONObject(i);
+                    JSONArray items = json.getJSONArray("items");
+                    for (int i = 0; i < items.length(); i++) {
+                        JSONObject item = items.getJSONObject(i);
                         Matcher m = mValuesLocalePattern.matcher(item.getString("path"));
                         if (m.find()) {
                             remotePaths.add(item.getString("path"));

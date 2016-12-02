@@ -381,8 +381,11 @@ public class TranslateActivity extends AppCompatActivity {
                         setCurrentLocale(selectedLocale);
                     }
                 });
+            } else {
+                // If it's the first time we're selecting a locale,
+                // we don't care unsaved changes (because there isn't any)
+                setCurrentLocale(selectedLocale);
             }
-            // If it's the first time we're selecting a locale, we don't care unsaved changes
         }
         @Override
         public void onNothingSelected(AdapterView<?> parent) { }
@@ -433,6 +436,10 @@ public class TranslateActivity extends AppCompatActivity {
             for (ResourcesString rs : mDefaultResources)
                 if (!mSelectedLocaleResources.contains(rs.getId()) && rs.isTranslatable())
                     spinnerArray.add(rs.getId());
+
+            // Show a warning so the user (or developer) knows that things are working
+            if (spinnerArray.size() == 0)
+                Toast.makeText(this, R.string.no_strings_left, Toast.LENGTH_SHORT).show();
         }
 
         ArrayAdapter<String> idAdapter = new ArrayAdapter<>(

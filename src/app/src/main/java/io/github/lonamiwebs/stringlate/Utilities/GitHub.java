@@ -1,8 +1,5 @@
 package io.github.lonamiwebs.stringlate.Utilities;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import io.github.lonamiwebs.stringlate.Interfaces.Callback;
 import io.github.lonamiwebs.stringlate.Tasks.DownloadJSONTask;
 
@@ -43,34 +40,18 @@ public class GitHub {
         });
     }
 
-    // Retrieves the (possibly truncated) tree of owner/repo
-    public static void gGetTree(String owner, String repo, String sha, boolean recursive,
-                         Callback<Object> callback) {
-        gCall(String.format(
-                "repos/%s/%s/git/trees/%s?recursive=%s",
-                owner, repo, sha, recursive ? "1" : "0"), callback);
-    }
-
-    // Retrieves the (possibly truncated) top tree of owner/repo
-    public static void gGetTopTree(final String owner, final String repo, final boolean recursive,
-                            final Callback<Object> callback) {
-        // TODO Handle truncated trees on large repositories
-        gCall(String.format("repos/%s/%s/branches/master", owner, repo),
-                new Callback<Object>() {
-                    @Override
-                    public void onCallback(Object jsonObject) {
-                        try {
-                            JSONObject json;
-                            json = (JSONObject) jsonObject;
-                            json = json.getJSONObject("commit");
-                            json = json.getJSONObject("commit");
-                            json = json.getJSONObject("tree");
-                            String sha = json.getString("sha");
-
-                            gGetTree(owner, repo, sha, recursive, callback);
-                        } catch (JSONException e) { e.printStackTrace(); }
-                    }
-                });
+    // Looks for 'query' in 'owner/repo' repository's files and
+    // returns a JSON with the files for which 'filename' also matches
+    public static void gFindFiles(String owner, String repo,
+                                  String query, String filename,
+                                  final Callback<Object> callback) {
+        gCall(String.format("search/code?q=%s+repo:%s/%s+filename:%s",
+                query, owner, repo, filename), new Callback<Object>() {
+            @Override
+            public void onCallback(Object object) {
+                callback.onCallback(object);
+            }
+        });
     }
 
     //endregion
