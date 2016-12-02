@@ -2,6 +2,7 @@ package io.github.lonamiwebs.stringlate;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -51,6 +52,15 @@ public class MainActivity extends AppCompatActivity {
 
         mOwnerProjectPattern = Pattern.compile(
                 "(?:https?://github\\.com/|git@github.com:)([\\w-]+)/([\\w-]+)(?:/|\\.git)?");
+
+        // Check if we opened the application because a GitHub link was clicked
+        if(getIntent().getData() != null){
+            Uri data = getIntent().getData();
+            String scheme = data.getScheme();
+            String fullPath = data.getEncodedSchemeSpecificPart();
+
+            mUrlEditText.setText(scheme+":"+fullPath);
+        }
     }
 
     @Override
