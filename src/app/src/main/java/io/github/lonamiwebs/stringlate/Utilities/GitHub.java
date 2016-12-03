@@ -1,5 +1,8 @@
 package io.github.lonamiwebs.stringlate.Utilities;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import io.github.lonamiwebs.stringlate.Interfaces.Callback;
 import io.github.lonamiwebs.stringlate.Tasks.DownloadJSONTask;
 
@@ -8,15 +11,29 @@ public class GitHub {
 
     //region Members
 
-    static final String API_URL = "https://api.github.com/";
+    private static final String API_URL = "https://api.github.com/";
 
     //endregion
 
     //region Private methods
 
-    // Calls the given function and invokes callback() as result
-    private static void gCall(final String call, final Callback<Object> callback) {
+    // Calls the given function with GET method and invokes callback() as result
+    private static void gCall(final String call,
+                              final Callback<Object> callback) {
         new DownloadJSONTask() {
+            @Override
+            protected void onPostExecute(Object jsonObject) {
+                callback.onCallback(jsonObject);
+                super.onPostExecute(jsonObject);
+            }
+        }.execute(API_URL+call);
+    }
+
+    // Calls the given function with POST method and the given
+    // parameters and invokes callback() as result
+    private static void gCall(final String call, String data,
+                              final Callback<Object> callback) {
+        new DownloadJSONTask("POST", data) {
             @Override
             protected void onPostExecute(Object jsonObject) {
                 callback.onCallback(jsonObject);
@@ -46,12 +63,32 @@ public class GitHub {
                                   String query, String filename,
                                   final Callback<Object> callback) {
         gCall(String.format("search/code?q=%s+repo:%s/%s+filename:%s",
-                query, owner, repo, filename), new Callback<Object>() {
-            @Override
-            public void onCallback(Object object) {
-                callback.onCallback(object);
-            }
-        });
+                query, owner, repo, filename), callback);
+    }
+
+    public static void gCreateGist(boolean isPublic, String description,
+                                   String filename, String content,
+                                   final Callback<Object> callback) {
+        try {
+            JSONObject params = new JSONObject();
+
+            params.put("description", description);
+            params.put("public", isPublic);
+
+            JSONObject fileObject = new JSONObject();
+            fileObject.put("content", content);
+
+            JSONObject filesObject = new JSONObject();
+            filesObject.put(filename, fileObject);
+
+            params.put("files", filesObject);
+
+            gCall("gists", params.toString(), callback);
+        }
+        catch (JSONException e) {
+            // Won't happen
+            e.printStackTrace();
+        }
     }
 
     //endregion
