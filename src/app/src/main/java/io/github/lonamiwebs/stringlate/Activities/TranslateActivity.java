@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate;
+package io.github.lonamiwebs.stringlate.Activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.Interfaces.Callback;
 import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.ResourcesStrings.Resources;
 import io.github.lonamiwebs.stringlate.ResourcesStrings.ResourcesString;
 import io.github.lonamiwebs.stringlate.Utilities.RepoHandler;

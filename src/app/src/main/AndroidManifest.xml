@@ -11,24 +11,27 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="https"
                     android:host="github.com"
-                    android:pathPattern="/.*/.*/"/>
+                    android:pathPattern="/.*/.*/"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name=".TranslateActivity" />
-        <activity android:name=".DiscoverActivity"></activity>
+        <activity android:name=".Activities.TranslateActivity" />
+        <activity android:name=".Activities.DiscoverActivity" />
+        <activity android:name=".Activities.CreateGistActivity"></activity>
     </application>
 
 </manifest>

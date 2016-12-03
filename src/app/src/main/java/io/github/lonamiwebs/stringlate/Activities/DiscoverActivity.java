@@ -1,8 +1,10 @@
-package io.github.lonamiwebs.stringlate;
+package io.github.lonamiwebs.stringlate.Activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import io.github.lonamiwebs.stringlate.R;
 
 public class DiscoverActivity extends AppCompatActivity {
 
