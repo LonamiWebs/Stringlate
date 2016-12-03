@@ -8,7 +8,7 @@ import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Writer;
+import java.io.OutputStream;
 import java.util.HashSet;
 
 // Class used to parse strings.xml files into Resources objects
@@ -101,10 +101,10 @@ public class ResourcesParser {
 
     //region Resources -> Xml
 
-    public static boolean parseToXml(Resources resources, Writer out) {
+    public static boolean parseToXml(Resources resources, OutputStream out) {
         XmlSerializer serializer = Xml.newSerializer();
         try {
-            serializer.setOutput(out);
+            serializer.setOutput(out, "UTF-8");
             //strings.xml do not have the default start declaration
             //serializer.startDocument("UTF-8", true);
             serializer.startTag(ns, "resources");

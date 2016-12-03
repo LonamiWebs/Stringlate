@@ -28,6 +28,9 @@ import io.github.lonamiwebs.stringlate.ResourcesStrings.Resources;
 import io.github.lonamiwebs.stringlate.ResourcesStrings.ResourcesString;
 import io.github.lonamiwebs.stringlate.Utilities.RepoHandler;
 
+import static io.github.lonamiwebs.stringlate.Activities.MainActivity.EXTRA_REPO_NAME;
+import static io.github.lonamiwebs.stringlate.Activities.MainActivity.EXTRA_REPO_OWNER;
+
 public class TranslateActivity extends AppCompatActivity {
 
     //region Members
@@ -46,6 +49,9 @@ public class TranslateActivity extends AppCompatActivity {
     private Resources mSelectedLocaleResources;
 
     private RepoHandler mRepo;
+
+    public static final String EXTRA_XML_CONTENT = "io.github.lonamiwebs.stringlate.XML_CONTENT";
+    public static final String EXTRA_FILENAME = "io.github.lonamiwebs.stringlate.FILENAME";
 
     //endregion
 
@@ -68,8 +74,8 @@ public class TranslateActivity extends AppCompatActivity {
 
         // Retrieve the owner and repository name
         Intent intent = getIntent();
-        String owner = intent.getStringExtra(MainActivity.EXTRA_REPO_OWNER);
-        String repoName = intent.getStringExtra(MainActivity.EXTRA_REPO_NAME);
+        String owner = intent.getStringExtra(EXTRA_REPO_OWNER);
+        String repoName = intent.getStringExtra(EXTRA_REPO_NAME);
 
         mRepo = new RepoHandler(this, owner, repoName);
         setTitle(mRepo.toString());
@@ -239,7 +245,10 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to a GitHub Gist
     private void exportToGist() {
-        Toast.makeText(this, "Not implemented. Sorry about that!", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), CreateGistActivity.class);
+        intent.putExtra(EXTRA_XML_CONTENT, mSelectedLocaleResources.toString());
+        intent.putExtra(EXTRA_FILENAME, mSelectedLocaleResources.getFilename());
+        startActivity(intent);
     }
 
     // Exports the currently selected locale resources to a GitHub Pull Request

@@ -2,12 +2,13 @@ package io.github.lonamiwebs.stringlate.ResourcesStrings;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -75,6 +76,10 @@ public class Resources implements Iterable<ResourcesString> {
         return "";
     }
 
+    public String getFilename() {
+        return mFile.getName();
+    }
+
     public boolean areSaved() {
         return mSavedChanges;
     }
@@ -109,7 +114,7 @@ public class Resources implements Iterable<ResourcesString> {
             return true;
 
         try {
-            if (ResourcesParser.parseToXml(this, new FileWriter(mFile))) {
+            if (ResourcesParser.parseToXml(this, new FileOutputStream(mFile))) {
                 return mSavedChanges = true;
             }
         } catch (IOException e) {
@@ -151,9 +156,9 @@ public class Resources implements Iterable<ResourcesString> {
 
     @Override
     public String toString() {
-        StringWriter writer = new StringWriter();
-        ResourcesParser.parseToXml(this, writer);
-        return writer.toString();
+        OutputStream out = new ByteArrayOutputStream();
+        ResourcesParser.parseToXml(this, out);
+        return out.toString();
     }
 
     //endregion

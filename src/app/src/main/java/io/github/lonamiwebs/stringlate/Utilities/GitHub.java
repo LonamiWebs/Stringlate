@@ -66,13 +66,15 @@ public class GitHub {
                 query, owner, repo, filename), callback);
     }
 
-    public static void gCreateGist(boolean isPublic, String description,
+    public static void gCreateGist(String description, boolean isPublic,
                                    String filename, String content,
                                    final Callback<Object> callback) {
         try {
             JSONObject params = new JSONObject();
 
-            params.put("description", description);
+            if (description != null && !description.isEmpty())
+                params.put("description", description);
+
             params.put("public", isPublic);
 
             JSONObject fileObject = new JSONObject();
