@@ -28,6 +28,7 @@ import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.ResourcesStrings.Resources;
 import io.github.lonamiwebs.stringlate.ResourcesStrings.ResourcesString;
+import io.github.lonamiwebs.stringlate.Utilities.GitHub;
 import io.github.lonamiwebs.stringlate.Utilities.RepoHandler;
 
 import static io.github.lonamiwebs.stringlate.Activities.MainActivity.EXTRA_REPO_NAME;
@@ -176,6 +177,12 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Synchronize our local strings.xml files with the remote GitHub repository
     private void updateStrings() {
+        if (!GitHub.gCanCall()) {
+            Toast.makeText(getApplicationContext(),
+                    R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         final ProgressDialog progress = ProgressDialog.show(this,
                 getString(R.string.loading_ellipsis), null, true);
 

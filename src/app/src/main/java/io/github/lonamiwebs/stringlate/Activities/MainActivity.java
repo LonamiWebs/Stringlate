@@ -140,7 +140,11 @@ public class MainActivity extends AppCompatActivity {
                 getString(R.string.checking_repo_ok),
                 getString(R.string.checking_repo_ok_long), true);
 
-        // TODO It says the repository is invalid when it is valid but there is no internet!
+        if (!GitHub.gCanCall()) {
+            Toast.makeText(getApplicationContext(),
+                    R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
+            return;
+        }
         GitHub.gCheckOwnerRepoOK(owner, repository, new Callback<Boolean>() {
             @Override
             public void onCallback(Boolean ok) {

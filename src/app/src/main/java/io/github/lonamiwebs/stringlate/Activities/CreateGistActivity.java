@@ -78,6 +78,12 @@ public class CreateGistActivity extends AppCompatActivity {
         String filename = mFilenameEditText.getText().toString().trim();
         if (filename.length() == 0) {
             mFilenameEditText.setError(getString(R.string.error_gist_filename_empty));
+            return;
+        }
+        if (!GitHub.gCanCall()) {
+            Toast.makeText(getApplicationContext(),
+                    R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
+            return;
         }
 
         mGistCreationLayout.setVisibility(GONE);

@@ -3,6 +3,8 @@ package io.github.lonamiwebs.stringlate.Utilities;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 import io.github.lonamiwebs.stringlate.Interfaces.Callback;
 import io.github.lonamiwebs.stringlate.Tasks.DownloadJSONTask;
 
@@ -45,6 +47,22 @@ public class GitHub {
     //endregion
 
     //region Public methods
+
+    // Determines whether a call to GitHub can be made or not
+    // This is equivalent to checking if the user is connected to the internet
+
+    public static boolean gCanCall() {
+        // See http://stackoverflow.com/a/27312494/4759433
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            return ipProcess.waitFor() == 0;
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
     // Determines whether the given combination of owner/repo is OK or not
     public static void gCheckOwnerRepoOK(String owner, String repo,
