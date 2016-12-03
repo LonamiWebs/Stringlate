@@ -114,7 +114,7 @@ public class Resources implements Iterable<ResourcesString> {
             return true;
 
         try {
-            if (ResourcesParser.parseToXml(this, new FileOutputStream(mFile))) {
+            if (ResourcesParser.parseToXml(this, new FileOutputStream(mFile), false)) {
                 return mSavedChanges = true;
             }
         } catch (IOException e) {
@@ -156,8 +156,12 @@ public class Resources implements Iterable<ResourcesString> {
 
     @Override
     public String toString() {
+        return toString(false);
+    }
+
+    public String toString(boolean indent) {
         OutputStream out = new ByteArrayOutputStream();
-        ResourcesParser.parseToXml(this, out);
+        ResourcesParser.parseToXml(this, out, indent);
         return out.toString();
     }
 

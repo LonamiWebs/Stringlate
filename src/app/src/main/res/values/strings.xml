@@ -74,4 +74,6 @@
     <string name="gist_url_copied">The Gist Url has been copied to your clipboard.</string>
     <string name="share_gist_url">Share Gist Url</string>
     <string name="post_gist_error">The Gist could not be posted.</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="xml_copied_to_clipboard">The %s file contents have been copied to your clipboard</string>
 </resources>

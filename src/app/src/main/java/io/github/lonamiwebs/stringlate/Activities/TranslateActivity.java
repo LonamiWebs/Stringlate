@@ -1,6 +1,8 @@
 package io.github.lonamiwebs.stringlate.Activities;
 
 import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -130,6 +132,9 @@ public class TranslateActivity extends AppCompatActivity {
             case R.id.exportShare:
                 exportToShare();
                 return true;
+            case R.id.exportCopy:
+                exportToCopy();
+                return true;
 
             // Deleting resources
             case R.id.deleteString:
@@ -246,7 +251,7 @@ public class TranslateActivity extends AppCompatActivity {
     // Exports the currently selected locale resources to a GitHub Gist
     private void exportToGist() {
         Intent intent = new Intent(getApplicationContext(), CreateGistActivity.class);
-        intent.putExtra(EXTRA_XML_CONTENT, mSelectedLocaleResources.toString());
+        intent.putExtra(EXTRA_XML_CONTENT, mSelectedLocaleResources.toString(true));
         intent.putExtra(EXTRA_FILENAME, mSelectedLocaleResources.getFilename());
         startActivity(intent);
     }
@@ -258,12 +263,23 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to a plain text share intent
     private void exportToShare() {
-        String xml = mSelectedLocaleResources.toString();
+        String xml = mSelectedLocaleResources.toString(true);
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, xml);
         startActivity(Intent.createChooser(sharingIntent,
                 getString(R.string.export_share)));
+    }
+
+    // Exports the currently selected locale resources to the primary clipboard
+    private void exportToCopy() {
+        String filename = mSelectedLocaleResources.getFilename();
+        String xml = mSelectedLocaleResources.toString(true);
+
+        ClipboardManager clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText(filename, xml));
+        Toast.makeText(this, getString(R.string.xml_copied_to_clipboard, filename),
+                Toast.LENGTH_SHORT).show();
     }
 
     //endregion

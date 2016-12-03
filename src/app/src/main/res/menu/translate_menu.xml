@@ -24,6 +24,9 @@
 
             <item android:id="@+id/exportShare"
                 android:title="@string/export_share" />
+
+            <item android:id="@+id/exportCopy"
+                android:title="@string/copy_to_clipboard" />
         </menu>
     </item>
 

@@ -101,10 +101,13 @@ public class ResourcesParser {
 
     //region Resources -> Xml
 
-    public static boolean parseToXml(Resources resources, OutputStream out) {
+    public static boolean parseToXml(Resources resources, OutputStream out, boolean indent) {
         XmlSerializer serializer = Xml.newSerializer();
         try {
             serializer.setOutput(out, "UTF-8");
+            if (indent)
+                serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+
             //strings.xml do not have the default start declaration
             //serializer.startDocument("UTF-8", true);
             serializer.startTag(ns, "resources");
