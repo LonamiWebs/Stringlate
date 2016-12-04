@@ -5,7 +5,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -20,6 +24,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -55,6 +62,8 @@ public class TranslateActivity extends AppCompatActivity {
 
     public static final String EXTRA_XML_CONTENT = "io.github.lonamiwebs.stringlate.XML_CONTENT";
     public static final String EXTRA_FILENAME = "io.github.lonamiwebs.stringlate.FILENAME";
+
+    private static final int RESULT_CREATE_FILE = 707; // LOL upside down (arbitrary)!
 
     //endregion
 
@@ -171,6 +180,22 @@ public class TranslateActivity extends AppCompatActivity {
 
     //region UI events
 
+    //region Activity events
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case RESULT_CREATE_FILE:
+                    doExportToSd(data.getData());
+                    break;
+            }
+        }
+    }
+
+    //endregion
+
     //region Menu events
 
     //region Repository synchronizing menu events
@@ -252,7 +277,36 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to the SD card
     private void exportToSd() {
-        Toast.makeText(this, "Not implemented. Sorry about that!", Toast.LENGTH_SHORT).show();
+        String filename = mSelectedLocaleResources.getFilename();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+            intent.setType("text/xml");
+            intent.putExtra(Intent.EXTRA_TITLE, filename);
+            startActivityForResult(intent, RESULT_CREATE_FILE);
+        } else {
+            File output = new File(Environment.getExternalStorageDirectory(),
+                    mSelectedLocaleResources.getFilename());
+            doExportToSd(Uri.fromFile(output));
+        }
+    }
+
+    private void doExportToSd(Uri uri) {
+        try {
+            ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "w");
+            FileOutputStream out = new FileOutputStream(pfd.getFileDescriptor());
+            mSelectedLocaleResources.save(out);
+            Toast.makeText(this, getString(R.string.export_file_success, uri.getPath()),
+                    Toast.LENGTH_SHORT).show();
+
+            out.close();
+            pfd.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, R.string.export_file_failed, Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Exports the currently selected locale resources to a GitHub Gist

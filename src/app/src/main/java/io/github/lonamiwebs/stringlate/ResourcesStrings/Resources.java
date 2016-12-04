@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import static io.github.lonamiwebs.stringlate.ResourcesStrings.ResourcesParser.parseToXml;
+
 // Class to manage multiple ResourcesString,
 // usually parsed from strings.xml files
 public class Resources implements Iterable<ResourcesString> {
@@ -114,9 +116,9 @@ public class Resources implements Iterable<ResourcesString> {
             return true;
 
         try {
-            if (ResourcesParser.parseToXml(this, new FileOutputStream(mFile), false)) {
-                return mSavedChanges = true;
-            }
+            FileOutputStream out = new FileOutputStream(mFile);
+            mSavedChanges = save(out);
+            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -125,6 +127,10 @@ public class Resources implements Iterable<ResourcesString> {
             mFile.delete();
 
         return false;
+    }
+
+    public boolean save(OutputStream out) {
+        return ResourcesParser.parseToXml(this, out, false);
     }
 
     //endregion
@@ -161,7 +167,7 @@ public class Resources implements Iterable<ResourcesString> {
 
     public String toString(boolean indent) {
         OutputStream out = new ByteArrayOutputStream();
-        ResourcesParser.parseToXml(this, out, indent);
+        parseToXml(this, out, indent);
         return out.toString();
     }
 
