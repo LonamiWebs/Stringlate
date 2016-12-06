@@ -11,14 +11,10 @@
     tools:context="io.github.lonamiwebs.stringlate.Activities.DiscoverActivity"
     android:orientation="vertical">
 
-    <TextView
-        android:text="Under /Discover you will be able to sneak the applications under F-Droid's main repository and easily check if they have strings.xml for you to translate. You will also be able to specify what language you wish to translate to, so you can ignore the applications which already have your language.\n\nAt the moment, this section has no functionality, come back soon!"
+    <ListView
+        android:id="@+id/packageListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
 
-    <Button
-        android:text="Might come back. No promises"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onExitClick"/>
+    </ListView>
 </LinearLayout>
