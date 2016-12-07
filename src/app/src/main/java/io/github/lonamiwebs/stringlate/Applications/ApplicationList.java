@@ -4,24 +4,28 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.SimpleAdapter;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.Utilities.FileDownloader;
 import io.github.lonamiwebs.stringlate.Utilities.FileExtractor;
 
-public class ApplicationList {
+public class ApplicationList implements Iterable<Application> {
 
     //region Members
 
     private final static String FDROID_REPO_URL = "https://f-droid.org/repo";
     private final static String FDROID_INDEX_URL = FDROID_REPO_URL+"/index.jar";
-
-    // https://f-droid.org/repo/icons-320/io.gresse.hugo.anecdote.19.png
 
     private File mRoot;
     private Context mContext;
@@ -63,6 +67,26 @@ public class ApplicationList {
     //endregion
 
     public void syncRepo(final ProgressUpdateCallback callback) {
+        final AsyncTask<Void, Void, Void> step3 = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                callback.onProgressUpdate("Loading and minimizing strings.xml file...", "Wait plz.");
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                loadIndexXml(); // Loses not-required information
+                saveIndexXml(); // Thus minimizes the file
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                callback.onProgressFinished("Done", true);
+            }
+        };
         final AsyncTask<Void, Void, Void> step2 = new AsyncTask<Void, Void, Void>() {
             @Override
             protected void onPreExecute() {
@@ -79,8 +103,7 @@ public class ApplicationList {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                // step3.execute();
-                callback.onProgressFinished("Done", true);
+                step3.execute();
             }
         };
         final AsyncTask<Void, Void, Void> step1 = new AsyncTask<Void, Void, Void>() {
@@ -116,9 +139,24 @@ public class ApplicationList {
         FileExtractor.unpackZip(getIndexFile("jar"), mRoot, false);
     }
 
-    // Step 3: Minimize extracted index.xml
-    private void minimizeIndexXml() {
-
+    // Step 3a: Load the ApplicationList from the index.xml
+    private void loadIndexXml() {
+        try {
+            mApplications = ApplicationListParser
+                    .parseFromXml(new FileInputStream(getIndexFile("xml")));
+        } catch (IOException | XmlPullParserException e) {
+            // Won't happen
+            e.printStackTrace();
+        }
+    }
+    // Step 3b: Save a (minimized) version of the index.xml
+    private void saveIndexXml() {
+        try {
+            ApplicationListParser.parseToXml(this,
+                    new FileOutputStream(getIndexFile("xml")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private File getIndexFile(String extension) {
@@ -148,5 +186,10 @@ public class ApplicationList {
             return "/icons-120/";
 
         return FALLBACK_ICONS_DIR;
+    }
+
+    @Override
+    public Iterator<Application> iterator() {
+        return mApplications.iterator();
     }
 }

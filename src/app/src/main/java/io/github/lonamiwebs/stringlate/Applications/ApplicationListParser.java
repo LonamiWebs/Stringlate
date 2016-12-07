@@ -4,9 +4,11 @@ import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -60,7 +62,7 @@ public class ApplicationListParser {
             String name = parser.getName();
             if (name.equals("application")) {
                 Application app = readApplication(parser);
-                if (app.mSourceCodeUrl.startsWith(HTTPS_GITHUB))
+                if (app.getSourceCodeUrl().startsWith(HTTPS_GITHUB))
                     apps.add(app);
             }
             else
@@ -74,7 +76,7 @@ public class ApplicationListParser {
             throws XmlPullParserException, IOException {
 
         String packageName, lastUpdated, name, description, iconName, sourceCodeUrl;
-        packageName = lastUpdated = name = description = iconName = sourceCodeUrl = null;
+        packageName = lastUpdated = name = description = iconName = sourceCodeUrl = "";
 
         parser.require(XmlPullParser.START_TAG, ns, "application");
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -133,6 +135,44 @@ public class ApplicationListParser {
                 case XmlPullParser.START_TAG: ++depth; break;
             }
         }
+    }
+
+    //endregion
+
+    //region ApplicationList -> Xml
+
+    public static boolean parseToXml(ApplicationList applications, OutputStream out) {
+        XmlSerializer serializer = Xml.newSerializer();
+        try {
+            serializer.setOutput(out, "UTF-8");
+            serializer.startTag(ns, "fdroid");
+
+            for (Application app : applications) {
+                serializer.startTag(ns, "application");
+
+                writeTag(serializer, ID, app.getPackageName());
+                writeTag(serializer, LAST_UPDATED, app.getLastUpdatedDateString());
+                writeTag(serializer, NAME, app.getName());
+                writeTag(serializer, DESCRIPTION, app.getDescription());
+                writeTag(serializer, ICON, app.getIconName());
+                writeTag(serializer, SOURCE_URL, app.getSourceCodeUrl());
+
+                serializer.endTag(ns, "application");
+            }
+            serializer.endTag(ns, "fdroid");
+            serializer.flush();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private static void writeTag(XmlSerializer serializer, String tag, String content)
+            throws IOException {
+        serializer.startTag(ns, tag);
+        serializer.text(content);
+        serializer.endTag(ns, tag);
     }
 
     //endregion

@@ -15,18 +15,18 @@ public class Application {
     private static final SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
-    public static final String ICON = "icon";
-    public static final String NAME = "name";
-    public static final String DESCRIPTION = "desc";
+    static final String ICON = "icon";
+    static final String NAME = "name";
+    static final String DESCRIPTION = "desc";
 
-    int mIcon;
+    private int mIcon;
 
-    Date mLastUpdated;
-    String mPackageName;
-    String mName;
-    String mDescription;
-    String mIconName;
-    String mSourceCodeUrl;
+    private Date mLastUpdated;
+    private String mPackageName;
+    private String mName;
+    private String mDescription;
+    private String mIconName;
+    private String mSourceCodeUrl;
 
     //endregion
 
@@ -63,8 +63,28 @@ public class Application {
         return result;
     }
 
+    public String getPackageName() {
+        return mPackageName;
+    }
+
     public String getLastUpdatedDateString() {
         return DATE_FORMAT.format(mLastUpdated);
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public String getDescription() {
+        return mDescription;
+    }
+
+    public String getIconName() {
+        return mIconName;
+    }
+
+    public String getSourceCodeUrl() {
+        return mSourceCodeUrl;
     }
 
     @Override
