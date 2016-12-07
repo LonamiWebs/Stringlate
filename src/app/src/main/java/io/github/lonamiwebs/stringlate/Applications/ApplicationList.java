@@ -1,37 +1,47 @@
 package io.github.lonamiwebs.stringlate.Applications;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.widget.SimpleAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
+import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.Utilities.FileDownloader;
+import io.github.lonamiwebs.stringlate.Utilities.FileExtractor;
 
 public class ApplicationList {
 
     //region Members
 
-    private final static String FDROID_REPO_URL = "https://f-droid.org/repo/index.jar";
+    private final static String FDROID_REPO_URL = "https://f-droid.org/repo";
+    private final static String FDROID_INDEX_URL = FDROID_REPO_URL+"/index.jar";
+
+    // https://f-droid.org/repo/icons-320/io.gresse.hugo.anecdote.19.png
 
     private File mRoot;
     private Context mContext;
 
+    private String mIconBaseUrl;
+
     private static final String BASE_DIR = "index";
 
-    private final ArrayList<Application> mApplications;
+    private HashSet<Application> mApplications;
 
     //endregion
 
     //region Initialization
 
     public ApplicationList(Context context) {
-        mApplications = new ArrayList<>();
+        mApplications = new HashSet<>();
         mContext = context;
 
         mRoot = new File(mContext.getFilesDir(), BASE_DIR);
+        mIconBaseUrl = FDROID_REPO_URL+getIconDirectory();
     }
 
     //endregion
@@ -52,15 +62,91 @@ public class ApplicationList {
 
     //endregion
 
-    public void syncRepo() {
-        downloadIndex();
+    public void syncRepo(final ProgressUpdateCallback callback) {
+        final AsyncTask<Void, Void, Void> step2 = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                callback.onProgressUpdate("Extracting index.xml from index.jar...", "Wait plz.");
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                extractIndexXml();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                // step3.execute();
+                callback.onProgressFinished("Done", true);
+            }
+        };
+        final AsyncTask<Void, Void, Void> step1 = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                callback.onProgressUpdate("Downloading index.jar...", "Wait plz.");
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                downloadIndexJar();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                step2.execute();
+            }
+        };
+
+        step1.execute();
     }
 
-    void downloadIndex() {
-        FileDownloader.downloadFile(FDROID_REPO_URL, getIndexFile());
+    // Step 1: Download the index.jar
+    private void downloadIndexJar() {
+        FileDownloader.downloadFile(FDROID_INDEX_URL, getIndexFile("jar"));
     }
 
-    private File getIndexFile() {
-        return new File(mRoot, "index.jar");
+    // Step 2: Extract the index.jar
+    private void extractIndexXml() {
+        FileExtractor.unpackZip(getIndexFile("jar"), mRoot, false);
+    }
+
+    // Step 3: Minimize extracted index.xml
+    private void minimizeIndexXml() {
+
+    }
+
+    private File getIndexFile(String extension) {
+        return new File(mRoot, "index."+extension);
+    }
+
+    public static final String FALLBACK_ICONS_DIR = "/icons/";
+
+    private String getIconDirectory() {
+        final double dpi = mContext.getResources().getDisplayMetrics().densityDpi;
+        if (dpi >= 640)
+            return "/icons-640/";
+
+        if (dpi >= 480)
+            return "/icons-480/";
+
+        if (dpi >= 320)
+            return "/icons-320/";
+
+        if (dpi >= 240)
+            return "/icons-240/";
+
+        if (dpi >= 160)
+            return "/icons-160/";
+
+        if (dpi >= 120)
+            return "/icons-120/";
+
+        return FALLBACK_ICONS_DIR;
     }
 }
