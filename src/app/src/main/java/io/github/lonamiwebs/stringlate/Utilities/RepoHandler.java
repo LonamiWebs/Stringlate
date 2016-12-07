@@ -8,12 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -237,40 +231,10 @@ public class RepoHandler {
 
     // Downloads a single locale file to our local "repository"
     public void downloadLocale(String remotePath, String locale) {
-        if (!mRoot.isDirectory())
-            mRoot.mkdirs();
-
         final String urlString = String.format(RAW_FILE_URL, mOwner, mRepo, remotePath);
         final File outputFile = getResourcesFile(locale);
 
-        InputStream input = null;
-        OutputStream output = null;
-        HttpURLConnection connection = null;
-        try {
-            URL url = new URL(urlString);
-            connection = (HttpURLConnection)url.openConnection();
-            connection.connect();
-
-            input = connection.getInputStream();
-            output = new FileOutputStream(outputFile);
-
-            int count;
-            byte data[] = new byte[4096];
-            while ((count = input.read(data)) != -1)
-                output.write(data, 0, count);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (output != null)
-                    output.close();
-                if (input != null)
-                    input.close();
-            } catch (IOException e) { }
-            if (connection != null)
-                connection.disconnect();
-        }
+        FileDownloader.downloadFile(urlString, outputFile);
     }
 
     //endregion
