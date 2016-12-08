@@ -23,6 +23,8 @@ public class Application {
     private String mIconName;
     private String mSourceCodeUrl;
 
+    private Object mTag;
+
     //endregion
 
     //region Initialization
@@ -81,6 +83,18 @@ public class Application {
     @Override
     public int hashCode() {
         return mPackageName.hashCode();
+    }
+
+    public Object getTag() {
+        return mTag;
+    }
+
+    //endregion
+
+    //region Setters
+
+    public void setTag(Object tag) {
+        mTag = tag;
     }
 
     //endregion

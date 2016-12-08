@@ -63,8 +63,11 @@ public class ApplicationListParser {
             String name = parser.getName();
             if (name.equals("application")) {
                 Application app = readApplication(parser);
-                if (app.getSourceCodeUrl().startsWith(HTTPS_GITHUB))
+                if (app.getSourceCodeUrl().startsWith(HTTPS_GITHUB)) {
+                    // Let the app index be the tag
+                    app.setTag(apps.size());
                     apps.add(app);
+                }
             }
             else
                 skip(parser);

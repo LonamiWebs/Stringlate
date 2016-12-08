@@ -20,7 +20,7 @@ public class ApplicationList implements Iterable<Application> {
 
     //region Members
 
-    private final static String FDROID_REPO_URL = "https://f-droid.org/repo";
+    public final static String FDROID_REPO_URL = "https://f-droid.org/repo";
     private final static String FDROID_INDEX_URL = FDROID_REPO_URL+"/index.jar";
 
     private File mRoot;
@@ -41,7 +41,6 @@ public class ApplicationList implements Iterable<Application> {
         mContext = context;
 
         mRoot = new File(mContext.getFilesDir(), BASE_DIR);
-        mIconBaseUrl = FDROID_REPO_URL+getIconDirectory();
     }
 
     //endregion
@@ -50,6 +49,10 @@ public class ApplicationList implements Iterable<Application> {
 
     public ArrayList<Application> getApplications() {
         return mApplications;
+    }
+
+    public File getRoot() {
+        return mRoot;
     }
 
     //endregion
@@ -157,31 +160,6 @@ public class ApplicationList implements Iterable<Application> {
 
     private File getIndexFile(String extension) {
         return new File(mRoot, "index."+extension);
-    }
-
-    public static final String FALLBACK_ICONS_DIR = "/icons/";
-
-    private String getIconDirectory() {
-        final double dpi = mContext.getResources().getDisplayMetrics().densityDpi;
-        if (dpi >= 640)
-            return "/icons-640/";
-
-        if (dpi >= 480)
-            return "/icons-480/";
-
-        if (dpi >= 320)
-            return "/icons-320/";
-
-        if (dpi >= 240)
-            return "/icons-240/";
-
-        if (dpi >= 160)
-            return "/icons-160/";
-
-        if (dpi >= 120)
-            return "/icons-120/";
-
-        return FALLBACK_ICONS_DIR;
     }
 
     @Override

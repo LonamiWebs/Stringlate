@@ -10,8 +10,11 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import io.github.lonamiwebs.stringlate.Applications.Application;
 import io.github.lonamiwebs.stringlate.Applications.ApplicationAdapter;
+import io.github.lonamiwebs.stringlate.Applications.ApplicationIconLoader;
 import io.github.lonamiwebs.stringlate.Applications.ApplicationList;
+import io.github.lonamiwebs.stringlate.Interfaces.Callback;
 import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.R;
 
@@ -22,6 +25,7 @@ public class DiscoverActivity extends AppCompatActivity {
     private ListView mPackageListView;
 
     private ApplicationList mApplicationList;
+    private ApplicationIconLoader mIconLoader;
 
     //endregion
 
@@ -36,6 +40,14 @@ public class DiscoverActivity extends AppCompatActivity {
         mPackageListView.setOnScrollListener(onScroll);
 
         mApplicationList = new ApplicationList(this);
+        mIconLoader = new ApplicationIconLoader(this, mApplicationList.getRoot());
+        mIconLoader.setOnIconDownloadedCallback(new Callback<Application>() {
+            @Override
+            public void onCallback(Application app) {
+                mPackageListView.invalidateViews();
+            }
+        });
+
         if (mApplicationList.loadIndexXml()) {
             refreshListView();
         } else {
@@ -93,13 +105,19 @@ public class DiscoverActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onScroll(AbsListView absListView, int visibleItemIndex,
+        public void onScroll(AbsListView listView, int visibleItemIndex,
                              int visibleItemsCount, int totalItems) {
+
+            int end = visibleItemIndex + visibleItemsCount;
+            for (int i = visibleItemIndex; i < end; i++) {
+                mIconLoader.enqueueDownloadIcon((Application)listView.getItemAtPosition(i));
+            }
         }
     };
 
     void refreshListView() {
         mPackageListView.setAdapter(new ApplicationAdapter(
-                this, R.layout.item_application_list, mApplicationList.getApplications()));
+                this, R.layout.item_application_list,
+                mApplicationList.getApplications(), mIconLoader));
     }
 }
