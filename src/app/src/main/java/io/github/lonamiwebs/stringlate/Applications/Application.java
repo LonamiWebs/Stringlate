@@ -1,5 +1,7 @@
 package io.github.lonamiwebs.stringlate.Applications;
 
+import android.content.Context;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -7,9 +9,14 @@ import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
 
+import static io.github.lonamiwebs.stringlate.Applications.ApplicationList.FDROID_REPO_URL;
+
 public class Application {
 
     //region Members
+
+    private static final String FALLBACK_ICONS_DIR = "/icons/";
+    private static String mBaseIconUrl;
 
     private static final SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat("yyyy-MM-dd", Locale.US);
@@ -68,12 +75,12 @@ public class Application {
         return mDescription;
     }
 
-    public int getIcon() {
-        return mIcon;
-    }
-
     public String getIconName() {
         return mIconName;
+    }
+
+    public String getIconUrl(Context context) {
+        return getFDroidIconUrl(context)+mIconName;
     }
 
     public String getSourceCodeUrl() {
@@ -98,4 +105,23 @@ public class Application {
     }
 
     //endregion
+
+    private static String getFDroidIconUrl(Context context) {
+        if (mBaseIconUrl == null)
+            mBaseIconUrl = FDROID_REPO_URL+getIconDirectory(context);
+
+        return mBaseIconUrl;
+    }
+
+    private static String getIconDirectory(Context context) {
+        final double dpi = context.getResources().getDisplayMetrics().densityDpi;
+        if (dpi >= 640) return "/icons-640/";
+        if (dpi >= 480) return "/icons-480/";
+        if (dpi >= 320) return "/icons-320/";
+        if (dpi >= 240) return "/icons-240/";
+        if (dpi >= 160) return "/icons-160/";
+        if (dpi >= 120) return "/icons-120/";
+
+        return FALLBACK_ICONS_DIR;
+    }
 }

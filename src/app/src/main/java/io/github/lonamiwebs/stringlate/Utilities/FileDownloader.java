@@ -10,6 +10,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class FileDownloader {
+
+    private final static int BUFFER_SIZE = 4096;
+
     // Downloads a file from the give url to the output file
     // Creates the file's parent directory if it doesn't exist
     public static boolean downloadFile(String url, File out) {
@@ -37,7 +40,7 @@ public class FileDownloader {
             output = new FileOutputStream(outFile);
 
             int count;
-            byte data[] = new byte[4096];
+            byte data[] = new byte[BUFFER_SIZE];
             while ((count = input.read(data)) != -1)
                 output.write(data, 0, count);
 

@@ -6,15 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import io.github.lonamiwebs.stringlate.Applications.Application;
 import io.github.lonamiwebs.stringlate.Applications.ApplicationAdapter;
-import io.github.lonamiwebs.stringlate.Applications.ApplicationIconLoader;
 import io.github.lonamiwebs.stringlate.Applications.ApplicationList;
-import io.github.lonamiwebs.stringlate.Interfaces.Callback;
 import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.R;
 
@@ -25,7 +21,6 @@ public class DiscoverActivity extends AppCompatActivity {
     private ListView mPackageListView;
 
     private ApplicationList mApplicationList;
-    private ApplicationIconLoader mIconLoader;
 
     //endregion
 
@@ -37,17 +32,7 @@ public class DiscoverActivity extends AppCompatActivity {
         setContentView(R.layout.activity_discover);
 
         mPackageListView = (ListView)findViewById(R.id.packageListView);
-        mPackageListView.setOnScrollListener(onScroll);
-
         mApplicationList = new ApplicationList(this);
-        mIconLoader = new ApplicationIconLoader(this, mApplicationList.getRoot());
-        mIconLoader.setOnIconDownloadedCallback(new Callback<Application>() {
-            @Override
-            public void onCallback(Application app) {
-                mPackageListView.invalidateViews();
-            }
-        });
-
         if (mApplicationList.loadIndexXml()) {
             refreshListView();
         } else {
@@ -99,25 +84,8 @@ public class DiscoverActivity extends AppCompatActivity {
         });
     }
 
-    AbsListView.OnScrollListener onScroll = new AbsListView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(AbsListView absListView, int i) {
-        }
-
-        @Override
-        public void onScroll(AbsListView listView, int visibleItemIndex,
-                             int visibleItemsCount, int totalItems) {
-
-            int end = visibleItemIndex + visibleItemsCount;
-            for (int i = visibleItemIndex; i < end; i++) {
-                mIconLoader.enqueueDownloadIcon((Application)listView.getItemAtPosition(i));
-            }
-        }
-    };
-
     void refreshListView() {
         mPackageListView.setAdapter(new ApplicationAdapter(
-                this, R.layout.item_application_list,
-                mApplicationList.getApplications(), mIconLoader));
+                this, R.layout.item_application_list, mApplicationList.getApplications()));
     }
 }

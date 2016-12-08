@@ -1,7 +1,6 @@
 package io.github.lonamiwebs.stringlate.Applications;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,19 +8,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.List;
 
+import io.github.lonamiwebs.stringlate.LazyImageLoader.ImageLoader;
 import io.github.lonamiwebs.stringlate.R;
 
 public class ApplicationAdapter extends ArrayAdapter<Application> {
+    ImageLoader mImageLoader;
 
-    ApplicationIconLoader mIconLoader;
-
-    public ApplicationAdapter(Context context, int resource,
-                              List<Application> apps, ApplicationIconLoader iconLoader) {
+    public ApplicationAdapter(Context context, int resource, List<Application> apps) {
         super(context, resource, apps);
-        mIconLoader = iconLoader;
+        mImageLoader = new ImageLoader(context);
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -33,12 +30,7 @@ public class ApplicationAdapter extends ArrayAdapter<Application> {
                     .inflate(R.layout.item_application_list, parent, false);
 
         ImageView iconView = (ImageView)convertView.findViewById(R.id.appIcon);
-        File iconFile = mIconLoader.getIconFile(app);
-        if (iconFile.isFile()) {
-            iconView.setImageURI(Uri.fromFile(iconFile));
-        } else {
-            iconView.setImageResource(app.getIcon());
-        }
+        mImageLoader.loadImageAsync(iconView, app.getIconUrl(getContext()));
 
         ((TextView)convertView.findViewById(R.id.appName)).setText(app.getName());
         ((TextView)convertView.findViewById(R.id.appDescription)).setText(app.getDescription());
