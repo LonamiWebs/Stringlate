@@ -40,7 +40,7 @@ public class ApplicationList implements Iterable<Application> {
         mApplications = new ArrayList<>();
         mContext = context;
 
-        mRoot = new File(mContext.getFilesDir(), BASE_DIR);
+        mRoot = new File(mContext.getCacheDir(), BASE_DIR);
     }
 
     //endregion
@@ -49,10 +49,6 @@ public class ApplicationList implements Iterable<Application> {
 
     public ArrayList<Application> getApplications() {
         return mApplications;
-    }
-
-    public File getRoot() {
-        return mRoot;
     }
 
     //endregion
@@ -88,6 +84,7 @@ public class ApplicationList implements Iterable<Application> {
             @Override
             protected Void doInBackground(Void... voids) {
                 extractIndexXml();
+                deleteIndexJar();
                 return null;
             }
 
@@ -125,9 +122,14 @@ public class ApplicationList implements Iterable<Application> {
         FileDownloader.downloadFile(FDROID_INDEX_URL, getIndexFile("jar"));
     }
 
-    // Step 2: Extract the index.jar
+    // Step 2a: Extract the index.xml from the index.jar
     private void extractIndexXml() {
         FileExtractor.unpackZip(getIndexFile("jar"), mRoot, false);
+    }
+
+    // Step 2b: Delete index.jar
+    private boolean deleteIndexJar() {
+        return getIndexFile("jar").delete();
     }
 
     // Step 3a: Load the ApplicationList from the index.xml

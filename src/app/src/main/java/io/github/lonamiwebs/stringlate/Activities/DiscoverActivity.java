@@ -95,6 +95,10 @@ public class DiscoverActivity extends AppCompatActivity {
             @Override
             public void onProgressFinished(String description, boolean status) {
                 progress.dismiss();
+                if (status)
+                    refreshListView();
+                else
+                    Toast.makeText(getApplicationContext(), "Failed to synchronize.", Toast.LENGTH_SHORT).show();
             }
         });
     }
