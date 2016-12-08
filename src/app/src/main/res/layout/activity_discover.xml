@@ -12,7 +12,7 @@
     android:orientation="vertical">
 
     <ListView
-        android:id="@+id/packageListView"
+        android:id="@+id/applicationListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

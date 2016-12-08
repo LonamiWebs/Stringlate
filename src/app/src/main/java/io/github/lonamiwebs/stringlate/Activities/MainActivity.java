@@ -1,16 +1,12 @@
 package io.github.lonamiwebs.stringlate.Activities;
 
-import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,9 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     public final static String EXTRA_REPO_OWNER = "io.github.lonamiwebs.stringlate.REPO_OWNER";
     public final static String EXTRA_REPO_NAME = "io.github.lonamiwebs.stringlate.REPO_NAME";
+    private final static int REPO_DISCOVERED = 42; // 42 is fun (arbitrary)
 
     private AutoCompleteTextView mOwnerEditText, mRepositoryEditText;
     private AutoCompleteTextView mUrlEditText;
@@ -93,12 +87,30 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.discoverRepositories:
-                startActivity(new Intent(getApplicationContext(), DiscoverActivity.class));
+                startActivityForResult(new Intent(getApplicationContext(),
+                        DiscoverActivity.class), REPO_DISCOVERED);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    //endregion
+
+    //region Activity results
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REPO_DISCOVERED:
+                    mUrlEditText.setText(data.getStringExtra("url"));
+                    break;
+            }
+        }
+    }
+
 
     //endregion
 
