@@ -3,7 +3,6 @@ package io.github.lonamiwebs.stringlate.Applications;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
@@ -14,10 +13,6 @@ public class Application {
 
     private static final SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-
-    static final String ICON = "icon";
-    static final String NAME = "name";
-    static final String DESCRIPTION = "desc";
 
     private int mIcon;
 
@@ -55,14 +50,6 @@ public class Application {
 
     //region Getters
 
-    public HashMap<String, Object> toHashMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put(ICON, mIcon);
-        result.put(NAME, mName);
-        result.put(DESCRIPTION, mDescription);
-        return result;
-    }
-
     public String getPackageName() {
         return mPackageName;
     }
@@ -77,6 +64,10 @@ public class Application {
 
     public String getDescription() {
         return mDescription;
+    }
+
+    public int getIcon() {
+        return mIcon;
     }
 
     public String getIconName() {

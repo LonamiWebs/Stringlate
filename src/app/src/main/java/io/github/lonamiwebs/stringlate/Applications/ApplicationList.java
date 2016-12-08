@@ -2,7 +2,6 @@ package io.github.lonamiwebs.stringlate.Applications;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.SimpleAdapter;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -11,12 +10,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 
 import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
-import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.Utilities.FileDownloader;
 import io.github.lonamiwebs.stringlate.Utilities.FileExtractor;
 
@@ -34,14 +30,14 @@ public class ApplicationList implements Iterable<Application> {
 
     private static final String BASE_DIR = "index";
 
-    private HashSet<Application> mApplications;
+    private ArrayList<Application> mApplications;
 
     //endregion
 
     //region Initialization
 
     public ApplicationList(Context context) {
-        mApplications = new HashSet<>();
+        mApplications = new ArrayList<>();
         mContext = context;
 
         mRoot = new File(mContext.getFilesDir(), BASE_DIR);
@@ -52,16 +48,8 @@ public class ApplicationList implements Iterable<Application> {
 
     //region Getters
 
-    SimpleAdapter getListAdapter() {
-        ArrayList<HashMap<String, ?>> data = new ArrayList<>();
-        for (Application app : mApplications)
-            data.add(app.toHashMap());
-
-        return new SimpleAdapter(mContext,
-                data,
-                R.layout.item_application_list,
-                new String[] { Application.ICON, Application.NAME, Application.DESCRIPTION },
-                new int[] { R.id.appIcon, R.id.appName, R.id.appDescription });
+    public ArrayList<Application> getApplications() {
+        return mApplications;
     }
 
     //endregion
@@ -140,15 +128,23 @@ public class ApplicationList implements Iterable<Application> {
     }
 
     // Step 3a: Load the ApplicationList from the index.xml
-    private void loadIndexXml() {
+    public boolean loadIndexXml() {
         try {
-            mApplications = ApplicationListParser
-                    .parseFromXml(new FileInputStream(getIndexFile("xml")));
+            File file = getIndexFile("xml");
+            if (file.isFile()) {
+                mApplications = ApplicationListParser
+                        .parseFromXml(new FileInputStream(getIndexFile("xml")));
+                return true;
+            } else {
+                mApplications.clear();
+            }
         } catch (IOException | XmlPullParserException e) {
             // Won't happen
             e.printStackTrace();
         }
+        return false;
     }
+
     // Step 3b: Save a (minimized) version of the index.xml
     private void saveIndexXml() {
         try {

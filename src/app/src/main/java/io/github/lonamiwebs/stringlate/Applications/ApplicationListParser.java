@@ -9,6 +9,7 @@ import org.xmlpull.v1.XmlSerializer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -32,7 +33,7 @@ public class ApplicationListParser {
 
     //region Xml -> ApplicationsList
 
-    public static HashSet<Application> parseFromXml(InputStream in)
+    public static ArrayList<Application> parseFromXml(InputStream in)
             throws XmlPullParserException, IOException {
 
         try {
@@ -49,10 +50,10 @@ public class ApplicationListParser {
     }
 
     // Reads the <fdroid> tag and returns a list of its <application> tags
-    private static HashSet<Application> readFdroid(XmlPullParser parser)
+    private static ArrayList<Application> readFdroid(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
-        HashSet<Application> apps = new HashSet<>();
+        ArrayList<Application> apps = new ArrayList<>();
 
         parser.require(XmlPullParser.START_TAG, ns, "fdroid");
         while (parser.next() != XmlPullParser.END_TAG) {
