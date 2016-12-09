@@ -34,7 +34,7 @@ public class FileCache {
     public void clear() {
         File[] files = mCacheDir.listFiles();
         if (files != null)
-            for(File f : files)
+            for (File f : files)
                 f.delete();
     }
 

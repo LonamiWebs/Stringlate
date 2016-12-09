@@ -92,4 +92,5 @@
     <string name="done">Done!</string>
     <string name="search">Search</string>
     <string name="search_apps_ellipsis">Search applications…</string>
+    <string name="icon_cache_cleared">Icon cache cleared.</string>
 </resources>
