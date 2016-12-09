@@ -83,13 +83,30 @@ public class RepoHandler {
     // Determines whether a given locale is saved or not
     public boolean hasLocale(String locale) { return getResourcesFile(locale).isFile(); }
 
+    // Determines whether a given locale has been modified or not
+    public boolean hasModifiedLocale(String locale) {
+        if (mLocales.contains(locale))
+            return Resources.fromFile(getResourcesFile(locale)).wasModified();
+        else
+            return false;
+    }
+
+    // Determines whether any file has been modified,
+    // i.e. it is not the original downloaded file any more
+    public boolean anyModified() {
+        for (String locale : mLocales)
+            if (Resources.fromFile(getResourcesFile(locale)).wasModified())
+                return true;
+        return false;
+    }
+
     // Determines whether the repository is empty (has no saved locales) or not
     public boolean isEmpty() { return mLocales.isEmpty(); }
 
     // Deletes the repository erasing its existence from Earth. Forever. (Unless added again)
     public void delete() {
-        for (String locale : mLocales)
-            getResourcesFile(locale).delete();
+        for (File file : mRoot.listFiles())
+            file.delete();
 
         mRoot.delete();
         if (mRoot.getParentFile().listFiles().length == 0)
@@ -136,7 +153,7 @@ public class RepoHandler {
 
     public void deleteLocale(String locale) {
         if (hasLocale(locale)) {
-            getResourcesFile(locale).delete();
+            Resources.fromFile(getResourcesFile(locale)).delete();
             mLocales.remove(locale);
         }
     }
@@ -145,15 +162,14 @@ public class RepoHandler {
 
     //region Downloading locale files
 
-    // TODO Add some check to avoid overwriting files, i.e. was locale modified?
-    public void syncResources(ProgressUpdateCallback callback) {
-        scanStringsXml(callback);
+    public void syncResources(ProgressUpdateCallback callback, boolean overwrite) {
+        scanStringsXml(callback, overwrite);
     }
 
     // Step 1: Scans the current repository to find strings.xml files
     //         If any file is found, its remote path and locale name is added to a list,
     //         and the Step 2. is called (downloadLocales).
-    private void scanStringsXml(final ProgressUpdateCallback callback) {
+    private void scanStringsXml(final ProgressUpdateCallback callback, final boolean overwrite) {
         callback.onProgressUpdate(
                 mContext.getString(R.string.scanning_repository),
                 mContext.getString(R.string.scanning_repository_long));
@@ -173,8 +189,11 @@ public class RepoHandler {
                         JSONObject item = items.getJSONObject(i);
                         Matcher m = mValuesLocalePattern.matcher(item.getString("path"));
                         if (m.find()) {
-                            remotePaths.add(item.getString("path"));
-                            locales.add(m.group(1) == null ? DEFAULT_LOCALE : m.group(1));
+                            String locale = m.group(1) == null ? DEFAULT_LOCALE : m.group(1);
+                            if (overwrite || !hasModifiedLocale(locale)) {
+                                remotePaths.add(item.getString("path"));
+                                locales.add(m.group(1) == null ? DEFAULT_LOCALE : m.group(1));
+                            }
                         }
                     }
                     if (remotePaths.size() == 0) {

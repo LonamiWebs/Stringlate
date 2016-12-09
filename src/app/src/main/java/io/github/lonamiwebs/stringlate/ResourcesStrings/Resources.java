@@ -23,11 +23,10 @@ public class Resources implements Iterable<ResourcesString> {
     //region Members
 
     private File mFile; // Keep track of the original file to be able to save()
+    private File mModifiedFile; // ".modified" file, used to tell if the user saved it before
     private HashSet<ResourcesString> mStrings;
 
-    // Internally keep track if the changes are saved not to look
-    // over all the resources strings individually
-    boolean mSavedChanges;
+    private boolean mSavedChanges;
 
     //endregion
 
@@ -56,6 +55,13 @@ public class Resources implements Iterable<ResourcesString> {
         mFile = file;
         mStrings = strings;
         mSavedChanges = file.isFile();
+
+        String path = mFile.getAbsolutePath();
+        int extensionIndex = path.lastIndexOf('.');
+        if (extensionIndex > -1)
+            path = path.substring(0, extensionIndex);
+        path += ".modified";
+        mModifiedFile = new File(path);
     }
 
     //endregion
@@ -76,14 +82,6 @@ public class Resources implements Iterable<ResourcesString> {
                 return rs.getContent();
 
         return "";
-    }
-
-    public String getFilename() {
-        return mFile.getName();
-    }
-
-    public boolean areSaved() {
-        return mSavedChanges;
     }
 
     //endregion
@@ -112,6 +110,31 @@ public class Resources implements Iterable<ResourcesString> {
         }
     }
 
+    //endregion
+
+    //region Deleting content
+
+    public void deleteId(String resourceId) {
+        for (ResourcesString rs : mStrings)
+            if (rs.getId().equals(resourceId)) {
+                mStrings.remove(rs);
+                break;
+            }
+    }
+
+    //endregion
+
+    //region File saving and deleting
+
+    public String getFilename() {
+        return mFile.getName();
+    }
+
+    // Determines whether the files was saved or not
+    public boolean areSaved() {
+        return mSavedChanges;
+    }
+
     // If there are unsaved changes, saves the file
     // If the file was saved successfully or there were no changes to save, returns true
     public boolean save() {
@@ -122,6 +145,10 @@ public class Resources implements Iterable<ResourcesString> {
             FileOutputStream out = new FileOutputStream(mFile);
             mSavedChanges = save(out);
             out.close();
+
+            // Also create a ".modified" file so we know this locale was modified
+            // We need to somehow keep track of which files we modified before syncing
+            mModifiedFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -136,16 +163,14 @@ public class Resources implements Iterable<ResourcesString> {
         return ResourcesParser.parseToXml(this, out, false);
     }
 
-    //endregion
+    // Determines whether the file was modified or not (.save() has ever been called)
+    public boolean wasModified() { return mModifiedFile.isFile(); }
 
-    //region Deleting content
+    public void delete() {
+        if (mModifiedFile.isFile())
+            mModifiedFile.delete();
 
-    public void deleteId(String resourceId) {
-        for (ResourcesString rs : mStrings)
-            if (rs.getId().equals(resourceId)) {
-                mStrings.remove(rs);
-                break;
-            }
+        mFile.delete();
     }
 
     //endregion

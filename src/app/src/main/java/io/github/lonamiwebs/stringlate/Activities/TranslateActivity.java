@@ -3,6 +3,7 @@ package io.github.lonamiwebs.stringlate.Activities;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -200,8 +201,47 @@ public class TranslateActivity extends AppCompatActivity {
 
     //region Repository synchronizing menu events
 
-    // Synchronize our local strings.xml files with the remote GitHub repository
+    // Synchronize our local strings.xml files with the remote GitHub repository,
+    // previously checking if the strings.xml was saved and asking whether
+    // files should be overwritten after synchronizing (if any change was made)
     private void updateStrings() {
+        // We need to save the context for the inner AlertBuilder
+        final Context context = this;
+
+        checkResourcesSaved(new Callback<Boolean>() {
+            @Override
+            public void onCallback(Boolean saved) {
+                // We need to save the files before syncing, or it will ask
+                // again after the synchronization finished (and it looks out of place)
+                if (!saved) {
+                    Toast.makeText(context, R.string.save_before_sync_required, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (mRepo.anyModified()) {
+                    new AlertDialog.Builder(context)
+                            .setTitle(R.string.files_modified)
+                            .setMessage(R.string.files_modified_long)
+                            .setPositiveButton(R.string.do_overwrite, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    updateStrings(true);
+                                }
+                            })
+                            .setNegativeButton(R.string.do_not_overwrite, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    updateStrings(false);
+                                }
+                            })
+                            .show();
+                }
+            }
+        });
+    }
+
+    // Synchronize our local strings.xml files with the remote GitHub repository
+    private void updateStrings(boolean overwrite) {
         if (!GitHub.gCanCall()) {
             Toast.makeText(getApplicationContext(),
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
@@ -227,7 +267,7 @@ public class TranslateActivity extends AppCompatActivity {
                 mDefaultResources = mRepo.loadResources(null);
                 loadLocalesSpinner();
             }
-        });
+        }, overwrite);
     }
 
     //endregion
@@ -427,7 +467,6 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     public void onSaveClick(final View v) {
-        // TODO hmm when changing locale it will ask Save changes?
         if (mSelectedLocaleResources.save())
             Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
         else

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-// TODO Maybe a base class which has readText and that?
 public class ApplicationListParser {
     // We don't use namespaces
     private static final String ns = null;

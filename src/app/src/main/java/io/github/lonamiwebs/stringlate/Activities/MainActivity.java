@@ -197,7 +197,8 @@ public class MainActivity extends AppCompatActivity {
                 if (status)
                     launchTranslateActivity(owner, repository);
             }
-        });
+        }, true);
+        // true, overwrite any previous file (there won't be any)
     }
 
     //endregion
