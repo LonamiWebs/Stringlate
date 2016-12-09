@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.Applications;
+package io.github.lonamiwebs.stringlate.classes.applications;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import io.github.lonamiwebs.stringlate.LazyImageLoader.ImageLoader;
+import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
 import io.github.lonamiwebs.stringlate.R;
 
 public class ApplicationAdapter extends ArrayAdapter<Application> {

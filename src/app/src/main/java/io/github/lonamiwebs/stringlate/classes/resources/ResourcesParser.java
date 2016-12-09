@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.ResourcesStrings;
+package io.github.lonamiwebs.stringlate.classes.resources;
 
 import android.util.Xml;
 

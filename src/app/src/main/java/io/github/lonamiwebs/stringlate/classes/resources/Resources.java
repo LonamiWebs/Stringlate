@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.ResourcesStrings;
+package io.github.lonamiwebs.stringlate.classes.resources;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import static io.github.lonamiwebs.stringlate.ResourcesStrings.ResourcesParser.parseToXml;
+import static io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser.parseToXml;
 
 // Class to manage multiple ResourcesString,
 // usually parsed from strings.xml files

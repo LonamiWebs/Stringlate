@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.Activities;
+package io.github.lonamiwebs.stringlate.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -18,11 +18,11 @@ import android.widget.Toast;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.lonamiwebs.stringlate.Interfaces.Callback;
-import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
+import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.Utilities.GitHub;
-import io.github.lonamiwebs.stringlate.Utilities.RepoHandler;
+import io.github.lonamiwebs.stringlate.utilities.GitHub;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
 public class MainActivity extends AppCompatActivity {
 

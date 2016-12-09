@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.LazyImageLoader;
+package io.github.lonamiwebs.stringlate.classes.lazyloader;
 
 import android.graphics.Bitmap;
 

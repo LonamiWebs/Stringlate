@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.Activities;
+package io.github.lonamiwebs.stringlate.activities;
 
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -15,12 +15,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import io.github.lonamiwebs.stringlate.Applications.Application;
-import io.github.lonamiwebs.stringlate.Applications.ApplicationAdapter;
-import io.github.lonamiwebs.stringlate.Applications.ApplicationList;
-import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
-import io.github.lonamiwebs.stringlate.LazyImageLoader.FileCache;
-import io.github.lonamiwebs.stringlate.LazyImageLoader.ImageLoader;
+import io.github.lonamiwebs.stringlate.classes.applications.Application;
+import io.github.lonamiwebs.stringlate.classes.applications.ApplicationAdapter;
+import io.github.lonamiwebs.stringlate.classes.applications.ApplicationList;
+import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.classes.lazyloader.FileCache;
+import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
 import io.github.lonamiwebs.stringlate.R;
 
 public class DiscoverActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.Tasks;
+package io.github.lonamiwebs.stringlate.tasks;
 
 import android.os.AsyncTask;
 import android.util.Log;

@@ -1,12 +1,12 @@
-package io.github.lonamiwebs.stringlate.Utilities;
+package io.github.lonamiwebs.stringlate.utilities;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-import io.github.lonamiwebs.stringlate.Interfaces.Callback;
-import io.github.lonamiwebs.stringlate.Tasks.DownloadJSONTask;
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
+import io.github.lonamiwebs.stringlate.tasks.DownloadJSONTask;
 
 // Static GitHub API interface that uses AsyncTasks
 public class GitHub {

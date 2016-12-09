@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.Activities;
+package io.github.lonamiwebs.stringlate.activities;
 
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -31,16 +31,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import io.github.lonamiwebs.stringlate.Interfaces.Callback;
-import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
+import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.ResourcesStrings.Resources;
-import io.github.lonamiwebs.stringlate.ResourcesStrings.ResourcesString;
-import io.github.lonamiwebs.stringlate.Utilities.GitHub;
-import io.github.lonamiwebs.stringlate.Utilities.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.resources.Resources;
+import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
+import io.github.lonamiwebs.stringlate.utilities.GitHub;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
-import static io.github.lonamiwebs.stringlate.Activities.MainActivity.EXTRA_REPO_NAME;
-import static io.github.lonamiwebs.stringlate.Activities.MainActivity.EXTRA_REPO_OWNER;
+import static io.github.lonamiwebs.stringlate.activities.MainActivity.EXTRA_REPO_NAME;
+import static io.github.lonamiwebs.stringlate.activities.MainActivity.EXTRA_REPO_OWNER;
 
 public class TranslateActivity extends AppCompatActivity {
 

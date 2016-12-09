@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.Utilities;
+package io.github.lonamiwebs.stringlate.utilities;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.lonamiwebs.stringlate.Interfaces.Callback;
-import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
+import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.ResourcesStrings.Resources;
+import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 
 // Class used to inter-operate with locally saved GitHub "repositories"
 // What is stored are simply the strings.xml file under a tree directory structure:

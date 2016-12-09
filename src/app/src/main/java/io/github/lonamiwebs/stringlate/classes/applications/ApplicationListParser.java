@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.Applications;
+package io.github.lonamiwebs.stringlate.classes.applications;
 
 import android.util.Xml;
 

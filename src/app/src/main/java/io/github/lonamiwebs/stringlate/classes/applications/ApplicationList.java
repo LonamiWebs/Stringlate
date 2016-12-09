@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.Applications;
+package io.github.lonamiwebs.stringlate.classes.applications;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -12,10 +12,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.Utilities.FileDownloader;
-import io.github.lonamiwebs.stringlate.Utilities.FileExtractor;
+import io.github.lonamiwebs.stringlate.utilities.FileDownloader;
+import io.github.lonamiwebs.stringlate.utilities.FileExtractor;
 
 public class ApplicationList implements Iterable<Application> {
 

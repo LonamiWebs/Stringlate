@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.Activities;
+package io.github.lonamiwebs.stringlate.activities;
 
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -16,13 +16,13 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import io.github.lonamiwebs.stringlate.Interfaces.Callback;
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.Utilities.GitHub;
+import io.github.lonamiwebs.stringlate.utilities.GitHub;
 
 import static android.view.View.GONE;
-import static io.github.lonamiwebs.stringlate.Activities.TranslateActivity.EXTRA_FILENAME;
-import static io.github.lonamiwebs.stringlate.Activities.TranslateActivity.EXTRA_XML_CONTENT;
+import static io.github.lonamiwebs.stringlate.activities.TranslateActivity.EXTRA_FILENAME;
+import static io.github.lonamiwebs.stringlate.activities.TranslateActivity.EXTRA_XML_CONTENT;
 
 public class CreateGistActivity extends AppCompatActivity {
 

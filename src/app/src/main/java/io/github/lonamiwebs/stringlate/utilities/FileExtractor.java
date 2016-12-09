@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.Utilities;
+package io.github.lonamiwebs.stringlate.utilities;
 
 import java.io.BufferedInputStream;
 import java.io.File;

@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.LazyImageLoader;
+package io.github.lonamiwebs.stringlate.classes.lazyloader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.Utilities.FileDownloader;
+import io.github.lonamiwebs.stringlate.utilities.FileDownloader;
 
 // Original code at https://github.com/thest1/LazyList (http://stackoverflow.com/a/3068012/4759433)
 public class ImageLoader {

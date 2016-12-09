@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.Applications;
+package io.github.lonamiwebs.stringlate.classes.applications;
 
 import android.content.Context;
 
@@ -9,7 +9,7 @@ import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
 
-import static io.github.lonamiwebs.stringlate.Applications.ApplicationList.FDROID_REPO_URL;
+import static io.github.lonamiwebs.stringlate.classes.applications.ApplicationList.FDROID_REPO_URL;
 
 public class Application {
 
