@@ -91,6 +91,9 @@ public class Resources implements Iterable<ResourcesString> {
     //region Updating (setting) content
 
     public void setContent(String resourceId, String content) {
+        if (resourceId == null || resourceId.isEmpty())
+            return;
+
         boolean found = false;
         for (ResourcesString rs : mStrings)
             if (rs.getId().equals(resourceId)) {
