@@ -1,9 +1,12 @@
 package io.github.lonamiwebs.stringlate.Activities;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -69,6 +72,24 @@ public class DiscoverActivity extends AppCompatActivity {
         applyLimitItem.setTitle(getString(
                 R.string.show_only_x, ApplicationList.DEFAULT_APPS_LIMIT));
 
+        // Associate the searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView)menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String query) {
+                refreshListView(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+        });
+
         // We need to let the menu initialize before we can refresh the ListView
         refreshListView();
         return true;
@@ -120,8 +141,12 @@ public class DiscoverActivity extends AppCompatActivity {
     }
 
     void refreshListView() {
+        refreshListView(null);
+    }
+
+    void refreshListView(String filter) {
         mApplicationListView.setAdapter(new ApplicationAdapter(
                 this, R.layout.item_application_list,
-                mApplicationList.getApplications(mApplyAppsLimit)));
+                mApplicationList.getApplications(mApplyAppsLimit, filter)));
     }
 }

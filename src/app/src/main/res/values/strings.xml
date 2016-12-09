@@ -90,4 +90,6 @@
     <string name="loading_index_xml">Loading index.xml…</string>
     <string name="loading_index_xml_long">Loading and minimizing the applications\' index…</string>
     <string name="done">Done!</string>
+    <string name="search">Search</string>
+    <string name="search_apps_ellipsis">Search applications…</string>
 </resources>

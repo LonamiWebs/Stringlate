@@ -47,19 +47,29 @@ public class ApplicationList implements Iterable<Application> {
 
     //region Getters
 
-    public ArrayList<Application> getApplications(boolean applyLimit) {
-        if (applyLimit) {
-            int take = mApplications.size() < DEFAULT_APPS_LIMIT ?
-                    mApplications.size() : DEFAULT_APPS_LIMIT;
+    public ArrayList<Application> getApplications(boolean applyLimit, String filter) {
+        // If (limit not applied) or (limit applied but there are less apps than limit)
+        //    (use the current apps) otherwise (use our custom limit)
+        int take = !applyLimit || mApplications.size() < DEFAULT_APPS_LIMIT ?
+                mApplications.size() : DEFAULT_APPS_LIMIT;
 
-            ArrayList<Application> result = new ArrayList<>(take);
+        ArrayList<Application> result = new ArrayList<>(take);
+        if (filter == null) {
             for (int i = 0; i < take; i++)
                 result.add(mApplications.get(i));
-
-            return result;
         }
-        else
-            return mApplications;
+        else {
+            filter = filter.trim().toLowerCase();
+            for (int i = 0; i < mApplications.size() && take > 0; i++) {
+                Application app = mApplications.get(i);
+                if (app.getName().toLowerCase().contains(filter)) {
+                    result.add(app);
+                    take--;
+                }
+            }
+        }
+
+        return result;
     }
 
     //endregion
