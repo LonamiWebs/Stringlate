@@ -129,7 +129,7 @@ public class Resources implements Iterable<ResourcesString> {
         if (mFile.isFile() && mFile.length() == 0)
             mFile.delete();
 
-        return false;
+        return mFile.isFile();
     }
 
     public boolean save(OutputStream out) {
