@@ -584,6 +584,7 @@ public class TranslateActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.save_resources_question)
                     .setMessage(R.string.save_resources_question_long)
+                    .setCancelable(false)
                     .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
