@@ -81,4 +81,13 @@
     <string name="export_file_success">File successfully saved to %s</string>
     <string name="update_applications">Update applications</string>
     <string name="show_only_x">Show only top %d</string>
+    <string name="load_apps_repo_failed">Could not load the applications repository, please synchronize and try again.</string>
+    <string name="sync_failed">Failed to synchronize.</string>
+    <string name="downloading_index_jar">Downloading index.jar...</string>
+    <string name="downloading_index_jar_long">The index.jar containing the applications list is being downloaded…</string>
+    <string name="extracting_index_xml">Extracting index.xml from index.jar...</string>
+    <string name="extracting_index_xml_long">Extracting the index.xml containing the applications\' information…</string>
+    <string name="loading_index_xml">Loading index.xml…</string>
+    <string name="loading_index_xml_long">Loading and minimizing the applications\' index…</string>
+    <string name="done">Done!</string>
 </resources>

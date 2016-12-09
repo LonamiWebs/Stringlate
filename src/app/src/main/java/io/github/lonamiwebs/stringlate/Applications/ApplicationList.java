@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.Utilities.FileDownloader;
 import io.github.lonamiwebs.stringlate.Utilities.FileExtractor;
 
@@ -26,8 +27,6 @@ public class ApplicationList implements Iterable<Application> {
 
     private File mRoot;
     private Context mContext;
-
-    private String mIconBaseUrl;
 
     private static final String BASE_DIR = "index";
 
@@ -70,7 +69,8 @@ public class ApplicationList implements Iterable<Application> {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                callback.onProgressUpdate("Loading and minimizing strings.xml file...", "Wait plz.");
+                callback.onProgressUpdate(mContext.getString(R.string.loading_index_xml),
+                        mContext.getString(R.string.loading_index_xml_long));
             }
 
             @Override
@@ -83,14 +83,15 @@ public class ApplicationList implements Iterable<Application> {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                callback.onProgressFinished("Done", true);
+                callback.onProgressFinished(mContext.getString(R.string.done), true);
             }
         };
         final AsyncTask<Void, Void, Void> step2 = new AsyncTask<Void, Void, Void>() {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                callback.onProgressUpdate("Extracting index.xml from index.jar...", "Wait plz.");
+                callback.onProgressUpdate(mContext.getString(R.string.extracting_index_xml),
+                        mContext.getString(R.string.extracting_index_xml_long));
             }
 
             @Override
@@ -110,7 +111,8 @@ public class ApplicationList implements Iterable<Application> {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                callback.onProgressUpdate("Downloading index.jar...", "Wait plz.");
+                callback.onProgressUpdate(mContext.getString(R.string.downloading_index_jar),
+                        mContext.getString(R.string.downloading_index_jar_long));
             }
 
             @Override

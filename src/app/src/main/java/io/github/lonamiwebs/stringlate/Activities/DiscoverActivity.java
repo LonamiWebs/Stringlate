@@ -51,7 +51,7 @@ public class DiscoverActivity extends AppCompatActivity {
 
         mApplicationList = new ApplicationList(this);
         if (!mApplicationList.loadIndexXml()) {
-            Toast.makeText(this, "Could not load the repository, please sync and try again.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.load_apps_repo_failed, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -97,9 +97,8 @@ public class DiscoverActivity extends AppCompatActivity {
     //endregion
 
     void updateApplicationsIndex() {
-        final ProgressDialog progress = ProgressDialog.show(this,
-                "doin' stuff",
-                "realstuff :d", true);
+        // Empty strings since the title will be set later
+        final ProgressDialog progress = ProgressDialog.show(this, "", "", true);
 
         mApplicationList.syncRepo(new ProgressUpdateCallback() {
             @Override
@@ -114,7 +113,8 @@ public class DiscoverActivity extends AppCompatActivity {
                 if (status)
                     refreshListView();
                 else
-                    Toast.makeText(getApplicationContext(), "Failed to synchronize.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),
+                            R.string.sync_failed, Toast.LENGTH_SHORT).show();
             }
         });
     }
