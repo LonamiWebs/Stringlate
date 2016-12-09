@@ -41,6 +41,7 @@ public class DiscoverActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discover);
+        setTitle(R.string.discover);
 
         mApplicationListView = (ListView)findViewById(R.id.applicationListView);
         mApplicationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
