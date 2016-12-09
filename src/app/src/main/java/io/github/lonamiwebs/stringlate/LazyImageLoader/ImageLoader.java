@@ -68,9 +68,9 @@ public class ImageLoader {
     }
 
     // Clears both the memory and file cache
-    public void clearCache() {
+    public long clearCache() {
         mMemoryCache.clear();
-        mFileCache.clear();
+        return mFileCache.clear();
     }
 
     //endregion

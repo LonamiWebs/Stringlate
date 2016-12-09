@@ -31,11 +31,34 @@ public class FileCache {
     }
 
     // Clears the file cache
-    public void clear() {
+    public long clear() {
+        long size;
+        long cleared = 0;
+
         File[] files = mCacheDir.listFiles();
-        if (files != null)
-            for (File f : files)
-                f.delete();
+        if (files != null) {
+            for (File f : files) {
+                size = f.length();
+                if (f.delete())
+                    cleared += size;
+            }
+        }
+        return cleared;
+    }
+
+    public static String getHumanReadableSize(long sizeInBytes) {
+        String[] suffixes = new String[] {
+                // Some day phones will have peta bytes, and then I'll laugh
+                "bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"
+        };
+        int i = 0;
+        double size = sizeInBytes;
+        while (size > 1024.0) {
+            size /= 1024.0;
+            i++;
+        }
+
+        return String.format("%.2f %s", size, suffixes[i]);
     }
 
     //endregion

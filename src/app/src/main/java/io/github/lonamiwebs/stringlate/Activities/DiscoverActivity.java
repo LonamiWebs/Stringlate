@@ -19,6 +19,7 @@ import io.github.lonamiwebs.stringlate.Applications.Application;
 import io.github.lonamiwebs.stringlate.Applications.ApplicationAdapter;
 import io.github.lonamiwebs.stringlate.Applications.ApplicationList;
 import io.github.lonamiwebs.stringlate.Interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.LazyImageLoader.FileCache;
 import io.github.lonamiwebs.stringlate.LazyImageLoader.ImageLoader;
 import io.github.lonamiwebs.stringlate.R;
 
@@ -109,8 +110,12 @@ public class DiscoverActivity extends AppCompatActivity {
                 return true;
             // Clearing the icons cache
             case R.id.clearIconsCache:
-                new ImageLoader(this).clearCache();
-                Toast.makeText(this, R.string.icon_cache_cleared, Toast.LENGTH_SHORT).show();
+                String cleared = FileCache.getHumanReadableSize(
+                        new ImageLoader(this).clearCache());
+
+                Toast.makeText(this,
+                        getString(R.string.icon_cache_cleared, cleared), Toast.LENGTH_SHORT).show();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
