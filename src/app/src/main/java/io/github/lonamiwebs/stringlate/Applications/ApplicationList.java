@@ -20,6 +20,7 @@ public class ApplicationList implements Iterable<Application> {
 
     //region Members
 
+    public final static int DEFAULT_APPS_LIMIT = 50;
     public final static String FDROID_REPO_URL = "https://f-droid.org/repo";
     private final static String FDROID_INDEX_URL = FDROID_REPO_URL+"/index.jar";
 
@@ -47,8 +48,19 @@ public class ApplicationList implements Iterable<Application> {
 
     //region Getters
 
-    public ArrayList<Application> getApplications() {
-        return mApplications;
+    public ArrayList<Application> getApplications(boolean applyLimit) {
+        if (applyLimit) {
+            int take = mApplications.size() < DEFAULT_APPS_LIMIT ?
+                    mApplications.size() : DEFAULT_APPS_LIMIT;
+
+            ArrayList<Application> result = new ArrayList<>(take);
+            for (int i = 0; i < take; i++)
+                result.add(mApplications.get(i));
+
+            return result;
+        }
+        else
+            return mApplications;
     }
 
     //endregion

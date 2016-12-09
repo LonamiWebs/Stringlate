@@ -26,6 +26,8 @@ public class DiscoverActivity extends AppCompatActivity {
 
     private ApplicationList mApplicationList;
 
+    private boolean mApplyAppsLimit; // Limit applications to show on the ListView?
+
     //endregion
 
     //region Initialization
@@ -48,9 +50,7 @@ public class DiscoverActivity extends AppCompatActivity {
         });
 
         mApplicationList = new ApplicationList(this);
-        if (mApplicationList.loadIndexXml()) {
-            refreshListView();
-        } else {
+        if (!mApplicationList.loadIndexXml()) {
             Toast.makeText(this, "Could not load the repository, please sync and try again.", Toast.LENGTH_LONG).show();
         }
     }
@@ -63,6 +63,14 @@ public class DiscoverActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.discover_menu, menu);
+
+        MenuItem applyLimitItem = menu.findItem(R.id.applyListLimit);
+        mApplyAppsLimit = applyLimitItem.isChecked();
+        applyLimitItem.setTitle(getString(
+                R.string.show_only_x, ApplicationList.DEFAULT_APPS_LIMIT));
+
+        // We need to let the menu initialize before we can refresh the ListView
+        refreshListView();
         return true;
     }
 
@@ -73,9 +81,17 @@ public class DiscoverActivity extends AppCompatActivity {
             case R.id.updateApplications:
                 updateApplicationsIndex();
                 return true;
+            case R.id.applyListLimit:
+                toggleAppListLimit(item);
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void toggleAppListLimit(MenuItem item) {
+        mApplyAppsLimit = !mApplyAppsLimit;
+        item.setChecked(mApplyAppsLimit);
+        refreshListView();
     }
 
     //endregion
@@ -105,6 +121,7 @@ public class DiscoverActivity extends AppCompatActivity {
 
     void refreshListView() {
         mApplicationListView.setAdapter(new ApplicationAdapter(
-                this, R.layout.item_application_list, mApplicationList.getApplications()));
+                this, R.layout.item_application_list,
+                mApplicationList.getApplications(mApplyAppsLimit)));
     }
 }

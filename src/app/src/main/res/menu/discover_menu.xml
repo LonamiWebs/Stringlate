@@ -6,4 +6,13 @@
         android:icon="@drawable/ic_sync_white_24dp"
         android:title="@string/update_applications"
         app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/clearIconsCache"
+        android:title="Clear icons cache"/>
+
+    <item
+        android:id="@+id/applyListLimit"
+        android:title="(Title will be set from code)"
+        android:checkable="true"
+        android:checked="true" />
 </menu>
