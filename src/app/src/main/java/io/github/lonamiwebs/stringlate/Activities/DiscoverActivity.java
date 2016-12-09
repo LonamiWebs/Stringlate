@@ -97,8 +97,8 @@ public class DiscoverActivity extends AppCompatActivity {
     //endregion
 
     void updateApplicationsIndex() {
-        // Empty strings since the title will be set later
-        final ProgressDialog progress = ProgressDialog.show(this, "", "", true);
+        // There must be a non-empty title if we want it to be set later
+        final ProgressDialog progress = ProgressDialog.show(this, "…", "", true);
 
         mApplicationList.syncRepo(new ProgressUpdateCallback() {
             @Override
