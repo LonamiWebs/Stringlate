@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/originalStringEditText"
                 android:inputType="none"
-                android:editable="false" />
+                android:textIsSelectable="true" />
 
             <TextView
                 android:text="@string/translated_string_colon"

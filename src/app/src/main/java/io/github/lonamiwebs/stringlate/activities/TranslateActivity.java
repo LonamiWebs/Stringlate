@@ -31,11 +31,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
+import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.utilities.GitHub;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
@@ -483,8 +483,10 @@ public class TranslateActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            String content = mTranslatedStringEditText.getText().toString();
-            mSelectedLocaleResources.setContent(mSelectedResourceId, content);
+            if (mSelectedLocaleResources != null) {
+                String content = mTranslatedStringEditText.getText().toString();
+                mSelectedLocaleResources.setContent(mSelectedResourceId, content);
+            }
         }
 
         @Override
