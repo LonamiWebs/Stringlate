@@ -31,7 +31,9 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.DiscoverActivity">
+        <activity
+            android:name=".activities.DiscoverActivity"
+            android:label="@string/discover">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
