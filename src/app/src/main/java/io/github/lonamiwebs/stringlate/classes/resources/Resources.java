@@ -23,10 +23,10 @@ public class Resources implements Iterable<ResourcesString> {
     //region Members
 
     private File mFile; // Keep track of the original file to be able to save()
-    private File mModifiedFile; // ".modified" file, used to tell if the user saved it before
     private HashSet<ResourcesString> mStrings;
 
     private boolean mSavedChanges;
+    private boolean mModified;
 
     //endregion
 
@@ -56,12 +56,13 @@ public class Resources implements Iterable<ResourcesString> {
         mStrings = strings;
         mSavedChanges = file.isFile();
 
-        String path = mFile.getAbsolutePath();
-        int extensionIndex = path.lastIndexOf('.');
-        if (extensionIndex > -1)
-            path = path.substring(0, extensionIndex);
-        path += ".modified";
-        mModifiedFile = new File(path);
+        mModified = false;
+        for (ResourcesString rs : strings) {
+            if (rs.wasModified()) {
+                mModified = true;
+                break;
+            }
+        }
     }
 
     //endregion
@@ -148,11 +149,8 @@ public class Resources implements Iterable<ResourcesString> {
             FileOutputStream out = new FileOutputStream(mFile);
             // Always add metadata when saving locally
             mSavedChanges = save(out, true);
+            mModified = true;
             out.close();
-
-            // Also create a ".modified" file so we know this locale was modified
-            // We need to somehow keep track of which files we modified before syncing
-            mModifiedFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -174,12 +172,9 @@ public class Resources implements Iterable<ResourcesString> {
     }
 
     // Determines whether the file was modified or not (.save() has ever been called)
-    public boolean wasModified() { return mModifiedFile.isFile(); }
+    public boolean wasModified() { return mModified; }
 
     public void delete() {
-        if (mModifiedFile.isFile())
-            mModifiedFile.delete();
-
         mFile.delete();
     }
 
