@@ -29,7 +29,7 @@ public class RepositoriesPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: return new LoadRepositoryFragment();
+            case 0: return new HistoryFragment();
             case 1: return new AddNewRepositoryFragment();
         }
         return null;

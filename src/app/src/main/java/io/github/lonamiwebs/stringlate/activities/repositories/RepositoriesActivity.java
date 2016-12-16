@@ -38,6 +38,14 @@ public class RepositoriesActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Always notify data set changed to refresh the repository list
+        mRepositoriesPagerAdapter.notifyDataSetChanged();
+    }
+
     //endregion
 
     //region Activity results
@@ -49,9 +57,7 @@ public class RepositoriesActivity extends AppCompatActivity {
                 case RESULT_REPO_DISCOVERED:
                     // Position #1 is the "Add new repository" fragment
                     mViewPager.setCurrentItem(1, true);
-                    // Let the child fragment now this activity result occurred
-                    super.onActivityResult(requestCode, resultCode, data);
-                    break;
+                    // Let the child fragment know this activity result occurred
                 default:
                     super.onActivityResult(requestCode, resultCode, data);
                     break;

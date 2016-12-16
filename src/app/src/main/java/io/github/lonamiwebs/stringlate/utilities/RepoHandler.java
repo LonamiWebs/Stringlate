@@ -51,6 +51,30 @@ public class RepoHandler {
 
     //endregion
 
+    //region Interfaces and events
+
+    public interface ChangeListener {
+        // Called when a repository is either added or removed
+        void onRepositoryCountChanged();
+    }
+
+    private static ArrayList<ChangeListener> mChangeListeners = new ArrayList<>();
+
+    public static void addChangeListener(ChangeListener listener) {
+        mChangeListeners.add(listener);
+    }
+
+    public static void removeChangeListener(ChangeListener listener) {
+        mChangeListeners.remove(listener);
+    }
+
+    private static void notifyRepositoryCountChanged() {
+        for (ChangeListener listener : mChangeListeners)
+            listener.onRepositoryCountChanged();
+    }
+
+    //endregion
+
     //region Constructors
 
     public RepoHandler(Context context, String owner, String repo) {
@@ -111,6 +135,8 @@ public class RepoHandler {
         mRoot.delete();
         if (mRoot.getParentFile().listFiles().length == 0)
             mRoot.getParentFile().delete();
+
+        notifyRepositoryCountChanged();
     }
 
     //endregion
@@ -243,6 +269,7 @@ public class RepoHandler {
             protected void onPostExecute(Void v) {
                 loadLocales();
                 callback.onProgressFinished(null, true);
+                notifyRepositoryCountChanged();
                 super.onPostExecute(v);
             }
         }.execute();
@@ -298,11 +325,19 @@ public class RepoHandler {
 
     // Lists all the repositories of all the owners under the base directory
     // and returns a list to their URLs at GitHub
-    public static ArrayList<String> listRepositories(Context context) {
+    public static ArrayList<String> listRepositories(Context context, boolean prefixUrl) {
         ArrayList<String> repositories = new ArrayList<>();
-        for (String owner : listOwners(context)) {
-            for (String repository : listRepositories(context, owner)) {
-                repositories.add(String.format(GITHUB_REPO_URL, owner, repository));
+        if (prefixUrl) {
+            for (String owner : listOwners(context)) {
+                for (String repository : listRepositories(context, owner)) {
+                    repositories.add(String.format(GITHUB_REPO_URL, owner, repository));
+                }
+            }
+        } else {
+            for (String owner : listOwners(context)) {
+                for (String repository : listRepositories(context, owner)) {
+                    repositories.add(owner+"/"+repository);
+                }
             }
         }
         return repositories;

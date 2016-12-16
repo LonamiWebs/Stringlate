@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -66,19 +67,24 @@ public class AddNewRepositoryFragment extends Fragment {
         if (data != null) {
             String scheme = data.getScheme();
             String fullPath = data.getEncodedSchemeSpecificPart();
-            setUrlText(scheme+":"+fullPath);
+            mUrlEditText.setText(scheme+":"+fullPath);
         }
 
-        loadOwnerAutocomplete();
-        loadUrlAutocomplete();
+        changeListener.onRepositoryCountChanged();
 
         return rootView;
     }
 
-    public void setUrlText(String text) {
-        if (mUrlEditText != null) {
-            mUrlEditText.setText(text);
-        }
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        RepoHandler.addChangeListener(changeListener);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RepoHandler.removeChangeListener(changeListener);
     }
 
     //endregion
@@ -138,7 +144,7 @@ public class AddNewRepositoryFragment extends Fragment {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case RESULT_REPO_DISCOVERED:
-                    setUrlText(data.getStringExtra("url"));
+                    mUrlEditText.setText(data.getStringExtra("url"));
                     break;
                 default:
                     super.onActivityResult(requestCode, resultCode, data);
@@ -147,6 +153,18 @@ public class AddNewRepositoryFragment extends Fragment {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    //endregion
+
+    //region Listeners
+
+    RepoHandler.ChangeListener changeListener = new RepoHandler.ChangeListener() {
+        @Override
+        public void onRepositoryCountChanged() {
+            loadOwnerAutocomplete();
+            loadUrlAutocomplete();
+        }
+    };
 
     //endregion
 
@@ -234,7 +252,8 @@ public class AddNewRepositoryFragment extends Fragment {
 
     private void loadUrlAutocomplete() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_dropdown_item_1line, RepoHandler.listRepositories(getContext()));
+                android.R.layout.simple_dropdown_item_1line,
+                RepoHandler.listRepositories(getContext(), true));
 
         mUrlEditText.setAdapter(adapter);
     }
