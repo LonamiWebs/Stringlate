@@ -60,17 +60,23 @@ public class ResourcesParser {
 
         String id, content;
         boolean translatable = true;
+        boolean modified = false;
 
         parser.require(XmlPullParser.START_TAG, ns, "string");
 
         id = parser.getAttributeValue(null, "name");
         if ("false".equals(parser.getAttributeValue(null, "translatable")))
             translatable = false;
-        content = readText(parser);
 
+        // Metadata
+        if ("true".equals(parser.getAttributeValue(null, "modified")))
+            modified = true;
+
+        // The content must be read last, since it also consumes the tag
+        content = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "string");
 
-        return new ResourcesString(id, content, translatable);
+        return new ResourcesString(id, content, translatable, modified);
     }
 
     // Reads the text from an xml tag
@@ -101,7 +107,8 @@ public class ResourcesParser {
 
     //region Resources -> Xml
 
-    public static boolean parseToXml(Resources resources, OutputStream out, boolean indent) {
+    public static boolean parseToXml(Resources resources, OutputStream out,
+                                     boolean indent, boolean addMetadata) {
         XmlSerializer serializer = Xml.newSerializer();
         try {
             serializer.setOutput(out, "UTF-8");
@@ -120,6 +127,11 @@ public class ResourcesParser {
                 serializer.attribute(ns, "name", rs.getId());
                 if (!rs.isTranslatable())
                     serializer.attribute(ns, "translatable", "false");
+
+                if (addMetadata) {
+                    String modified = rs.wasModified() ? "true" : "false";
+                    serializer.attribute(ns, "modified", modified);
+                }
 
                 serializer.text(rs.getContent());
                 serializer.endTag(ns, "string");

@@ -105,7 +105,10 @@ public class Resources implements Iterable<ResourcesString> {
         // We don't want to set an empty string unless we're
         // clearing an existing one since it's unnecessary
         if (!found && !content.isEmpty()) {
-            mStrings.add(new ResourcesString(resourceId, content));
+            ResourcesString string = new ResourcesString(resourceId);
+            string.setContent(content); // Will also update its modified = true state
+            mStrings.add(string);
+
             mSavedChanges = false;
         }
     }
@@ -143,7 +146,8 @@ public class Resources implements Iterable<ResourcesString> {
 
         try {
             FileOutputStream out = new FileOutputStream(mFile);
-            mSavedChanges = save(out);
+            // Always add metadata when saving locally
+            mSavedChanges = save(out, true);
             out.close();
 
             // Also create a ".modified" file so we know this locale was modified
@@ -160,7 +164,13 @@ public class Resources implements Iterable<ResourcesString> {
     }
 
     public boolean save(OutputStream out) {
-        return ResourcesParser.parseToXml(this, out, false);
+        // Never save metadata if saving to a given stream.
+        // Only save the metadata when saving locally.
+        return save(out, false);
+    }
+
+    private boolean save(OutputStream out, boolean addMetadata) {
+        return ResourcesParser.parseToXml(this, out, false, addMetadata);
     }
 
     // Determines whether the file was modified or not (.save() has ever been called)
@@ -195,7 +205,8 @@ public class Resources implements Iterable<ResourcesString> {
 
     public String toString(boolean indent) {
         OutputStream out = new ByteArrayOutputStream();
-        parseToXml(this, out, indent);
+        // Never add the metadata when converting to a string
+        parseToXml(this, out, indent, false);
         return out.toString();
     }
 
