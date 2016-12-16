@@ -1,6 +1,8 @@
 # Stringlate
 *Help translating FOSS applications.*
 
+[<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="60">](https://f-droid.org/app/io.github.lonamiwebs.stringlate)
+
 ## Description
 This application was born to help the FOSS community translate their Android
 applications in an easy way. Perhaps your family doesn't know enough English
@@ -40,3 +42,6 @@ this is the case, please let me know, or create a new pull request with a fix.
 At the moment I don't have any donating system. However, if you really are
 interested, please drop an issue on GitHub and I'll take a look at it. You
 would be my first donor!
+
+## License
+The project is licensed under the [MIT License](https://github.com/LonamiWebs/Stringlate/blob/master/LICENSE)
