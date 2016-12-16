@@ -39,8 +39,11 @@ import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.utilities.GitHub;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
-import static io.github.lonamiwebs.stringlate.activities.MainActivity.EXTRA_REPO_NAME;
-import static io.github.lonamiwebs.stringlate.activities.MainActivity.EXTRA_REPO_OWNER;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_FILENAME;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO_NAME;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO_OWNER;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_XML_CONTENT;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_CREATE_FILE;
 
 public class TranslateActivity extends AppCompatActivity {
 
@@ -60,11 +63,6 @@ public class TranslateActivity extends AppCompatActivity {
     private Resources mSelectedLocaleResources;
 
     private RepoHandler mRepo;
-
-    public static final String EXTRA_XML_CONTENT = "io.github.lonamiwebs.stringlate.XML_CONTENT";
-    public static final String EXTRA_FILENAME = "io.github.lonamiwebs.stringlate.FILENAME";
-
-    private static final int RESULT_CREATE_FILE = 707; // LOL upside down (arbitrary)!
 
     //endregion
 

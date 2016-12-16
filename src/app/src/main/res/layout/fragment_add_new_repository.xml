@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="io.github.lonamiwebs.stringlate.activities.MainActivity">
+    tools:context="io.github.lonamiwebs.stringlate.activities.repositories.AddNewRepositoryFragment">
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,10 +55,28 @@
         android:id="@+id/urlEditText"
         android:inputType="textUri" />
 
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/next"
-        android:onClick="onNextClick" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/discoverButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableStart="@drawable/ic_explore_black_24dp"
+            android:drawableLeft="@drawable/ic_explore_black_24dp"
+            style="?buttonBarButtonStyle"
+            android:text="@string/discover" />
+
+        <Button
+            android:id="@+id/nextButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="?buttonBarButtonStyle"
+            android:text="@string/add_new_repo" />
+    </LinearLayout>
 
 </LinearLayout>

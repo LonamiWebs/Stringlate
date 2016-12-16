@@ -21,8 +21,8 @@ import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.utilities.GitHub;
 
 import static android.view.View.GONE;
-import static io.github.lonamiwebs.stringlate.activities.TranslateActivity.EXTRA_FILENAME;
-import static io.github.lonamiwebs.stringlate.activities.TranslateActivity.EXTRA_XML_CONTENT;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_FILENAME;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_XML_CONTENT;
 
 public class CreateGistActivity extends AppCompatActivity {
 

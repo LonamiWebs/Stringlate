@@ -98,4 +98,6 @@
     <string name="do_overwrite">Overwrite</string>
     <string name="do_not_overwrite">Don\'t overwrite</string>
     <string name="save_before_sync_required">You need to save before synchronizing.</string>
+    <string name="history">History</string>
+    <string name="add_new_repo">Add new repository</string>
 </resources>
