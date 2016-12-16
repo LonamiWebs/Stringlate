@@ -13,8 +13,22 @@ import java.util.HashSet;
 
 // Class used to parse strings.xml files into Resources objects
 public class ResourcesParser {
+
+    //region Constants
+
     // We don't use namespaces
-    private static final String ns = null;
+    private final static String ns = null;
+
+    private final static String RESOURCES = "resources";
+    private final static String STRING = "string";
+    private final static String ID = "name";
+    private final static String TRANSLATABLE = "translatable";
+    private final static String MODIFIED = "modified";
+
+    private final static boolean DEFAULT_TRANSLATABLE = true;
+    private final static boolean DEFAULT_MODIFIED = false;
+
+    //endregion
 
     //region Xml -> Resources
 
@@ -40,13 +54,13 @@ public class ResourcesParser {
 
         HashSet<ResourcesString> strings = new HashSet<>();
 
-        parser.require(XmlPullParser.START_TAG, ns, "resources");
+        parser.require(XmlPullParser.START_TAG, ns, RESOURCES);
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG)
                 continue;
 
             String name = parser.getName();
-            if (name.equals("string"))
+            if (name.equals(STRING))
                 strings.add(readResourceString(parser));
             else
                 skip(parser);
@@ -59,24 +73,30 @@ public class ResourcesParser {
             throws XmlPullParserException, IOException {
 
         String id, content;
-        boolean translatable = true;
-        boolean modified = false;
+        boolean translatable, modified;
 
-        parser.require(XmlPullParser.START_TAG, ns, "string");
+        parser.require(XmlPullParser.START_TAG, ns, STRING);
 
-        id = parser.getAttributeValue(null, "name");
-        if ("false".equals(parser.getAttributeValue(null, "translatable")))
-            translatable = false;
+        id = parser.getAttributeValue(null, ID);
+        translatable = readBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE);
 
         // Metadata
-        if ("true".equals(parser.getAttributeValue(null, "modified")))
-            modified = true;
+        modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
 
         // The content must be read last, since it also consumes the tag
         content = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "string");
+        parser.require(XmlPullParser.END_TAG, ns, STRING);
 
         return new ResourcesString(id, content, translatable, modified);
+    }
+
+    // Reads a boolean attribute from an xml tag
+    private static boolean readBooleanAttr(XmlPullParser parser, String attr, boolean defaultV) {
+        String value = parser.getAttributeValue(null, attr);
+        if (value == null)
+            return defaultV;
+
+        return Boolean.parseBoolean(value);
     }
 
     // Reads the text from an xml tag
@@ -117,26 +137,28 @@ public class ResourcesParser {
 
             //strings.xml do not have the default start declaration
             //serializer.startDocument("UTF-8", true);
-            serializer.startTag(ns, "resources");
+            serializer.startTag(ns, RESOURCES);
 
             for (ResourcesString rs : resources) {
                 if (!rs.hasContent())
                     continue;
 
-                serializer.startTag(ns, "string");
-                serializer.attribute(ns, "name", rs.getId());
-                if (!rs.isTranslatable())
-                    serializer.attribute(ns, "translatable", "false");
+                serializer.startTag(ns, STRING);
+                serializer.attribute(ns, ID, rs.getId());
+
+                // Only save changes that differ from the default, to save space
+                if (rs.isTranslatable() != DEFAULT_TRANSLATABLE)
+                    serializer.attribute(ns, TRANSLATABLE, Boolean.toString(rs.isTranslatable()));
 
                 if (addMetadata) {
-                    String modified = rs.wasModified() ? "true" : "false";
-                    serializer.attribute(ns, "modified", modified);
+                    if (rs.wasModified() != DEFAULT_MODIFIED)
+                        serializer.attribute(ns, MODIFIED, Boolean.toString(rs.wasModified()));
                 }
 
                 serializer.text(rs.getContent());
-                serializer.endTag(ns, "string");
+                serializer.endTag(ns, STRING);
             }
-            serializer.endTag(ns, "resources");
+            serializer.endTag(ns, RESOURCES);
             serializer.flush();
             return true;
         } catch (IOException e) {
