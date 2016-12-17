@@ -1,5 +1,5 @@
 <resources>
-  <string name="add_locale">新增語言語言地區</string>
+  <string name="add_locale">新增語言地區</string>
   <string name="add_locale_to_start">建立一個新語言地區以開始。</string>
   <string name="add_new_repo">加入新的版控倉庫</string>
   <string name="apps_repo_not_downloaded">應用軟體庫尚未被下載。輕觸「%s」選單按鈕以下載應用軟體庫索引資料以探索所有可翻譯的應用軟體。</string>
