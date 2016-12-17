@@ -84,7 +84,7 @@ public class ResourcesParser {
         modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
 
         // The content must be read last, since it also consumes the tag
-        content = readText(parser);
+        content = getInnerXml(parser);
         parser.require(XmlPullParser.END_TAG, ns, STRING);
 
         return new ResourcesString(id, content, translatable, modified);
@@ -99,15 +99,46 @@ public class ResourcesParser {
         return Boolean.parseBoolean(value);
     }
 
-    // Reads the text from an xml tag
-    private static String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
-        String result = "";
-        if (parser.next() == XmlPullParser.TEXT) {
-            result = parser.getText();
-            parser.nextTag();
+    // Reads the inner xml of a tag before moving to the next one
+    // Original source: stackoverflow.com/a/16069754/4759433 by @Maarten
+    private static String getInnerXml(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+
+        StringBuilder sb = new StringBuilder();
+        int depth = 1;
+        while (depth != 0) {
+            switch (parser.next()) {
+                case XmlPullParser.END_TAG:
+                    depth--;
+                    if (depth > 0) {
+                        sb.append("</")
+                                .append(parser.getName())
+                                .append(">");
+                    }
+                    break;
+                case XmlPullParser.START_TAG:
+                    depth++;
+                    StringBuilder attrs = new StringBuilder();
+                    for (int i = 0; i < parser.getAttributeCount(); i++) {
+                        attrs.append(parser.getAttributeName(i))
+                                .append("=\"")
+                                .append(parser.getAttributeValue(i))
+                                .append("\" ");
+                    }
+                    sb.append("<")
+                            .append(parser.getName())
+                            .append(" ")
+                            .append(attrs.toString())
+                            .append(">");
+                    break;
+                default:
+                    sb.append(parser.getText());
+                    break;
+            }
         }
-        return result;
+        return sb.toString();
     }
+
 
     // Skips a tag in the xml
     private static void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
