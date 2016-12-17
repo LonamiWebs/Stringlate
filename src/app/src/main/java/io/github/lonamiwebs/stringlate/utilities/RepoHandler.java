@@ -108,16 +108,9 @@ public class RepoHandler {
     // Determines whether a given locale is saved or not
     public boolean hasLocale(String locale) { return getResourcesFile(locale).isFile(); }
 
-    // Determines whether a given locale has been modified or not
-    public boolean hasModifiedLocale(String locale) {
-        if (mLocales.contains(locale))
-            return Resources.fromFile(getResourcesFile(locale)).wasModified();
-        else
-            return false;
-    }
-
     // Determines whether any file has been modified,
-    // i.e. it is not the original downloaded file any more
+    // i.e. it is not the original downloaded file any more.
+    // Note that previous modifications do NOT imply the file being unsaved.
     public boolean anyModified() {
         for (String locale : mLocales)
             if (Resources.fromFile(getResourcesFile(locale)).wasModified())

@@ -217,6 +217,8 @@ public class TranslateActivity extends AppCompatActivity {
                 }
 
                 if (mRepo.anyModified()) {
+                    // Do not mistake unsaved changes (modifications, .isSaved())
+                    // with the file being ever modified (.wasModified())
                     new AlertDialog.Builder(context)
                             .setTitle(R.string.files_modified)
                             .setMessage(R.string.files_modified_keep_changes)
@@ -233,6 +235,9 @@ public class TranslateActivity extends AppCompatActivity {
                                 }
                             })
                             .show();
+                } else {
+                    // No file has been modified, simply update the strings discarding changes
+                    updateStrings(false);
                 }
             }
         });

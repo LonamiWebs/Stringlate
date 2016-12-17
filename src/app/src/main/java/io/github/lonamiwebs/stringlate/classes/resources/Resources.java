@@ -70,13 +70,15 @@ public class Resources implements Iterable<ResourcesString> {
         File mModifiedFile = new File(path);
 
         if (mModifiedFile.isFile()) {
-            for (ResourcesString rs : strings) {
+            for (ResourcesString rs : mStrings) {
                 String content = rs.getContent();
                 // Clear the content and then set the original one
                 // so 'modified' equals true
                 rs.setContent("");
                 rs.setContent(content);
             }
+            // Set saved changes = false to force saving
+            mSavedChanges = false;
             save();
 
             // Delete the file, it's now useless
@@ -85,7 +87,7 @@ public class Resources implements Iterable<ResourcesString> {
         // -- End of backwards-compatibility code
 
         mModified = false;
-        for (ResourcesString rs : strings) {
+        for (ResourcesString rs : mStrings) {
             if (rs.wasModified()) {
                 mModified = true;
                 break;
@@ -167,6 +169,9 @@ public class Resources implements Iterable<ResourcesString> {
         return mSavedChanges;
     }
 
+    // Determines whether the file was ever modified or not (any of its strings were modified)
+    public boolean wasModified() { return mModified; }
+
     // If there are unsaved changes, saves the file
     // If the file was saved successfully or there were no changes to save, returns true
     public boolean save() {
@@ -198,9 +203,6 @@ public class Resources implements Iterable<ResourcesString> {
     private boolean save(OutputStream out, boolean addMetadata) {
         return ResourcesParser.parseToXml(this, out, false, addMetadata);
     }
-
-    // Determines whether the file was modified or not (.save() has ever been called)
-    public boolean wasModified() { return mModified; }
 
     public void delete() {
         mFile.delete();
