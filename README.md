@@ -22,6 +22,11 @@ copy its contents to the clipboard.
 Of course, once you have the final `strings.xml`, drop the author an issue and
 let them know you've translated their application. They'll be really happy!
 
+## Help
+Still have questions on how to use the application? Check out the links below
+to get more help on your own language (or one you're able to talk):
+- [English](help/en.md)
+
 ## Permissions
 - **Internet**. Required to be able to fetch a remote GitHub repository in
   order to download its contents. Also used to post a GitHub *Gist* and to
@@ -44,4 +49,5 @@ interested, please drop an issue on GitHub and I'll take a look at it. You
 would be my first donor!
 
 ## License
-The project is licensed under the [MIT License](https://github.com/LonamiWebs/Stringlate/blob/master/LICENSE)
+The project is licensed under the
+[MIT License](https://github.com/LonamiWebs/Stringlate/blob/master/LICENSE).
