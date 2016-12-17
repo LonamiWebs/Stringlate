@@ -13,20 +13,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
+import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.applications.Application;
 import io.github.lonamiwebs.stringlate.classes.applications.ApplicationAdapter;
 import io.github.lonamiwebs.stringlate.classes.applications.ApplicationList;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.FileCache;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
-import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class DiscoverActivity extends AppCompatActivity {
 
     //region Members
 
+    private TextView mNoRepositoryTextView;
     private ListView mApplicationListView;
 
     private ApplicationList mApplicationList;
@@ -42,6 +49,8 @@ public class DiscoverActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discover);
 
+        mNoRepositoryTextView = (TextView)findViewById(R.id.noRepositoryTextView);
+
         mApplicationListView = (ListView)findViewById(R.id.applicationListView);
         mApplicationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -56,8 +65,12 @@ public class DiscoverActivity extends AppCompatActivity {
 
         mApplicationList = new ApplicationList(this);
         if (!mApplicationList.loadIndexXml()) {
-            Toast.makeText(this, R.string.load_apps_repo_failed, Toast.LENGTH_LONG).show();
+            mNoRepositoryTextView.setText(getString(
+                    R.string.apps_repo_not_downloaded, getString(R.string.update_applications)));
+
+            mNoRepositoryTextView.setVisibility(VISIBLE);
         }
+        // The ListView is refreshed after the menu is created
     }
 
     //endregion
@@ -158,8 +171,18 @@ public class DiscoverActivity extends AppCompatActivity {
     }
 
     void refreshListView(String filter) {
-        mApplicationListView.setAdapter(new ApplicationAdapter(
-                this, R.layout.item_application_list,
-                mApplicationList.getApplications(mApplyAppsLimit, filter)));
+        ArrayList<Application> applications =
+                mApplicationList.getApplications(mApplyAppsLimit, filter);
+
+        if (applications.isEmpty()) {
+            mNoRepositoryTextView.setVisibility(VISIBLE);
+            mApplicationListView.setVisibility(GONE);
+            mApplicationListView.setAdapter(null);
+        } else {
+            mNoRepositoryTextView.setVisibility(GONE);
+            mApplicationListView.setVisibility(VISIBLE);
+            mApplicationListView.setAdapter(new ApplicationAdapter(
+                    this, R.layout.item_application_list, applications));
+        }
     }
 }

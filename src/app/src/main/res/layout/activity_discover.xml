@@ -11,10 +11,17 @@
     tools:context="io.github.lonamiwebs.stringlate.activities.DiscoverActivity"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/noRepositoryTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
     <ListView
         android:id="@+id/applicationListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
     </ListView>
 </LinearLayout>
