@@ -56,6 +56,34 @@ public class Resources implements Iterable<ResourcesString> {
         mStrings = strings;
         mSavedChanges = file.isFile();
 
+        // Backwards compatibility with version 0.9
+        // If the .modified file exists, assume all the local strings were modified
+        // This will allow old users to pull new changes without overwriting local
+        // TODO Remove this on version 1.0 (or similar)
+
+        // -- Begin of backwards-compatibility code
+        String path = mFile.getAbsolutePath();
+        int extensionIndex = path.lastIndexOf('.');
+        if (extensionIndex > -1)
+            path = path.substring(0, extensionIndex);
+        path += ".modified";
+        File mModifiedFile = new File(path);
+
+        if (mModifiedFile.isFile()) {
+            for (ResourcesString rs : strings) {
+                String content = rs.getContent();
+                // Clear the content and then set the original one
+                // so 'modified' equals true
+                rs.setContent("");
+                rs.setContent(content);
+            }
+            save();
+
+            // Delete the file, it's now useless
+            mModifiedFile.delete();
+        }
+        // -- End of backwards-compatibility code
+
         mModified = false;
         for (ResourcesString rs : strings) {
             if (rs.wasModified()) {
