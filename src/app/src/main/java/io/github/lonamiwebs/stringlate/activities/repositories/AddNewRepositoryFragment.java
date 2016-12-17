@@ -214,8 +214,8 @@ public class AddNewRepositoryFragment extends Fragment {
                 if (status)
                     launchTranslateActivity(owner, repository);
             }
-        }, true);
-        // true, overwrite any previous file (there won't be any)
+        }, false);
+        // false, do not keep any previous modification (there should not be any)
     }
 
     //endregion

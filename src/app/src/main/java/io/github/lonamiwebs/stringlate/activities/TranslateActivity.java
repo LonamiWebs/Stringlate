@@ -219,14 +219,14 @@ public class TranslateActivity extends AppCompatActivity {
                 if (mRepo.anyModified()) {
                     new AlertDialog.Builder(context)
                             .setTitle(R.string.files_modified)
-                            .setMessage(R.string.files_modified_long)
-                            .setPositiveButton(R.string.do_overwrite, new DialogInterface.OnClickListener() {
+                            .setMessage(R.string.files_modified_keep_changes)
+                            .setPositiveButton(R.string.keep_changes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     updateStrings(true);
                                 }
                             })
-                            .setNegativeButton(R.string.do_not_overwrite, new DialogInterface.OnClickListener() {
+                            .setNegativeButton(R.string.discard_changes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     updateStrings(false);
@@ -239,7 +239,7 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     // Synchronize our local strings.xml files with the remote GitHub repository
-    private void updateStrings(boolean overwrite) {
+    private void updateStrings(boolean keepChanges) {
         if (!GitHub.gCanCall()) {
             Toast.makeText(getApplicationContext(),
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
@@ -265,7 +265,7 @@ public class TranslateActivity extends AppCompatActivity {
                 mDefaultResources = mRepo.loadResources(null);
                 loadLocalesSpinner();
             }
-        }, overwrite);
+        }, keepChanges);
     }
 
     //endregion

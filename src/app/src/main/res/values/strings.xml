@@ -94,9 +94,9 @@
     <string name="search_apps_ellipsis">Search applications…</string>
     <string name="icon_cache_cleared">Icon cache cleared (%s freed).</string>
     <string name="files_modified">Some files were modified</string>
-    <string name="files_modified_long">Some resource files were modified. Do you wish to overwrite the local changes with the remote repository files?</string>
-    <string name="do_overwrite">Overwrite</string>
-    <string name="do_not_overwrite">Don\'t overwrite</string>
+    <string name="files_modified_keep_changes">Some resource files were modified. Do you wish to keep your local changes along with the remote modifications, or discard all your changes?</string>
+    <string name="keep_changes">Keep changes</string>
+    <string name="discard_changes">Discard changes</string>
     <string name="save_before_sync_required">You need to save before synchronizing.</string>
     <string name="history">History</string>
     <string name="add_new_repo">Add new repository</string>

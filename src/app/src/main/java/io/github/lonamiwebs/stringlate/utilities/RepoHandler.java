@@ -12,10 +12,11 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
+import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
+import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 
 // Class used to inter-operate with locally saved GitHub "repositories"
 // What is stored are simply the strings.xml file under a tree directory structure:
@@ -188,14 +189,14 @@ public class RepoHandler {
 
     //region Downloading locale files
 
-    public void syncResources(ProgressUpdateCallback callback, boolean overwrite) {
-        scanStringsXml(callback, overwrite);
+    public void syncResources(ProgressUpdateCallback callback, boolean keepChanges) {
+        scanStringsXml(callback, keepChanges);
     }
 
     // Step 1: Scans the current repository to find strings.xml files
     //         If any file is found, its remote path and locale name is added to a list,
     //         and the Step 2. is called (downloadLocales).
-    private void scanStringsXml(final ProgressUpdateCallback callback, final boolean overwrite) {
+    private void scanStringsXml(final ProgressUpdateCallback callback, final boolean keepChanges) {
         callback.onProgressUpdate(
                 mContext.getString(R.string.scanning_repository),
                 mContext.getString(R.string.scanning_repository_long));
@@ -215,18 +216,15 @@ public class RepoHandler {
                         JSONObject item = items.getJSONObject(i);
                         Matcher m = mValuesLocalePattern.matcher(item.getString("path"));
                         if (m.find()) {
-                            String locale = m.group(1) == null ? DEFAULT_LOCALE : m.group(1);
-                            if (overwrite || !hasModifiedLocale(locale)) {
-                                remotePaths.add(item.getString("path"));
-                                locales.add(m.group(1) == null ? DEFAULT_LOCALE : m.group(1));
-                            }
+                            remotePaths.add(item.getString("path"));
+                            locales.add(m.group(1) == null ? DEFAULT_LOCALE : m.group(1));
                         }
                     }
                     if (remotePaths.size() == 0) {
                         callback.onProgressFinished(
                                 mContext.getString(R.string.no_strings_found), false);
                     } else {
-                        downloadLocales(remotePaths, locales, callback);
+                        downloadLocales(remotePaths, locales, keepChanges, callback);
                     }
                 } catch (JSONException e) {
                     callback.onProgressFinished(
@@ -240,6 +238,7 @@ public class RepoHandler {
     //         download them to our local "repository".
     private void downloadLocales(final ArrayList<String> remotePaths,
                                  final ArrayList<String> locales,
+                                 final boolean keepChanges,
                                  final ProgressUpdateCallback callback) {
         callback.onProgressUpdate(
                 mContext.getString(R.string.downloading_strings_locale, 0, remotePaths.size()),
@@ -250,7 +249,7 @@ public class RepoHandler {
             protected Void doInBackground(Void... voids) {
                 for (int i = 0; i < remotePaths.size(); i++) {
                     publishProgress(i);
-                    downloadLocale(remotePaths.get(i), locales.get(i));
+                    downloadLocale(remotePaths.get(i), locales.get(i), keepChanges);
                 }
                 return null;
             }
@@ -276,11 +275,41 @@ public class RepoHandler {
     }
 
     // Downloads a single locale file to our local "repository"
-    public void downloadLocale(String remotePath, String locale) {
+    public void downloadLocale(String remotePath, String locale, boolean keepChanges) {
         final String urlString = String.format(RAW_FILE_URL, mOwner, mRepo, remotePath);
         final File outputFile = getResourcesFile(locale);
 
-        FileDownloader.downloadFile(urlString, outputFile);
+        if (keepChanges) {
+            final ArrayList<ResourcesString> strings = new ArrayList<>();
+            // Load in memory all the previous resource strings for this locale.
+            // After the remote file has been downloaded, add our modifications
+            // to this new file and save it again, so our changes are conserved.
+            Resources resources = Resources.fromFile(outputFile);
+            if (resources != null) {
+                for (ResourcesString rs : resources) {
+                    if (rs.wasModified())
+                        strings.add(rs);
+                }
+            }
+
+            FileDownloader.downloadFile(urlString, outputFile);
+
+            // Now load the remote file from the repository
+            // and set the modified contents from the old file
+            resources = Resources.fromFile(outputFile);
+            if (resources != null) {
+                for (ResourcesString rs : strings) {
+                    // Perhaps the remote files equal our modified content
+                    // In that case, .setContent() will do nothing and the
+                    // new string will remain as non-modified
+                    resources.setContent(rs.getId(), rs.getContent());
+                }
+                resources.save();
+            }
+        } else {
+            // Don't keep any change. Simply download the remote file
+            FileDownloader.downloadFile(urlString, outputFile);
+        }
     }
 
     //endregion
