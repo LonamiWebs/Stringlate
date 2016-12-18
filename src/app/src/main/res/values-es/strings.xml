@@ -54,7 +54,6 @@
   <string name="invalid_repo">El repositorio introducido no parece válido.</string>
   <string name="is_public_gist">Este es un Gist público</string>
   <string name="keep_changes">Mantener los cambios</string>
-  <string name="load_apps_repo_failed">No se puede cargar el repositorio de aplicaciones, por favor, sincroniza y vuelve a intentarlo.</string>
   <string name="loading_ellipsis">Cargando…</string>
   <string name="loading_index_xml">Cargando index.xml…</string>
   <string name="loading_index_xml_long">Cargando y minimizando el índice de aplicaciones…</string>
@@ -101,4 +100,5 @@
   <string name="update_strings">Actualizar strings.xml</string>
   <string name="welcome">¡Bienvenido/a a Stringlate! Introduce el nombre del proyecto y su dueño o copia la URL del repositorio antes de continuar.</string>
   <string name="xml_copied_to_clipboard">El contenido del archivo %s ha sido copiado al portapapeles</string>
+  <string name="apps_repo_not_downloaded">No ha descargado el repositorio de aplicaciones todavía. Toque el botón de \"%s\" en el menú para descargar el índice del repositorio si quiere explorar todas las aplicaciones disponibles.</string>
 </resources>

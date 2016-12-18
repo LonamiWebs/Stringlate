@@ -18,8 +18,6 @@
   <string name="delete_repository_confirm_long">Wollen Sie wirklich die Quelle \"%s\" löschen? Die lokale Kopie wird vom Gerätespeicher gelöscht, kann abe im nachhinein wieder hinzugefügt werden.</string>
   <string name="delete_string">Zeichenfolge löschen</string>
   <string name="discover">Quellen entdecken</string>
-  <string name="do_not_overwrite">Nicht überschreiben</string>
-  <string name="do_overwrite">Überschreiben</string>
   <string name="done">Fertig!</string>
   <string name="downloading_index_jar">Lade index.jar herunter…</string>
   <string name="downloading_index_jar_long">index.jar, welches alle Applikationen beinhaltet, wird heruntergeladen…</string>
@@ -41,7 +39,6 @@
   <string name="extracting_index_xml">index.xml wird aus index.jat extrahiert…</string>
   <string name="extracting_index_xml_long">index.xml, welches die Information der Applikation enthällt, wird extrahiert…</string>
   <string name="files_modified">Einige Dateien wurden modifiziert</string>
-  <string name="files_modified_long">Einige Quelldateien wurden modifiziert, wollen sie die lokalen Veränderung mit denen der entfernten Quelle überschreiben?</string>
   <string name="gist_description">Gist Beschreibung(optional):</string>
   <string name="gist_filename">Gist Dateiname:</string>
   <string name="gist_url_copied">Die Gist URL wurde in die Zwischenablage kopiert.</string>
@@ -50,7 +47,6 @@
   <string name="invalid_locale">Die Eingangssprachdatei scheint nicht gültig zu sein.</string>
   <string name="invalid_repo">Die Eingangsquelle scheint nicht gültig zu sein.</string>
   <string name="is_public_gist">Das ist eine öffentliche Gist</string>
-  <string name="load_apps_repo_failed">Konnte nicht die Applikationsquelle laden, bitte synchronisieren Sie und versuchen sie es erneut.</string>
   <string name="loading_ellipsis">Laden…</string>
   <string name="loading_index_xml">Lade index.xml…</string>
   <string name="loading_index_xml_long">Lade und minimalisiere den Index der Applikation…</string>
@@ -96,4 +92,13 @@
   <string name="update_strings">strings.xml updaten</string>
   <string name="welcome">Willkommen zu Stringlate! Bitte geben Sie einen Projektnamen und seinen Autor oder einfach den Link der GitHub Quelle um fortzufahren.</string>
   <string name="xml_copied_to_clipboard">Die Dateiinhalte von %s wurden in die Zwischenablage kopiert</string>
+  <string name="add_new_repo">Neues Repository hinzufügen</string>
+  <string name="apps_repo_not_downloaded">Das App-Repository wurde noch nicht heruntergeladen. Drücke den \\\"%s\\\" Menü Button um das Verzeichnis herunterzuladen und alle verfügbaren Apps zu durchsuchen.</string>
+  <string name="discard_changes">Änderungen verwerfen</string>
+  <string name="files_modified_keep_changes">Einige Quelldateien wurde verändert. Sollen die lokalen Änderungen zusammen mit den remote getätigten Änderungen behalten werden oder sollen alle Änderungen verworfen werden?</string>
+  <string name="history">Verlauf</string>
+  <string name="history_contains_repos_hint">Dies sind die bereits synchronisierten Repositories. Wähle eines aus oder füge ein neues hinzu um fortzufahren.</string>
+  <string name="history_no_repos_hint">Neu hier? Wechsle zum \\\"%s\\\" Tab um zu beginnen!</string>
+  <string name="keep_changes">Änderungen behalten</string>
+  <string name="repositories_colon">Repositories:</string>
 </resources>
