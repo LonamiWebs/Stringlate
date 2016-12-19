@@ -108,4 +108,5 @@
     <string name="help">Help</string>
     <string name="open_online_help">Open online help</string>
     <string name="open_online_help_long">Do you wish to open the online help on the web browser? You will be presented an index to choose the language of your preference.</string>
+    <string name="translation_progress">%1$d/%2$d strings translated.</string>
 </resources>

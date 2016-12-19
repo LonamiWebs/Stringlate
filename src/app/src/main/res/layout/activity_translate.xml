@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:id="@+id/translationLayout"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -112,6 +112,20 @@
                     android:id="@+id/nextButton"
                     android:onClick="onNextClick"/>
             </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progressProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/drawable_progress_bar"/>
+
+            <TextView
+                android:id="@+id/progressTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
