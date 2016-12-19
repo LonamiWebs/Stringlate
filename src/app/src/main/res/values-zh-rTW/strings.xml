@@ -14,7 +14,7 @@
   <string name="default_gist_share_description">使用 Stringlate 分享的 strings.xml 使用者介面檔案翻譯</string>
   <string name="delete_ellipsis">刪除……</string>
   <string name="delete_locale">刪除語言地區</string>
-  <string name="delete_locale_confirm_long">您真的希望刪除「%」語言地區嗎？它的所有字串都將遺失。</string>
+  <string name="delete_locale_confirm_long">您真的希望刪除「%s」語言地區嗎？它的所有字串都將遺失。</string>
   <string name="delete_no_locale_bad_joke">您必須要先有一個語言地區才能夠將它的存在從這個星球上抹除喔 ;-)</string>
   <string name="delete_repository">刪除版控倉庫</string>
   <string name="delete_repository_confirm_long">您真的希望刪除「%s」版控倉庫嗎？本地端的克隆(clone)會從手機記憶體中清除，雖然日後您仍可以再把它加回來。</string>

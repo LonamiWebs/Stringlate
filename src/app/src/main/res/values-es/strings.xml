@@ -13,7 +13,7 @@
   <string name="default_gist_share_description">Traducción de strings.xml compartida con Stringlate</string>
   <string name="delete_ellipsis">Borrar…</string>
   <string name="delete_locale">Borrar traducción</string>
-  <string name="delete_locale_confirm_long">¿Realmente quieres borrar la traducción  \"%s\"? Perderás todo el texto.</string>
+  <string name="delete_locale_confirm_long">¿Realmente quieres borrar la traducción \"%s\"? Perderás todo el texto.</string>
   <string name="delete_no_locale_bad_joke">Debes tener una traducción antes de querer eliminarla de este mundo ;-)</string>
   <string name="delete_repository">Repositorio borrado</string>
   <string name="delete_repository_confirm_long">¿Realmente quieres eliminar el repositorio \"%s"\"? El clon local será eliminado de la memoria del teléfono aunque lo puedas añadir luego.</string>

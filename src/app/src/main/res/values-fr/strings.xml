@@ -40,7 +40,7 @@
     <string name="export_sd_card">Exporter vers la carte SD</string>
     <string name="export_share">Partager le XML généré</string>
     <string name="extracting_index_xml">Extraction du fichier index.xml du index.jar en cours…</string>
-    <string name="extracting_index_xml_long">Extraction du fichier index.xml  contenant les informations des applications</string>
+    <string name="extracting_index_xml_long">Extraction du fichier index.xml contenant les informations des applications</string>
     <string name="files_modified">Des fichiers ont été modifiés</string>
     <string name="files_modified_keep_changes">Des fichiers ressources ont été modifiés. Voulez-vous conserver les changements locaux en plus des modifications, ou les abandonner&#160;?</string>
     <string name="gist_description">Description du Gist (optionnel)&#160;:</string>
