@@ -3,6 +3,7 @@
 - [How do I tell the developers that I translated their app?](#how-do-i-tell-the-developers-that-i-translated-their-app)
 - [Do I need this app to help the developers?](#do-i-need-this-app-to-help-the-developers)
 - [How do I load my previous work?](#how-do-i-load-my-previous-work)
+- [What does `%s` or `%1$d/%2$d` mean?](#what-does-s-or-1d2d-mean)
 - [I will use this app to cause chaos!](#i-will-use-this-app-to-cause-chaos)
 
 ## I am new to GitHub. Where do I start?
@@ -67,6 +68,17 @@ automatically**, without the need for you to take any further action.
 When you edit the translation string, these changes are conserved on the phone
 RAM. For them to **persist**, make sure you click the **Save** button on screen.
 Next time you open the application, you will see these changes.
+
+## What does `%s` or `%1$d/%2$d` mean?
+`%s` is used to "insert" another **s**tring on that position. For example,
+imagine you had to greet your users with "*Hello Username, welcome!*".
+*Username* would be a value that can change, so we would write
+"*Hello `%s`, welcome!*" and the developer would insert the right value there.
+
+The `%1$d` syntax, albeit being a bit more complex, simply indicates the
+position to insert a **d**ecimal number. For example, when showing the progress
+"*42 out of 100*", you would write "*`%1$d` out of `%2$d`*", because in some
+languages the order might change, and thus the position is required.
 
 ## I will use this app to cause chaos!
 Please **don't**. Application developers are people like you, with good
