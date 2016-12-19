@@ -92,7 +92,7 @@ public class DiscoverActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.discover_menu, menu);
+        inflater.inflate(R.menu.menu_discover, menu);
 
         // Associate the searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);

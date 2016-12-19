@@ -1,4 +1,4 @@
-# Stringlate help
+# Stringlate online help
 - [I am new to GitHub. Where do I start?](#i-am-new-to-github-where-do-i-start)
 - [How do I tell the developers that I translated their app?](#how-do-i-tell-the-developers-that-i-translated-their-app)
 - [Do I need this app to help the developers?](#do-i-need-this-app-to-help-the-developers)

@@ -104,4 +104,8 @@
     <string name="history_contains_repos_hint">These are your previously synchronized repositories. Select one below or add a new one to continue.</string>
     <string name="repositories_colon">Repositories:</string>
     <string name="show_more">Show more</string>
+    <string name="clear_icons_cache">Clear icons cache</string>
+    <string name="help">Help</string>
+    <string name="open_online_help">Open online help</string>
+    <string name="open_online_help_long">Do you wish to open the online help on the web browser? You will be presented an index to choose the language of your preference.</string>
 </resources>

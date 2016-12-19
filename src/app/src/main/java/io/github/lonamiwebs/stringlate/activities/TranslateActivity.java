@@ -109,7 +109,7 @@ public class TranslateActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.translate_menu, menu);
+        inflater.inflate(R.menu.menu_translate, menu);
 
         mShowTranslated = menu.findItem(R.id.showTranslatedCheckBox).isChecked();
         return true;
