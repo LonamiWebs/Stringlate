@@ -103,4 +103,5 @@
     <string name="history_no_repos_hint">New here? Head to the \"%s\" tab to get started!</string>
     <string name="history_contains_repos_hint">These are your previously synchronized repositories. Select one below or add a new one to continue.</string>
     <string name="repositories_colon">Repositories:</string>
+    <string name="show_more">Show more</string>
 </resources>
