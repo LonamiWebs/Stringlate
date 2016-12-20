@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.util.HashSet;
 
 // Class used to parse strings.xml files into Resources objects
+// Please NOTE that strings with `translatable="false"` will NOT be parsed
+// The application doesn't need these to work (as of now, if any use is found, revert this file)
 public class ResourcesParser {
 
     //region Constants
@@ -60,34 +62,45 @@ public class ResourcesParser {
                 continue;
 
             String name = parser.getName();
-            if (name.equals(STRING))
-                strings.add(readResourceString(parser));
+            if (name.equals(STRING)) {
+                ResourcesString rs = readResourceString(parser);
+                // Avoid strings that cannot be translated (these will be null)
+                if (rs != null)
+                    strings.add(rs);
+            }
             else
                 skip(parser);
         }
         return strings;
     }
 
-    // Reads a <string name="...">...</string> tag from the xml
+    // Reads a <string name="...">...</string> tag from the xml.
+    // Returns null if the string cannot be translated
     private static ResourcesString readResourceString(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
         String id, content;
-        boolean translatable, modified;
+        boolean modified;
 
         parser.require(XmlPullParser.START_TAG, ns, STRING);
 
-        id = parser.getAttributeValue(null, ID);
-        translatable = readBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE);
+        if (!readBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE)) {
+            // We don't care about not-translatable strings
+            skipInnerXml(parser);
+            parser.require(XmlPullParser.END_TAG, ns, STRING);
+            return null;
+        } else {
+            id = parser.getAttributeValue(null, ID);
 
-        // Metadata
-        modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
+            // Metadata
+            modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
 
-        // The content must be read last, since it also consumes the tag
-        content = getInnerXml(parser);
-        parser.require(XmlPullParser.END_TAG, ns, STRING);
+            // The content must be read last, since it also consumes the tag
+            content = getInnerXml(parser);
+            parser.require(XmlPullParser.END_TAG, ns, STRING);
 
-        return new ResourcesString(id, content, translatable, modified);
+            return new ResourcesString(id, content, modified);
+        }
     }
 
     // Reads a boolean attribute from an xml tag
@@ -139,6 +152,17 @@ public class ResourcesParser {
         return sb.toString();
     }
 
+    // Skips the inner XML once inside a tag
+    private static void skipInnerXml(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+        int depth = 1;
+        while (depth != 0) {
+            switch (parser.next()) {
+                case XmlPullParser.END_TAG: depth--; break;
+                case XmlPullParser.START_TAG: depth++; break;
+            }
+        }
+    }
 
     // Skips a tag in the xml
     private static void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -177,11 +201,8 @@ public class ResourcesParser {
                 serializer.startTag(ns, STRING);
                 serializer.attribute(ns, ID, rs.getId());
 
-                // Only save changes that differ from the default, to save space
-                if (rs.isTranslatable() != DEFAULT_TRANSLATABLE)
-                    serializer.attribute(ns, TRANSLATABLE, Boolean.toString(rs.isTranslatable()));
-
                 if (addMetadata) {
+                    // Only save changes that differ from the default, to save space
                     if (rs.wasModified() != DEFAULT_MODIFIED)
                         serializer.attribute(ns, MODIFIED, Boolean.toString(rs.wasModified()));
                 }

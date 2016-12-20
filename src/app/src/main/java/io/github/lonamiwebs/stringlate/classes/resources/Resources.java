@@ -99,16 +99,8 @@ public class Resources implements Iterable<ResourcesString> {
 
     //region Getting content
 
-    public int count(boolean includeNonTranslatable) {
-        if (includeNonTranslatable)
-            return mStrings.size();
-        else {
-            int count = 0;
-            for (ResourcesString rs : mStrings)
-                if (rs.isTranslatable())
-                    count++;
-            return count;
-        }
+    public int count() {
+        return mStrings.size();
     }
 
     public boolean contains(String resourceId) {

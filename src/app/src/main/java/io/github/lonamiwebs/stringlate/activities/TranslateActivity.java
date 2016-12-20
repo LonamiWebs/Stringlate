@@ -566,9 +566,7 @@ public class TranslateActivity extends AppCompatActivity {
             mProgressProgressBar.setProgress(0);
             mProgressTextView.setText("");
         } else {
-            int max = mDefaultResources.count(false); // Exclude non-translatable strings
-            // TODO: Maybe do NOT save those? They're never used on Stringlate.
-
+            int max = mDefaultResources.count();
             // The selected resources might have more strings than the default does.
             // For example, when an application got updated and dropped some unused strings.
             // For this reason, we need to make sure that these are on the default resources.
@@ -613,13 +611,12 @@ public class TranslateActivity extends AppCompatActivity {
         ArrayList<String> spinnerArray = new ArrayList<>();
         if (mShowTranslated) {
             for (ResourcesString rs : mDefaultResources)
-                if (rs.isTranslatable())
-                    spinnerArray.add(rs.getId());
+                spinnerArray.add(rs.getId());
         } else {
             // If we're not showing the strings with a translation, we also need to
             // make sure that the currently selected locale doesn't already have them
             for (ResourcesString rs : mDefaultResources)
-                if (!mSelectedLocaleResources.contains(rs.getId()) && rs.isTranslatable())
+                if (!mSelectedLocaleResources.contains(rs.getId()))
                     spinnerArray.add(rs.getId());
 
             // Show a warning so the user (or developer) knows that things are working

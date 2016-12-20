@@ -6,7 +6,6 @@ public class ResourcesString implements Comparable<ResourcesString> {
 
     private final String mId;
     private String mContent;
-    private final boolean mTranslatable;
 
     // "metadata" used to keep track whether a string is the original or not. This
     // will be later used when downloading remote changes, to keep local if modified.
@@ -17,14 +16,12 @@ public class ResourcesString implements Comparable<ResourcesString> {
     //region Constructors
 
     ResourcesString(String id) {
-        // Strings are by default translatable unless otherwise stated
-        this(id, "", true, false);
+        this(id, "", false);
     }
 
-    ResourcesString(String id, String content, boolean translatable, boolean modified) {
+    ResourcesString(String id, String content, boolean modified) {
         mId = id.trim();
         mContent = content.trim();
-        mTranslatable = translatable;
         mModified = modified;
     }
 
@@ -40,10 +37,6 @@ public class ResourcesString implements Comparable<ResourcesString> {
         return mContent;
     }
     public boolean hasContent() { return mContent != null && !mContent.isEmpty(); }
-
-    public boolean isTranslatable() {
-        return mTranslatable;
-    }
 
     public boolean wasModified() { return mModified; }
 
