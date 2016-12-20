@@ -4,6 +4,7 @@
 - [Do I need this app to help the developers?](#do-i-need-this-app-to-help-the-developers)
 - [How do I load my previous work?](#how-do-i-load-my-previous-work)
 - [What does `%s` or `%1$d/%2$d` mean?](#what-does-s-or-1d2d-mean)
+- [Why do some locales have more strings than others?](#why-do-some-locales-have-more-strings-than-others)
 - [I will use this app to cause chaos!](#i-will-use-this-app-to-cause-chaos)
 
 ## I am new to GitHub. Where do I start?
@@ -79,6 +80,14 @@ The `%1$d` syntax, albeit being a bit more complex, simply indicates the
 position to insert a **d**ecimal number. For example, when showing the progress
 "*42 out of 100*", you would write "*`%1$d` out of `%2$d`*", because in some
 languages the order might change, and thus the position is required.
+
+## Why do some locales have more strings than others?
+Actually, all the locales have the same amount of strings. By default,
+those strings which have already been translated are *not* shown not to
+disturb (if they are translated already, usual thing is you want to translate
+the strings left!). However, if you still want to see all the strings, for
+example, to review them looking for typos, you can open the menu and enable
+"*Show translated strings*".
 
 ## I will use this app to cause chaos!
 Please **don't**. Application developers are people like you, with good

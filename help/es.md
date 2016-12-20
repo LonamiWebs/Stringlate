@@ -4,6 +4,7 @@
 - [¿Necesito esta app para ayudar a los desarrolladores?](#necesito-esta-app-para-ayudar-a-los-desarrolladores)
 - [¿Cómo cargo mi trabajo previo?](#cómo-cargo-mi-trabajo-previo)
 - [¿Qué significa `%s` ó `%1$d/%2$d`?](#qué-significa-s-ó-1d2d)
+- [¿Por qué algunos idiomas tienen más cadenas que otros?](#por-qué-algunos-idiomas-tienen-más-cadenas-que-otros)
 - [¡Usaré esta app para causar el caos!](#usaré-esta-app-para-causar-el-caos)
 
 ## Soy nuevo en GitHub. ¿Dónde empiezo?
@@ -86,6 +87,13 @@ La sintaxis `%1$d`, aunque algo más compleja, simplemente indica la posición
 en la que insertar un número **d**ecimal. Por ejemplo, al mostrar el progreso
 "*42 de 100*", escribirías "*`%1$d` de `%2$d`*", ya que en algunos idiomas
 el orden puede cambiar, y por eso se necesita saber la posición.
+
+## ¿Por qué algunos idiomas tienen más cadenas que otros?
+En realidad, todos los idiomas tienen las mismas cadenas. Por defecto,
+aquellos textos que ya han sido traducidos *no* se muestran para no molestar
+(si ya estos ya están traducidos, ¡lo normal es que traduzcas el resto!). Sin
+embargo, si quieres verlos todos, por ejemplo para revisar alguna falta de
+ortografía, puedes abrir el menú y activar "*Mostrar el texto traducido*".
 
 ## ¡Usaré esta app para causar el caos!
 Por favor **no lo hagas**. Los desarrolladores de aplicaciones son gente como
