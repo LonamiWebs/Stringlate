@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.utilities.FileDownloader;
 import io.github.lonamiwebs.stringlate.utilities.FileExtractor;
 
@@ -21,7 +21,6 @@ public class ApplicationList implements Iterable<Application> {
 
     //region Members
 
-    public final static int DEFAULT_APPS_LIMIT = 50;
     public final static String FDROID_REPO_URL = "https://f-droid.org/repo";
     private final static String FDROID_INDEX_URL = FDROID_REPO_URL+"/index.jar";
 
@@ -31,6 +30,11 @@ public class ApplicationList implements Iterable<Application> {
     private static final String BASE_DIR = "index";
 
     private ArrayList<Application> mApplications;
+
+    // Keep track of a filtered slice, so ListViews can have a "Show more"
+    private ArrayList<Application> mApplicationsSlice;
+    private String mSliceFilter;
+    private int mLastSliceIndex;
 
     //endregion
 
@@ -47,29 +51,44 @@ public class ApplicationList implements Iterable<Application> {
 
     //region Getters
 
-    public ArrayList<Application> getApplications(boolean applyLimit, String filter) {
-        // If (limit not applied) or (limit applied but there are less apps than limit)
-        //    (use the current apps) otherwise (use our custom limit)
-        int take = !applyLimit || mApplications.size() < DEFAULT_APPS_LIMIT ?
-                mApplications.size() : DEFAULT_APPS_LIMIT;
+    // Gets a new slice with the given filter for the application name
+    public ArrayList<Application> newSlice(String filter) {
+        mApplicationsSlice = new ArrayList<>();
+        mSliceFilter = filter == null ? null : filter.trim().toLowerCase();
+        mLastSliceIndex = 0;
 
-        ArrayList<Application> result = new ArrayList<>(take);
-        if (filter == null) {
-            for (int i = 0; i < take; i++)
-                result.add(mApplications.get(i));
-        }
-        else {
-            filter = filter.trim().toLowerCase();
-            for (int i = 0; i < mApplications.size() && take > 0; i++) {
-                Application app = mApplications.get(i);
-                if (app.getName().toLowerCase().contains(filter)) {
-                    result.add(app);
-                    take--;
+        return mApplicationsSlice;
+    }
+
+    // Increases the previously retrieved slice by count,
+    // returning true if this method can be called again
+    public boolean increaseSlice(int count) {
+        if (mLastSliceIndex >= mApplications.size())
+            return false;
+
+        int end;
+        if (mSliceFilter == null) {
+            end = mLastSliceIndex + count;
+            if (end >= mApplications.size())
+                end = mApplications.size();
+
+            for (; mLastSliceIndex < end; mLastSliceIndex++) {
+                mApplicationsSlice.add(mApplications.get(mLastSliceIndex));
+            }
+        } else {
+            end = mApplications.size();
+
+            for (; mLastSliceIndex < end && count > 0; mLastSliceIndex++) {
+                Application app = mApplications.get(mLastSliceIndex);
+                if (app.getName().toLowerCase().contains(mSliceFilter)) {
+                    mApplicationsSlice.add(app);
+                    count--;
                 }
             }
         }
 
-        return result;
+        // Return true if this method can be called again
+        return mLastSliceIndex < mApplications.size();
     }
 
     //endregion

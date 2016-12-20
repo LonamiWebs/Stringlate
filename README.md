@@ -42,6 +42,10 @@ this is the case, please let me know, or create a new pull request with a fix.
 ![Screenshot 2](./resources/screenshots/s2.png)
 ![Screenshot 3](./resources/screenshots/s3.png)
 ![Screenshot 4](./resources/screenshots/s4.png)
+![Screenshot 4](./resources/screenshots/s5.png)
+
+(*Thanks to [Clean Status Bar](https://f-droid.org/app/com.emmaguy.cleanstatusbar)
+for the tidy screenshots*)
 
 ## Donations
 At the moment I don't have any donating system. However, if you really are

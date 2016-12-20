@@ -12,6 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.DEFAULT_APPS_LIMIT;
 
 public class DiscoverActivity extends AppCompatActivity {
 
@@ -35,10 +38,9 @@ public class DiscoverActivity extends AppCompatActivity {
 
     private TextView mNoRepositoryTextView;
     private ListView mApplicationListView;
+    private Button mShowMoreButton;
 
     private ApplicationList mApplicationList;
-
-    private boolean mApplyAppsLimit; // Limit applications to show on the ListView?
 
     //endregion
 
@@ -50,8 +52,18 @@ public class DiscoverActivity extends AppCompatActivity {
         setContentView(R.layout.activity_discover);
 
         mNoRepositoryTextView = (TextView)findViewById(R.id.noRepositoryTextView);
-
         mApplicationListView = (ListView)findViewById(R.id.applicationListView);
+
+        mShowMoreButton = new Button(this);
+        mShowMoreButton.setText(getString(R.string.show_more));
+        mShowMoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadMore();
+            }
+        });
+        mApplicationListView.addFooterView(mShowMoreButton);
+
         mApplicationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -64,13 +76,13 @@ public class DiscoverActivity extends AppCompatActivity {
         });
 
         mApplicationList = new ApplicationList(this);
-        if (!mApplicationList.loadIndexXml()) {
+        if (mApplicationList.loadIndexXml()) {
+            refreshListView(null);
+        } else {
             mNoRepositoryTextView.setText(getString(
                     R.string.apps_repo_not_downloaded, getString(R.string.update_applications)));
-
             mNoRepositoryTextView.setVisibility(VISIBLE);
         }
-        // The ListView is refreshed after the menu is created
     }
 
     //endregion
@@ -80,12 +92,7 @@ public class DiscoverActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.discover_menu, menu);
-
-        MenuItem applyLimitItem = menu.findItem(R.id.applyListLimit);
-        mApplyAppsLimit = applyLimitItem.isChecked();
-        applyLimitItem.setTitle(getString(
-                R.string.show_only_x, ApplicationList.DEFAULT_APPS_LIMIT));
+        inflater.inflate(R.menu.menu_discover, menu);
 
         // Associate the searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
@@ -105,8 +112,6 @@ public class DiscoverActivity extends AppCompatActivity {
             }
         });
 
-        // We need to let the menu initialize before we can refresh the ListView
-        refreshListView();
         return true;
     }
 
@@ -116,10 +121,6 @@ public class DiscoverActivity extends AppCompatActivity {
             // Synchronizing repository
             case R.id.updateApplications:
                 updateApplicationsIndex();
-                return true;
-            // Limiting the count of applications shown
-            case R.id.applyListLimit:
-                toggleAppListLimit(item);
                 return true;
             // Clearing the icons cache
             case R.id.clearIconsCache:
@@ -135,13 +136,11 @@ public class DiscoverActivity extends AppCompatActivity {
         }
     }
 
-    private void toggleAppListLimit(MenuItem item) {
-        mApplyAppsLimit = !mApplyAppsLimit;
-        item.setChecked(mApplyAppsLimit);
-        refreshListView();
-    }
-
     //endregion
+
+    //region Application list view
+
+    //region Update index
 
     void updateApplicationsIndex() {
         // There must be a non-empty title if we want it to be set later
@@ -157,8 +156,9 @@ public class DiscoverActivity extends AppCompatActivity {
             @Override
             public void onProgressFinished(String description, boolean status) {
                 progress.dismiss();
-                if (status)
-                    refreshListView();
+                if (status) {
+                    refreshListView(null);
+                }
                 else
                     Toast.makeText(getApplicationContext(),
                             R.string.sync_failed, Toast.LENGTH_SHORT).show();
@@ -166,15 +166,19 @@ public class DiscoverActivity extends AppCompatActivity {
         });
     }
 
-    void refreshListView() {
-        refreshListView(null);
-    }
+    //endregion
+
+    //region Update list view
 
     void refreshListView(String filter) {
-        ArrayList<Application> applications =
-                mApplicationList.getApplications(mApplyAppsLimit, filter);
+        // Keep the reference of the new internal slice array list
+        ArrayList<Application> appsSlice = mApplicationList.newSlice(filter);
 
-        if (applications.isEmpty()) {
+        // Initial bulk load (the whole list might also have
+        // been consumed, so also update the "Show more" visibility)
+        updateShowMoreVisibility(mApplicationList.increaseSlice(DEFAULT_APPS_LIMIT));
+
+        if (appsSlice.isEmpty()) {
             mNoRepositoryTextView.setVisibility(VISIBLE);
             mApplicationListView.setVisibility(GONE);
             mApplicationListView.setAdapter(null);
@@ -182,7 +186,25 @@ public class DiscoverActivity extends AppCompatActivity {
             mNoRepositoryTextView.setVisibility(GONE);
             mApplicationListView.setVisibility(VISIBLE);
             mApplicationListView.setAdapter(new ApplicationAdapter(
-                    this, R.layout.item_application_list, applications));
+                    this, R.layout.item_application_list, appsSlice));
         }
     }
+
+    void loadMore() {
+        // We first need to cast to HeaderViewListAdapter since we're using a footer view
+        ApplicationAdapter adapter = (ApplicationAdapter)
+                ((HeaderViewListAdapter)mApplicationListView.getAdapter()).getWrappedAdapter();
+
+        // Increase the slice size and notify the changes
+        updateShowMoreVisibility(mApplicationList.increaseSlice(DEFAULT_APPS_LIMIT));
+        adapter.notifyDataSetChanged();
+    }
+
+    void updateShowMoreVisibility(boolean anyAppLeft) {
+        mShowMoreButton.setVisibility(anyAppLeft ? VISIBLE : GONE);
+    }
+
+    //endregion
+
+    //endregion
 }

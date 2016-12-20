@@ -22,7 +22,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -55,6 +57,9 @@ public class TranslateActivity extends AppCompatActivity {
     private Spinner mLocaleSpinner;
     private Spinner mStringIdSpinner;
 
+    private ProgressBar mProgressProgressBar;
+    private TextView mProgressTextView;
+
     private String mSelectedLocale;
     private String mSelectedResourceId;
     private boolean mShowTranslated;
@@ -79,6 +84,9 @@ public class TranslateActivity extends AppCompatActivity {
 
         mLocaleSpinner = (Spinner)findViewById(R.id.localeSpinner);
         mStringIdSpinner = (Spinner)findViewById(R.id.stringIdSpinner);
+
+        mProgressProgressBar = (ProgressBar)findViewById(R.id.progressProgressBar);
+        mProgressTextView = (TextView)findViewById(R.id.progressTextView);
 
         mLocaleSpinner.setOnItemSelectedListener(eOnLocaleSelected);
         mStringIdSpinner.setOnItemSelectedListener(eOnStringIdSelected);
@@ -109,7 +117,7 @@ public class TranslateActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.translate_menu, menu);
+        inflater.inflate(R.menu.menu_translate, menu);
 
         mShowTranslated = menu.findItem(R.id.showTranslatedCheckBox).isChecked();
         return true;
@@ -489,6 +497,7 @@ public class TranslateActivity extends AppCompatActivity {
             if (mSelectedLocaleResources != null) {
                 String content = mTranslatedStringEditText.getText().toString();
                 mSelectedLocaleResources.setContent(mSelectedResourceId, content);
+                updateProgress();
             }
         }
 
@@ -517,6 +526,7 @@ public class TranslateActivity extends AppCompatActivity {
                 // we don't care unsaved changes (because there isn't any)
                 setCurrentLocale(selectedLocale);
             }
+            updateProgress();
         }
         @Override
         public void onNothingSelected(AdapterView<?> parent) { }
@@ -534,6 +544,50 @@ public class TranslateActivity extends AppCompatActivity {
     };
 
     //endregion
+
+    //endregion
+
+    //region UI
+
+    // Checks whether the translation layout (EditText and previous/next buttons)
+    // should be visible (there is at least one non-default locale) or not.
+    void checkTranslationVisibility() {
+        if (mLocaleSpinner.getCount() == 0) {
+            Toast.makeText(this, R.string.add_locale_to_start, Toast.LENGTH_SHORT).show();
+            findViewById(R.id.translationLayout).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.translationLayout).setVisibility(View.VISIBLE);
+        }
+    }
+
+    void updateProgress() {
+        if (mSelectedLocaleResources == null) {
+            mProgressProgressBar.setMax(1);
+            mProgressProgressBar.setProgress(0);
+            mProgressTextView.setText("");
+        } else {
+            int max = mDefaultResources.count(false); // Exclude non-translatable strings
+            // TODO: Maybe do NOT save those? They're never used on Stringlate.
+
+            // The selected resources might have more strings than the default does.
+            // For example, when an application got updated and dropped some unused strings.
+            // For this reason, we need to make sure that these are on the default resources.
+            // TODO: Maybe warn the user to remove unused strings?
+            int current = 0;
+            for (ResourcesString rs : mSelectedLocaleResources)
+                if (mDefaultResources.contains(rs.getId()))
+                    current++;
+
+            mProgressProgressBar.setMax(max);
+            mProgressProgressBar.setProgress(current);
+            mProgressTextView.setText(getString(R.string.translation_progress, current, max));
+        }
+    }
+
+    // Shows the "No locale selected" warning
+    void showNoLocaleSelected() {
+        Toast.makeText(this, R.string.no_locale_selected, Toast.LENGTH_SHORT).show();
+    }
 
     //endregion
 
@@ -603,17 +657,6 @@ public class TranslateActivity extends AppCompatActivity {
 
     //region Utilities
 
-    // Checks whether the translation layout (EditText and previous/next buttons)
-    // should be visible (there is at least one non-default locale) or not.
-    void checkTranslationVisibility() {
-        if (mLocaleSpinner.getCount() == 0) {
-            Toast.makeText(this, R.string.add_locale_to_start, Toast.LENGTH_SHORT).show();
-            findViewById(R.id.translationLayout).setVisibility(View.GONE);
-        } else {
-            findViewById(R.id.translationLayout).setVisibility(View.VISIBLE);
-        }
-    }
-
     // Checks whether the current resources are saved or not
     // If they're not, the user is asked to save them first
     void checkResourcesSaved(final Callback<Boolean> callback) {
@@ -655,11 +698,6 @@ public class TranslateActivity extends AppCompatActivity {
     // Ensures that there is at least a locale selected
     boolean isLocaleSelected() {
         return mSelectedLocaleResources != null;
-    }
-
-    // Shows the "No locale selected" warning
-    void showNoLocaleSelected() {
-        Toast.makeText(this, R.string.no_locale_selected, Toast.LENGTH_SHORT).show();
     }
 
     boolean isValidLocale(String locale) {
