@@ -50,7 +50,7 @@
   <string name="gist_description">Gist 描述文字（選填）：</string>
   <string name="gist_filename">Gist 檔案名稱：</string>
   <string name="gist_url_copied">新建好的 Gist 的網址已被複製到您的剪貼簿。</string>
-  <string name="github_repo_url_hint">http://github.com/〈擁有者名稱〉/〈版控庫名稱〉</string>
+  <string name="github_repo_url_hint">http://github.com/擁有者/版控庫</string>
   <string name="help">尋求幫助</string>
   <string name="history">歷史紀錄</string>
   <string name="history_contains_repos_hint">這些是您先前同步過的版控倉庫。選擇下列其一或是添加新的以繼續。</string>
@@ -75,7 +75,7 @@
   <string name="open_online_help_long">您要在 Web 瀏覽器中開啟線上幫助頁面嗎？您會被呈上一個選擇偏好語言的索引頁面。</string>
   <string name="or">或</string>
   <string name="original_string">原始字串：</string>
-  <string name="owner_hint">擁有者</string>
+  <string name="owner_hint">擁有者識別名稱</string>
   <string name="post_gist">張貼到 GitHub Gust</string>
   <string name="post_gist_error">Gist 無法被張貼。</string>
   <string name="post_gist_success">您的 Gist 已被張貼，幹得好！</string>
@@ -85,7 +85,7 @@
   <string name="previous">上一個</string>
   <string name="repo_or_url_required">請輸入專案擁有者與版控倉庫名稱或是版控倉庫的 URL（網址）。</string>
   <string name="repositories_colon">版控倉庫：</string>
-  <string name="repository_hint">版控倉庫</string>
+  <string name="repository_hint">版控倉庫名</string>
   <string name="save">儲存</string>
   <string name="save_before_sync_required">在同步前您必須儲存變更。</string>
   <string name="save_error">無法儲存變更</string>
@@ -100,7 +100,7 @@
   <string name="share">分享</string>
   <string name="share_gist_url">分享 Gist 網址</string>
   <string name="show_more">顯示更多</string>
-  <string name="show_only_x">只顯示前 % 個應用軟體</string>
+  <string name="show_only_x">只顯示前 %d 個應用軟體</string>
   <string name="show_translated_strings">顯示已翻譯過字串</string>
   <string name="sure_question">您確定嗎？</string>
   <string name="sync_failed">同步失敗。</string>
