@@ -6,6 +6,7 @@
   <string name="cancel">取消</string>
   <string name="checking_repo_ok">正在檢查數值正確性……</string>
   <string name="checking_repo_ok_long">檢查擁有者與版控倉庫是否存在</string>
+  <string name="clear_icons_cache">清空圖示快取資料</string>
   <string name="copy">複製</string>
   <string name="copy_to_clipboard">複製至剪貼簿</string>
   <string name="create">建立</string>
@@ -21,6 +22,8 @@
   <string name="delete_string">刪除字串</string>
   <string name="discard_changes">拋棄變更</string>
   <string name="discover">探索新的版控倉庫</string>
+  <string name="do_not_overwrite">不要覆寫</string>
+  <string name="do_overwrite">覆寫</string>
   <string name="done">完成！</string>
   <string name="downloading_index_jar">正在下載 index.jar……</string>
   <string name="downloading_index_jar_long">包含應用軟體清單的 index.jar 正在被下載……</string>
@@ -43,10 +46,12 @@
   <string name="extracting_index_xml_long">正在解開內有應用軟體資訊的 index.xml 檔案……</string>
   <string name="files_modified">有些檔案已被修改</string>
   <string name="files_modified_keep_changes">有些資源檔已被變更。您希望將您的本地變更跟遠端變更共存，還是要拋棄您所有的變更？</string>
+  <string name="files_modified_long">有些資源檔已被修改。您希望將本地端的變更用遠端版控倉庫中的的檔案來覆寫嗎？</string>
   <string name="gist_description">Gist 描述文字（選填）：</string>
   <string name="gist_filename">Gist 檔案名稱：</string>
   <string name="gist_url_copied">新建好的 Gist 的網址已被複製到您的剪貼簿。</string>
   <string name="github_repo_url_hint">http://github.com/〈擁有者名稱〉/〈版控庫名稱〉</string>
+  <string name="help">尋求幫助</string>
   <string name="history">歷史紀錄</string>
   <string name="history_contains_repos_hint">這些是您先前同步過的版控倉庫。選擇下列其一或是添加新的以繼續。</string>
   <string name="history_no_repos_hint">您是新手嗎？到「%s」分頁來開始使用吧！</string>
@@ -55,6 +60,7 @@
   <string name="invalid_repo">您輸入的版控倉庫似乎不是有效的。</string>
   <string name="is_public_gist">這是個公開 Gist</string>
   <string name="keep_changes">保留變更</string>
+  <string name="load_apps_repo_failed">無法載入應用軟體庫，請進行同步程序後再重試一次。</string>
   <string name="loading_ellipsis">正在載入……</string>
   <string name="loading_index_xml">正在載入 index.xml……</string>
   <string name="loading_index_xml_long">正在載入並縮小應用軟體索引……</string>
@@ -65,6 +71,8 @@
   <string name="no_strings_found_update">沒有找到任何 strings.xml 檔案，請更新 strings.xml 檔案。</string>
   <string name="no_strings_left">已經沒有更多字串了。</string>
   <string name="open">開啟</string>
+  <string name="open_online_help">開啟線上幫助頁面</string>
+  <string name="open_online_help_long">您要在 Web 瀏覽器中開啟線上幫助頁面嗎？您會被呈上一個選擇偏好語言的索引頁面。</string>
   <string name="or">或</string>
   <string name="original_string">原始字串：</string>
   <string name="owner_hint">擁有者</string>
@@ -91,12 +99,14 @@
   <string name="selected_locale">被選取的語言地區：</string>
   <string name="share">分享</string>
   <string name="share_gist_url">分享 Gist 網址</string>
+  <string name="show_more">顯示更多</string>
   <string name="show_only_x">只顯示前 % 個應用軟體</string>
   <string name="show_translated_strings">顯示已翻譯過字串</string>
   <string name="sure_question">您確定嗎？</string>
   <string name="sync_failed">同步失敗。</string>
   <string name="translated_string">被翻譯的字串</string>
   <string name="translated_string_colon">被翻譯的字串：</string>
+  <string name="translation_progress">%1$d/%2$d 個字串已翻譯。</string>
   <string name="update_applications">更新應用軟體</string>
   <string name="update_strings">更新 strings.xml</string>
   <string name="welcome">歡迎使用 Stringlate！請輸入專案名稱與其擁有者名稱或是將版控倉庫的網址貼到下面以繼續。</string>
