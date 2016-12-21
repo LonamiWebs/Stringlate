@@ -12,7 +12,6 @@
   <string name="create">建立</string>
   <string name="create_locale_error">無法建立新的語言地區檔案。</string>
   <string name="current_string_id">目前的字串識別編號：</string>
-  <string name="default_gist_share_description">使用 Stringlate 分享的 strings.xml 使用者介面檔案翻譯</string>
   <string name="delete_ellipsis">刪除……</string>
   <string name="delete_locale">刪除語言地區</string>
   <string name="delete_locale_confirm_long">您真的希望刪除「%s」語言地區嗎？它的所有字串都將遺失。</string>
@@ -22,8 +21,6 @@
   <string name="delete_string">刪除字串</string>
   <string name="discard_changes">拋棄變更</string>
   <string name="discover">探索新的版控倉庫</string>
-  <string name="do_not_overwrite">不要覆寫</string>
-  <string name="do_overwrite">覆寫</string>
   <string name="done">完成！</string>
   <string name="downloading_index_jar">正在下載 index.jar……</string>
   <string name="downloading_index_jar_long">包含應用軟體清單的 index.jar 正在被下載……</string>
@@ -46,7 +43,6 @@
   <string name="extracting_index_xml_long">正在解開內有應用軟體資訊的 index.xml 檔案……</string>
   <string name="files_modified">有些檔案已被修改</string>
   <string name="files_modified_keep_changes">有些資源檔已被變更。您希望將您的本地變更跟遠端變更共存，還是要拋棄您所有的變更？</string>
-  <string name="files_modified_long">有些資源檔已被修改。您希望將本地端的變更用遠端版控倉庫中的的檔案來覆寫嗎？</string>
   <string name="gist_description">Gist 描述文字（選填）：</string>
   <string name="gist_filename">Gist 檔案名稱：</string>
   <string name="gist_url_copied">新建好的 Gist 的網址已被複製到您的剪貼簿。</string>
@@ -60,7 +56,6 @@
   <string name="invalid_repo">您輸入的版控倉庫似乎不是有效的。</string>
   <string name="is_public_gist">這是個公開 Gist</string>
   <string name="keep_changes">保留變更</string>
-  <string name="load_apps_repo_failed">無法載入應用軟體庫，請進行同步程序後再重試一次。</string>
   <string name="loading_ellipsis">正在載入……</string>
   <string name="loading_index_xml">正在載入 index.xml……</string>
   <string name="loading_index_xml_long">正在載入並縮小應用軟體索引……</string>

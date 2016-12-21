@@ -58,7 +58,7 @@
     <string name="delete_no_locale_bad_joke">You first need to have a locale before you can remove its existence from this planet ;-)</string>
     <string name="discover">Discover repositories</string>
     <string name="gist_description">Gist description (optional):</string>
-    <string name="default_gist_share_description">strings.xml translation shared with Stringlate</string>
+    <string name="default_gist_share_description" translatable="false">strings.xml translation shared with Stringlate</string>
     <string name="gist_filename">Gist filename:</string>
     <string name="is_public_gist">This is a public Gist</string>
     <string name="post_gist">Post GitHub Gist</string>

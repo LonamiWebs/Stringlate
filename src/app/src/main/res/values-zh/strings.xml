@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Stringlate</string>
     <string name="add_locale">添加语言</string>
     <string name="add_locale_to_start">添加语言并开始</string>
     <string name="add_new_repo">添加版本仓库</string>
@@ -14,7 +13,6 @@
     <string name="create">创建</string>
     <string name="create_locale_error">无法创建新的语言文件</string>
     <string name="current_string_id">当前字符编号</string>
-    <string name="default_gist_share_description">与Stringlate共享的 strings.xml 翻译档案</string>
     <string name="delete_ellipsis">删除</string>
     <string name="delete_locale">删除语言地区</string>
     <string name="delete_locale_confirm_long">您真的要删除\"%s\"语言吗？它所包含的字符串将一并被删除</string>

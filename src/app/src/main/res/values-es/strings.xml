@@ -10,7 +10,6 @@
   <string name="create">Crear</string>
   <string name="create_locale_error">No se puede crear el nuevo archivo local.</string>
   <string name="current_string_id">ID del texto:</string>
-  <string name="default_gist_share_description">Traducción de strings.xml compartida con Stringlate</string>
   <string name="delete_ellipsis">Borrar…</string>
   <string name="delete_locale">Borrar traducción</string>
   <string name="delete_locale_confirm_long">¿Realmente quieres borrar la traducción \"%s\"? Perderás todo el texto.</string>
@@ -101,4 +100,10 @@
   <string name="welcome">¡Bienvenido/a a Stringlate! Introduce el nombre del proyecto y su dueño o copia la URL del repositorio antes de continuar.</string>
   <string name="xml_copied_to_clipboard">El contenido del archivo %s ha sido copiado al portapapeles</string>
   <string name="apps_repo_not_downloaded">No ha descargado el repositorio de aplicaciones todavía. Toque el botón de \"%s\" en el menú para descargar el índice del repositorio si quiere explorar todas las aplicaciones disponibles.</string>
+  <string name="clear_icons_cache">Limpiar caché</string>
+  <string name="help">Ayuda</string>
+  <string name="open_online_help">Abrir ayuda online</string>
+  <string name="open_online_help_long">¿Quieres abrir la ayuda online en el navegador web? Se le mostrará un índice del cual podrá elegir el idioma que desee.</string>
+  <string name="show_more">Mostrar más</string>
+  <string name="translation_progress">%1$d de %2$d textos traducidos.</string>
 </resources>
