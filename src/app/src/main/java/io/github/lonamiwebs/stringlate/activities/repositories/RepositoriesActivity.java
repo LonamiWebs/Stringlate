@@ -43,6 +43,12 @@ public class RepositoriesActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        // Check if we opened the application because a GitHub link was clicked
+        // If this is the case then we should show the "Add repository" fragment
+        if (getIntent().getData() != null) {
+            mViewPager.setCurrentItem(1, false);
+        }
     }
 
     @Override

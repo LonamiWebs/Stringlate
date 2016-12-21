@@ -25,10 +25,9 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="github.com"
-                    android:pathPattern="/.*/.*/"
-                    android:scheme="https" />
+
+                <data android:host="github.com" android:pathPattern="/.*/.*" android:scheme="https" />
+                <data android:host="github.com" android:pathPattern="/.*/.*/" android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
