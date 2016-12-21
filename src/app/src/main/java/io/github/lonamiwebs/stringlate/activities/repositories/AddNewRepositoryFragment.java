@@ -67,7 +67,7 @@ public class AddNewRepositoryFragment extends Fragment {
         if (data != null) {
             String scheme = data.getScheme();
             String fullPath = data.getEncodedSchemeSpecificPart();
-            mUrlEditText.setText(scheme+":"+fullPath);
+            setUrl(scheme+":"+fullPath);
         }
 
         changeListener.onRepositoryCountChanged();
@@ -144,7 +144,7 @@ public class AddNewRepositoryFragment extends Fragment {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case RESULT_REPO_DISCOVERED:
-                    mUrlEditText.setText(data.getStringExtra("url"));
+                    setUrl(data.getStringExtra("url"));
                     break;
                 default:
                     super.onActivityResult(requestCode, resultCode, data);
@@ -261,6 +261,13 @@ public class AddNewRepositoryFragment extends Fragment {
     //endregion
 
     //region Utilities
+
+    // Sets the URL EditText, clearing any value on the owner and repo fields
+    private void setUrl(String url) {
+        mOwnerEditText.setText("");
+        mRepositoryEditText.setText("");
+        mUrlEditText.setText(url);
+    }
 
     private void launchTranslateActivity(String owner, String repository) {
         Intent intent = new Intent(getContext(), TranslateActivity.class);
