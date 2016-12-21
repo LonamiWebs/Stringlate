@@ -23,9 +23,8 @@ Of course, once you have the final `strings.xml`, drop the author an issue and
 let them know you've translated their application. They'll be really happy!
 
 ## Help
-Still have questions on how to use the application? Check out the links below
-to get more help on your own language (or one you're able to talk):
-- [English](help/en.md)
+Still have questions on how to use the application? You can check out the
+online help by going to the [help index](help/index.md).
 
 ## Permissions
 - **Internet**. Required to be able to fetch a remote GitHub repository in
