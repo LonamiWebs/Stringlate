@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 
 public class ApplicationListParser {
@@ -27,12 +26,9 @@ public class ApplicationListParser {
     // We will only parse https GitHub urls
     private static final String HTTPS_GITHUB = "https://github.com/";
 
-    private static final HashSet<String> mWantedFields = new HashSet<String>(
-            Arrays.asList(ID, LAST_UPDATED, NAME, DESCRIPTION, ICON, SOURCE_URL));
-
     //region Xml -> ApplicationsList
 
-    public static ArrayList<Application> parseFromXml(InputStream in)
+    public static ArrayList<Application> parseFromXml(InputStream in, HashSet<String> installedPackages)
             throws XmlPullParserException, IOException {
 
         try {
@@ -40,7 +36,15 @@ public class ApplicationListParser {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
-            return readFdroid(parser);
+
+            ArrayList<Application> apps = readFdroid(parser);
+            // Now set which applications are installed on the device
+            for (Application app : apps) {
+                if (installedPackages.contains(app.getPackageName()))
+                    app.setInstalled(true);
+            }
+
+            return apps;
         } finally {
             try {
                 in.close();
@@ -63,8 +67,6 @@ public class ApplicationListParser {
             if (name.equals("application")) {
                 Application app = readApplication(parser);
                 if (app.getSourceCodeUrl().startsWith(HTTPS_GITHUB)) {
-                    // Let the app index be the tag
-                    app.setTag(apps.size());
                     apps.add(app);
                 }
             }

@@ -7,8 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import io.github.lonamiwebs.stringlate.R;
-
 import static io.github.lonamiwebs.stringlate.classes.applications.ApplicationList.FDROID_REPO_URL;
 
 public class Application {
@@ -21,8 +19,6 @@ public class Application {
     private static final SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
-    private int mIcon;
-
     private Date mLastUpdated;
     private String mPackageName;
     private String mName;
@@ -30,7 +26,7 @@ public class Application {
     private String mIconName;
     private String mSourceCodeUrl;
 
-    private Object mTag;
+    private boolean mIsInstalled;
 
     //endregion
 
@@ -39,8 +35,6 @@ public class Application {
     public Application(String packageName, String lastUpdated,
                        String name, String description,
                        String iconName, String sourceCodeUrl) {
-        mIcon = R.drawable.app_not_found;
-
         try {
             mLastUpdated = DATE_FORMAT.parse(lastUpdated);
         } catch (ParseException e) {
@@ -87,21 +81,21 @@ public class Application {
         return mSourceCodeUrl;
     }
 
+    public boolean isInstalled() {
+        return mIsInstalled;
+    }
+
     @Override
     public int hashCode() {
         return mPackageName.hashCode();
-    }
-
-    public Object getTag() {
-        return mTag;
     }
 
     //endregion
 
     //region Setters
 
-    public void setTag(Object tag) {
-        mTag = tag;
+    public void setInstalled(boolean installed) {
+        mIsInstalled = installed;
     }
 
     //endregion

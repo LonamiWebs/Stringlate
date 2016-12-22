@@ -1,6 +1,8 @@
 package io.github.lonamiwebs.stringlate.classes.applications;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -10,7 +12,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
@@ -30,6 +36,7 @@ public class ApplicationList implements Iterable<Application> {
     private static final String BASE_DIR = "index";
 
     private ArrayList<Application> mApplications;
+    private HashSet<String> mInstalledPackages;
 
     // Keep track of a filtered slice, so ListViews can have a "Show more"
     private ArrayList<Application> mApplicationsSlice;
@@ -45,6 +52,13 @@ public class ApplicationList implements Iterable<Application> {
         mContext = context;
 
         mRoot = new File(mContext.getCacheDir(), BASE_DIR);
+
+        mInstalledPackages = new HashSet<>();
+        PackageManager pm = mContext.getPackageManager();
+        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        for (ApplicationInfo packageInfo : packages) {
+            mInstalledPackages.add(packageInfo.packageName);
+        }
     }
 
     //endregion
@@ -180,8 +194,21 @@ public class ApplicationList implements Iterable<Application> {
         try {
             File file = getIndexFile("xml");
             if (file.isFile()) {
-                mApplications = ApplicationListParser
-                        .parseFromXml(new FileInputStream(getIndexFile("xml")));
+                mApplications = ApplicationListParser.parseFromXml(
+                        new FileInputStream(getIndexFile("xml")),
+                        mInstalledPackages);
+
+                // Also sort the applications alphabetically, installed first
+                Collections.sort(mApplications, new Comparator<Application>() {
+                    @Override
+                    public int compare(Application t1, Application t2) {
+                        if (t1.isInstalled() == t2.isInstalled()) {
+                            return t1.getName().compareTo(t2.getName());
+                        } else {
+                            return t1.isInstalled() ? -1 : 1;
+                        }
+                    }
+                });
                 return true;
             } else {
                 mApplications.clear();

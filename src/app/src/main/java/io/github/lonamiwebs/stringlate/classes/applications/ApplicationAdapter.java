@@ -13,6 +13,9 @@ import java.util.List;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
 import io.github.lonamiwebs.stringlate.R;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 public class ApplicationAdapter extends ArrayAdapter<Application> {
     ImageLoader mImageLoader;
 
@@ -34,6 +37,9 @@ public class ApplicationAdapter extends ArrayAdapter<Application> {
 
         ((TextView)convertView.findViewById(R.id.appName)).setText(app.getName());
         ((TextView)convertView.findViewById(R.id.appDescription)).setText(app.getDescription());
+
+        int visibility = app.isInstalled() ? VISIBLE : GONE;
+        convertView.findViewById(R.id.installIndicatorView).setVisibility(visibility);
 
         return convertView;
     }
