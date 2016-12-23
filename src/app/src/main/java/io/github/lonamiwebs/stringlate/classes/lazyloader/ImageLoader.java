@@ -36,17 +36,21 @@ public class ImageLoader {
     private ExecutorService mExecutorService;
     private Handler mHandler;
 
+    private boolean mAllowInternetDownload;
+
     //endregion
 
     //region Constructor
 
-    public ImageLoader(Context context) {
+    public ImageLoader(Context context, boolean allowInternetDownload) {
         mMemoryCache = new MemoryCache();
         mFileCache = new FileCache(context, "icons");
         mImageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
 
         mExecutorService = Executors.newFixedThreadPool(MAX_THREADS);
         mHandler = new Handler();
+
+        mAllowInternetDownload = allowInternetDownload;
     }
 
     //endregion
@@ -88,7 +92,7 @@ public class ImageLoader {
         File f = mFileCache.getFile(url);
 
         // If we don't have the file cached, download it first
-        if (!f.isFile()) {
+        if (!f.isFile() && mAllowInternetDownload) {
             if (!FileDownloader.downloadFile(url, f))
                 mMemoryCache.clear();
         }

@@ -17,11 +17,12 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class ApplicationAdapter extends ArrayAdapter<Application> {
-    ImageLoader mImageLoader;
+    private ImageLoader mImageLoader;
 
-    public ApplicationAdapter(Context context, int resource, List<Application> apps) {
+    public ApplicationAdapter(Context context, int resource, List<Application> apps,
+                              boolean allowInternetDownload) {
         super(context, resource, apps);
-        mImageLoader = new ImageLoader(context);
+        mImageLoader = new ImageLoader(context, allowInternetDownload);
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {

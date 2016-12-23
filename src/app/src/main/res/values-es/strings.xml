@@ -106,4 +106,5 @@
   <string name="open_online_help_long">¿Quieres abrir la ayuda online en el navegador web? Se le mostrará un índice del cual podrá elegir el idioma que desee.</string>
   <string name="show_more">Mostrar más</string>
   <string name="translation_progress">%1$d de %2$d textos traducidos.</string>
+  <string name="allow_download_icons">Permitir la descarga de iconos</string>
 </resources>

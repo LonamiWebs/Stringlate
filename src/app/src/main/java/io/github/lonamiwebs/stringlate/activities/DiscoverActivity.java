@@ -27,6 +27,7 @@ import io.github.lonamiwebs.stringlate.classes.applications.ApplicationList;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.FileCache;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.utilities.Settings;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -35,6 +36,8 @@ import static io.github.lonamiwebs.stringlate.utilities.Constants.DEFAULT_APPS_L
 public class DiscoverActivity extends AppCompatActivity {
 
     //region Members
+
+    private Settings mSettings;
 
     private TextView mNoRepositoryTextView;
     private ListView mApplicationListView;
@@ -50,6 +53,8 @@ public class DiscoverActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discover);
+
+        mSettings = new Settings(this);
 
         mNoRepositoryTextView = (TextView)findViewById(R.id.noRepositoryTextView);
         mApplicationListView = (ListView)findViewById(R.id.applicationListView);
@@ -94,6 +99,8 @@ public class DiscoverActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_discover, menu);
 
+        menu.findItem(R.id.allowDownloadIcons).setChecked(mSettings.isDownloadIconsAllowed());
+
         // Associate the searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView)menu.findItem(R.id.search).getActionView();
@@ -122,10 +129,17 @@ public class DiscoverActivity extends AppCompatActivity {
             case R.id.updateApplications:
                 updateApplicationsIndex();
                 return true;
+            // Toggle downloading icons ability
+            case R.id.allowDownloadIcons:
+                boolean allow = !item.isChecked();
+                item.setChecked(allow);
+                mSettings.setDownloadIconsAllowed(allow);
+                refreshListView(null);
+                return true;
             // Clearing the icons cache
             case R.id.clearIconsCache:
                 String cleared = FileCache.getHumanReadableSize(
-                        new ImageLoader(this).clearCache());
+                        new ImageLoader(this, false).clearCache());
 
                 Toast.makeText(this,
                         getString(R.string.icon_cache_cleared, cleared), Toast.LENGTH_SHORT).show();
@@ -186,7 +200,8 @@ public class DiscoverActivity extends AppCompatActivity {
             mNoRepositoryTextView.setVisibility(GONE);
             mApplicationListView.setVisibility(VISIBLE);
             mApplicationListView.setAdapter(new ApplicationAdapter(
-                    this, R.layout.item_application_list, appsSlice));
+                    this, R.layout.item_application_list, appsSlice,
+                    mSettings.isDownloadIconsAllowed()));
         }
     }
 
