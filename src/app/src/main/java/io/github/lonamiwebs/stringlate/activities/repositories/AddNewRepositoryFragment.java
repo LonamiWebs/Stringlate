@@ -56,7 +56,7 @@ public class AddNewRepositoryFragment extends Fragment {
         mUrlEditText = (AutoCompleteTextView)rootView.findViewById(R.id.urlEditText);
 
         mOwnerProjectPattern = Pattern.compile(
-                "(?:https?://github\\.com/|git@github.com:)([\\w-]+)/([\\w-]+)(?:/|\\.git)?");
+                "(?:https?://github\\.com/|git@github.com:)([\\w-]+)/([\\w-]+)(?:/.*|\\.git)?");
 
         // Set button events
         rootView.findViewById(R.id.discoverButton).setOnClickListener(onDiscoverClick);
