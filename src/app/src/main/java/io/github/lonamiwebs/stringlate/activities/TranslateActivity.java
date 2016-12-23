@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -57,6 +58,7 @@ public class TranslateActivity extends AppCompatActivity {
     private Spinner mLocaleSpinner;
     private Spinner mStringIdSpinner;
 
+    private Button mSaveButton;
     private ProgressBar mProgressProgressBar;
     private TextView mProgressTextView;
 
@@ -85,6 +87,7 @@ public class TranslateActivity extends AppCompatActivity {
         mLocaleSpinner = (Spinner)findViewById(R.id.localeSpinner);
         mStringIdSpinner = (Spinner)findViewById(R.id.stringIdSpinner);
 
+        mSaveButton = (Button)findViewById(R.id.saveButton);
         mProgressProgressBar = (ProgressBar)findViewById(R.id.progressProgressBar);
         mProgressTextView = (TextView)findViewById(R.id.progressTextView);
 
@@ -482,8 +485,10 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     public void onSaveClick(final View v) {
-        if (mSelectedLocaleResources.save())
+        if (mSelectedLocaleResources.save()) {
             Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
+            updateProgress();
+        }
         else
             Toast.makeText(this, R.string.save_error, Toast.LENGTH_SHORT).show();
     }
@@ -566,11 +571,14 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     void updateProgress() {
+        int unsavedCount;
         if (mSelectedLocaleResources == null) {
+            unsavedCount = 0;
             mProgressProgressBar.setMax(1);
             mProgressProgressBar.setProgress(0);
             mProgressTextView.setText("");
         } else {
+            unsavedCount = mSelectedLocaleResources.unsavedCount();
             int max = mDefaultResources.count();
             // The selected resources might have more strings than the default does.
             // For example, when an application got updated and dropped some unused strings.
@@ -581,10 +589,17 @@ public class TranslateActivity extends AppCompatActivity {
                 if (mDefaultResources.contains(rs.getId()))
                     current++;
 
+
             mProgressProgressBar.setMax(max);
             mProgressProgressBar.setProgress(current);
             mProgressTextView.setText(getString(R.string.translation_progress, current, max));
         }
+
+        if (unsavedCount == 0)
+            mSaveButton.setText(R.string.save);
+        else
+            mSaveButton.setText(getString(R.string.save_count,
+                    mSelectedLocaleResources.unsavedCount()));
     }
 
     // Shows the "No locale selected" warning
@@ -678,8 +693,10 @@ public class TranslateActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            if (mSelectedLocaleResources.save())
+                            if (mSelectedLocaleResources.save()) {
                                 callback.onCallback(true);
+                                updateProgress();
+                            }
                             else {
                                 Toast.makeText(getApplicationContext(),
                                         R.string.save_error, Toast.LENGTH_SHORT).show();

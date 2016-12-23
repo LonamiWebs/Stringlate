@@ -24,6 +24,7 @@ public class Resources implements Iterable<ResourcesString> {
 
     private File mFile; // Keep track of the original file to be able to save()
     private HashSet<ResourcesString> mStrings;
+    private HashSet<String> mUnsavedIDs;
 
     private boolean mSavedChanges;
     private boolean mModified;
@@ -55,6 +56,9 @@ public class Resources implements Iterable<ResourcesString> {
         mFile = file;
         mStrings = strings;
         mSavedChanges = file.isFile();
+
+        // Keep track of the unsaved strings not to iterate over the list to count them
+        mUnsavedIDs = new HashSet<>();
 
         // Backwards compatibility with version 0.9
         // If the .modified file exists, assume all the local strings were modified
@@ -103,6 +107,10 @@ public class Resources implements Iterable<ResourcesString> {
         return mStrings.size();
     }
 
+    public int unsavedCount() {
+        return mUnsavedIDs.size();
+    }
+
     public boolean contains(String resourceId) {
         for (ResourcesString rs : mStrings)
             if (rs.getId().equals(resourceId))
@@ -130,8 +138,10 @@ public class Resources implements Iterable<ResourcesString> {
         boolean found = false;
         for (ResourcesString rs : mStrings)
             if (rs.getId().equals(resourceId)) {
-                if (rs.setContent(content))
+                if (rs.setContent(content)) {
                     mSavedChanges = false;
+                    mUnsavedIDs.add(resourceId);
+                }
 
                 found = true;
                 break;
@@ -194,6 +204,10 @@ public class Resources implements Iterable<ResourcesString> {
         // We do not want empty files, if it exists and it's empty delete it
         if (mFile.isFile() && mFile.length() == 0)
             mFile.delete();
+
+        // Clear the unsaved IDs if we succeeded
+        if (mSavedChanges)
+            mUnsavedIDs.clear();
 
         return mFile.isFile();
     }
