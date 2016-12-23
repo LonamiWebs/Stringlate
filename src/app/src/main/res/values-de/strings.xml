@@ -102,7 +102,6 @@
     <string name="clear_icons_cache">Symbolcache leeren</string>
     <string name="help">Hilfe</string>
     <string name="open_online_help">" Onlinehilfe öffnen"</string>
-    <string name="open_online_help_long">Soll die Online Hilfe im Browser geöffnet werden? Es wird ein Verzeichnis mit den verfügbaren Sprachen wird geladen.</string>
     <string name="show_more">Mehr anzeigen</string>
     <string name="translation_progress">%1$d von %2$d Zeichenketten übersetzt.</string>
     <string name="xml_copied_to_clipboard">Die Dateiinhalte von %s wurden in die Zwischenablage kopiert</string>

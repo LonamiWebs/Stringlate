@@ -1,12 +1,9 @@
 package io.github.lonamiwebs.stringlate.activities.repositories;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -14,8 +11,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.activities.OnlineHelpActivity;
 
-import static io.github.lonamiwebs.stringlate.utilities.Constants.ONLINE_HELP_INDEX;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_REPO_DISCOVERED;
 
 public class RepositoriesActivity extends AppCompatActivity {
@@ -74,18 +71,8 @@ public class RepositoriesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // Online help
-            case R.id.onlineHelp:
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.open_online_help)
-                        .setMessage(R.string.open_online_help_long)
-                        .setPositiveButton(R.string.open_online_help, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ONLINE_HELP_INDEX)));
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, null)
-                        .show();
+            case R.id.help:
+                startActivity(new Intent(this, OnlineHelpActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

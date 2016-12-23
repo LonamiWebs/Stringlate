@@ -69,7 +69,6 @@
     <string name="open">打开</string>
     <string name="or">或者</string>
     <string name="open_online_help">打开在线帮助</string>
-    <string name="open_online_help_long">您希望再浏览球中打开在线帮助吗？您可以从中选择你喜欢的语言.</string>
     <string name="original_string">原字符串:</string>
     <string name="owner_hint">所有者</string>
     <string name="post_gist">发布至 Github Gist</string>

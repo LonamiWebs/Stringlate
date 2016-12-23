@@ -1,0 +1,503 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <style>/* Style modified from https://github.com/mixu/markdown-styles */
+body {
+  background-color: white;
+  max-width: 790px;
+  margin: 0 auto;
+}
+
+article {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  color: #333;
+  overflow: hidden;
+  font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  word-wrap: break-word;
+  padding: 20px;
+}
+
+a {
+  background: transparent;
+}
+
+a:active,
+a:hover {
+  outline: 0;
+}
+
+strong {
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+img {
+  border: 0;
+}
+
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+
+pre {
+  overflow: auto;
+}
+
+code,
+kbd,
+pre {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+
+input {
+  color: inherit;
+  font: inherit;
+  margin: 0;
+}
+
+html input[disabled] {
+  cursor: default;
+}
+
+input {
+  line-height: normal;
+}
+
+input[type="checkbox"] {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+td,
+th {
+  padding: 0;
+}
+
+* {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+input {
+  font: 13px/1.4 Helvetica, arial, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+a {
+  color: #4183c4;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus,
+a:active {
+  text-decoration: underline;
+}
+
+hr {
+  height: 0;
+  margin: 15px 0;
+  overflow: hidden;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #ddd;
+}
+
+hr:before {
+  display: table;
+  content: "";
+}
+
+hr:after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  line-height: 1.1;
+}
+
+h1 {
+  padding-bottom: 0.3em;
+  font-size: 2.25em;
+  line-height: 1.2;
+  border-bottom: 1px solid #eee;
+}
+
+h2 {
+  padding-bottom: 0.3em;
+  font-size: 1.75em;
+  line-height: 1.225;
+  border-bottom: 1px solid #eee;
+}
+
+h3 {
+  font-size: 1.5em;
+  line-height: 1.43;
+}
+
+h4 {
+  font-size: 1.25em;
+}
+
+h5 {
+  font-size: 1em;
+}
+
+h6 {
+  font-size: 1em;
+  color: #777;
+}
+
+blockquote {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  padding-left: 2em;
+}
+
+ol ol,
+ul ol {
+  list-style-type: lower-roman;
+}
+
+ul ul ol,
+ul ol ol,
+ol ul ol,
+ol ol ol {
+  list-style-type: lower-alpha;
+}
+
+dd {
+  margin-left: 0;
+}
+
+code {
+  font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+
+pre {
+  margin-top: 0;
+  margin-bottom: 0;
+  font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+
+kbd {
+  background-color: #e7e7e7;
+  background-image: -webkit-linear-gradient(#fefefe, #e7e7e7);
+  background-image: linear-gradient(#fefefe, #e7e7e7);
+  background-repeat: repeat-x;
+  border-radius: 2px;
+  border: 1px solid #cfcfcf;
+  color: #000;
+  padding: 3px 5px;
+  line-height: 10px;
+  font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  display: inline-block;
+}
+
+p,
+blockquote,
+ul,
+ol,
+dl,
+table,
+pre {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+hr {
+  height: 4px;
+  padding: 0;
+  margin: 16px 0;
+  background-color: #e7e7e7;
+  border: 0 none;
+}
+
+li>p {
+  margin-top: 16px;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  padding: 0;
+  margin-top: 16px;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: bold;
+}
+
+dl dd {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+blockquote {
+  padding: 0 15px;
+  color: #777;
+  border-left: 4px solid #ddd;
+}
+
+blockquote>:first-child {
+  margin-top: 0;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0;
+}
+
+table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  word-break: normal;
+  word-break: keep-all;
+}
+
+table th {
+  font-weight: bold;
+}
+
+table th,
+table td {
+  padding: 6px 13px;
+  border: 1px solid #ddd;
+}
+
+table tr {
+  background-color: #fff;
+  border-top: 1px solid #ccc;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+img {
+  max-width: 100%;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+code {
+  padding: 0;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgba(0,0,0,0.04);
+  border-radius: 3px;
+}
+
+code:before,
+code:after {
+  letter-spacing: -0.2em;
+  content: "\00a0";
+}
+
+pre>code {
+  padding: 0;
+  margin: 0;
+  font-size: 100%;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+}
+
+.highlight {
+  margin-bottom: 16px;
+}
+
+.highlight pre,
+pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: #f7f7f7;
+  border-radius: 3px;
+}
+
+.highlight pre {
+  margin-bottom: 0;
+  word-break: normal;
+}
+
+pre {
+  word-wrap: normal;
+}
+
+pre code {
+  display: inline;
+  max-width: initial;
+  padding: 0;
+  margin: 0;
+  overflow: initial;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: transparent;
+  border: 0;
+}
+
+pre code:before,
+pre code:after {
+  content: normal;
+}
+
+</style>
+</head>
+<body>
+    <article><h1>Ayuda para Stringlate</h1>
+
+<ul>
+<li><a href="#im-new">Soy nuevo en GitHub. ¿Dónde empiezo?</a></li>
+<li><a href="#how-to-let-know">¿Cómo le digo a los desarrolladores que he traducido su app?</a></li>
+<li><a href="#is-app-required">¿Necesito esta app para ayudar a los desarrolladores?</a></li>
+<li><a href="#load-progress">¿Cómo cargo mi trabajo previo?</a></li>
+<li><a href="#string-symbols">¿Qué significa <code>%s</code> ó <code>%1$d/%2$d</code>?</a></li>
+<li><a href="#locale-missing-strings">¿Por qué algunos idiomas tienen más cadenas que otros?</a></li>
+<li><a href="#chaos">¡Usaré esta app para causar el caos!</a></li>
+</ul>
+
+<h2>Soy nuevo en GitHub. ¿Dónde empiezo? <a name="im-new"></a></h2>
+
+<p>Si eres nuevo en GitHub y aún así quieres ayudar a la comunidad de software
+libre, ¡eso es genial! Has tomado una gran decisión. El primer paso es conseguir
+tu propia <a href="https://github.com/join">cuenta en GitHub</a> (¡es gratis!). Necesitas
+dar este paso para luego poder contarle a los desarrolladores que has traducido
+su aplicación.</p>
+
+<p>Una vez hayas hecho esto, descarga e instala <em>Stringlate</em>, <strong>añade</strong> el
+repositorio de tu aplicación favorita y <strong>empieza a traducir</strong> todo el
+texto (<em>strings</em>, cadenas en español) a tu propio idioma.</p>
+
+<h2>¿Cómo le digo a los desarrolladores que he traducido su app? <a name="how-to-let-know"></a></h2>
+
+<p>¿Has terminado? ¡Qué velocidad! Desde <em>Stringlate</em>, puedes exportar el resultado
+de tu duro trabajo tocando en <code>Menú &gt; Exportar…</code>. Puedes exportar el archivo
+resultante a la <em>SD card</em>, a un <em>Gist en GitHub</em>, o simplemente compartiendo
+el contenido del archivo de cualquier otra manera (incluso <em>email</em>).</p>
+
+<p>Una vez hayas hecho esto, obtén el archivo o URL resultante de dónde lo hayas
+exportado y dirígite a la página de <em>incidencias</em>
+(<a href="https://github.com/LonamiWebs/Stringlate/issues">issues</a>) del repositorio
+que hayas elegido. Haz clic en el botón verde de <em>Nueva incidencia</em>
+(<code>New issue</code>, necesitas haber iniciado sesión), y titula tu nueva incidencia
+algo como <em>"Añadida traducción para XXX"</em> (<em>"Added XXX translation"</em> en inglés).
+Proporciona algún enlace u otra manera para que el autor consiga tu traducción,
+¡y ya has terminado!</p>
+
+<p>Ten en cuenta que es posible que el autor tenga otra manera de recibir las
+traducciones para su aplicación (por ejemplo, es posible que usen otra
+<a href="https://www.transifex.com/">plataforma online</a> diferente). De todos modos,
+no te rindas si cierran tu incidencia contándote esto. ¡Toda ayuda es poca!</p>
+
+<h2>¿Necesito esta app para ayudar a los desarrolladores? <a name="is-app-required"></a></h2>
+
+<p>Absolutamente <strong>no</strong>. Hice esta aplicación para que el proceso fuera más fácil,
+pero no es la única manera de hacerlo. Puedes ir a cualquier repositorio,
+por ejemplo, <a href="https://github.com/LonamiWebs/Stringlate">este</a> repositorio,
+pulsar la tecla <kbd>T</kbd> (para buscar un archivo) y teclear <code>strings.xml</code>.
+Esto encontrará todas las <em>strings</em> en ese repositorio.</p>
+
+<p>El archivo <code>res/values/strings.xml</code> es el <strong>archivo original</strong>, que contiene
+todas las <em>cadenas</em>. Los archivos <code>res/values-xx/strings.xml</code> son
+<strong>otros idiomas</strong> (por ejemplo, <code>es</code> para <em>Español</em>) que otra persona ya ha
+traducido.</p>
+
+<p>Haz clic en el <em>archivo original</em>, elige <code>Raw</code> y guárdalo en tu ordenador.</p>
+
+<p>Una vez hayas hecho esto, renombra el archivo a, por ejemplo, <code>strings-xx.xml</code>.
+Ábrelo en tu editor de texto preferido y empieza a traducir todas las cadenas
+que <em>no</em> contengan <code>translatable="false"</code>. Si alguna <em>etiqueta</em> (<em>tag</em>)
+contiene <code>translatable="false"</code>, bórrala. Esa no se puede traducir.</p>
+
+<p>Una vez hayas terminado, dile a los desarrolladores que tienes una
+nueva traducción disponible, tal y como he explicado más arriba.</p>
+
+<h2>¿Cómo cargo mi trabajo previo? <a name="load-progress"></a></h2>
+
+<p>La primera vez que añades un repositorio, los archivos <code>strings.xml</code> que
+contiene son descargados a la <strong>memoria interna</strong> de tu dispositivo, en el
+directorio de la aplicación (a menos que seas un usuario root, no te darás
+cuenta de esto).</p>
+
+<p>Si <strong>limpias los datos de la aplicación</strong>, estos archivos <strong>desaparecerán</strong>.
+¡Asegúrate de que no tenías ninguna traducción pendiente antes de hacer esto
+o de desinstalar!</p>
+
+<p>Cada vez que abres un repositorio que ya has guardado, estos archivos se
+<strong>cargan automáticamente</strong>, sin necesidad de que hagas nada más.</p>
+
+<p>Cuando editas una traducción, estos cambios se conserva en la memoria RAM del
+teléfono. Para que <strong>persistan</strong>, asegúrate de que tocas en el botón de
+<strong>Guardar</strong>. La próxima vez que abras la aplicación, verás los cambios.</p>
+
+<h2>¿Qué significa <code>%s</code> ó <code>%1$d/%2$d</code>? <a name="string-symbols"></a></h2>
+
+<p><code>%s</code> se usa para "insertar" otra <strong>s</strong>tring en esa posición. Por ejemplo,
+imagina que quieres darle la bienvenida a tus usuarios con  "<em>¡Hola Usuario!</em>".
+<em>Usuario</em> sería un valor que puede cambiar, por lo que escribiríamos
+"<em>¡Hola %s!</em>" y el desarrollador lo cambiará por el valor correcto.</p>
+
+<p>La sintaxis <code>%1$d</code>, aunque algo más compleja, simplemente indica la posición
+en la que insertar un número <strong>d</strong>ecimal. Por ejemplo, al mostrar el progreso
+"<em>42 de 100</em>", escribirías "<em><code>%1$d</code> de <code>%2$d</code></em>", ya que en algunos idiomas
+el orden puede cambiar, y por eso se necesita saber la posición.</p>
+
+<h2>¿Por qué algunos idiomas tienen más cadenas que otros? <a name="locale-missing-strings"></a></h2>
+
+<p>En realidad, todos los idiomas tienen las mismas cadenas. Por defecto,
+aquellos textos que ya han sido traducidos <em>no</em> se muestran para no molestar
+(si ya estos ya están traducidos, ¡lo normal es que traduzcas el resto!). Sin
+embargo, si quieres verlos todos, por ejemplo para revisar alguna falta de
+ortografía, puedes abrir el menú y activar "<em>Mostrar el texto traducido</em>".</p>
+
+<h2>¡Usaré esta app para causar el caos! <a name="chaos"></a></h2>
+
+<p>Por favor <strong>no lo hagas</strong>. Los desarrolladores de aplicaciones son gente como
+tú, con buenas intenciones y a menudo vidas ocupadas. No les hagas perder el
+tiempo (e incluso usuarios) con traducciones incorrectas, incompletas,
+inválidas o incluso ofensivas.</p>
+
+<p>Es imposible prevenir que este tipo de cosas pasen desde la aplicación, o
+incluso si <em>Stringlate</em> no existiera. Los desarrolladores confían en el buen
+hacer de la gente que les ayuda. Si eres un troll, por favor no malgastes
+tu tiempo en esto. Hay miles de sitios web donde puedes ir a divertirte en
+vez de aquí.</p>
+</article>
+</body>
+</html>
