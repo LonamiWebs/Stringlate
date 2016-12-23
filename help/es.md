@@ -1,13 +1,13 @@
 # Ayuda online para Stringlate
-- [Soy nuevo en GitHub. ¿Dónde empiezo?](#soy-nuevo-en-github-dónde-empiezo)
-- [¿Cómo le digo a los desarrolladores que he traducido su app?](#cómo-le-digo-a-los-desarrolladores-que-he-traducido-su-app)
-- [¿Necesito esta app para ayudar a los desarrolladores?](#necesito-esta-app-para-ayudar-a-los-desarrolladores)
-- [¿Cómo cargo mi trabajo previo?](#cómo-cargo-mi-trabajo-previo)
-- [¿Qué significa `%s` ó `%1$d/%2$d`?](#qué-significa-s-ó-1d2d)
-- [¿Por qué algunos idiomas tienen más cadenas que otros?](#por-qué-algunos-idiomas-tienen-más-cadenas-que-otros)
-- [¡Usaré esta app para causar el caos!](#usaré-esta-app-para-causar-el-caos)
+- [Soy nuevo en GitHub. ¿Dónde empiezo?](#im-new)
+- [¿Cómo le digo a los desarrolladores que he traducido su app?](#how-to-let-know)
+- [¿Necesito esta app para ayudar a los desarrolladores?](#is-app-required)
+- [¿Cómo cargo mi trabajo previo?](#load-progress)
+- [¿Qué significa `%s` ó `%1$d/%2$d`?](#string-symbols)
+- [¿Por qué algunos idiomas tienen más cadenas que otros?](#locale-missing-strings)
+- [¡Usaré esta app para causar el caos!](#chaos)
 
-## Soy nuevo en GitHub. ¿Dónde empiezo?
+## Soy nuevo en GitHub. ¿Dónde empiezo? <a name="im-new"></a>
 Si eres nuevo en GitHub y aún así quieres ayudar a la comunidad de software
 libre, ¡eso es genial! Has tomado una gran decisión. El primer paso es conseguir
 tu propia [cuenta en GitHub](https://github.com/join) (¡es gratis!). Necesitas
@@ -18,7 +18,7 @@ Una vez hayas hecho esto, descarga e instala *Stringlate*, **añade** el
 repositorio de tu aplicación favorita y **empieza a traducir** todo el
 texto (*strings*, cadenas en español) a tu propio idioma.
 
-## ¿Cómo le digo a los desarrolladores que he traducido su app?
+## ¿Cómo le digo a los desarrolladores que he traducido su app? <a name="how-to-let-know"></a>
 ¿Has terminado? ¡Qué velocidad! Desde *Stringlate*, puedes exportar el resultado
 de tu duro trabajo tocando en `Menú > Exportar…`. Puedes exportar el archivo
 resultante a la *SD card*, a un *Gist en GitHub*, o simplemente compartiendo
@@ -38,8 +38,8 @@ traducciones para su aplicación (por ejemplo, es posible que usen otra
 [plataforma online](https://www.transifex.com/) diferente). De todos modos,
 no te rindas si cierran tu incidencia contándote esto. ¡Toda ayuda es poca!
 
-## ¿Necesito esta app para ayudar a los desarrolladores?
-Absolutamente **no**. Hice esta aplicación para que el prceso fuera más fácil,
+## ¿Necesito esta app para ayudar a los desarrolladores? <a name="is-app-required"></a>
+Absolutamente **no**. Hice esta aplicación para que el proceso fuera más fácil,
 pero no es la única manera de hacerlo. Puedes ir a cualquier repositorio,
 por ejemplo, [este](https://github.com/LonamiWebs/Stringlate) repositorio,
 pulsar la tecla <kbd>T</kbd> (para buscar un archivo) y teclear `strings.xml`.
@@ -60,7 +60,7 @@ contiene `translatable="false"`, bórrala. Esa no se puede traducir.
 Una vez hayas terminado, dile a los desarrolladores que tienes una
 nueva traducción disponible, tal y como he explicado más arriba.
 
-## ¿Cómo cargo mi trabajo previo?
+## ¿Cómo cargo mi trabajo previo? <a name="load-progress"></a>
 La primera vez que añades un repositorio, los archivos `strings.xml` que
 contiene son descargados a la **memoria interna** de tu dispositivo, en el
 directorio de la aplicación (a menos que seas un usuario root, no te darás
@@ -77,7 +77,7 @@ Cuando editas una traducción, estos cambios se conserva en la memoria RAM del
 teléfono. Para que **persistan**, asegúrate de que tocas en el botón de
 **Guardar**. La próxima vez que abras la aplicación, verás los cambios.
 
-## ¿Qué significa `%s` ó `%1$d/%2$d`?
+## ¿Qué significa `%s` ó `%1$d/%2$d`? <a name="string-symbols"></a>
 `%s` se usa para "insertar" otra **s**tring en esa posición. Por ejemplo,
 imagina que quieres darle la bienvenida a tus usuarios con  "*¡Hola Usuario!*".
 *Usuario* sería un valor que puede cambiar, por lo que escribiríamos
@@ -88,14 +88,14 @@ en la que insertar un número **d**ecimal. Por ejemplo, al mostrar el progreso
 "*42 de 100*", escribirías "*`%1$d` de `%2$d`*", ya que en algunos idiomas
 el orden puede cambiar, y por eso se necesita saber la posición.
 
-## ¿Por qué algunos idiomas tienen más cadenas que otros?
+## ¿Por qué algunos idiomas tienen más cadenas que otros? <a name="locale-missing-strings"></a>
 En realidad, todos los idiomas tienen las mismas cadenas. Por defecto,
 aquellos textos que ya han sido traducidos *no* se muestran para no molestar
 (si ya estos ya están traducidos, ¡lo normal es que traduzcas el resto!). Sin
 embargo, si quieres verlos todos, por ejemplo para revisar alguna falta de
 ortografía, puedes abrir el menú y activar "*Mostrar el texto traducido*".
 
-## ¡Usaré esta app para causar el caos!
+## ¡Usaré esta app para causar el caos! <a name="chaos"></a>
 Por favor **no lo hagas**. Los desarrolladores de aplicaciones son gente como
 tú, con buenas intenciones y a menudo vidas ocupadas. No les hagas perder el
 tiempo (e incluso usuarios) con traducciones incorrectas, incompletas,
