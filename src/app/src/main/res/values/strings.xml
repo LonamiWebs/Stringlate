@@ -109,4 +109,5 @@
     <string name="open_online_help">Open online help</string>
     <string name="translation_progress">%1$d/%2$d strings translated.</string>
     <string name="allow_download_icons">Allow downloading icons</string>
+    <string name="do_not_save">Don\'t save</string>
 </resources>

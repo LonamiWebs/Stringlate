@@ -177,8 +177,9 @@ public class TranslateActivity extends AppCompatActivity {
     public void onBackPressed() {
         checkResourcesSaved(new Callback<Boolean>() {
             @Override
-            public void onCallback(Boolean saved) {
-                finish();
+            public void onCallback(Boolean actionTaken) {
+                if (actionTaken)
+                    finish();
             }
         });
     }
@@ -216,10 +217,13 @@ public class TranslateActivity extends AppCompatActivity {
 
         checkResourcesSaved(new Callback<Boolean>() {
             @Override
-            public void onCallback(Boolean saved) {
+            public void onCallback(Boolean actionTaken) {
+                if (!actionTaken)
+                    return;
+
                 // We need to save the files before syncing, or it will ask
                 // again after the synchronization finished (and it looks out of place)
-                if (!saved) {
+                if (isLocaleSelected() && !mSelectedLocaleResources.areSaved()) {
                     Toast.makeText(context, R.string.save_before_sync_required, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -517,8 +521,9 @@ public class TranslateActivity extends AppCompatActivity {
             if (isLocaleSelected()) {
                 checkResourcesSaved(new Callback<Boolean>() {
                     @Override
-                    public void onCallback(Boolean saved) {
-                        setCurrentLocale(selectedLocale);
+                    public void onCallback(Boolean actionTaken) {
+                        if (actionTaken)
+                            setCurrentLocale(selectedLocale);
                     }
                 });
             } else {
@@ -656,9 +661,10 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Checks whether the current resources are saved or not
     // If they're not, the user is asked to save them first
+    // callback.onCallback will be called with FALSE if the operation was CANCELLED
     void checkResourcesSaved(final Callback<Boolean> callback) {
         if (!isLocaleSelected()) {
-            callback.onCallback(false);
+            callback.onCallback(true);
             return;
         }
 
@@ -682,7 +688,13 @@ public class TranslateActivity extends AppCompatActivity {
                             }
                         }
                     })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    .setNegativeButton(R.string.do_not_save, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            callback.onCallback(true);
+                        }
+                    })
+                    .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             callback.onCallback(false);
