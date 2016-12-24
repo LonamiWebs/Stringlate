@@ -8,13 +8,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
+import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
 import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
@@ -316,6 +319,30 @@ public class RepoHandler {
 
     public Resources loadResources(String locale) {
         return Resources.fromFile(getResourcesFile(locale));
+    }
+
+    // Applies the default resources as a template for the given locale's
+    // resources, returning the result as a String (might be null if failed)
+    public String applyDefaultTemplate(String locale) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        if (applyDefaultTemplate(locale, out))
+            return out.toString();
+        else
+            return null;
+    }
+
+    // Applies the default resources as a template for the given
+    // locale's resources, outputting the result to the given stream
+    public boolean applyDefaultTemplate(String locale, OutputStream out) {
+        if (!hasLocale(locale))
+            return false;
+
+        File defaultFile = getResourcesFile(null);
+        if (!defaultFile.isFile())
+            return false;
+
+        return ResourcesParser.applyTemplate(defaultFile,
+                loadResources(locale), out);
     }
 
     //endregion

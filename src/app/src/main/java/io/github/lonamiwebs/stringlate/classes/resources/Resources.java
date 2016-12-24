@@ -2,19 +2,15 @@ package io.github.lonamiwebs.stringlate.classes.resources;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-
-import static io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser.parseToXml;
 
 // Class to manage multiple ResourcesString,
 // usually parsed from strings.xml files
@@ -194,8 +190,7 @@ public class Resources implements Iterable<ResourcesString> {
 
         try {
             FileOutputStream out = new FileOutputStream(mFile);
-            // Always add metadata when saving locally
-            mSavedChanges = save(out, true);
+            mSavedChanges = ResourcesParser.parseToXml(this, out);
             mModified = true;
             out.close();
         } catch (IOException e) {
@@ -212,16 +207,6 @@ public class Resources implements Iterable<ResourcesString> {
         return mFile.isFile();
     }
 
-    public boolean save(OutputStream out) {
-        // Never save metadata if saving to a given stream.
-        // Only save the metadata when saving locally.
-        return save(out, false);
-    }
-
-    private boolean save(OutputStream out, boolean addMetadata) {
-        return ResourcesParser.parseToXml(this, out, false, addMetadata);
-    }
-
     public void delete() {
         mFile.delete();
     }
@@ -235,22 +220,6 @@ public class Resources implements Iterable<ResourcesString> {
         ArrayList<ResourcesString> strings = new ArrayList<>(mStrings);
         Collections.sort(strings);
         return strings.iterator();
-    }
-
-    //endregion
-
-    //region To string
-
-    @Override
-    public String toString() {
-        return toString(false);
-    }
-
-    public String toString(boolean indent) {
-        OutputStream out = new ByteArrayOutputStream();
-        // Never add the metadata when converting to a string
-        parseToXml(this, out, indent, false);
-        return out.toString();
     }
 
     //endregion

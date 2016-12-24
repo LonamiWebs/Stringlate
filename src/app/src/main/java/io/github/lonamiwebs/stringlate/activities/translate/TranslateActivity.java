@@ -378,7 +378,9 @@ public class TranslateActivity extends AppCompatActivity {
         try {
             ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "w");
             FileOutputStream out = new FileOutputStream(pfd.getFileDescriptor());
-            mSelectedLocaleResources.save(out);
+            if (!mRepo.applyDefaultTemplate(mSelectedLocale, out))
+                throw new IOException("Apply default template failed");
+
             Toast.makeText(this, getString(R.string.export_file_success, uri.getPath()),
                     Toast.LENGTH_SHORT).show();
 
@@ -393,7 +395,7 @@ public class TranslateActivity extends AppCompatActivity {
     // Exports the currently selected locale resources to a GitHub Gist
     private void exportToGist() {
         Intent intent = new Intent(getApplicationContext(), CreateGistActivity.class);
-        intent.putExtra(EXTRA_XML_CONTENT, mSelectedLocaleResources.toString(true));
+        intent.putExtra(EXTRA_XML_CONTENT, mRepo.applyDefaultTemplate(mSelectedLocale));
         intent.putExtra(EXTRA_FILENAME, mSelectedLocaleResources.getFilename());
         startActivity(intent);
     }
@@ -405,7 +407,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to a plain text share intent
     private void exportToShare() {
-        String xml = mSelectedLocaleResources.toString(true);
+        String xml = mRepo.applyDefaultTemplate(mSelectedLocale);
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, xml);
@@ -416,7 +418,7 @@ public class TranslateActivity extends AppCompatActivity {
     // Exports the currently selected locale resources to the primary clipboard
     private void exportToCopy() {
         String filename = mSelectedLocaleResources.getFilename();
-        String xml = mSelectedLocaleResources.toString(true);
+        String xml = mRepo.applyDefaultTemplate(mSelectedLocale);
 
         ClipboardManager clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(ClipData.newPlainText(filename, xml));
