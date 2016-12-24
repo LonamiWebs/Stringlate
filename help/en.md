@@ -1,7 +1,7 @@
 # Stringlate help
 - [I am new to GitHub. Where do I start?](#im-new)
 - [How do I tell the developers that I translated their app?](#how-to-let-know)
-- [Do I need this app to help the developers?](#app-required)
+- [Do I need this app to help the developers?](#is-app-required)
 - [How do I load my previous work?](#load-progress)
 - [What does `%s` or `%1$d/%2$d` mean?](#string-symbols)
 - [Why do some locales have more strings than others?](#locale-missing-strings)
