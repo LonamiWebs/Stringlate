@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.activities;
+package io.github.lonamiwebs.stringlate.activities.translate;
 
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.activities.CreateGistActivity;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
 import io.github.lonamiwebs.stringlate.interfaces.Callback;
@@ -43,10 +44,11 @@ import io.github.lonamiwebs.stringlate.utilities.GitHub;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_FILENAME;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO_NAME;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO_OWNER;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_XML_CONTENT;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_CREATE_FILE;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_STRING_SELECTED;
 
 public class TranslateActivity extends AppCompatActivity {
 
@@ -65,6 +67,7 @@ public class TranslateActivity extends AppCompatActivity {
     private String mSelectedLocale;
     private String mSelectedResourceId;
     private boolean mShowTranslated;
+    private MenuItem mShowTranslatedMenuItem;
 
     private Resources mDefaultResources;
     private Resources mSelectedLocaleResources;
@@ -95,11 +98,7 @@ public class TranslateActivity extends AppCompatActivity {
         mStringIdSpinner.setOnItemSelectedListener(eOnStringIdSelected);
 
         // Retrieve the owner and repository name
-        Intent intent = getIntent();
-        String owner = intent.getStringExtra(EXTRA_REPO_OWNER);
-        String repoName = intent.getStringExtra(EXTRA_REPO_NAME);
-
-        mRepo = new RepoHandler(this, owner, repoName);
+        mRepo = RepoHandler.fromBundle(this, getIntent().getBundleExtra(EXTRA_REPO));
         setTitle(mRepo.toString());
 
         if (mRepo.hasLocale(null)) {
@@ -122,7 +121,8 @@ public class TranslateActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_translate, menu);
 
-        mShowTranslated = menu.findItem(R.id.showTranslatedCheckBox).isChecked();
+        mShowTranslatedMenuItem = menu.findItem(R.id.showTranslatedCheckBox);
+        mShowTranslated = mShowTranslatedMenuItem.isChecked();
         return true;
     }
 
@@ -132,6 +132,11 @@ public class TranslateActivity extends AppCompatActivity {
             // Synchronizing repository
             case R.id.updateStrings:
                 updateStrings();
+                return true;
+
+            // Search strings
+            case R.id.searchStrings:
+                launchStringSearchActivity();
                 return true;
 
             // Adding locales
@@ -200,6 +205,9 @@ public class TranslateActivity extends AppCompatActivity {
             switch (requestCode) {
                 case RESULT_CREATE_FILE:
                     doExportToSd(data.getData());
+                    break;
+                case RESULT_STRING_SELECTED:
+                    setStringId(data.getStringExtra("id"));
                     break;
             }
         }
@@ -286,6 +294,21 @@ public class TranslateActivity extends AppCompatActivity {
                 loadLocalesSpinner();
             }
         }, keepChanges);
+    }
+
+    //endregion
+
+    //region Searching for strings
+
+    private void launchStringSearchActivity() {
+        if (isLocaleSelected()) {
+            Intent intent = new Intent(this, SearchStringActivity.class);
+            intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+            intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
+            startActivityForResult(intent, RESULT_STRING_SELECTED);
+        } else {
+            Toast.makeText(this, R.string.no_locale_selected, Toast.LENGTH_SHORT).show();
+        }
     }
 
     //endregion
@@ -648,7 +671,7 @@ public class TranslateActivity extends AppCompatActivity {
                 this, android.R.layout.simple_spinner_item, spinnerArray);
 
         idAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        ((Spinner) findViewById(R.id.stringIdSpinner)).setAdapter(idAdapter);
+        mStringIdSpinner.setAdapter(idAdapter);
     }
 
     //endregion
@@ -752,6 +775,23 @@ public class TranslateActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, R.string.no_strings_left, Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    private void setStringId(String id) {
+        boolean found = false;
+        for (int i = 0 ; i < mStringIdSpinner.getCount(); i++) {
+            if (mStringIdSpinner.getItemAtPosition(i).equals(id)) {
+                found = true;
+                mStringIdSpinner.setSelection(i);
+                updateSelectedResourceId((String)mStringIdSpinner.getSelectedItem());
+                break;
+            }
+        }
+
+        if (!found && !mShowTranslated) {
+            toggleShowTranslated(mShowTranslatedMenuItem);
+            setStringId(id);
         }
     }
 

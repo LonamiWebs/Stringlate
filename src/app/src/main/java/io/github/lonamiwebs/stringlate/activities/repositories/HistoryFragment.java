@@ -16,13 +16,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.activities.TranslateActivity;
+import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO_NAME;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO_OWNER;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
 
 public class HistoryFragment extends Fragment {
 
@@ -46,7 +45,7 @@ public class HistoryFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String[] ownerRepo = ((String)adapterView.getItemAtPosition(i)).split("/");
-                launchTranslateActivity(ownerRepo[0], ownerRepo[1]);
+                launchTranslateActivity(new RepoHandler(getContext(), ownerRepo[0], ownerRepo[1]));
             }
         });
 
@@ -98,10 +97,9 @@ public class HistoryFragment extends Fragment {
 
     //region Utilities
 
-    private void launchTranslateActivity(String owner, String repository) {
+    private void launchTranslateActivity(RepoHandler repo) {
         Intent intent = new Intent(getContext(), TranslateActivity.class);
-        intent.putExtra(EXTRA_REPO_OWNER, owner);
-        intent.putExtra(EXTRA_REPO_NAME, repository);
+        intent.putExtra(EXTRA_REPO, repo.toBundle());
         startActivity(intent);
     }
 

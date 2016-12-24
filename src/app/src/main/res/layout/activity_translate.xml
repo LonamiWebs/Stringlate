@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="io.github.lonamiwebs.stringlate.activities.TranslateActivity">
+    tools:context="io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

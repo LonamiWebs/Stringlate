@@ -2,6 +2,7 @@ package io.github.lonamiwebs.stringlate.utilities;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,6 +78,10 @@ public class RepoHandler {
     //endregion
 
     //region Constructors
+
+    public static RepoHandler fromBundle(Context context, Bundle bundle) {
+        return new RepoHandler(context, bundle.getString("owner"), bundle.getString("repo"));
+    }
 
     public RepoHandler(Context context, String owner, String repo) {
         mContext = context;
@@ -367,11 +372,22 @@ public class RepoHandler {
 
     //endregion
 
-    //region To string
+    //region To other objects
 
     @Override
     public String toString() {
         return mOwner+"/"+mRepo;
+    }
+
+    public String toString(boolean onlyRepo) {
+        return onlyRepo ? mRepo : toString();
+    }
+
+    public Bundle toBundle() {
+        Bundle result = new Bundle();
+        result.putString("owner", mOwner);
+        result.putString("repo", mRepo);
+        return result;
     }
 
     //endregion

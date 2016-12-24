@@ -25,6 +25,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="github.com"
                     android:pathPattern="/.*/.*"
@@ -38,8 +39,9 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".activities.TranslateActivity" />
+        <activity android:name=".activities.translate.TranslateActivity" />
         <activity android:name=".activities.CreateGistActivity" />
         <activity android:name=".activities.OnlineHelpActivity" />
+        <activity android:name=".activities.translate.SearchStringActivity" />
     </application>
 </manifest>

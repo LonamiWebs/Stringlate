@@ -111,4 +111,6 @@
     <string name="allow_download_icons">Allow downloading icons</string>
     <string name="do_not_save">Don\'t save</string>
     <string name="save_count">Save (%d)</string>
+    <string name="not_translated">Not translated.</string>
+    <string name="search_id_content_ellipsis">Search by ID or content…</string>
 </resources>

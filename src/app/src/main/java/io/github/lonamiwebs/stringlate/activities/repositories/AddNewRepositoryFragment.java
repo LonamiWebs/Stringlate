@@ -20,15 +20,14 @@ import java.util.regex.Pattern;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
-import io.github.lonamiwebs.stringlate.activities.TranslateActivity;
+import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.utilities.GitHub;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
 import static android.app.Activity.RESULT_OK;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO_NAME;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO_OWNER;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_REPO_DISCOVERED;
 
 public class AddNewRepositoryFragment extends Fragment {
@@ -127,10 +126,11 @@ public class AddNewRepositoryFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Determine whether we already have this repo or if it's a new one
-                if (new RepoHandler(getContext(), owner, repository).isEmpty())
+                RepoHandler repo = new RepoHandler(getContext(), owner, repository);
+                if (repo.isEmpty())
                     checkRepositoryOK(owner, repository);
                 else
-                    launchTranslateActivity(owner, repository);
+                    launchTranslateActivity(repo);
             }
         }
     };
@@ -198,8 +198,8 @@ public class AddNewRepositoryFragment extends Fragment {
     // Steps 2 a 3
     private void scanDownloadStrings(final String owner, final String repository,
                                      final ProgressDialog progress) {
-        RepoHandler handler = new RepoHandler(getContext(), owner, repository);
-        handler.syncResources(new ProgressUpdateCallback() {
+        final RepoHandler repo = new RepoHandler(getContext(), owner, repository);
+        repo.syncResources(new ProgressUpdateCallback() {
             @Override
             public void onProgressUpdate(String title, String description) {
                 progress.setTitle(title);
@@ -212,7 +212,7 @@ public class AddNewRepositoryFragment extends Fragment {
                 if (description != null)
                     Toast.makeText(getContext(), description, Toast.LENGTH_SHORT).show();
                 if (status)
-                    launchTranslateActivity(owner, repository);
+                    launchTranslateActivity(repo);
             }
         }, false);
         // false, do not keep any previous modification (there should not be any)
@@ -269,10 +269,9 @@ public class AddNewRepositoryFragment extends Fragment {
         mUrlEditText.setText(url);
     }
 
-    private void launchTranslateActivity(String owner, String repository) {
+    private void launchTranslateActivity(RepoHandler repo) {
         Intent intent = new Intent(getContext(), TranslateActivity.class);
-        intent.putExtra(EXTRA_REPO_OWNER, owner);
-        intent.putExtra(EXTRA_REPO_NAME, repository);
+        intent.putExtra(EXTRA_REPO, repo.toBundle());
         startActivity(intent);
     }
 
