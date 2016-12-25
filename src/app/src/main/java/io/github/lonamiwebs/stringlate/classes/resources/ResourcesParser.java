@@ -6,15 +6,16 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -232,19 +233,10 @@ public class ResourcesParser {
             Pattern.compile("name\\s*=\\s*\"(\\w+)\"");
     //      ^                name    =     "value__"
 
-    // Replacement holder - on the original xml (the "template")
-    // there will exist several of these to indicate where the
-    // replacements should be made
-    private static class ReplaceHolder {
-        int start, end;
-        String replacement;
-
-        ReplaceHolder(int start, int end, String replacement) {
-            this.start = start;
-            this.end = end;
-            this.replacement = replacement;
-        }
-    }
+    // Matches 'translatable="false"'
+    private static final Pattern STRING_UNTRANSLATABLE_PATTERN =
+            Pattern.compile("translatable\\s*=\\s*\"false\"");
+    //      ^                translatable    =     "false"
 
     // TODO < and > should not ALWAYS be replaced (although XmlSerializer does that too)
     // If the xml made by string is valid, then these should be kept
@@ -263,78 +255,67 @@ public class ResourcesParser {
         return buffer.toString();
     }
 
+    // Approach used: read the original xml file line by line and
+    // find the <string> tags with a regex so we can tell where to replace.
+    // Then apply the replacements accordingly when writing to the output stream.
     public static boolean applyTemplate(File originalFile, Resources resources, OutputStream out) {
-        int length = (int)originalFile.length();
-        byte[] bytes = new byte[length];
+        // Read the file line by line. We will ignore those that contain
+        // translatable="false" or those for which we have no translation
+        // TODO Although uncommon, a line might have multiple <string> tags! Handle those specially.
+        // TODO This case is more common: a line might span across multiple lines!
+
+        // Don't create an instance of the buffer all the time
+        StringBuilder sanitizeBuffer = new StringBuilder();
+
         try {
             FileInputStream in = new FileInputStream(originalFile);
-            try { in.read(bytes); }
-            finally { in.close(); }
+
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
+
+            while ((line = reader.readLine()) != null) {
+                // Match on the current line to determine where replacements will be made
+                Matcher m = STRING_TAG_PATTERN.matcher(line);
+                if (m.find()) {
+                    // Match found, determine whether it's translatable or not and its name
+                    // Find the resource ID on the first group ('<string name="...">')
+                    Matcher nameMatcher = STRING_NAME_PATTERN.matcher(m.group(1));
+                    Matcher untrMatcher = STRING_UNTRANSLATABLE_PATTERN.matcher(m.group(1));
+                    boolean untranslatable = untrMatcher.find();
+
+                    if (nameMatcher.find()) {
+                        // Should never fail
+                        String content = resources.getContent(nameMatcher.group(1));
+
+                        if (untranslatable || content == null || content.isEmpty()) {
+                            // Do not add this line to the final result
+                        } else {
+                            // We have the content and we're the replacement should be made
+                            // so perform the replacement and add this line
+                            int contentStart = m.start() + m.group(1).length();
+                            int contentEnd = contentStart + m.group(2).length();
+
+                            writer.write(line, 0, contentStart);
+                            writer.write(sanitize(sanitizeBuffer, content));
+                            writer.write(line, contentEnd, line.length()-contentEnd);
+                            writer.write('\n'); // New line character was consumed by .readLine()
+                        }
+                    }
+                } else {
+                    // Match not found, conserve this line
+                    writer.write(line);
+                    writer.write('\n'); // New line character was consumed by .readLine()
+                }
+            }
+
+            writer.flush();
+            in.close();
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
 
-        return applyTemplate(new String(bytes), resources, out);
-    }
-
-    // Approach used: match all the <string> tags and create
-    // ReplaceHolder objects accordingly; then, walk through the
-    // original xml string and apply the appropriate replacements
-    // TODO A better solution should be used; although I don't know any
-    public static boolean applyTemplate(String originalXml, Resources resources, OutputStream out) {
-        // Don't create an instance of the buffer all the time
-        StringBuilder sanitizeBuffer = new StringBuilder();
-
-        // Match on the original xml to determine where replacements will be made
-        Matcher m = STRING_TAG_PATTERN.matcher(originalXml);
-
-        // Matches will be in order, so use a queue (first in, first out)
-        Queue<ReplaceHolder> holders = new LinkedList<>();
-        while (m.find()) {
-            int tagStart = m.start(); // '<string...
-            int tagSize = m.group(1).length(); // '<string...>'
-            int tagContentSize = m.group(2).length(); // >'...'</
-
-            // Find the resource ID on the first group ('<string name="...">')
-            Matcher nameMatcher = STRING_NAME_PATTERN.matcher(m.group(1));
-            if (nameMatcher.find()) {
-                // Should never fail
-                String content = resources.getContent(nameMatcher.group(1));
-                if (content != null && !content.isEmpty()) {
-                    holders.add(new ReplaceHolder(
-                            tagStart+tagSize,
-                            tagStart+tagSize+tagContentSize,
-                            sanitize(sanitizeBuffer, content)));
-                } else {
-                    // TODO: This line should be removed (or if it's untranslatable)
-                }
-            }
-        }
-
-        // Write the result by applying the required replacements
-        PrintWriter outWriter = new PrintWriter(out);
-        ReplaceHolder holder = holders.poll();
-        for (int i = 0; i < originalXml.length(); i++) {
-            if (holder == null) {
-                // There are no more holders left, simply copy the characters
-                outWriter.append(originalXml.charAt(i));
-            }
-            else {
-                if (i < holder.start) {
-                    // We're below the index of the next replacement, keep copying characters
-                    outWriter.append(originalXml.charAt(i));
-                } else {
-                    // We reached the current replacement holder
-                    // Replace the original content with our new content
-                    outWriter.append(holder.replacement);
-                    i = holder.end-1; // Skip to the end of the tag
-
-                    holder = holders.poll(); // Next holder
-                }
-            }
-        }
-        outWriter.flush();
         return true;
     }
 
