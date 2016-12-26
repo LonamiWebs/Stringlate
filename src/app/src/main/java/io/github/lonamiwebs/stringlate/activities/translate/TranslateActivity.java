@@ -60,7 +60,9 @@ public class TranslateActivity extends AppCompatActivity {
     private Spinner mLocaleSpinner;
     private Spinner mStringIdSpinner;
 
+    private Button mPreviousButton;
     private Button mSaveButton;
+    private Button mNextButton;
     private ProgressBar mProgressProgressBar;
     private TextView mProgressTextView;
 
@@ -90,7 +92,9 @@ public class TranslateActivity extends AppCompatActivity {
         mLocaleSpinner = (Spinner)findViewById(R.id.localeSpinner);
         mStringIdSpinner = (Spinner)findViewById(R.id.stringIdSpinner);
 
+        mPreviousButton = (Button)findViewById(R.id.previousButton);
         mSaveButton = (Button)findViewById(R.id.saveButton);
+        mNextButton = (Button)findViewById(R.id.nextButton);
         mProgressProgressBar = (ProgressBar)findViewById(R.id.progressProgressBar);
         mProgressTextView = (TextView)findViewById(R.id.progressTextView);
 
@@ -802,6 +806,21 @@ public class TranslateActivity extends AppCompatActivity {
         mSelectedResourceId = resourceId;
         mOriginalStringEditText.setText(mDefaultResources.getContent(resourceId));
         mTranslatedStringEditText.setText(mSelectedLocaleResources.getContent(resourceId));
+        checkPreviousNextVisibility();
+    }
+
+    private void checkPreviousNextVisibility() {
+        int i = mStringIdSpinner.getSelectedItemPosition();
+        int countM1 = mStringIdSpinner.getCount()-1;
+
+        if (countM1 == 0) {
+            // Special case: set visibility to GONE so the Save button grows
+            mPreviousButton.setVisibility(View.GONE);
+            mNextButton.setVisibility(View.GONE);
+        } else {
+            mPreviousButton.setVisibility(i == 0 ? View.INVISIBLE : VISIBLE);
+            mNextButton.setVisibility(i == countM1 ? View.INVISIBLE : VISIBLE);
+        }
     }
 
     // Sadly, the spinners don't provide any method to retrieve
