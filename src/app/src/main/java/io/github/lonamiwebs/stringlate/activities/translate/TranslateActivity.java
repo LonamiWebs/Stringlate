@@ -818,8 +818,8 @@ public class TranslateActivity extends AppCompatActivity {
             mPreviousButton.setVisibility(View.GONE);
             mNextButton.setVisibility(View.GONE);
         } else {
-            mPreviousButton.setVisibility(i == 0 ? View.INVISIBLE : VISIBLE);
-            mNextButton.setVisibility(i == countM1 ? View.INVISIBLE : VISIBLE);
+            mPreviousButton.setVisibility(i == 0 ? View.INVISIBLE : View.VISIBLE);
+            mNextButton.setVisibility(i == countM1 ? View.INVISIBLE : View.VISIBLE);
         }
     }
 
