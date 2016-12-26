@@ -228,6 +228,11 @@ public class ResourcesParser {
             Pattern.compile("(<string(?:\\s+\\w+\\s*=\\s*\"\\w+\")+\\s*>)(.+?)(</\\s*string\\s*>)");
     //      ^                 <string        attr   =     "value"      >content</    string    >
 
+    // Matches '</string>'
+    private static final Pattern STRING_CLOSE_TAG_PATTERN =
+            Pattern.compile("</\\s*string\\s*>");
+    //      ^                </    string    >
+
     // Matches 'name="value"'
     private static final Pattern STRING_NAME_PATTERN =
             Pattern.compile("name\\s*=\\s*\"(\\w+)\"");
@@ -240,19 +245,18 @@ public class ResourcesParser {
 
     // TODO < and > should not ALWAYS be replaced (although XmlSerializer does that too)
     // If the xml made by string is valid, then these should be kept
-    private static String sanitize(StringBuilder buffer, String string) {
+    private static void writeSanitize(BufferedWriter writer, String string)
+            throws IOException {
         char c;
-        buffer.setLength(0);
         for (int i = 0; i < string.length(); i++) {
             c = string.charAt(i);
             switch (c) {
-                case '&': buffer.append("&amp;"); break;
-                case '<': buffer.append("&lt;"); break;
-                case '>': buffer.append("&gt;"); break;
-                default: buffer.append(c); break;
+                case '&': writer.write("&amp;"); break;
+                case '<': writer.write("&lt;"); break;
+                case '>': writer.write("&gt;"); break;
+                default: writer.write(c); break;
             }
         }
-        return buffer.toString();
     }
 
     // Approach used: read the original xml file line by line and
@@ -261,11 +265,7 @@ public class ResourcesParser {
     public static boolean applyTemplate(File originalFile, Resources resources, OutputStream out) {
         // Read the file line by line. We will ignore those that contain
         // translatable="false" or those for which we have no translation
-        // TODO Although uncommon, a line might have multiple <string> tags! Handle those specially.
         // TODO This case is more common: a line might span across multiple lines!
-
-        // Don't create an instance of the buffer all the time
-        StringBuilder sanitizeBuffer = new StringBuilder();
 
         try {
             FileInputStream in = new FileInputStream(originalFile);
@@ -278,34 +278,29 @@ public class ResourcesParser {
                 // Match on the current line to determine where replacements will be made
                 Matcher m = STRING_TAG_PATTERN.matcher(line);
                 if (m.find()) {
-                    // Match found, determine whether it's translatable or not and its name
-                    // Find the resource ID on the first group ('<string name="...">')
-                    Matcher nameMatcher = STRING_NAME_PATTERN.matcher(m.group(1));
-                    Matcher untrMatcher = STRING_UNTRANSLATABLE_PATTERN.matcher(m.group(1));
-                    boolean untranslatable = untrMatcher.find();
-
-                    if (nameMatcher.find()) {
-                        // Should never fail
-                        String content = resources.getContent(nameMatcher.group(1));
-
-                        if (untranslatable || content == null || content.isEmpty()) {
-                            // Do not add this line to the final result
-                        } else {
-                            // We have the content and we're the replacement should be made
-                            // so perform the replacement and add this line
-                            int contentStart = m.start() + m.group(1).length();
-                            int contentEnd = contentStart + m.group(2).length();
-
-                            writer.write(line, 0, contentStart);
-                            writer.write(sanitize(sanitizeBuffer, content));
-                            writer.write(line, contentEnd, line.length()-contentEnd);
-                            writer.write('\n'); // New line character was consumed by .readLine()
-                        }
+                    // Count the occurrences of </string>
+                    int count = 0;
+                    Matcher closeTagMatcher = STRING_CLOSE_TAG_PATTERN.matcher(line);
+                    while (closeTagMatcher.find()) {
+                        count++;
+                    }
+                    if (count == 1) {
+                        // Best case, single line with a single tag
+                        handleSingleTagLine(line, m, resources, writer);
+                    } else {
+                        // Harder case, we need to handle many tags in a single line
+                        handleMultitagLine(line, resources, writer);
                     }
                 } else {
-                    // Match not found, conserve this line
-                    writer.write(line);
-                    writer.write('\n'); // New line character was consumed by .readLine()
+                    // Match not found, perhaps this is a tag which spans across multiple lines
+                    if (line.contains("<string")) {
+                        // Even the <string> tag declaration can span across multiple lines!
+                        handleMultilineTag();
+                    } else {
+                        // This line has no <string> tag, simply append it to the result
+                        writer.write(line);
+                        writer.write('\n'); // New line character was consumed by .readLine()
+                    }
                 }
             }
 
@@ -317,6 +312,81 @@ public class ResourcesParser {
         }
 
         return true;
+    }
+
+    private static void handleSingleTagLine(String line, Matcher m,
+                                            Resources resources, BufferedWriter writer)
+            throws IOException {
+        // Match found, determine whether it's translatable or not and its name
+        // Find the resource ID on the first group ('<string name="...">')
+        Matcher nameMatcher = STRING_NAME_PATTERN.matcher(m.group(1));
+        Matcher untrMatcher = STRING_UNTRANSLATABLE_PATTERN.matcher(m.group(1));
+        boolean untranslatable = untrMatcher.find();
+
+        if (nameMatcher.find()) {
+            // Should never fail
+            String content = resources.getContent(nameMatcher.group(1));
+
+            if (untranslatable || content == null || content.isEmpty()) {
+                // Do not add this line to the final result
+            } else {
+                // We have the content and we're the replacement should be made
+                // so perform the replacement and add this line
+                int contentStart = m.start() + m.group(1).length();
+                int contentEnd = contentStart + m.group(2).length();
+
+                writer.write(line, 0, contentStart);
+                writeSanitize(writer, content);
+                writer.write(line, contentEnd, line.length()-contentEnd);
+                writer.write('\n'); // New line character was consumed by .readLine()
+            }
+        }
+    }
+
+    private static void handleMultitagLine(String line, Resources resources, BufferedWriter writer)
+            throws IOException {
+        int lastIndex = 0; // From where we need to copy until the next tag
+
+        // We need to iterate over all the matches on this line
+        Matcher m = STRING_TAG_PATTERN.matcher(line);
+        while (m.find()) {
+            // Match found, determine whether it's translatable or not and its name
+            // Find the resource ID on the first group ('<string name="...">')
+            Matcher nameMatcher = STRING_NAME_PATTERN.matcher(m.group(1));
+            Matcher untrMatcher = STRING_UNTRANSLATABLE_PATTERN.matcher(m.group(1));
+            boolean untranslatable = untrMatcher.find();
+
+            if (nameMatcher.find()) {
+                // Should never fail
+                String content = resources.getContent(nameMatcher.group(1));
+
+                int tagStart = m.start();
+                int contentStart = tagStart + m.group(1).length();
+                int contentEnd = contentStart + m.group(2).length();
+                int tagEnd = contentEnd + m.group(3).length();
+
+                // Always write up to this point
+                writer.write(line, lastIndex, tagStart-lastIndex);
+
+                if (untranslatable || content == null || content.isEmpty()) {
+                    // Do not add this tag to the final result
+                } else {
+                    // We have the content and we're the replacement should be made
+                    // so perform the replacement and add this line
+                    writer.write(line, tagStart, contentStart-tagStart);
+                    writeSanitize(writer, content);
+                    writer.write(line, contentEnd, tagEnd-contentEnd);
+                }
+
+                lastIndex = tagEnd;
+            }
+        }
+        writer.write(line, lastIndex, line.length()-lastIndex);
+        writer.write('\n'); // New line character was consumed by .readLine()
+    }
+
+    private static void handleMultilineTag() {
+
     }
 
     //endregion
