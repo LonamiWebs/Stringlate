@@ -149,14 +149,13 @@ public class Resources implements Iterable<ResourcesString> {
                 break;
             }
 
-        // We don't want to set an empty string unless we're
-        // clearing an existing one since it's unnecessary
-        if (!found && !content.isEmpty()) {
+        if (!found) {
             ResourcesString string = new ResourcesString(resourceId);
             string.setContent(content); // Will also update its modified = true state
             mStrings.add(string);
 
             mSavedChanges = false;
+            mUnsavedIDs.add(resourceId);
         }
     }
 
