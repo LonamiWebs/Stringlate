@@ -131,6 +131,12 @@ public class Resources implements Iterable<ResourcesString> {
         if (resourceId == null || resourceId.isEmpty())
             return;
 
+        // If the content is empty (or null), treat it as deleting this ID
+        if (content == null || content.isEmpty()) {
+            deleteId(resourceId);
+            return;
+        }
+
         boolean found = false;
         for (ResourcesString rs : mStrings)
             if (rs.getId().equals(resourceId)) {
