@@ -78,7 +78,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/translated_string"
-                android:id="@+id/translatedStringEditText" />
+                android:id="@+id/translatedStringEditText"
+                android:inputType="textCapSentences" />
 
             <LinearLayout
                 android:layout_width="match_parent"
