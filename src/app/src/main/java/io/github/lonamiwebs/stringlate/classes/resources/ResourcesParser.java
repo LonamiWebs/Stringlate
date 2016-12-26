@@ -223,25 +223,27 @@ public class ResourcesParser {
 
     //region Using another file as a template
 
-    // Matches '<string attrA="value" attrB="value">content</string>'
+    //region Matches
+
     private static final Pattern STRING_TAG_PATTERN =
+    //                        <string        attr   =     "value"      >content</    string    >
             Pattern.compile("(<string(?:\\s+\\w+\\s*=\\s*\"\\w+\")+\\s*>)(.+?)(</\\s*string\\s*>)");
-    //      ^                 <string        attr   =     "value"      >content</    string    >
 
-    // Matches '</string>'
     private static final Pattern STRING_CLOSE_TAG_PATTERN =
+    //                       </    string    >
             Pattern.compile("</\\s*string\\s*>");
-    //      ^                </    string    >
 
-    // Matches 'name="value"'
     private static final Pattern STRING_NAME_PATTERN =
+    //                       name    =     "value__"
             Pattern.compile("name\\s*=\\s*\"(\\w+)\"");
-    //      ^                name    =     "value__"
 
-    // Matches 'translatable="false"'
-    private static final Pattern STRING_UNTRANSLATABLE_PATTERN =
-            Pattern.compile("translatable\\s*=\\s*\"false\"");
-    //      ^                translatable    =     "false"
+    private static final Pattern STRING_TRANSLATABLE_PATTERN =
+    //                       translatable    =     "value__"
+            Pattern.compile("translatable\\s*=\\s*\"(\\w+)\"");
+
+    //endregion
+
+    //region Writer utilities
 
     // TODO < and > should not ALWAYS be replaced (although XmlSerializer does that too)
     // If the xml made by string is valid, then these should be kept
@@ -259,13 +261,16 @@ public class ResourcesParser {
         }
     }
 
+    //endregion
+
+    //region Applying the template
+
     // Approach used: read the original xml file line by line and
     // find the <string> tags with a regex so we can tell where to replace.
     // Then apply the replacements accordingly when writing to the output stream.
     public static boolean applyTemplate(File originalFile, Resources resources, OutputStream out) {
         // Read the file line by line. We will ignore those that contain
         // translatable="false" or those for which we have no translation
-        // TODO This case is more common: a line might span across multiple lines!
 
         try {
             FileInputStream in = new FileInputStream(originalFile);
@@ -295,7 +300,7 @@ public class ResourcesParser {
                     // Match not found, perhaps this is a tag which spans across multiple lines
                     if (line.contains("<string")) {
                         // Even the <string> tag declaration can span across multiple lines!
-                        handleMultilineTag();
+                        handleMultilineTag(line, reader, resources, writer);
                     } else {
                         // This line has no <string> tag, simply append it to the result
                         writer.write(line);
@@ -320,14 +325,15 @@ public class ResourcesParser {
         // Match found, determine whether it's translatable or not and its name
         // Find the resource ID on the first group ('<string name="...">')
         Matcher nameMatcher = STRING_NAME_PATTERN.matcher(m.group(1));
-        Matcher untrMatcher = STRING_UNTRANSLATABLE_PATTERN.matcher(m.group(1));
-        boolean untranslatable = untrMatcher.find();
+        Matcher tranMatcher = STRING_TRANSLATABLE_PATTERN.matcher(m.group(1));
+        boolean translatable = tranMatcher.find() ?
+                "true".equals(tranMatcher.group(1)) : DEFAULT_TRANSLATABLE;
 
         if (nameMatcher.find()) {
             // Should never fail
             String content = resources.getContent(nameMatcher.group(1));
 
-            if (untranslatable || content == null || content.isEmpty()) {
+            if (!translatable || content == null || content.isEmpty()) {
                 // Do not add this line to the final result
             } else {
                 // We have the content and we're the replacement should be made
@@ -353,8 +359,9 @@ public class ResourcesParser {
             // Match found, determine whether it's translatable or not and its name
             // Find the resource ID on the first group ('<string name="...">')
             Matcher nameMatcher = STRING_NAME_PATTERN.matcher(m.group(1));
-            Matcher untrMatcher = STRING_UNTRANSLATABLE_PATTERN.matcher(m.group(1));
-            boolean untranslatable = untrMatcher.find();
+            Matcher tranMatcher = STRING_TRANSLATABLE_PATTERN.matcher(m.group(1));
+            boolean translatable = tranMatcher.find() ?
+                    "true".equals(tranMatcher.group(1)) : DEFAULT_TRANSLATABLE;
 
             if (nameMatcher.find()) {
                 // Should never fail
@@ -368,7 +375,7 @@ public class ResourcesParser {
                 // Always write up to this point
                 writer.write(line, lastIndex, tagStart-lastIndex);
 
-                if (untranslatable || content == null || content.isEmpty()) {
+                if (!translatable || content == null || content.isEmpty()) {
                     // Do not add this tag to the final result
                 } else {
                     // We have the content and we're the replacement should be made
@@ -385,9 +392,73 @@ public class ResourcesParser {
         writer.write('\n'); // New line character was consumed by .readLine()
     }
 
-    private static void handleMultilineTag() {
+    private static void handleMultilineTag(String line, BufferedReader reader,
+                                           Resources resources, BufferedWriter writer)
+            throws IOException {
+        // We need to find the translated contents, and whether it's translatable or not
+        String content = null;
+        Boolean translatable = null;
+        boolean consumeTag = false;
 
+        // If the string is valid, we'll need to know how the tag was defined
+        StringBuilder sb = new StringBuilder();
+        boolean contentStarted = false;
+
+        do {
+            if (content == null) {
+                Matcher nameMatcher = STRING_NAME_PATTERN.matcher(line);
+                if (nameMatcher.find()) {
+                    content = resources.getContent(nameMatcher.group(1));
+                    // If this string has no translation, then consume the tag
+                    if (content == null || content.isEmpty())
+                        consumeTag = true;
+                }
+            }
+            if (translatable == null) {
+                Matcher tranMatcher = STRING_TRANSLATABLE_PATTERN.matcher(line);
+                if (tranMatcher.find()) {
+                    translatable = "true".equals(tranMatcher.group(1));
+                    if (!translatable) {
+                        // This tag cannot be translated, then consume it
+                        consumeTag = true;
+                    }
+                }
+            }
+            if (line.contains(">")) {
+                contentStarted = true;
+                if (content == null) {
+                    // If the content started but we have no translation, consume the tag
+                    consumeTag = true;
+                } else {
+                    // Otherwise, append the start of this line, since it's part of the tag
+                    // Then, append our translated content and reach '</string', we're done!
+                    sb.append(line.substring(0, line.indexOf('>')+1));
+                    writer.write(sb.toString());
+                    writeSanitize(writer, content);
+
+                    int endTag;
+                    while ((endTag = line.indexOf("</string")) == -1)
+                        line = reader.readLine();
+                    writer.write(line, endTag, line.length()-endTag);
+                    writer.write('\n');
+                    // Exit since we're done
+                    break;
+                }
+            }
+
+            if (consumeTag) {
+                while (!line.contains("</string"))
+                    line = reader.readLine();
+                break;
+            } else if (!contentStarted) {
+                // If the content hasn't started yet, append the lines which are part of the tag
+                sb.append(line);
+                sb.append('\n');
+            }
+        } while ((line = reader.readLine()) != null);
     }
+
+    //endregion
 
     //endregion
 }
