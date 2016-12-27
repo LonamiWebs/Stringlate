@@ -13,7 +13,6 @@
     <string name="create">Erstellen</string>
     <string name="create_locale_error">Konnte die neue Sprachdatei nicht erstellen.</string>
     <string name="current_string_id">Aktuelle Zeichenfolgen-ID:</string>
-    <string name="default_gist_share_description">strings.xml Übersetzung, geteilt mit Stringlate</string>
     <string name="delete_ellipsis">Löschen…</string>
     <string name="delete_locale">Sprachdatei löschen</string>
     <string name="delete_locale_confirm_long">Sind sie sich sicher, dass sie die Sprachdatei \"%s\" löschen wollen? alle ihre Übersetzungen gehen dadurch verloren.</string>
@@ -23,9 +22,7 @@
     <string name="delete_string">Zeichenfolge löschen</string>
     <string name="discard_changes">Änderungen verwerfen</string>
     <string name="discover">Quellen entdecken</string>
-    <string name="do_not_overwrite">Nicht überschreiben</string>
     <string name="do_not_save">Nicht speichern</string>
-    <string name="do_overwrite">Überschreiben</string>
     <string name="done">Fertig!</string>
     <string name="downloading_index_jar">Lade index.jar herunter…</string>
     <string name="downloading_index_jar_long">index.jar, welches alle Applikationen beinhaltet, wird heruntergeladen…</string>
@@ -48,7 +45,6 @@
     <string name="extracting_index_xml_long">index.xml, welches die Information der Applikation enthällt, wird extrahiert…</string>
     <string name="files_modified">Einige Dateien wurden modifiziert</string>
     <string name="files_modified_keep_changes">Einige Quelldateien wurden verändert. Willst Du die lokalen Änderungen zusammen mit den fremden Änderungen behalten oder Deine Änderungen verwerfen?</string>
-    <string name="files_modified_long">Einige Quelldateien wurden modifiziert, wollen sie die lokalen Veränderung mit denen der entfernten Quelle überschreiben?</string>
     <string name="gist_description">Gist Beschreibung(optional):</string>
     <string name="gist_filename">Gist Dateiname:</string>
     <string name="gist_url_copied">Die Gist URL wurde in die Zwischenablage kopiert.</string>
@@ -62,7 +58,6 @@
     <string name="invalid_repo">Die Eingangsquelle scheint nicht gültig zu sein.</string>
     <string name="is_public_gist">Das ist eine öffentliche Gist</string>
     <string name="keep_changes">Änderungen behalten</string>
-    <string name="load_apps_repo_failed">Konnte nicht die Applikationsquelle laden, bitte synchronisieren Sie und versuchen sie es erneut.</string>
     <string name="loading_ellipsis">Laden…</string>
     <string name="loading_index_xml">Lade index.xml…</string>
     <string name="loading_index_xml_long">Lade und minimalisiere den Index der Applikation…</string>
@@ -113,4 +108,6 @@
     <string name="update_strings">strings.xml updaten</string>
     <string name="welcome">Willkommen zu Stringlate! Bitte geben Sie einen Projektnamen und seinen Autor oder einfach den Link der GitHub Quelle um fortzufahren.</string>
     <string name="xml_copied_to_clipboard">Die Dateiinhalte von %s wurden in die Zwischenablage kopiert</string>
+    <string name="not_translated">Nicht übersetzt.</string>
+    <string name="search_id_content_ellipsis">Nach ID oder Inhalt suchen…</string>
 </resources>

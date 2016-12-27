@@ -104,7 +104,6 @@
     <string name="clear_icons_cache">アイコンキャッシュをクリア</string>
     <string name="help">ヘルプ</string>
     <string name="open_online_help">オンラインヘルプを開く</string>
-    <string name="open_online_help_long">Webブラウザでオンラインヘルプを開きますか? お好みの言語を選択するための索引が表示されます。</string>
     <string name="translation_progress">%1$d/%2$d 文字列が翻訳済。</string>
     <string name="allow_download_icons">アイコンのダウンロードを許可</string>
     <string name="do_not_save">保存しない</string>

@@ -105,4 +105,9 @@
     <string name="welcome">Bienvenue dans Stringlate&#160;! Entrer un nom de projet et son propriétaire ou coller l\'adresse du dépôt ci-dessous pour continuer.</string>
     <string name="xml_copied_to_clipboard">Le contenu du fichier %s a été copié dans le presse-papiers</string>
     <string name="translation_progress">%1$d/%2$d chaînes traduites.</string>
+    <string name="allow_download_icons">Permettre le téléchargement des icônes</string>
+    <string name="do_not_save">Ne pas enregistrer</string>
+    <string name="save_count">Enregistrer (%d)</string>
+    <string name="not_translated">Non traduit.</string>
+    <string name="search_id_content_ellipsis">Rechercher par ID ou contenu…</string>
 </resources>

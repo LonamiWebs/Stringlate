@@ -107,4 +107,7 @@
     <string name="translation_progress">%1$d de %2$d textos traducidos.</string>
     <string name="allow_download_icons">Permitir la descarga de iconos</string>
     <string name="do_not_save">No guardar</string>
+    <string name="not_translated">Sin traducción.</string>
+    <string name="save_count">Guardar (%d)</string>
+    <string name="search_id_content_ellipsis">Buscar por ID o contenido…</string>
 </resources>

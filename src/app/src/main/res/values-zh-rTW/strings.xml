@@ -105,4 +105,9 @@
     <string name="update_strings">更新 strings.xml</string>
     <string name="welcome">歡迎使用 Stringlate！請輸入專案名稱與其擁有者名稱或是將版控倉庫的網址貼到下面以繼續。</string>
     <string name="xml_copied_to_clipboard">「%s」檔案的內容已被複製到您的剪貼簿</string>
+    <string name="allow_download_icons">允許下載應用軟體圖示</string>
+    <string name="do_not_save">不要儲存</string>
+    <string name="save_count">儲存(%d)</string>
+    <string name="not_translated">尚未被翻譯</string>
+    <string name="search_id_content_ellipsis">根據識別名稱(ID)或內容來搜尋……</string>
 </resources>
