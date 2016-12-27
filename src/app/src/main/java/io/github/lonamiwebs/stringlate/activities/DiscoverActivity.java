@@ -27,7 +27,7 @@ import io.github.lonamiwebs.stringlate.classes.applications.ApplicationList;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.FileCache;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
-import io.github.lonamiwebs.stringlate.utilities.Settings;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -37,7 +37,7 @@ public class DiscoverActivity extends AppCompatActivity {
 
     //region Members
 
-    private Settings mSettings;
+    private AppSettings mSettings;
 
     private TextView mNoRepositoryTextView;
     private ListView mApplicationListView;
@@ -54,7 +54,7 @@ public class DiscoverActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discover);
 
-        mSettings = new Settings(this);
+        mSettings = new AppSettings(this);
 
         mNoRepositoryTextView = (TextView)findViewById(R.id.noRepositoryTextView);
         mApplicationListView = (ListView)findViewById(R.id.applicationListView);

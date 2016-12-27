@@ -21,6 +21,7 @@ import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
 import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.settings.Settings;
 
 // Class used to inter-operate with locally saved GitHub "repositories"
 // What is stored are simply the strings.xml file under a tree directory structure:
@@ -34,7 +35,7 @@ owner1/
 owner2/
        ...
 * */
-public class RepoHandler {
+public class RepoHandler extends Settings {
 
     //region Members
 
@@ -53,6 +54,8 @@ public class RepoHandler {
     private static final String GITHUB_REPO_URL = "https://github.com/%s/%s";
 
     public static final String DEFAULT_LOCALE = "default";
+
+    private static final String SETTINGS_FORMAT = "io.github.lonamiwebs.stringlate.repo.%s.%s";
 
     //endregion
 
@@ -87,6 +90,7 @@ public class RepoHandler {
     }
 
     public RepoHandler(Context context, String owner, String repo) {
+        super(context, String.format(SETTINGS_FORMAT, owner, repo));
         mContext = context;
         mOwner = owner;
         mRepo = repo;
