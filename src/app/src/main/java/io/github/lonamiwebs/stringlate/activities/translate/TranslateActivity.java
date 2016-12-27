@@ -787,17 +787,11 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     private void setStringId(String id) {
-        boolean found = false;
-        for (int i = 0 ; i < mStringIdSpinner.getCount(); i++) {
-            if (mStringIdSpinner.getItemAtPosition(i).equals(id)) {
-                found = true;
-                mStringIdSpinner.setSelection(i);
-                updateSelectedResourceId((String)mStringIdSpinner.getSelectedItem());
-                break;
-            }
-        }
-
-        if (!found && !mShowTranslated) {
+        int i = getItemIndex(mStringIdSpinner, id);
+        if (i > -1) {
+            mStringIdSpinner.setSelection(i);
+            updateSelectedResourceId((String)mStringIdSpinner.getSelectedItem());
+        } else if (!mShowTranslated) {
             toggleShowTranslated(mShowTranslatedMenuItem);
             setStringId(id);
         }
