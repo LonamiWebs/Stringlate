@@ -651,6 +651,7 @@ public class TranslateActivity extends AppCompatActivity {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mLocaleSpinner.setAdapter(adapter);
+        setCurrentLocale(mRepo.getLastLocale());
     }
 
     private void loadStringIDsSpinner() {
@@ -687,6 +688,7 @@ public class TranslateActivity extends AppCompatActivity {
     // Sets the current locale also updating the spinner selection
     private void setCurrentLocale(String locale) {
         mSelectedLocale = locale;
+        mRepo.setLastLocale(locale);
 
         if (locale != null) {
             mLocaleSpinner.setSelection(getItemIndex(mLocaleSpinner, locale));

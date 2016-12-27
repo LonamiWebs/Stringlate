@@ -403,6 +403,34 @@ public class RepoHandler extends Settings {
 
     //endregion
 
+    //region Settings
+
+    //region Settings keys
+
+    private static final String KEY_LAST_LOCALE = "last_locale";
+
+    private static final String DEFAULT_LAST_LOCALE = null;
+
+    //endregion
+
+    //region Getting settings
+
+    public String getLastLocale() {
+        return getSettings().getString(KEY_LAST_LOCALE, DEFAULT_LAST_LOCALE);
+    }
+
+    //endregion
+
+    //region Setting settings
+
+    public void setLastLocale(String locale) {
+        editSettings().putString(KEY_LAST_LOCALE, locale).apply();
+    }
+
+    //endregion
+
+    //endregion
+
     //region To other objects
 
     @Override
