@@ -2,6 +2,7 @@
     <string name="add_locale">Lägg till språk</string>
     <string name="add_locale_to_start">Lägg till ett nytt språk för att sätta igång.</string>
     <string name="add_new_repo">Lägg till en ny repo</string>
+    <string name="allow_download_icons">Tillåt nedladdning av ikoner</string>
     <string name="apps_repo_not_downloaded">App listan har inte laddats ner än. Tryck på \"%s\" meny knappen för att ladda ner repo-index och kunna utforska alla apparna.</string>
     <string name="cancel">Avbryt</string>
     <string name="checking_repo_ok">Ser till att allt är rätt…</string>
@@ -14,14 +15,14 @@
     <string name="current_string_id">Nuvarande sträng ID</string>
     <string name="delete_ellipsis">Ta bort…</string>
     <string name="delete_locale">Ta bort språk</string>
-    <string name="delete_locale_confirm_long">Är du säker på att du vill ta bort språket \"%s\"?
-Alla dess strängar kommer att tas bort.</string>
+    <string name="delete_locale_confirm_long">Är du säker på att du vill ta bort språket \"%s\"? Alla dess strängar kommer att tas bort.</string>
     <string name="delete_no_locale_bad_joke">Kan inte ta bort språket för att det inte finns.</string>
     <string name="delete_repository">Ta bort repot</string>
     <string name="delete_repository_confirm_long">Är du säker på att du vill ta bort repot \"%s\"? Språk-klonen kommer att tas bort från din telefon, men du kommer kunna lägga till den igen.</string>
     <string name="delete_string">Ta bort sträng</string>
     <string name="discard_changes">Ta bort ändringarna</string>
     <string name="discover">Utforska repon</string>
+    <string name="do_not_save">Spara inte</string>
     <string name="done">Klar!</string>
     <string name="downloading_index_jar">Laddar ner index.jar…</string>
     <string name="downloading_index_jar_long">index.jar, som innehåller listan över applikationerna, laddas ner just nu…</string>
@@ -66,6 +67,7 @@ Alla dess strängar kommer att tas bort.</string>
     <string name="no_strings_found">Inga strings.xml filer fanns i denna repo.</string>
     <string name="no_strings_found_update">Inga strings.xml filer funna. Var god och uppdatera strings.xml</string>
     <string name="no_strings_left">Det finns inga strängar kvar.</string>
+    <string name="not_translated">Inte översatt.</string>
     <string name="open">Öppna</string>
     <string name="open_online_help">Öppna online hjälp</string>
     <string name="or">eller</string>
@@ -83,6 +85,7 @@ Alla dess strängar kommer att tas bort.</string>
     <string name="repository_hint">repo</string>
     <string name="save">Spara</string>
     <string name="save_before_sync_required">Du måste spara innan du kan synka.</string>
+    <string name="save_count">Spara (%d)</string>
     <string name="save_error">Kunde inte spara ändringarna.</string>
     <string name="save_resources_question">Spara resurserna?</string>
     <string name="save_resources_question_long">Resurserna för nuvarande språket har modifierats men inte sparats. Vill du spara dom nu?</string>
@@ -91,6 +94,7 @@ Alla dess strängar kommer att tas bort.</string>
     <string name="scanning_repository_long">Letar efter strings.xml filer i repot…</string>
     <string name="search">Sök</string>
     <string name="search_apps_ellipsis">Sök i applikationer…</string>
+    <string name="search_id_content_ellipsis">Sök på ID eller innehåll…</string>
     <string name="selected_locale">Valt språk:</string>
     <string name="share">Dela</string>
     <string name="share_gist_url">Dela Gist URL</string>
