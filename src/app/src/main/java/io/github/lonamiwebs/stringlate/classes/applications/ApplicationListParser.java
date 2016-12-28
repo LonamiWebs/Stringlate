@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.regex.Pattern;
 
 public class ApplicationListParser {
     // We don't use namespaces
@@ -24,7 +25,8 @@ public class ApplicationListParser {
     private static final String SOURCE_URL = "source";
 
     // We will only parse https GitHub urls
-    private static final String HTTPS_GITHUB = "https://github.com/";
+    private static final Pattern GITHUB_PATTERN =
+            Pattern.compile("^https?://github.com/\\w+/\\w+(?:/.*)?$");
 
     //region Xml -> ApplicationsList
 
@@ -66,7 +68,7 @@ public class ApplicationListParser {
             String name = parser.getName();
             if (name.equals("application")) {
                 Application app = readApplication(parser);
-                if (app.getSourceCodeUrl().startsWith(HTTPS_GITHUB)) {
+                if (GITHUB_PATTERN.matcher(app.getSourceCodeUrl()).matches()) {
                     apps.add(app);
                 }
             }
