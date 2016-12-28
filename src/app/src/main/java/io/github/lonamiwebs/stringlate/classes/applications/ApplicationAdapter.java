@@ -34,7 +34,11 @@ public class ApplicationAdapter extends ArrayAdapter<Application> {
                     .inflate(R.layout.item_application_list, parent, false);
 
         ImageView iconView = (ImageView)convertView.findViewById(R.id.appIcon);
-        mImageLoader.loadImageAsync(iconView, app.getIconUrl(getContext()));
+        if (app.isInstalled()) {
+            mImageLoader.loadImageAsync(iconView, app.getIconUrl(getContext()), app.getPackageName());
+        } else {
+            mImageLoader.loadImageAsync(iconView, app.getIconUrl(getContext()), null);
+        }
 
         ((TextView)convertView.findViewById(R.id.appName)).setText(app.getName());
         ((TextView)convertView.findViewById(R.id.appDescription)).setText(app.getDescription());
