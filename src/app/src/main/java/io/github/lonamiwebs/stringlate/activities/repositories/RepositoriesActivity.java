@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.activities.GitHubLoginActivity;
 import io.github.lonamiwebs.stringlate.activities.OnlineHelpActivity;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_REPO_DISCOVERED;
@@ -73,6 +74,10 @@ public class RepositoriesActivity extends AppCompatActivity {
             // Online help
             case R.id.help:
                 startActivity(new Intent(this, OnlineHelpActivity.class));
+                return true;
+            // Login to GitHub
+            case R.id.github_login:
+                startActivity(new Intent(this, GitHubLoginActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -113,4 +113,10 @@
     <string name="save_count">Save (%d)</string>
     <string name="not_translated">Not translated.</string>
     <string name="search_id_content_ellipsis">Search by ID or content…</string>
+    <string name="github_not_logged_long">In order to provide some extra functionality such as non-anonymous Gists, creating issues and pull requests, you need to authorize Stringlate. Click the button below to get started.</string>
+    <string name="request_auth">Request authorization</string>
+    <string name="github_yes_logged_long">You\'re already logged in to GitHub. No further action is required. If things are not working, you can always click the button again to start over.</string>
+    <string name="login_to_github">Login to GitHub</string>
+    <string name="auth_success">Authorization success</string>
+    <string name="completing_auth_ellipsis">Completing authorization…</string>
 </resources>

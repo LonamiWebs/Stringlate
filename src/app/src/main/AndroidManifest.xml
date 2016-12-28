@@ -43,5 +43,20 @@
         <activity android:name=".activities.CreateGistActivity" />
         <activity android:name=".activities.OnlineHelpActivity" />
         <activity android:name=".activities.translate.SearchStringActivity" />
+        <activity
+            android:name=".activities.GitHubLoginActivity"
+            android:label="@string/login_to_github">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="github.oauth"
+                    android:scheme="stringlate" />
+            </intent-filter>
+        </activity>
     </application>
+
 </manifest>
