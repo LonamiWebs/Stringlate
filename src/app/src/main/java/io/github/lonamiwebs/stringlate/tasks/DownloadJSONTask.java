@@ -34,7 +34,7 @@ public class DownloadJSONTask extends AsyncTask<String, Void, Object> {
     @Override
     protected Object doInBackground(String... params) {
         BufferedReader in = null;
-        String line = null;
+        StringBuilder sb = new StringBuilder();
 
         try {
             URL url = new URL(params[0]);
@@ -53,13 +53,19 @@ public class DownloadJSONTask extends AsyncTask<String, Void, Object> {
             }
 
             conn.connect();
-            in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            line = in.readLine(); // For debugging purposes
-            return new JSONTokener(line).nextValue();
+
+            String line;
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+                sb.append('\n');
+            }
+
+            return new JSONTokener(sb.toString()).nextValue();
         }
         catch (IOException | JSONException e) {
             e.printStackTrace();
-            Log.e("DownloadJsonError", "Received JSON line: "+line);
+            Log.e("DownloadJsonError", "Received JSON line: "+sb.toString());
         } finally {
             if (in != null) {
                 try {

@@ -45,7 +45,7 @@ public class HttpPostTask extends AsyncTask<String, Void, HashMap<String, String
     }
 
     private static String performPostCall(URL url, HashMap<String, String> params) {
-        String response = "";
+        StringBuilder sb = new StringBuilder();
         try {
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("POST");
@@ -63,17 +63,16 @@ public class HttpPostTask extends AsyncTask<String, Void, HashMap<String, String
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 String line;
                 BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                while ((line = br.readLine()) != null)
-                    response += line;
-            }
-            else {
-                response = "";
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                    sb.append('\n');
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return response;
+        return sb.toString();
     }
 
     private static String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
