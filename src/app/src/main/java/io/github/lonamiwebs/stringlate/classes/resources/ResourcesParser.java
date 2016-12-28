@@ -104,7 +104,11 @@ public class ResourcesParser {
             modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
 
             // The content must be read last, since it also consumes the tag
+            // Android uses \n for new line, XML doesn't so manually replace it
+            // But first, replace the XML new lines with normal spaces
             content = getInnerXml(parser);
+            content = content.replace('\n', ' ').replace("\\n", "\n"); // 4 \, it's regex
+
             parser.require(XmlPullParser.END_TAG, ns, STRING);
 
             return new ResourcesString(id, content, modified);
@@ -207,7 +211,8 @@ public class ResourcesParser {
                 if (rs.wasModified() != DEFAULT_MODIFIED)
                     serializer.attribute(ns, MODIFIED, Boolean.toString(rs.wasModified()));
 
-                serializer.text(rs.getContent());
+                // Replace the new lines by \n again
+                serializer.text(rs.getContent().replace("\n", "\\n"));
                 serializer.endTag(ns, STRING);
             }
             serializer.endTag(ns, RESOURCES);
@@ -256,6 +261,7 @@ public class ResourcesParser {
                 case '&': writer.write("&amp;"); break;
                 case '<': writer.write("&lt;"); break;
                 case '>': writer.write("&gt;"); break;
+                case '\n': writer.write("\\n"); break;
                 default: writer.write(c); break;
             }
         }
