@@ -11,9 +11,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslation;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslationAdapter;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
@@ -45,7 +45,9 @@ public class SearchStringActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
-        setTitle(mRepo.toString(true)+"/"+getDisplay(mLocale));
+
+        setTitle(String.format("%s/%s (%s)", mRepo.toString(true),
+                LocaleString.getDisplay(mLocale), mLocale));
 
         refreshResourcesListView(null);
         searchEditText.addTextChangedListener(new TextWatcher() {
@@ -82,25 +84,6 @@ public class SearchStringActivity extends AppCompatActivity {
 
         mResourcesListView.setAdapter(new ResourcesTranslationAdapter(
                 this, R.layout.item_resource_list, rts));
-    }
-
-    //endregion
-
-    //region Utilities
-
-    private static String getDisplay(String locale) {
-        if (locale.contains("-")) {
-            // If there is an hyphen, then a country was also specified
-            for (Locale l : Locale.getAvailableLocales())
-                if (!l.getCountry().isEmpty())
-                    if (locale.equals(l.getLanguage()+"-"+l.getCountry()))
-                        return l.getDisplayName();
-        } else {
-            for (Locale l : Locale.getAvailableLocales())
-                if (locale.equals(l.getLanguage()))
-                    return l.getDisplayName();
-        }
-        return locale;
     }
 
     //endregion

@@ -36,6 +36,7 @@ import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.CreateGistActivity;
+import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
 import io.github.lonamiwebs.stringlate.interfaces.Callback;
@@ -331,7 +332,7 @@ public class TranslateActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String locale = et.getText().toString().trim();
-                        if (isValidLocale(locale)) {
+                        if (LocaleString.isValid(locale)) {
                             if (mRepo.createLocale(locale)) {
                                 loadLocalesSpinner();
                                 setCurrentLocale(locale);
@@ -551,19 +552,19 @@ public class TranslateActivity extends AppCompatActivity {
             eOnLocaleSelected = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
-            final String selectedLocale = (String)parent.getItemAtPosition(i);
+            final LocaleString selectedLocale = (LocaleString)parent.getItemAtPosition(i);
             if (isLocaleSelected()) {
                 checkResourcesSaved(new Callback<Boolean>() {
                     @Override
                     public void onCallback(Boolean actionTaken) {
                         if (actionTaken)
-                            setCurrentLocale(selectedLocale);
+                            setCurrentLocale(selectedLocale.getCode());
                     }
                 });
             } else {
                 // If it's the first time we're selecting a locale,
                 // we don't care unsaved changes (because there isn't any)
-                setCurrentLocale(selectedLocale);
+                setCurrentLocale(selectedLocale.getCode());
             }
             updateProgress();
         }
@@ -641,12 +642,12 @@ public class TranslateActivity extends AppCompatActivity {
     //region Spinner loading
 
     private void loadLocalesSpinner() {
-        ArrayList<String> spinnerArray = new ArrayList<>();
+        ArrayList<LocaleString> spinnerArray = new ArrayList<>();
         for (String locale : mRepo.getLocales())
             if (!locale.equals(RepoHandler.DEFAULT_LOCALE))
-                spinnerArray.add(locale);
+                spinnerArray.add(new LocaleString(locale));
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+        ArrayAdapter<LocaleString> adapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, spinnerArray);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -755,21 +756,6 @@ public class TranslateActivity extends AppCompatActivity {
     // Ensures that there is at least a locale selected
     boolean isLocaleSelected() {
         return mSelectedLocaleResources != null;
-    }
-
-    boolean isValidLocale(String locale) {
-        if (locale.contains("-")) {
-            // If there is an hyphen, then a country was also specified
-            for (Locale l : Locale.getAvailableLocales())
-                if (!l.getCountry().isEmpty())
-                    if (locale.equals(l.getLanguage()+"-"+l.getCountry()))
-                        return true;
-        } else {
-            for (Locale l : Locale.getAvailableLocales())
-                if (locale.equals(l.getLanguage()))
-                    return true;
-        }
-        return false;
     }
 
     // Increments the mStringIdSpinner index by delta i (di),

@@ -12,10 +12,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
@@ -161,6 +164,12 @@ public class RepoHandler extends Settings {
                     mLocales.add(m.group(1) == null ? DEFAULT_LOCALE : m.group(1));
             }
         }
+        Collections.sort(mLocales, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                return LocaleString.getDisplay(s1).compareTo(LocaleString.getDisplay(s2));
+            }
+        });
     }
 
     public ArrayList<String> getLocales() {
