@@ -94,7 +94,8 @@ public class ApplicationList implements Iterable<Application> {
 
             for (; mLastSliceIndex < end && count > 0; mLastSliceIndex++) {
                 Application app = mApplications.get(mLastSliceIndex);
-                if (app.getName().toLowerCase().contains(mSliceFilter)) {
+                if (app.getName().toLowerCase().contains(mSliceFilter) ||
+                        app.getDescription().toLowerCase().contains(mSliceFilter)) {
                     mApplicationsSlice.add(app);
                     count--;
                 }
