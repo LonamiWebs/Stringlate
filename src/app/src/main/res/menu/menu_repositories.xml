@@ -8,6 +8,8 @@
         app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/github_login"
-        android:title="@string/login_to_github"/>
+        android:icon="@drawable/ic_github_white_24dp"
+        android:title="@string/login_to_github"
+        app:showAsAction="ifRoom"/>
 
 </menu>
