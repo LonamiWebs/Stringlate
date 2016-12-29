@@ -243,7 +243,7 @@ public class TranslateActivity extends AppCompatActivity {
 
                 // We need to save the files before syncing, or it will ask
                 // again after the synchronization finished (and it looks out of place)
-                if (isLocaleSelected() && !mSelectedLocaleResources.areSaved()) {
+                if (isLocaleSelected(false) && !mSelectedLocaleResources.areSaved()) {
                     Toast.makeText(context, R.string.save_before_sync_required, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -310,13 +310,11 @@ public class TranslateActivity extends AppCompatActivity {
     //region Searching for strings
 
     private void launchStringSearchActivity() {
-        if (isLocaleSelected()) {
+        if (isLocaleSelected(true)) {
             Intent intent = new Intent(this, SearchStringActivity.class);
             intent.putExtra(EXTRA_REPO, mRepo.toBundle());
             intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
             startActivityForResult(intent, RESULT_STRING_SELECTED);
-        } else {
-            Toast.makeText(this, R.string.no_locale_selected, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -367,6 +365,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to the SD card
     private void exportToSd() {
+        if (!isLocaleSelected(true)) return;
         String filename = mSelectedLocaleResources.getFilename();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -384,6 +383,7 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     private void doExportToSd(Uri uri) {
+        if (!isLocaleSelected(true)) return;
         try {
             ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "w");
             FileOutputStream out = new FileOutputStream(pfd.getFileDescriptor());
@@ -403,6 +403,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to a GitHub Gist
     private void exportToGist() {
+        if (!isLocaleSelected(true)) return;
         Intent intent = new Intent(getApplicationContext(), CreateGistActivity.class);
         intent.putExtra(EXTRA_XML_CONTENT, mRepo.applyDefaultTemplate(mSelectedLocale));
         intent.putExtra(EXTRA_FILENAME, mSelectedLocaleResources.getFilename());
@@ -411,6 +412,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to a GitHub issue
     private void exportToIssue() {
+        if (!isLocaleSelected(true)) return;
         Intent intent = new Intent(getApplicationContext(), CreateIssueActivity.class);
         intent.putExtra(EXTRA_REPO, mRepo.toBundle());
         intent.putExtra(EXTRA_XML_CONTENT, mRepo.applyDefaultTemplate(mSelectedLocale));
@@ -420,11 +422,13 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to a GitHub Pull Request
     private void exportToPullRequest() {
+        if (!isLocaleSelected(true)) return;
         Toast.makeText(this, "Not implemented. Sorry about that!", Toast.LENGTH_SHORT).show();
     }
 
     // Exports the currently selected locale resources to a plain text share intent
     private void exportToShare() {
+        if (!isLocaleSelected(true)) return;
         String xml = mRepo.applyDefaultTemplate(mSelectedLocale);
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
@@ -435,6 +439,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to the primary clipboard
     private void exportToCopy() {
+        if (!isLocaleSelected(true)) return;
         String filename = mSelectedLocaleResources.getFilename();
         String xml = mRepo.applyDefaultTemplate(mSelectedLocale);
 
@@ -450,10 +455,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Deletes the currently selected string ID, this needs no warning
     private void deleteString() {
-        if (!isLocaleSelected()) {
-            showNoLocaleSelected();
-            return;
-        }
+        if (!isLocaleSelected(true)) return;
 
         mSelectedLocaleResources.deleteId((String)mStringIdSpinner.getSelectedItem());
         mTranslatedStringEditText.setText("");
@@ -566,7 +568,7 @@ public class TranslateActivity extends AppCompatActivity {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
             final LocaleString selectedLocale = (LocaleString)parent.getItemAtPosition(i);
-            if (isLocaleSelected()) {
+            if (isLocaleSelected(false)) {
                 checkResourcesSaved(new Callback<Boolean>() {
                     @Override
                     public void onCallback(Boolean actionTaken) {
@@ -645,11 +647,6 @@ public class TranslateActivity extends AppCompatActivity {
                     mSelectedLocaleResources.unsavedCount()));
     }
 
-    // Shows the "No locale selected" warning
-    void showNoLocaleSelected() {
-        Toast.makeText(this, R.string.no_locale_selected, Toast.LENGTH_SHORT).show();
-    }
-
     //endregion
 
     //region Spinner loading
@@ -669,8 +666,7 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     private void loadStringIDsSpinner() {
-        if (!isLocaleSelected())
-            return;
+        if (!isLocaleSelected(false)) return;
 
         ArrayList<String> spinnerArray = new ArrayList<>();
         if (mShowTranslated) {
@@ -723,7 +719,7 @@ public class TranslateActivity extends AppCompatActivity {
     // If they're not, the user is asked to save them first
     // callback.onCallback will be called with FALSE if the operation was CANCELLED
     void checkResourcesSaved(final Callback<Boolean> callback) {
-        if (!isLocaleSelected()) {
+        if (!isLocaleSelected(false)) {
             callback.onCallback(true);
             return;
         }
@@ -767,8 +763,12 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     // Ensures that there is at least a locale selected
-    boolean isLocaleSelected() {
-        return mSelectedLocaleResources != null;
+    boolean isLocaleSelected(boolean showWarning) {
+        boolean localeSelected = mSelectedLocaleResources != null;
+        if (!localeSelected && showWarning) {
+            Toast.makeText(this, R.string.no_locale_selected, Toast.LENGTH_SHORT).show();
+        }
+        return localeSelected;
     }
 
     // Increments the mStringIdSpinner index by delta i (di),
