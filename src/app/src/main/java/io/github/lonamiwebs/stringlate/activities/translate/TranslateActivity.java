@@ -35,7 +35,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.activities.CreateGistActivity;
+import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
+import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
@@ -155,6 +156,9 @@ public class TranslateActivity extends AppCompatActivity {
                 return true;
             case R.id.exportToGist:
                 exportToGist();
+                return true;
+            case R.id.exportToIssue:
+                exportToIssue();
                 return true;
             case R.id.exportToPr:
                 exportToPullRequest();
@@ -402,6 +406,15 @@ public class TranslateActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), CreateGistActivity.class);
         intent.putExtra(EXTRA_XML_CONTENT, mRepo.applyDefaultTemplate(mSelectedLocale));
         intent.putExtra(EXTRA_FILENAME, mSelectedLocaleResources.getFilename());
+        startActivity(intent);
+    }
+
+    // Exports the currently selected locale resources to a GitHub issue
+    private void exportToIssue() {
+        Intent intent = new Intent(getApplicationContext(), CreateIssueActivity.class);
+        intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+        intent.putExtra(EXTRA_XML_CONTENT, mRepo.applyDefaultTemplate(mSelectedLocale));
+        intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
         startActivity(intent);
     }
 

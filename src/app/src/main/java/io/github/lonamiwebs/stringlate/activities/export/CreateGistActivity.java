@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.activities;
+package io.github.lonamiwebs.stringlate.activities.export;
 
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -137,14 +137,14 @@ public class CreateGistActivity extends AppCompatActivity {
     public void onCopyUrl(final View v) {
         ClipboardManager clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(ClipData.newPlainText("url", mPostedUrl));
-        Toast.makeText(this, R.string.gist_url_copied, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.url_copied, Toast.LENGTH_SHORT).show();
     }
 
     public void onShareUrl(final View v) {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, mPostedUrl);
-        startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_gist_url)));
+        startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_url)));
     }
 
     public void onExit(final View v) {

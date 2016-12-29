@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_create_gist"
+    android:id="@+id/activity_create_issue"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -9,10 +9,10 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity">
+    tools:context="io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity">
 
     <LinearLayout
-        android:id="@+id/gistCreationLayout"
+        android:id="@+id/issueCreationLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -20,46 +20,33 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/gist_description"/>
+            android:text="@string/issue_title"/>
 
         <EditText
-            android:id="@+id/gistDescriptionEditText"
+            android:id="@+id/issueTitleEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/default_gist_share_description"/>
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/gist_filename"/>
+            android:text="@string/issue_description"/>
 
         <EditText
-            android:id="@+id/gistFilenameEditText"
+            android:id="@+id/issueDescriptionEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-
-        <CheckBox
-            android:id="@+id/gistIsPublicCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/is_public_gist"/>
-
-        <CheckBox
-            android:id="@+id/gistIsAnonymousCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/is_anonymous_gist"/>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/post_gist"
-            android:onClick="onPostGist"/>
+            android:text="@string/create_issue"
+            android:onClick="onCreateIssue"/>
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/gistCreatedLayout"
+        android:id="@+id/issueCreatedLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -68,15 +55,17 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/post_gist_success"/>
+            android:text="Your issue has been created, well done!"/>
 
         <EditText
-            android:id="@+id/gistUrlEditText"
+            android:id="@+id/issueUrlEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="none"
             android:editable="false" />
 
+        <!-- TODO This is pretty much the same to CreateGistActivity /
+                               Maybe another activity for this part? -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -24,6 +24,9 @@
             <item android:id="@+id/exportToGist"
                 android:title="@string/export_gist" />
 
+            <item android:id="@+id/exportToIssue"
+                android:title="@string/export_issue" />
+
             <item android:id="@+id/exportToPr"
                 android:title="@string/export_pr" />
 

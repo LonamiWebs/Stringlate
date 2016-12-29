@@ -62,7 +62,7 @@
     <string name="gist_filename">Gist filename:</string>
     <string name="is_public_gist">This is a public Gist</string>
     <string name="post_gist">Post GitHub Gist</string>
-    <string name="post_gist_success">Your Gist have been posted, well done!</string>
+    <string name="post_gist_success">Your Gist has been posted, well done!</string>
     <string name="open">Open</string>
     <string name="copy">Copy</string>
     <string name="share">Share</string>
@@ -71,8 +71,6 @@
     <string name="error_gist_filename_empty">Gist filename cannot be empty</string>
     <string name="posting_gist_ellipsis">Posting Gist…</string>
     <string name="posting_gist_ellipsis_long">Trying to post the strings.xml file as a GitHub Gist…</string>
-    <string name="gist_url_copied">The Gist Url has been copied to your clipboard.</string>
-    <string name="share_gist_url">Share Gist Url</string>
     <string name="post_gist_error">The Gist could not be posted.</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
     <string name="xml_copied_to_clipboard">The %s file contents have been copied to your clipboard</string>
@@ -121,4 +119,16 @@
     <string name="completing_auth_ellipsis">Completing authorization…</string>
     <string name="is_anonymous_gist">This is an anonymous Gist</string>
     <string name="gist_login_needed">To post non-anonymous Gists you need to authorize Stringlate on GitHub from the main screen.</string>
+    <string name="export_issue">Export to GitHub issue</string>
+    <string name="create_issue">Create issue</string>
+    <string name="creating_issue_ellipsis">Creating issue…</string>
+    <string name="creating_issue_long_ellipsis">Trying to create the issue on GitHub…</string>
+    <string name="issue_title">Issue title:</string>
+    <string name="added_x_translation" translatable="false">Added %s (%s) translation</string>
+    <string name="issue_description">Issue description (%x will be replaced with the translation):</string>
+    <string name="new_issue_template" translatable="false">I have translated your application into `%s` (*%s*). Here is the xml:\n%%x\n\n---\n\n*Translation made with [Stringlate](https://github.com/LonamiWebs/Stringlate).*</string>
+    <string name="url_copied">The Url has been copied to your clipboard.</string>
+    <string name="share_url">Share Url</string>
+    <string name="create_issue_success">Your issue has been created, well done!</string>
+    <string name="create_issue_error">The issue could not be created.</string>
 </resources>

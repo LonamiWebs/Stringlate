@@ -40,7 +40,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity android:name=".activities.translate.TranslateActivity" />
-        <activity android:name=".activities.CreateGistActivity" />
+        <activity android:name=".activities.export.CreateGistActivity" />
         <activity android:name=".activities.OnlineHelpActivity" />
         <activity android:name=".activities.translate.SearchStringActivity" />
         <activity
@@ -57,6 +57,8 @@
                     android:scheme="stringlate" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.export.CreateIssueActivity"
+            android:label="@string/create_issue"/>
     </application>
-
 </manifest>

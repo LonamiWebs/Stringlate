@@ -115,5 +115,25 @@ public class GitHub {
         }
     }
 
+    public static void gCreateIssue(RepoHandler repo,
+                                    String title, String description, String token,
+                                    final Callback<Object> callback) {
+        try {
+            JSONObject params = new JSONObject();
+
+            params.put("title", title);
+            params.put("body", description);
+
+            String calling = String.format("repos/%s/issues?access_token=%s",
+                    repo.toString(), token);
+            gCall(String.format("repos/%s/issues?access_token=%s",
+                    repo.toString(), token), params.toString(), callback);
+        }
+        catch (JSONException e) {
+            // Won't happen
+            e.printStackTrace();
+        }
+    }
+
     //endregion
 }
