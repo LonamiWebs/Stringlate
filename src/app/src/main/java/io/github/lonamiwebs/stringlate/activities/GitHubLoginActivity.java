@@ -66,7 +66,7 @@ public class GitHubLoginActivity extends AppCompatActivity {
 
     // Update the UI accordingly to the saved settings
     private void checkAuthorization() {
-        if (mSettings.getGitHubScopes().length == GITHUB_WANTED_SCOPES.length) {
+        if (mSettings.hasGitHubAuthorization()) {
             mInfoTextView.setText(R.string.github_yes_logged_long);
         } else {
             mInfoTextView.setText(R.string.github_not_logged_long);

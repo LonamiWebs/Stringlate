@@ -119,4 +119,6 @@
     <string name="login_to_github">Login to GitHub</string>
     <string name="auth_success">Authorization success</string>
     <string name="completing_auth_ellipsis">Completing authorization…</string>
+    <string name="is_anonymous_gist">This is an anonymous Gist</string>
+    <string name="gist_login_needed">To post non-anonymous Gists you need to authorize Stringlate on GitHub from the main screen.</string>
 </resources>

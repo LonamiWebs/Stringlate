@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -16,8 +17,9 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.GitHub;
 
 import static android.view.View.GONE;
@@ -27,6 +29,8 @@ import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_XML_CONT
 public class CreateGistActivity extends AppCompatActivity {
 
     //region Members
+
+    private AppSettings mSettings;
 
     private String mXmlContent;
     private String mFilename;
@@ -38,6 +42,7 @@ public class CreateGistActivity extends AppCompatActivity {
 
     private EditText mDescriptionEditText;
     private CheckBox mIsPublicCheckBox;
+    private CheckBox mIsAnonymousCheckBox;
     private EditText mFilenameEditText;
 
     private EditText mGistUrlEditText;
@@ -51,11 +56,14 @@ public class CreateGistActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_gist);
 
+        mSettings = new AppSettings(this);
+
         mGistCreationLayout = (LinearLayout)findViewById(R.id.gistCreationLayout);
         mGistCreatedLayout = (LinearLayout)findViewById(R.id.gistCreatedLayout);
 
         mDescriptionEditText = (EditText)findViewById(R.id.gistDescriptionEditText);
-        mIsPublicCheckBox = (CheckBox) findViewById(R.id.gistIsPublicCheckBox);
+        mIsPublicCheckBox = (CheckBox)findViewById(R.id.gistIsPublicCheckBox);
+        mIsAnonymousCheckBox = (CheckBox)findViewById(R.id.gistIsAnonymousCheckBox);
         mFilenameEditText = (EditText)findViewById(R.id.gistFilenameEditText);
 
         mGistUrlEditText = (EditText)findViewById(R.id.gistUrlEditText);
@@ -67,6 +75,19 @@ public class CreateGistActivity extends AppCompatActivity {
 
         mFilenameEditText.setText(mFilename);
         setTitle(getString(R.string.posting_gist_title, mFilename));
+
+        // Check whether the Gist can be non-anonymous
+        boolean notAuth = !mSettings.hasGitHubAuthorization();
+        mIsAnonymousCheckBox.setChecked(notAuth);
+        if (notAuth) {
+            mIsAnonymousCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton cb, boolean b) {
+                    Toast.makeText(getApplicationContext(), R.string.gist_login_needed, Toast.LENGTH_LONG).show();
+                    mIsAnonymousCheckBox.setChecked(true);
+                }
+            });
+        }
     }
 
     //endregion
@@ -93,7 +114,11 @@ public class CreateGistActivity extends AppCompatActivity {
 
         String description = mDescriptionEditText.getText().toString().trim();
         boolean isPublic = mIsPublicCheckBox.isChecked();
-        GitHub.gCreateGist(description, isPublic, filename, mXmlContent,
+        boolean isAnonymous = mIsAnonymousCheckBox.isChecked() ||
+                !mSettings.hasGitHubAuthorization();
+
+        String token = isAnonymous ? null : mSettings.getGitHubToken();
+        GitHub.gCreateGist(description, isPublic, filename, mXmlContent, token,
                 new Callback<Object>() {
                     @Override
                     public void onCallback(Object jsonObject) {

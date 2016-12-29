@@ -85,7 +85,7 @@ public class GitHub {
     }
 
     public static void gCreateGist(String description, boolean isPublic,
-                                   String filename, String content,
+                                   String filename, String content, String token,
                                    final Callback<Object> callback) {
         try {
             JSONObject params = new JSONObject();
@@ -103,7 +103,11 @@ public class GitHub {
 
             params.put("files", filesObject);
 
-            gCall("gists", params.toString(), callback);
+            if (token == null || token.isEmpty()) {
+                gCall("gists", params.toString(), callback);
+            } else {
+                gCall("gists?access_token="+token, params.toString(), callback);
+            }
         }
         catch (JSONException e) {
             // Won't happen

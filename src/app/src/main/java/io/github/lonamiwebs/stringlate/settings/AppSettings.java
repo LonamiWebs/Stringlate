@@ -3,6 +3,8 @@ package io.github.lonamiwebs.stringlate.settings;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_WANTED_SCOPES;
+
 public class AppSettings extends Settings {
 
     private static final String KEY_DOWNLOAD_ICONS = "download_icons";
@@ -39,6 +41,11 @@ public class AppSettings extends Settings {
         return getSettings().getString(KEY_GITHUB_SCOPE, DEFAULT_GITHUB_SCOPE).split(",");
     }
 
+    public boolean hasGitHubAuthorization() {
+        return !getGitHubToken().isEmpty() &&
+                getGitHubScopes().length == GITHUB_WANTED_SCOPES.length;
+    }
+
     //endregion
 
     //region Setters
@@ -48,7 +55,7 @@ public class AppSettings extends Settings {
     }
 
     public void setGitHubAccess(String token, String scope) {
-        editSettings().putString(KEY_GITHUB_TOKEN, token);
+        editSettings().putString(KEY_GITHUB_TOKEN, token).apply();
         editSettings().putString(KEY_GITHUB_SCOPE, scope).apply();
     }
 
