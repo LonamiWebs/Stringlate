@@ -104,7 +104,7 @@
     <string name="clear_icons_cache">Curăță iconițele memorate</string>
     <string name="help">Ajutor</string>
     <string name="open_online_help">Deschide ajutor online</string>
-    <string name="translation_progress">%1$d/%2$d fraze traduse</string>
+    <string name="translation_progress">%1$d/%2$d fraze traduse (%3$.1f%%).</string>
     <string name="allow_download_icons">Permite descărcarea iconițelor</string>
     <string name="do_not_save">Nu salva</string>
     <string name="save_count">Salvează (%d)</string>

@@ -105,7 +105,7 @@
     <string name="sync_failed">Synkronisering misslyckades.</string>
     <string name="translated_string">Översatt sträng</string>
     <string name="translated_string_colon">Översatt sträng:</string>
-    <string name="translation_progress">%1$d/%2$d strängar översatta.</string>
+    <string name="translation_progress">%1$d/%2$d strängar översatta (%3$.1f%%).</string>
     <string name="update_applications">Uppdatera applikationerna</string>
     <string name="update_strings">Uppdatera strings.xml</string>
     <string name="welcome">Välkommen till Stringlate! Fyll i ett projekts namn och ägare eller klistra in repots GitHub URL nedan för att fortsätta.</string>

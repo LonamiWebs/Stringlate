@@ -101,7 +101,7 @@
     <string name="sure_question">您确定吗？</string>
     <string name="translated_string">翻译后的字符串</string>
     <string name="translated_string_colon">翻译后的字符串:</string>
-    <string name="translation_progress">已翻译 %1$d/%2$d 个字符串</string>
+    <string name="translation_progress">已翻译 %1$d/%2$d 个字符串 (%3$.1f%%)</string>
     <string name="update_applications">更新应用程序</string>
     <string name="update_strings">更新 strings.xml</string>
     <string name="welcome">欢迎使用 Stringlate ! 请输入项目名称及其所有者或将其Github版本库地址粘贴至下方以继续</string>

@@ -104,7 +104,7 @@
     <string name="help">Ayuda</string>
     <string name="open_online_help">Abrir ayuda online</string>
     <string name="show_more">Mostrar más</string>
-    <string name="translation_progress">%1$d de %2$d textos traducidos.</string>
+    <string name="translation_progress">%1$d de %2$d textos traducidos (%3$.1f%%).</string>
     <string name="allow_download_icons">Permitir la descarga de iconos</string>
     <string name="do_not_save">No guardar</string>
     <string name="not_translated">Sin traducción.</string>

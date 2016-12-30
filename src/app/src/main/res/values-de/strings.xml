@@ -103,7 +103,7 @@
     <string name="sync_failed">Sunchronisation fehlgeschlagen.</string>
     <string name="translated_string">Übersetzte Zeichenkette</string>
     <string name="translated_string_colon">Übersetzte Zeichenkette:</string>
-    <string name="translation_progress">%1$d von %2$d Zeichenketten übersetzt.</string>
+    <string name="translation_progress">%1$d von %2$d Zeichenketten übersetzt (%3$.1f%%).</string>
     <string name="update_applications">Applikationen updaten</string>
     <string name="update_strings">strings.xml updaten</string>
     <string name="welcome">Willkommen zu Stringlate! Bitte geben Sie einen Projektnamen und seinen Autor oder einfach den Link der GitHub Quelle um fortzufahren.</string>

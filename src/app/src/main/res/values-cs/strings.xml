@@ -105,7 +105,7 @@
     <string name="sync_failed">Chyba při synchronizaci.</string>
     <string name="translated_string">Přeložený řetězec</string>
     <string name="translated_string_colon">Přeložený řetězec:</string>
-    <string name="translation_progress">%1$d/%2$d řetězců přeloženo.</string>
+    <string name="translation_progress">%1$d/%2$d řetězců přeloženo (%3$.1f%%).</string>
     <string name="update_applications">Aktualizovat aplikace</string>
     <string name="update_strings">Aktualizovat strings.xml</string>
     <string name="welcome">Vítá vás Stringlate! Pro pokračování zadejte název projektu a jeho vlastníka, nebo vložte URL repozitáře z GitHubu.</string>

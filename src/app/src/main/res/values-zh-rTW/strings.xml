@@ -100,7 +100,7 @@
     <string name="sync_failed">同步失敗。</string>
     <string name="translated_string">被翻譯的字串</string>
     <string name="translated_string_colon">被翻譯的字串：</string>
-    <string name="translation_progress">%1$d/%2$d 個字串已翻譯。</string>
+    <string name="translation_progress">%1$d/%2$d 個字串已翻譯 (%3$.1f%%)。</string>
     <string name="update_applications">更新應用軟體</string>
     <string name="update_strings">更新 strings.xml</string>
     <string name="welcome">歡迎使用 Stringlate！請輸入專案名稱與其擁有者名稱或是將版控倉庫的網址貼到下面以繼續。</string>

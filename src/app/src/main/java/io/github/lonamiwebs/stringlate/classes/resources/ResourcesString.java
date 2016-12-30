@@ -36,6 +36,11 @@ public class ResourcesString implements Comparable<ResourcesString> {
     public String getContent() {
         return mContent;
     }
+
+    public int getContentLength() {
+        return mContent.length();
+    }
+
     public boolean hasContent() { return mContent != null && !mContent.isEmpty(); }
 
     public boolean wasModified() { return mModified; }

@@ -647,20 +647,37 @@ public class TranslateActivity extends AppCompatActivity {
             mProgressTextView.setText("");
         } else {
             unsavedCount = mSelectedLocaleResources.unsavedCount();
-            int max = mDefaultResources.count();
+            int stringsCount = mDefaultResources.count();
             // The selected resources might have more strings than the default does.
             // For example, when an application got updated and dropped some unused strings.
             // For this reason, we need to make sure that these are on the default resources.
             // TODO: Maybe warn the user to remove unused strings?
-            int current = 0;
-            for (ResourcesString rs : mSelectedLocaleResources)
-                if (mDefaultResources.contains(rs.getId()))
-                    current++;
 
+            // Keep track of the translated strings count and the characters of the
+            // original strings + those same characters if a translation is available.
+            // This will be used to make a weighted progress (if you translated only
+            // long strings, then this will be closer to 100% than if you translated small ones).
+            int translatedCount = 0;
+            int currentChars = 0;
+            int totalChars = 0;
+            int chars;
+            for (ResourcesString rs : mDefaultResources) {
+                chars = rs.getContentLength();
+                totalChars += chars;
+                if (mSelectedLocaleResources.contains(rs.getId())) {
+                    translatedCount++;
+                    currentChars += chars;
+                }
+            }
 
-            mProgressProgressBar.setMax(max);
-            mProgressProgressBar.setProgress(current);
-            mProgressTextView.setText(getString(R.string.translation_progress, current, max));
+            // The progress bar will be using the weighted value
+            mProgressProgressBar.setMax(totalChars);
+            mProgressProgressBar.setProgress(currentChars);
+            float percentage = (100.0f * (float)currentChars) / (float)totalChars;
+
+            // The text view will show the string count and the weighted percentage
+            mProgressTextView.setText(getString(R.string.translation_progress,
+                    translatedCount, stringsCount, percentage));
         }
 
         if (unsavedCount == 0)
