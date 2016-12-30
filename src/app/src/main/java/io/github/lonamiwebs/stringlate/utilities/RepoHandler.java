@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -268,6 +269,7 @@ public class RepoHandler extends Settings {
                     publishProgress(i);
                     downloadLocale(remotePaths.get(i), locales.get(i), keepChanges);
                 }
+                saveRemotePaths(remotePaths);
                 return null;
             }
 
@@ -420,8 +422,10 @@ public class RepoHandler extends Settings {
     //region Settings keys
 
     private static final String KEY_LAST_LOCALE = "last_locale";
+    private static final String KEY_REMOTE_PATHS = "remote_paths";
 
     private static final String DEFAULT_LAST_LOCALE = null;
+    private static final HashSet<String> DEFAULT_REMOTE_PATHS = new HashSet<>();
 
     //endregion
 
@@ -431,12 +435,45 @@ public class RepoHandler extends Settings {
         return getSettings().getString(KEY_LAST_LOCALE, DEFAULT_LAST_LOCALE);
     }
 
+    public String getRemotePath(String locale) {
+        String defaultPath = null;
+        for (String path : getSettings().getStringSet(KEY_REMOTE_PATHS, DEFAULT_REMOTE_PATHS)) {
+            Matcher m = mValuesLocalePattern.matcher(path);
+            if (m.find()) {
+                // This should never fail actually
+                String pathLocale = m.group(1);
+                if (pathLocale == null)
+                    defaultPath = path;
+                else if (pathLocale.equals(locale))
+                    return path;
+            }
+        }
+
+        // Backwards compatibility with version 0.9.4.1
+        // The defaultPath should never be null up to this point if everything went okay
+        // TODO Remove this on version 1.0 (or similar) and update calls to this method
+        // -- Begin of backwards-compatibility code
+        if (defaultPath == null) {
+            return null;
+        }
+        // -- End of backwards-compatibility code
+        return defaultPath.replace("/values/", String.format("/values-%s/", locale));
+    }
+
     //endregion
 
     //region Setting settings
 
     public void setLastLocale(String locale) {
         editSettings().putString(KEY_LAST_LOCALE, locale).apply();
+    }
+
+    private void saveRemotePaths(ArrayList<String> remotePaths) {
+        HashSet<String> paths = new HashSet<>();
+        for (String path : remotePaths)
+            paths.add(path);
+
+        editSettings().putStringSet(KEY_REMOTE_PATHS, paths).apply();
     }
 
     //endregion

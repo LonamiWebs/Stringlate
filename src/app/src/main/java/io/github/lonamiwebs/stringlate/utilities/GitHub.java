@@ -1,5 +1,7 @@
 package io.github.lonamiwebs.stringlate.utilities;
 
+import android.util.Pair;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -111,10 +113,101 @@ public class GitHub {
         }
     }
 
+    public static JSONObject gGetUserInfo(String token) {
+        try {
+            return new JSONObject(WebUtils.performCall(gGetUrl(
+                    "user?access_token=%s", token), WebUtils.GET));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static JSONArray gGetCollaborators(String token, RepoHandler repo) {
+        try {
+            return new JSONArray(WebUtils.performCall(gGetUrl(
+                    "repos/%s/collaborators?access_token=%s", repo.toString(), token), WebUtils.GET));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // Returns both the authenticated user and whether they have right to push
+    public static Pair<String, Boolean> gCanPush(String token, RepoHandler repo) {
+        JSONObject user = gGetUserInfo(token);
+        if (user == null)
+            // TODO Actually, maybe throw an NoPermissionException or something
+            return new Pair<>(null, false);
+
+        String username = "";
+        try {
+            username = user.getString("login");
+
+            JSONArray collaborators = gGetCollaborators(token, repo);
+            if (collaborators != null) {
+                for (int i = 0; i < collaborators.length(); i++) {
+                    JSONObject collaborator = collaborators.getJSONObject(i);
+                    if (collaborator.getString("login").equals(username)) {
+                        JSONObject permissions = collaborator.getJSONObject("permissions");
+                        // TODO Can someone possibly not have 'pull' permissions? Then what?
+                        return new Pair<>(username, permissions.getBoolean("push"));
+                    }
+                }
+            }
+            // If we're not a collaborator, then we obviously don't have permission
+            return new Pair<>(username, false);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new Pair<>(username, false);
+        }
+    }
+
+    public static JSONArray gGetBranches(final RepoHandler repo) {
+        try {
+            return new JSONArray(WebUtils.performCall(gGetUrl(
+                    "repos/%s/branches", repo.toString()), WebUtils.GET));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static JSONObject gForkRepository(final String token, final RepoHandler repo) {
+        try {
+            return new JSONObject(WebUtils.performCall(gGetUrl(
+                    "repos/%s/forks?access_token=%s", repo.toString(), token), WebUtils.POST));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // head = Fork's branch name. If this PR is cross-repository, prefix username:branch.
+    // base = Branch's name where the changes will be pulled into. This should exist already.
+    public static JSONObject gCreatePullRequest(final String token, final RepoHandler originalRepo,
+                                                final String title, final String head,
+                                                final String base, final String body) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("title", title);
+            params.put("head", head);
+            params.put("base", base);
+            if (body != null && !body.isEmpty())
+                params.put("body", body);
+
+            return new JSONObject(WebUtils.performCall(gGetUrl(
+                    "repos/%s/pulls?access_token=%s", originalRepo.toString(), token), params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // Really big thanks to http://www.levibotelho.com/development/commit-a-file-with-the-github-api
-    public static JSONObject createCommitFile(final String token, final RepoHandler repo,
-                                              final String branch, final String content,
-                                              final String filename, final String commitMessage)
+    public static JSONObject gCreateCommitFile(final String token, final RepoHandler repo,
+                                               final String branch, final String content,
+                                               final String filename, final String commitMessage)
             throws JSONException {
         final String tokenQuery = "?access_token="+token;
 

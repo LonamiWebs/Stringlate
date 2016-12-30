@@ -6,6 +6,7 @@ public class Constants {
 
     public final static String EXTRA_XML_CONTENT = "io.github.lonamiwebs.stringlate.XML_CONTENT";
     public final static String EXTRA_FILENAME = "io.github.lonamiwebs.stringlate.FILENAME";
+    public final static String EXTRA_REMOTE_PATH = "io.github.lonamiwebs.stringlate.REMOTE_PATH";
 
     // Default app limit to show when discovering new applications
     public final static int DEFAULT_APPS_LIMIT = 50;

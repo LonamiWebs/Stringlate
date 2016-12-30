@@ -125,10 +125,29 @@
     <string name="creating_issue_long_ellipsis">Trying to create the issue on GitHub…</string>
     <string name="issue_title">Issue title:</string>
     <string name="added_x_translation" translatable="false">Added %s (%s) translation</string>
+    <string name="added_x_translation_spam" translatable="false">Updated %s (%s) translation\n\nCommit made via Stringlate</string>
     <string name="issue_description">Issue description (%x will be replaced with the translation):</string>
     <string name="new_issue_template" translatable="false">I have translated your application into `%s` (*%s*). Here is the xml:\n%%x\n\n---\n\n*Translation made with [Stringlate](https://github.com/LonamiWebs/Stringlate).*</string>
     <string name="url_copied">The Url has been copied to your clipboard.</string>
     <string name="share_url">Share Url</string>
     <string name="create_issue_success">Your issue has been created, well done!</string>
     <string name="create_issue_error">The issue could not be created.</string>
+    <string name="can_push_no_pr">You seem to have write access to this repository. No pull request will be made.</string>
+    <string name="cannot_push_will_pr">You don\'t seem to have write access to this repository. Stringlate will fork it into your account (or use an existing fork), commit the translation you\'ve made and create the pull request.</string>
+    <string name="create_pr">Create pull request</string>
+    <string name="selected_branch_colon">Selected branch:</string>
+    <string name="commit_message">Commit message</string>
+    <string name="commit_changes">Commit changes</string>
+    <string name="sync_required">Please synchronize and try again.</string>
+    <string name="pr_login_required">You need to be logged in to GitHub to create a pull request.</string>
+    <string name="commit_msg_empty">Commit message cannot be empty.</string>
+    <string name="forking_repo">Forking repository…</string>
+    <string name="forking_repo_long">The original repository is being forked for you to have write access…</string>
+    <string name="fork_failed">Forking failed.</string>
+    <string name="creating_commit">Creating commit…</string>
+    <string name="creating_commit_long">Uploading the new file and adding it to the commit…</string>
+    <string name="commit_failed">Commit creation failed.</string>
+    <string name="creating_pr">Creating PR…</string>
+    <string name="creating_pr_long">Creating a pull request on the original repository…</string>
+    <string name="something_went_wrong">Something went wrong.</string>
 </resources>

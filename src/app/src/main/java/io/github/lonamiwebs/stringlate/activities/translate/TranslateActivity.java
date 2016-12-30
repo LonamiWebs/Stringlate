@@ -37,16 +37,19 @@ import java.util.Locale;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
+import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
 import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.GitHub;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_FILENAME;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REMOTE_PATH;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_XML_CONTENT;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_CREATE_FILE;
@@ -404,7 +407,7 @@ public class TranslateActivity extends AppCompatActivity {
     // Exports the currently selected locale resources to a GitHub Gist
     private void exportToGist() {
         if (!isLocaleSelected(true)) return;
-        Intent intent = new Intent(getApplicationContext(), CreateGistActivity.class);
+        Intent intent = new Intent(this, CreateGistActivity.class);
         intent.putExtra(EXTRA_XML_CONTENT, mRepo.applyDefaultTemplate(mSelectedLocale));
         intent.putExtra(EXTRA_FILENAME, mSelectedLocaleResources.getFilename());
         startActivity(intent);
@@ -413,7 +416,7 @@ public class TranslateActivity extends AppCompatActivity {
     // Exports the currently selected locale resources to a GitHub issue
     private void exportToIssue() {
         if (!isLocaleSelected(true)) return;
-        Intent intent = new Intent(getApplicationContext(), CreateIssueActivity.class);
+        Intent intent = new Intent(this, CreateIssueActivity.class);
         intent.putExtra(EXTRA_REPO, mRepo.toBundle());
         intent.putExtra(EXTRA_XML_CONTENT, mRepo.applyDefaultTemplate(mSelectedLocale));
         intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
@@ -423,7 +426,27 @@ public class TranslateActivity extends AppCompatActivity {
     // Exports the currently selected locale resources to a GitHub Pull Request
     private void exportToPullRequest() {
         if (!isLocaleSelected(true)) return;
-        Toast.makeText(this, "Not implemented. Sorry about that!", Toast.LENGTH_SHORT).show();
+        String remotePath = mRepo.getRemotePath(mSelectedLocale);
+        if (remotePath == null) {
+            // Compatibility code
+            Toast.makeText(this, R.string.sync_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!new AppSettings(this).hasGitHubAuthorization()) {
+            Toast.makeText(this, R.string.pr_login_required, Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!GitHub.gCanCall()) {
+            Toast.makeText(this,
+                    R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent(this, CreatePullRequestActivity.class);
+        intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+        intent.putExtra(EXTRA_XML_CONTENT, mRepo.applyDefaultTemplate(mSelectedLocale));
+        intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
+        intent.putExtra(EXTRA_REMOTE_PATH, remotePath);
+        startActivity(intent);
     }
 
     // Exports the currently selected locale resources to a plain text share intent

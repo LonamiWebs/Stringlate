@@ -59,6 +59,9 @@
         </activity>
         <activity
             android:name=".activities.export.CreateIssueActivity"
-            android:label="@string/create_issue"/>
+            android:label="@string/create_issue" />
+        <activity
+            android:name=".activities.export.CreatePullRequestActivity"
+            android:label="@string/create_pr" />
     </application>
 </manifest>
