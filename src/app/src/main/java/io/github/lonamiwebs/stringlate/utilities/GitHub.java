@@ -5,12 +5,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
-import io.github.lonamiwebs.stringlate.tasks.DownloadJSONTask;
-
 // Static GitHub API interface that uses AsyncTasks
 public class GitHub {
-
     //region Members
 
     private static final String API_URL = "https://api.github.com/";
@@ -19,29 +15,11 @@ public class GitHub {
 
     //region Private methods
 
-    // Calls the given function with GET method and invokes callback() as result
-    private static void gCall(final String call,
-                              final Callback<Object> callback) {
-        new DownloadJSONTask() {
-            @Override
-            protected void onPostExecute(Object jsonObject) {
-                callback.onCallback(jsonObject);
-                super.onPostExecute(jsonObject);
-            }
-        }.execute(API_URL+call);
-    }
-
-    // Calls the given function with POST method and the given
-    // parameters and invokes callback() as result
-    private static void gCall(final String call, String data,
-                              final Callback<Object> callback) {
-        new DownloadJSONTask("POST", data) {
-            @Override
-            protected void onPostExecute(Object jsonObject) {
-                callback.onCallback(jsonObject);
-                super.onPostExecute(jsonObject);
-            }
-        }.execute(API_URL+call);
+    private static String gGetUrl(final String call, final Object... args) {
+        if (args.length > 0)
+            return API_URL+String.format(call, args);
+        else
+            return API_URL+call;
     }
 
     //endregion
@@ -65,28 +43,29 @@ public class GitHub {
     }
 
     // Determines whether the given combination of owner/repo is OK or not
-    public static void gCheckOwnerRepoOK(String owner, String repo,
-                                  final Callback<Boolean> callback) {
-        gCall(String.format("repos/%s/%s", owner, repo), new Callback<Object>() {
-            @Override
-            public void onCallback(Object object) {
-                callback.onCallback(object != null);
-            }
-        });
+    public static boolean gCheckOwnerRepoOK(String owner, String repo) {
+        String result = WebUtils.performCall(
+                gGetUrl("repos/%s/%s", owner, repo), WebUtils.GET);
+
+        return !result.isEmpty();
     }
 
     // Looks for 'query' in 'owner/repo' repository's files and
     // returns a JSON with the files for which 'filename' also matches
-    public static void gFindFiles(String owner, String repo,
-                                  String query, String filename,
-                                  final Callback<Object> callback) {
-        gCall(String.format("search/code?q=%s+repo:%s/%s+filename:%s",
-                query, owner, repo, filename), callback);
+    public static JSONObject gFindFiles(String owner, String repo, String query, String filename) {
+        try {
+            return new JSONObject(WebUtils.performCall(
+                    gGetUrl("search/code?q=%s+repo:%s/%s+filename:%s",
+                            query, owner, repo, filename), WebUtils.GET));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public static void gCreateGist(String description, boolean isPublic,
-                                   String filename, String content, String token,
-                                   final Callback<Object> callback) {
+    public static JSONObject gCreateGist(String description, boolean isPublic,
+                                   String filename, String content, String token) {
         try {
             JSONObject params = new JSONObject();
 
@@ -103,35 +82,31 @@ public class GitHub {
 
             params.put("files", filesObject);
 
-            if (token == null || token.isEmpty()) {
-                gCall("gists", params.toString(), callback);
-            } else {
-                gCall("gists?access_token="+token, params.toString(), callback);
-            }
+            if (token == null || token.isEmpty())
+                return new JSONObject(WebUtils.performCall(gGetUrl("gists"), params));
+            else
+                return new JSONObject(WebUtils.performCall(gGetUrl("gists?access_token="+token), params));
         }
         catch (JSONException e) {
-            // Won't happen
             e.printStackTrace();
+            return null;
         }
     }
 
-    public static void gCreateIssue(RepoHandler repo,
-                                    String title, String description, String token,
-                                    final Callback<Object> callback) {
+    public static JSONObject gCreateIssue(RepoHandler repo,
+                                    String title, String description, String token) {
         try {
             JSONObject params = new JSONObject();
 
             params.put("title", title);
             params.put("body", description);
 
-            String calling = String.format("repos/%s/issues?access_token=%s",
-                    repo.toString(), token);
-            gCall(String.format("repos/%s/issues?access_token=%s",
-                    repo.toString(), token), params.toString(), callback);
+            return new JSONObject(WebUtils.performCall(gGetUrl("repos/%s/issues?access_token=%s",
+                    repo.toString(), token), params));
         }
         catch (JSONException e) {
-            // Won't happen
             e.printStackTrace();
+            return null;
         }
     }
 

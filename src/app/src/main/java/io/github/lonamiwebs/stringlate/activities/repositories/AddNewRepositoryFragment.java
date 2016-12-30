@@ -3,6 +3,7 @@ package io.github.lonamiwebs.stringlate.activities.repositories;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,7 +22,6 @@ import java.util.regex.Pattern;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.utilities.GitHub;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
@@ -181,9 +181,15 @@ public class AddNewRepositoryFragment extends Fragment {
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
             return;
         }
-        GitHub.gCheckOwnerRepoOK(owner, repository, new Callback<Boolean>() {
+
+        new AsyncTask<Void, Void, Boolean>() {
             @Override
-            public void onCallback(Boolean ok) {
+            protected Boolean doInBackground(Void... params) {
+                return GitHub.gCheckOwnerRepoOK(owner, repository);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean ok) {
                 if (ok) {
                     scanDownloadStrings(owner, repository, progress);
                 } else {
@@ -192,7 +198,7 @@ public class AddNewRepositoryFragment extends Fragment {
                     progress.dismiss();
                 }
             }
-        });
+        }.execute();
     }
 
     // Steps 2 a 3

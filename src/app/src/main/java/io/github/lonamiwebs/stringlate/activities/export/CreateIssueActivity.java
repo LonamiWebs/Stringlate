@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -106,14 +107,18 @@ public class CreateIssueActivity extends AppCompatActivity {
                 getString(R.string.creating_issue_ellipsis),
                 getString(R.string.creating_issue_long_ellipsis), true);
 
-        GitHub.gCreateIssue(mRepo, title, description, mSettings.getGitHubToken(),
-                new Callback<Object>() {
-                    @Override
-                    public void onCallback(Object jsonObject) {
-                        progress.dismiss();
-                        onIssueCreated((JSONObject)jsonObject);
-                    }
-                });
+        new AsyncTask<String, Void, JSONObject>() {
+            @Override
+            protected JSONObject doInBackground(String... desc) {
+                return GitHub.gCreateIssue(mRepo, desc[0], desc[1], mSettings.getGitHubToken());
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject result) {
+                progress.dismiss();
+                onIssueCreated(result);
+            }
+        }.execute(title, description);
     }
 
     // After creating the issue

@@ -22,7 +22,6 @@ import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.settings.Settings;
 
@@ -218,14 +217,18 @@ public class RepoHandler extends Settings {
         // We want to find files on the owner/repo repository
         // containing 'resources' ('<resources>') on them and the filename
         // being 'strings.xml'. Some day Java will have named parameters...
-        GitHub.gFindFiles(mOwner, mRepo, "resources", "strings.xml", new Callback<Object>() {
+        new AsyncTask<Void, Void, JSONObject>() {
             @Override
-            public void onCallback(Object o) {
+            protected JSONObject doInBackground(Void... params) {
+                return GitHub.gFindFiles(mOwner, mRepo, "resources", "strings.xml");
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject result) {
                 ArrayList<String> remotePaths = new ArrayList<>();
                 ArrayList<String> locales = new ArrayList<>();
                 try {
-                    JSONObject json = (JSONObject) o;
-                    JSONArray items = json.getJSONArray("items");
+                    JSONArray items = result.getJSONArray("items");
                     for (int i = 0; i < items.length(); i++) {
                         JSONObject item = items.getJSONObject(i);
                         Matcher m = mValuesLocalePattern.matcher(item.getString("path"));
@@ -245,7 +248,7 @@ public class RepoHandler extends Settings {
                             mContext.getString(R.string.error_parsing_json), false);
                 }
             }
-        });
+        }.execute();
     }
 
     // Step 2: Given the remote paths of the strings.xml files,

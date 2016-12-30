@@ -2,6 +2,7 @@ package io.github.lonamiwebs.stringlate.activities;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.tasks.HttpPostTask;
+import io.github.lonamiwebs.stringlate.utilities.WebUtils;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_AUTH_URL;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_CLIENT_ID;
@@ -44,9 +45,13 @@ public class GitHubLoginActivity extends AppCompatActivity {
         Uri data = getIntent().getData();
         if (data != null) {
             completeAuth(data.getQueryParameter("code"));
-        } else {
-            checkAuthorization();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkAuthorization();
     }
 
     //endregion
@@ -65,38 +70,48 @@ public class GitHubLoginActivity extends AppCompatActivity {
     //region Private utilities
 
     // Update the UI accordingly to the saved settings
-    private void checkAuthorization() {
+    private boolean checkAuthorization() {
         if (mSettings.hasGitHubAuthorization()) {
             mInfoTextView.setText(R.string.github_yes_logged_long);
+            return true;
         } else {
             mInfoTextView.setText(R.string.github_not_logged_long);
+            return false;
         }
     }
 
     // Complete the authorization process
     private void completeAuth(String code) {
         Toast.makeText(this, R.string.completing_auth_ellipsis, Toast.LENGTH_SHORT).show();
-        HashMap<String, String> map = new HashMap<>();
+        final HashMap<String, String> map = new HashMap<>();
 
         map.put("client_id", GITHUB_CLIENT_ID);
         map.put("client_secret", GITHUB_CLIENT_SECRET);
         map.put("code", code);
 
-        new HttpPostTask(map) {
+        new AsyncTask<Void, Void, String>() {
             @Override
-            protected void onPostExecute(HashMap<String, String> map) {
-                super.onPostExecute(map);
-                if (map.containsKey("error")) {
-                    Toast.makeText(getApplicationContext(), map.get("error_description"), Toast.LENGTH_LONG).show();
+            protected String doInBackground(Void... params) {
+                return WebUtils.performCall(GITHUB_COMPLETE_AUTH_URL, WebUtils.POST, map);
+            }
+
+            @Override
+            protected void onPostExecute(String string) {
+                HashMap<String, String> result = WebUtils.getDataMap(string);
+                if (result.containsKey("error")) {
+                    Toast.makeText(getApplicationContext(),
+                            result.get("error_description"), Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), R.string.auth_success, Toast.LENGTH_SHORT).show();
-                    String token = map.get("access_token");
-                    String grantedScopes = map.get("scope");
+                    String token = result.get("access_token");
+                    String grantedScopes = result.get("scope");
                     mSettings.setGitHubAccess(token, grantedScopes);
-                    checkAuthorization();
+                    if (checkAuthorization()) {
+                        Toast.makeText(getApplicationContext(),
+                                R.string.auth_success, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
-        }.execute(GITHUB_COMPLETE_AUTH_URL);
+        }.execute();
     }
 
     //endregion

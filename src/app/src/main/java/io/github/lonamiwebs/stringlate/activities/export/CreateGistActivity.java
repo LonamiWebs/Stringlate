@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -96,7 +97,7 @@ public class CreateGistActivity extends AppCompatActivity {
 
     // Before posting Gist
     public void onPostGist(final View v) {
-        String filename = mFilenameEditText.getText().toString().trim();
+        final String filename = mFilenameEditText.getText().toString().trim();
         if (filename.length() == 0) {
             mFilenameEditText.setError(getString(R.string.error_gist_filename_empty));
             return;
@@ -112,20 +113,24 @@ public class CreateGistActivity extends AppCompatActivity {
                 getString(R.string.posting_gist_ellipsis),
                 getString(R.string.posting_gist_ellipsis_long), true);
 
-        String description = mDescriptionEditText.getText().toString().trim();
-        boolean isPublic = mIsPublicCheckBox.isChecked();
-        boolean isAnonymous = mIsAnonymousCheckBox.isChecked() ||
+        final String description = mDescriptionEditText.getText().toString().trim();
+        final boolean isPublic = mIsPublicCheckBox.isChecked();
+        final boolean isAnonymous = mIsAnonymousCheckBox.isChecked() ||
                 !mSettings.hasGitHubAuthorization();
 
-        String token = isAnonymous ? null : mSettings.getGitHubToken();
-        GitHub.gCreateGist(description, isPublic, filename, mXmlContent, token,
-                new Callback<Object>() {
-                    @Override
-                    public void onCallback(Object jsonObject) {
-                        progress.dismiss();
-                        onGistPosted((JSONObject)jsonObject);
-                    }
-                });
+        final String token = isAnonymous ? null : mSettings.getGitHubToken();
+        new AsyncTask<Void, Void, JSONObject>() {
+            @Override
+            protected JSONObject doInBackground(Void... params) {
+                return GitHub.gCreateGist(description, isPublic, filename, mXmlContent, token);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject result) {
+                progress.dismiss();
+                onGistPosted(result);
+            }
+        }.execute();
     }
 
     // After posting Gist
