@@ -111,7 +111,10 @@ public class ResourcesParser {
 
             parser.require(XmlPullParser.END_TAG, ns, STRING);
 
-            return new ResourcesString(id, content, modified);
+            if (content.isEmpty())
+                return null;
+            else
+                return new ResourcesString(id, content, modified);
         }
     }
 
