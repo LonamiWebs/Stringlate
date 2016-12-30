@@ -110,4 +110,10 @@
     <string name="xml_copied_to_clipboard">Die Dateiinhalte von %s wurden in die Zwischenablage kopiert</string>
     <string name="not_translated">Nicht übersetzt.</string>
     <string name="search_id_content_ellipsis">Nach ID oder Inhalt suchen…</string>
+    <string name="github_not_logged_long">Um einige Zusatzmöglichkeiten wie nicht anonyme Gists bereitzustellen, müssen Sie Stringlate autorisieren. Klicken Sie auf den Button um loszulegen.</string>
+    <string name="request_auth">Autorisierung anfordern</string>
+    <string name="github_yes_logged_long">Sie sind bereits bei GitHub angemeldet, keine weitere Aktion ist erforderlich. Wenn etwas nicht funktioniert, können Sie immer den Button drücken, um neuzustarten.</string>
+    <string name="login_to_github">Bei GitHub anmelden</string>
+    <string name="auth_success">Autorisierung erfolgreich</string>
+    <string name="completing_auth_ellipsis">Autorisierung...</string>
 </resources>

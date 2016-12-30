@@ -110,4 +110,10 @@
     <string name="not_translated">Sin traducción.</string>
     <string name="save_count">Guardar (%d)</string>
     <string name="search_id_content_ellipsis">Buscar por ID o contenido…</string>
+    <string name="auth_success">Autorización completada</string>
+    <string name="completing_auth_ellipsis">Finalizando autorización…</string>
+    <string name="github_not_logged_long">Para ofrecer ciertas funxionalidades como Gists no anónimos, notificar problemas y Pull Requests necesitarás autorizar Stringlate. Haz clic en el botón de abajo para comenzar.</string>
+    <string name="github_yes_logged_long">Ya has iniciado sesión en GitHub. No hace falta nada más, Si algo no funxiona puedes hacer clic en el botón otra vez para volver a comenzar.</string>
+    <string name="login_to_github">Iniciar sesión en GitHub</string>
+    <string name="request_auth">Pedir autorización</string>
 </resources>

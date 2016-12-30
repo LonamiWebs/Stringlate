@@ -1,5 +1,6 @@
 package io.github.lonamiwebs.stringlate.utilities;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -108,6 +109,89 @@ public class GitHub {
             e.printStackTrace();
             return null;
         }
+    }
+
+    // Really big thanks to http://www.levibotelho.com/development/commit-a-file-with-the-github-api
+    public static JSONObject createCommitFile(final String token, final RepoHandler repo,
+                                              final String branch, final String content,
+                                              final String filename, final String commitMessage)
+            throws JSONException {
+        final String tokenQuery = "?access_token="+token;
+
+        // Step 1. Get a reference to HEAD (GET /repos/:owner/:repo/git/refs/:ref)
+        // https://developer.github.com/v3/git/refs/#get-a-reference
+        JSONObject head = new JSONObject(WebUtils.performCall(
+                gGetUrl("repos/%s/git/refs/heads/%s%s", repo.toString(), branch, tokenQuery), WebUtils.GET));
+
+        // Step 2. Grab the commit that HEAD points to (GET /repos/:owner/:repo/git/commits/:sha)
+        // https://developer.github.com/v3/git/commits/#get-a-commit
+        String headCommitUrl = head.getJSONObject("object").getString("url");
+        // Equivalent to getting object.sha and then formatting it
+
+        JSONObject commit = new JSONObject(WebUtils.performCall(headCommitUrl+tokenQuery, WebUtils.GET));
+
+        // Step 3. Post your new file to the server (POST /repos/:owner/:repo/git/blobs)
+        // https://developer.github.com/v3/git/blobs/#create-a-blob
+        JSONObject newBlob = new JSONObject();
+        newBlob.put("content", content);
+        newBlob.put("encoding", "utf-8");
+
+        JSONObject blob = new JSONObject(WebUtils.performCall(
+                gGetUrl("repos/%s/git/blobs%s", repo.toString(), tokenQuery), newBlob));
+
+        // Step 4. Get a hold of the tree that the commit points to (GET /repos/:owner/:repo/git/trees/:sha)
+        // https://developer.github.com/v3/git/trees/#get-a-tree
+        String treeUrl = commit.getJSONObject("tree").getString("url");
+        // Equivalent to getting tree.sha and then formatting it
+
+        JSONObject baseTree = new JSONObject(WebUtils.performCall(treeUrl+tokenQuery, WebUtils.GET));
+
+        // Step 5. Create a tree containing your new file
+        //      5a. The easy way (POST /repos/:owner/:repo/git/trees)
+        // https://developer.github.com/v3/git/trees/#create-a-tree
+        JSONObject newTree = new JSONObject();
+        newTree.put("base_tree", baseTree.get("sha"));
+        {
+            JSONObject blobFileTree = new JSONObject();
+            blobFileTree.put("path", filename);
+            blobFileTree.put("mode", "100644"); // 100644 (blob), 100755 (executable), 040000 (subdirectory/tree), 160000 (submodule/commit), or 120000 (blob specifying path of symlink)
+            blobFileTree.put("type", "blob"); // "blob", "tree", or "commit"
+            blobFileTree.put("sha", blob.getString("sha"));
+            // More files could be added to the array
+            JSONArray blobFileArray = new JSONArray();
+            blobFileArray.put(0, blobFileTree);
+
+            // Finally put the array with our files
+            newTree.put("tree", blobFileArray);
+        }
+
+        JSONObject createdTree = new JSONObject(WebUtils.performCall(
+                gGetUrl("repos/%s/git/trees%s", repo.toString(), tokenQuery), newTree));
+
+        // Step 6. Create a new commit (POST /repos/:owner/:repo/git/commits)
+        // https://developer.github.com/v3/git/commits/#create-a-commit
+        JSONObject newCommit = new JSONObject();
+        newCommit.put("message", commitMessage);
+        // [...] put the SHA of the commit that you retrieved in step #2 in the parents array
+        {
+            JSONArray parents = new JSONArray();
+            parents.put(0, commit.getString("sha"));
+            newCommit.put("parents", parents);
+        }
+        // and the SHA of your newly-created tree from step #5 in the tree field.
+        newCommit.put("tree", createdTree.getString("sha"));
+
+        JSONObject repliedNewCommit = new JSONObject(WebUtils.performCall(
+                gGetUrl("repos/%s/git/commits%s", repo.toString(), tokenQuery), newCommit));
+
+        // Step 7. Update HEAD (PATCH /repos/:owner/:repo/git/refs/:ref)
+        // https://developer.github.com/v3/git/refs/#update-a-reference
+        JSONObject patch = new JSONObject();
+        patch.put("sha", repliedNewCommit.getString("sha"));
+
+        return new JSONObject(WebUtils.performCall(
+                gGetUrl("repos/%s/git/refs/heads/%s%s", repo.toString(), branch, tokenQuery),
+                WebUtils.PATCH, patch));
     }
 
     //endregion

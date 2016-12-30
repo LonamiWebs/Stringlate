@@ -20,42 +20,34 @@ public class WebUtils {
 
     public static final String GET = "GET";
     public static final String POST = "POST";
+    public static final String PATCH = "PATCH";
     private static final String UTF8 = "UTF-8";
 
     // No parameters
     public static String performCall(String url, String method) {
         try {
-            return performCall(new URL(url), method);
+            return performCall(new URL(url), method, "");
         } catch (MalformedURLException e) { e.printStackTrace(); }
         return "";
-    }
-    public static String performCall(URL url, String method) {
-        return performCall(url, method, "");
     }
 
     // URL encoded parameters
     public static String performCall(String url, String method, HashMap<String, String> params) {
         try {
-            return performCall(new URL(url), method, params);
-        } catch (MalformedURLException e) { e.printStackTrace(); }
-        return "";
-    }
-    public static String performCall(URL url, String method, HashMap<String, String> params) {
-        try {
-            return performCall(url, method, getQuery(params));
-        } catch (UnsupportedEncodingException e) { e.printStackTrace(); }
+            return performCall(new URL(url), method, getQuery(params));
+        } catch (UnsupportedEncodingException | MalformedURLException e) { e.printStackTrace(); }
         return "";
     }
 
-    // JSON encoded parameters (these are always POST)
+    // JSON encoded parameters are usually POST
     public static String performCall(String url, JSONObject json) {
+        return performCall(url, POST, json);
+    }
+    public static String performCall(String url, String method, JSONObject json) {
         try {
-            return performCall(new URL(url), json);
+            return performCall(new URL(url), method, json.toString());
         } catch (MalformedURLException e) { e.printStackTrace(); }
         return "";
-    }
-    public static String performCall(URL url, JSONObject json) {
-        return performCall(url, POST, json.toString());
     }
 
     // Source: http://stackoverflow.com/a/31357311/4759433
