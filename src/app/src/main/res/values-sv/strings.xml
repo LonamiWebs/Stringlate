@@ -47,7 +47,6 @@
     <string name="files_modified_keep_changes">Vissa filer har modifierats. Vill du behålla alla dina lokala ändringar tillsammans med de modifieringarna eller vill du ta bort alla dina ändringar?</string>
     <string name="gist_description">Gist beskrivning (Inte obligatoriskt)</string>
     <string name="gist_filename">Gist filnamn</string>
-    <string name="gist_url_copied">Gistens URL har kopierats till dina urklipp.</string>
     <string name="github_repo_url_hint">https://github.com/ägare/repo</string>
     <string name="help">Hjälp</string>
     <string name="history">Historik</string>
@@ -97,7 +96,6 @@
     <string name="search_id_content_ellipsis">Sök på ID eller innehåll…</string>
     <string name="selected_locale">Valt språk:</string>
     <string name="share">Dela</string>
-    <string name="share_gist_url">Dela Gist URL</string>
     <string name="show_more">Visa mer</string>
     <string name="show_only_x">Visa endast top %d</string>
     <string name="show_translated_strings">Visa översatta strängar</string>

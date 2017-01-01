@@ -68,8 +68,6 @@
     <string name="error_gist_filename_empty">Numele fișierului Gist nu poate fi gol</string>
     <string name="posting_gist_ellipsis">Se postează un Gist…</string>
     <string name="posting_gist_ellipsis_long">Se încearcă postarea fișierului strings.xml ca un Gist pe GitHub</string>
-    <string name="gist_url_copied">Adresa Gist a fost copiată in memorie.</string>
-    <string name="share_gist_url">Partajează adresă Gist</string>
     <string name="post_gist_error">Nu s-a putut posta un Gist.</string>
     <string name="copy_to_clipboard">Copiazâ în memorie</string>
     <string name="xml_copied_to_clipboard">Conținutul fișierului %s a fost copiat în memorie</string>

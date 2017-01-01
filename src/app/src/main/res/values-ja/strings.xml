@@ -68,8 +68,6 @@
     <string name="error_gist_filename_empty">Gist ファイル名は空にできません</string>
     <string name="posting_gist_ellipsis">Gist の投稿中…</string>
     <string name="posting_gist_ellipsis_long">strings.xml ファイルを GitHub Gist として投稿しています…</string>
-    <string name="gist_url_copied">Gist URL をクリップボードにコピーしました。</string>
-    <string name="share_gist_url">Gist URL を共有</string>
     <string name="post_gist_error">Gist は投稿できませんでした。</string>
     <string name="copy_to_clipboard">クリップボードにコピー</string>
     <string name="xml_copied_to_clipboard">%s ファイルの内容をクリップボードにコピーしました</string>

@@ -46,7 +46,6 @@
     <string name="files_modified_keep_changes">某些资源文件已被修改. 您希望您的本地修改与远程修改并存还是放弃您所有的更改？</string>
     <string name="gist_description">Gist 描述 (可选)</string>
     <string name="gist_filename">Gist 文件名：</string>
-    <string name="gist_url_copied">已将 Gist 的链接复制到您的剪贴版中</string>
     <string name="github_repo_url_hint">https://github.com/所有者名称/版本库名称</string>
     <string name="help">帮助</string>
     <string name="history">历史</string>
@@ -93,7 +92,6 @@
     <string name="search_apps_ellipsis">正在搜索应用程序.......</string>
     <string name="selected_locale">选中的语言</string>
     <string name="share">分享</string>
-    <string name="share_gist_url">分享 Gist 地址</string>
     <string name="show_more">显示更多</string>
     <string name="show_only_x">只显示前 % 个应用程序</string>
     <string name="show_translated_strings">显示已翻译过的字符串</string>
