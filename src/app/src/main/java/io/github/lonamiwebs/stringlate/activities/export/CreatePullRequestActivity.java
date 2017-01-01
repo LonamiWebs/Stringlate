@@ -96,9 +96,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                     mInfoTextView.setText(R.string.cannot_push_will_pr);
                 }
                 mUsername = canPush.first;
-                //mNeedFork = !canPush.second;
-                // TODO Hahaha hackz xd
-                mNeedFork = true;
+                mNeedFork = !canPush.second;
             }
         }.execute();
     }
@@ -164,9 +162,10 @@ public class CreatePullRequestActivity extends AppCompatActivity {
 
         final String token = mSettings.getGitHubToken();
         final Context ctx = this;
-        new AsyncTask<Void, PUData, Boolean>() {
+        new AsyncTask<Void, PUData, JSONObject>() {
             @Override
-            protected Boolean doInBackground(Void... params) {
+            protected JSONObject doInBackground(Void... params) {
+                JSONObject commitResult;
                 RepoHandler repo;
                 if (mNeedFork) {
                     publishProgress(new PUData(getString(R.string.forking_repo),
@@ -183,7 +182,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                         publishProgress(new PUData(getString(R.string.fork_failed)));
-                        return false;
+                        return null;
                     }
                 } else {
                     repo = mRepo;
@@ -194,12 +193,12 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                     publishProgress(new PUData(getString(R.string.creating_commit),
                             getString(R.string.creating_commit_long)));
 
-                    GitHub.gCreateCommitFile(token, repo, branch,
+                    commitResult = GitHub.gCreateCommitFile(token, repo, branch,
                             mXmlContent, mRemotePath, commitMessage);
                 } catch (JSONException e) {
                     publishProgress(new PUData(getString(R.string.commit_failed)));
                     e.printStackTrace();
-                    return false;
+                    return null;
                 }
 
                 if (mNeedFork) {
@@ -211,15 +210,16 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                     int newLineIndex = commitMessage.indexOf('\n');
                     if (newLineIndex > -1) {
                         title = commitMessage.substring(0, newLineIndex);
-                        body = commitMessage.substring(newLineIndex);
+                        body = commitMessage.substring(newLineIndex).trim();
                     } else {
                         title = commitMessage;
                         body = "";
                     }
                     return GitHub.gCreatePullRequest(token, mRepo, title,
-                            mUsername+":"+branch, branch, body) != null;
+                            mUsername+":"+branch, branch, body);
                 }
-                return true;
+                else
+                    return commitResult;
             }
 
             @Override
@@ -230,18 +230,14 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                     Toast.makeText(ctx, data.title, Toast.LENGTH_SHORT).show();
                 } else {
                     progress.setTitle(data.title);
-                    progress.setTitle(data.message);
+                    progress.setMessage(data.message);
                 }
             }
 
             @Override
-            protected void onPostExecute(Boolean success) {
-                if (success) {
-                    Toast.makeText(ctx, R.string.done, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(ctx, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
-                }
+            protected void onPostExecute(JSONObject result) {
                 progress.dismiss();
+                onPRCreated(result);
             }
         }.execute();
     }
@@ -252,20 +248,41 @@ public class CreatePullRequestActivity extends AppCompatActivity {
 
     // TODO Find a better way to handle async tasks and ProgressUpdateCallback
     class PUData {
-        public final String title;
-        public final String message;
-        public final boolean done;
+        final String title;
+        final String message;
+        final boolean done;
 
-        public PUData(String title, String message) {
+        PUData(String title, String message) {
             this.title = title;
             this.message = message;
             this.done = false;
         }
 
-        public PUData(String doneTitle) {
+        PUData(String doneTitle) {
             this.title = doneTitle;
             this.message = null;
             this.done = true;
+        }
+    }
+
+    //endregion
+
+    //region Check created PR
+
+    private void onPRCreated(JSONObject result) {
+        try {
+            if (result == null) throw new JSONException("Null result");
+
+            String postedUrl = mNeedFork ? result.getString("html_url")
+                    : String.format("https://github.com/%s/commit/%s",
+                    mRepo.toString(), result.getJSONObject("object").getString("sha"));
+
+            finish();
+            CreateUrlSuccessActivity.launchIntent(
+                    this, getString(R.string.done), postedUrl);
+        }
+        catch (JSONException e) {
+            Toast.makeText(this, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
         }
     }
 

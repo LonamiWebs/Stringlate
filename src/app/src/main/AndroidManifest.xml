@@ -63,5 +63,6 @@
         <activity
             android:name=".activities.export.CreatePullRequestActivity"
             android:label="@string/create_pr" />
+        <activity android:name=".activities.export.CreateUrlSuccessActivity" />
     </application>
 </manifest>

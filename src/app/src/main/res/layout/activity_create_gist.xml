@@ -11,108 +11,43 @@
     android:orientation="vertical"
     tools:context="io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity">
 
-    <LinearLayout
-        android:id="@+id/gistCreationLayout"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="@string/gist_description"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/gist_description"/>
-
-        <EditText
-            android:id="@+id/gistDescriptionEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/default_gist_share_description"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/gist_filename"/>
-
-        <EditText
-            android:id="@+id/gistFilenameEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <CheckBox
-            android:id="@+id/gistIsPublicCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/is_public_gist"/>
-
-        <CheckBox
-            android:id="@+id/gistIsAnonymousCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/is_anonymous_gist"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/post_gist"
-            android:onClick="onPostGist"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/gistCreatedLayout"
+    <EditText
+        android:id="@+id/gistDescriptionEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:text="@string/default_gist_share_description"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/post_gist_success"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/gist_filename"/>
 
-        <EditText
-            android:id="@+id/gistUrlEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none"
-            android:editable="false" />
+    <EditText
+        android:id="@+id/gistFilenameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+    <CheckBox
+        android:id="@+id/gistIsPublicCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/is_public_gist"/>
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:text="@string/open"
-                android:onClick="onOpenUrl"/>
+    <CheckBox
+        android:id="@+id/gistIsAnonymousCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/is_anonymous_gist"/>
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:text="@string/copy"
-                android:onClick="onCopyUrl"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/post_gist"
+        android:onClick="onPostGist"/>
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:text="@string/share"
-                android:onClick="onShareUrl"/>
-
-        </LinearLayout>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/exit"
-            android:onClick="onExit"/>
-
-    </LinearLayout>
 </LinearLayout>
