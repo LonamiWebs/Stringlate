@@ -173,10 +173,36 @@ public class GitHub {
         }
     }
 
+    public static JSONArray gGetCommits(final String token, final RepoHandler repo) {
+        try {
+            return new JSONArray(WebUtils.performCall(gGetUrl(
+                    "repos/%s/commits?access_token=%s", repo.toString(), token), WebUtils.GET));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static JSONObject gForkRepository(final String token, final RepoHandler repo) {
         try {
-            return new JSONObject(WebUtils.performCall(gGetUrl(
+            JSONObject result = new JSONObject(WebUtils.performCall(gGetUrl(
                     "repos/%s/forks?access_token=%s", repo.toString(), token), WebUtils.POST));
+
+            // "Forking a Repository happens asynchronously."
+            // One way to know when forking is done is to fetch the list of commits for the fork.
+            // (http://stackoverflow.com/a/33667417/4759433)
+            int sleep = 1000;
+            do {
+                try {
+                    Thread.sleep(sleep);
+                    sleep *= 2; // Sleep longer if the repo isn't yet forked not to call so often
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            } while (gGetCommits(token, repo) == null);
+
+            return result;
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
