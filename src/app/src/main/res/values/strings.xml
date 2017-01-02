@@ -150,4 +150,5 @@
     <string name="creating_pr">Creating PR…</string>
     <string name="creating_pr_long">Creating a pull request on the original repository…</string>
     <string name="something_went_wrong">Something went wrong.</string>
+    <string name="warning_experimental" translatable="false">Please note that this feature is still experimental. Use with care!!</string>
 </resources>

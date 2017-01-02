@@ -11,6 +11,14 @@
     android:orientation="vertical"
     tools:context="io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity">
 
+    <!-- TODO Remove by version 1.0 or so -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/warning_experimental"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:layout_marginBottom="12dp"/>
+
     <TextView
         android:id="@+id/infoTextView"
         android:layout_width="match_parent"
