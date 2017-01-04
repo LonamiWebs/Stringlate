@@ -16,7 +16,7 @@ import org.json.JSONObject;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.utilities.GitHub;
+import io.github.lonamiwebs.stringlate.git.GitHub;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_FILENAME;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_XML_CONTENT;

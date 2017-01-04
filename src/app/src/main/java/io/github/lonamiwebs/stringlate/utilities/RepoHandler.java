@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -148,11 +149,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     // Deletes the repository erasing its existence from Earth. Forever. (Unless added again)
     public boolean delete() {
-        boolean ok = true;
-        for (File file : mRoot.listFiles())
-            ok &= file.delete();
-
-        ok &= mRoot.delete();
+        boolean ok = GitWrapper.deleteRepo(mRoot);
         notifyRepositoryCountChanged();
         return ok;
     }
@@ -243,8 +240,10 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
             @Override
             protected void onPostExecute(File clonedDir) {
-                if (clonedDir == null)
+                if (clonedDir == null) {
                     callback.onProgressFinished(mContext.getString(R.string.invalid_repo), false);
+                    delete(); // Need to delete the settings
+                }
                 else
                     scanResources(clonedDir, keepChanges, callback);
             }
@@ -266,6 +265,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             protected void onPostExecute(ArrayList<File> foundResources) {
                 if (foundResources.size() == 0) {
                     GitWrapper.deleteRepo(clonedDir); // Clean resources
+                    delete(); // Need to delete the settings
                     callback.onProgressFinished(
                             mContext.getString(R.string.no_strings_found), false);
                 } else {
@@ -403,8 +403,13 @@ public class RepoHandler implements Comparable<RepoHandler> {
     public String toString() {
         // https:// part is a bit redundant, also omit the `.git` part
         String url = mSettings.getGitUrl();
-        int end = url.endsWith(".git") ? url.lastIndexOf('.') : url.length();
-        return url.substring(url.indexOf("://") + 3, end);
+        try {
+            int end = url.endsWith(".git") ? url.lastIndexOf('.') : url.length();
+            return url.substring(url.indexOf("://") + 3, end);
+        } catch (StringIndexOutOfBoundsException e) {
+            Log.w("RepoHandler", "Please report that \""+url+"\" got somehow saved…");
+            return url; // We must have a really weird url. Maybe saved invalid repo somehow?
+        }
     }
 
     public String toString(boolean onlyRepo) {

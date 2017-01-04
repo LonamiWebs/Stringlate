@@ -44,7 +44,7 @@ import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
 import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.utilities.GitHub;
+import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_FILENAME;

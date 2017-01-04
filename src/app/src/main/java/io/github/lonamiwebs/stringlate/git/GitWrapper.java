@@ -75,13 +75,14 @@ public class GitWrapper {
         return false;
     }
 
-    public static void deleteRepo(File dir) {
+    public static boolean deleteRepo(File dir) {
+        boolean ok = true;
         if (dir.isDirectory()) {
             for (File child : dir.listFiles())
-                deleteRepo(child);
+                ok &= deleteRepo(child);
         }
-
-        dir.delete();
+        ok &= dir.delete();
+        return ok;
     }
 
     public static ArrayList<File> searchAndroidResources(File dir) {

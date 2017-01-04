@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.utilities;
+package io.github.lonamiwebs.stringlate.git;
 
 import android.util.Pair;
 
@@ -7,6 +7,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+
+import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
+import io.github.lonamiwebs.stringlate.utilities.WebUtils;
 
 // Static GitHub API interface that uses AsyncTasks
 public class GitHub {
