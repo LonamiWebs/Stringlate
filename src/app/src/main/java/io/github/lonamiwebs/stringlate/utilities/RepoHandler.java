@@ -97,8 +97,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mSettings = new RepoSettings(mRoot);
         mSettings.setGitUrl(gitUrl);
 
-        mValuesLocalePattern = Pattern.compile(
-                "res/values(?:-([\\w-]+))?/strings\\.xml");
+        mValuesLocalePattern = Pattern.compile("res/values(?:-([\\w-]+))?/.+?\\.xml");
 
         mLocales = new ArrayList<>();
         loadLocales();
