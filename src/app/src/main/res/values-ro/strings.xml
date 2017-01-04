@@ -14,15 +14,9 @@
     <string name="loading_ellipsis">Se încarcă…</string>
     <string name="no_strings_found_update">Nu s-au găsit fișiere strings.xml, trebuie să reîmprospătați.</string>
     <string name="no_strings_found">Sursa proiectului nu conține fișiere strings.xml.</string>
-    <string name="error_parsing_json">Eroare la interpretarea fișierului JSON la comanda API</string>
     <string name="scanning_repository">Scanare proiect…</string>
     <string name="scanning_repository_long">Se caută fișiere strings.xml în sursele proiectului…</string>
-    <string name="downloading_strings_locale">Se descarcă frazele pentru limbile %1$d/%2$d…</string>
-    <string name="downloading_to_translate">Fișierul strings.xml de tradus, se descarcă…</string>
-    <string name="downloading_strings_locale_description">Se descarcă values-%s/strings.xml</string>
     <string name="repo_or_url_required">Introdu numele autorului și al proiectului sau o adresă.</string>
-    <string name="checking_repo_ok">Se verifică valorile..</string>
-    <string name="checking_repo_ok_long">Se verifică existența autorului și a proiectului…</string>
     <string name="invalid_repo">Sursa proiectului nu pare să fie validă.</string>
     <string name="translated_string">Frază tradusă</string>
     <string name="previous">Precedenta</string>
@@ -75,7 +69,6 @@
     <string name="export_file_failed">Nu s-a putut exporta fișierul strings.xml</string>
     <string name="export_file_success">Fișierul salvat cu succes ca %s</string>
     <string name="update_applications">Aplicații actualizate</string>
-    <string name="show_only_x">Arata doar primele %d</string>
     <string name="apps_repo_not_downloaded">Sursele proiectului nu au fost descărcate încă. Atingeți butonul \"%s\" din meniu pentru a descărca indexul proiectelor și a putea explora toate aplicatiile disponibile.</string>
     <string name="sync_failed">Sincronizare eșuată.</string>
     <string name="downloading_index_jar">Se descarcă index.jar…</string>

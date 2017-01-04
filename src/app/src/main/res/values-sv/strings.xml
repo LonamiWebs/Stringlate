@@ -5,8 +5,6 @@
     <string name="allow_download_icons">Tillåt nedladdning av ikoner</string>
     <string name="apps_repo_not_downloaded">App listan har inte laddats ner än. Tryck på \"%s\" meny knappen för att ladda ner repo-index och kunna utforska alla apparna.</string>
     <string name="cancel">Avbryt</string>
-    <string name="checking_repo_ok">Ser till att allt är rätt…</string>
-    <string name="checking_repo_ok_long">Kollar om ägaren och repot existerar…</string>
     <string name="clear_icons_cache">Rensa ikon cachen</string>
     <string name="copy">Kopiera</string>
     <string name="copy_to_clipboard">Kopiera till urklipp</string>
@@ -26,13 +24,9 @@
     <string name="done">Klar!</string>
     <string name="downloading_index_jar">Laddar ner index.jar…</string>
     <string name="downloading_index_jar_long">index.jar, som innehåller listan över applikationerna, laddas ner just nu…</string>
-    <string name="downloading_strings_locale">Laddar ner strängarna för språken %1$d/%2$d…</string>
-    <string name="downloading_strings_locale_description">Laddar ner values-%s/strings.xml</string>
-    <string name="downloading_to_translate">Laddar ner strings.xml filerna för översättning…</string>
     <string name="enter_locale">Skriv språk namn</string>
     <string name="enter_locale_long">Skriv språkets internationella kod som du vill skapa strings.xml filen för (Koden till språket som din telefon just nu är inställd till är \"%s\")</string>
     <string name="error_gist_filename_empty">Gist namnet får inte vara tomt</string>
-    <string name="error_parsing_json">Fel vid läsning av JSON i API anropet.</string>
     <string name="exit">Avsluta</string>
     <string name="export_ellipsis">Exportera…</string>
     <string name="export_file_failed">Kunde inte exportera strings.xml filen</string>
@@ -97,7 +91,6 @@
     <string name="selected_locale">Valt språk:</string>
     <string name="share">Dela</string>
     <string name="show_more">Visa mer</string>
-    <string name="show_only_x">Visa endast top %d</string>
     <string name="show_translated_strings">Visa översatta strängar</string>
     <string name="sure_question">Är du säker?</string>
     <string name="sync_failed">Synkronisering misslyckades.</string>

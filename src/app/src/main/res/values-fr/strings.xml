@@ -14,15 +14,9 @@
     <string name="loading_ellipsis">Chargement…</string>
     <string name="no_strings_found_update">Aucun fichier strings.xml n\'a été trouvé, s\'il vous plaît mettez le à jour.</string>
     <string name="no_strings_found">Aucun fichier strings.xml n\'a été trouvé dans ce dépôt.</string>
-    <string name="error_parsing_json">Erreur lors du traitement du JSON de la requête API.</string>
     <string name="scanning_repository">Scan du dépôt…</string>
     <string name="scanning_repository_long">Recherche du fichier strings.xml dans le dépôt…</string>
-    <string name="downloading_strings_locale">Téléchargement des chaînes pour la langue %1$d/%2$d…</string>
-    <string name="downloading_to_translate">Téléchargement du fichier strings.xml à traduire…</string>
-    <string name="downloading_strings_locale_description">Téléchargement de values-%s/strings.xml</string>
     <string name="repo_or_url_required">Entrer un propriétaire et un nom de dépôt ou une adresse.</string>
-    <string name="checking_repo_ok">Vérification des valeurs</string>
-    <string name="checking_repo_ok_long">Vérification de l\'existence du propriétaire et du dépôt</string>
     <string name="invalid_repo">Le dépôt entré ne paraît pas valide.</string>
     <string name="translated_string">Chaîne traduite</string>
     <string name="previous">Précédente</string>
@@ -75,7 +69,6 @@
     <string name="export_file_failed">Impossible d\'exporter le fichier strings.xml</string>
     <string name="export_file_success">Fichier %s sauvegardé avec succès</string>
     <string name="update_applications">Mettre à jour les applications</string>
-    <string name="show_only_x">Montrer seulement les %d premières</string>
     <string name="apps_repo_not_downloaded">Le dépôt d\'applications n\'a pas encore été téléchargé. Toucher le bouton « %s » du menu pour le télécharger et pouvoir explorer toutes les applications disponibles.</string>
     <string name="sync_failed">Erreur de synchronisation.</string>
     <string name="downloading_index_jar">Téléchargement de index.jar…</string>

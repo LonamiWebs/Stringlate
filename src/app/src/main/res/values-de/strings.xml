@@ -5,8 +5,6 @@
     <string name="allow_download_icons">Erlaube das Herunterladen von Icons</string>
     <string name="apps_repo_not_downloaded">Die Liste der Programme wurde noch nicht runter geladen. Tippe den \"%s\" Menü Button um eine Programmliste herunter zu laden und die Liste aller Programme zu durchforsten.</string>
     <string name="cancel">Abbrechen</string>
-    <string name="checking_repo_ok">Überprüfung der Richtigkeit der Werte…</string>
-    <string name="checking_repo_ok_long">Überprüfung der Existenz des Eigentümers und der Quelle…</string>
     <string name="clear_icons_cache">Symbolcache leeren</string>
     <string name="copy">Kopieren</string>
     <string name="copy_to_clipboard">In die Zwischenablage kopieren</string>
@@ -26,13 +24,9 @@
     <string name="done">Fertig!</string>
     <string name="downloading_index_jar">Lade index.jar herunter…</string>
     <string name="downloading_index_jar_long">index.jar, welches alle Applikationen beinhaltet, wird heruntergeladen…</string>
-    <string name="downloading_strings_locale">Lade die Zeichenketten für die Sprachdatei %1$d/%2$d…</string>
-    <string name="downloading_strings_locale_description">Lade values-%s/strings.html</string>
-    <string name="downloading_to_translate">Lade strings.xml Dateien für Sie zum Übersetzen herunter…</string>
     <string name="enter_locale">Geben sie den Namen der Sprachdatei ein</string>
     <string name="enter_locale_long">Geben Sie einen Namen ein, mit welchem die Datei strings.xml erstellt wird (derzeit ist es \"%s\"):</string>
     <string name="error_gist_filename_empty">Gisy Dateiname darf nicht leer sein</string>
-    <string name="error_parsing_json">Fehler beim Parsen des JSON von der API Anforderung.</string>
     <string name="exit">Beenden</string>
     <string name="export_ellipsis">Exportieren…</string>
     <string name="export_file_failed">Konnte strings.xml nicht exportieren</string>
@@ -95,7 +89,6 @@
     <string name="selected_locale">Gewählte Sprache:</string>
     <string name="share">Teilen</string>
     <string name="show_more">Mehr anzeigen</string>
-    <string name="show_only_x">Nur die top %d zeigen</string>
     <string name="show_translated_strings">Übersetzte Teile anzeigen</string>
     <string name="sure_question">Sind Sie sich sicher?</string>
     <string name="sync_failed">Sunchronisation fehlgeschlagen.</string>

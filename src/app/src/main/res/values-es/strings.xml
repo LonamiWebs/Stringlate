@@ -3,8 +3,6 @@
     <string name="add_locale_to_start">Añade un nuevo idioma para comenzar.</string>
     <string name="add_new_repo">Añadir nuevo repositorio</string>
     <string name="cancel">Cancelar</string>
-    <string name="checking_repo_ok">Comprobando la exactitud de los valores…</string>
-    <string name="checking_repo_ok_long">Comprobado la existencia del dueño y el repositorio…</string>
     <string name="copy">Copiar</string>
     <string name="copy_to_clipboard">Copiar al portapapeles</string>
     <string name="create">Crear</string>
@@ -22,13 +20,9 @@
     <string name="done">¡Hecho!</string>
     <string name="downloading_index_jar">Descargando index.jar…</string>
     <string name="downloading_index_jar_long">El archivo index.jar contiene la lista de aplicaciones y está siendo descargado…</string>
-    <string name="downloading_strings_locale">Descargando texto de la traducción %1$d/%2$d…</string>
-    <string name="downloading_strings_locale_description">Descargando valores-%s/strings.xml</string>
-    <string name="downloading_to_translate">Descargando strings.xml para que puedas traducirlo…</string>
     <string name="enter_locale">Inserta el nombre local</string>
     <string name="enter_locale_long">Inserta el nombre del idioma con el que strings.xml será creado (Tu idioma actual es \*%s\")</string>
     <string name="error_gist_filename_empty">El nombre del archivo de Gist no puede estar vacío</string>
-    <string name="error_parsing_json">Error parseando JSON desde la petición de la API.</string>
     <string name="exit">Salir</string>
     <string name="export_ellipsis">Exportar…</string>
     <string name="export_file_failed">No se puede exportar el archivo strings.xml</string>
@@ -87,7 +81,6 @@
     <string name="search_apps_ellipsis">Buscar aplicaciones…</string>
     <string name="selected_locale">Idioma elegido:</string>
     <string name="share">Compartir</string>
-    <string name="show_only_x">Muestra solo %d</string>
     <string name="show_translated_strings">Mostrar el texto traducido</string>
     <string name="sure_question">¿Estás seguro/a?</string>
     <string name="sync_failed">Fallo al sincronizar.</string>

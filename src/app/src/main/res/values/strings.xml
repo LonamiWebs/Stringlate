@@ -16,15 +16,9 @@
     <string name="loading_ellipsis">Loading…</string>
     <string name="no_strings_found_update">No strings.xml files were found, please update the strings.xml.</string>
     <string name="no_strings_found">No strings.xml files were found in this repository.</string>
-    <string name="error_parsing_json">Error parsing the JSON from the API request.</string>
     <string name="scanning_repository">Scanning repository…</string>
     <string name="scanning_repository_long">Looking for strings.xml files in the repository…</string>
-    <string name="downloading_strings_locale">Downloading strings for locale %1$d/%2$d…</string>
-    <string name="downloading_to_translate">Downloading strings.xml files for you to translate…</string>
-    <string name="downloading_strings_locale_description">Downloading values-%s/strings.xml</string>
     <string name="repo_or_url_required">Please enter a project owner and name or an URL.</string>
-    <string name="checking_repo_ok">Checking values correctness…</string>
-    <string name="checking_repo_ok_long">Checking for the owner and repository existence…</string>
     <string name="invalid_repo">The input repository doesn\'t seem valid.</string>
     <string name="translated_string">Translated string</string>
     <string name="previous">Previous</string>
@@ -78,7 +72,6 @@
     <string name="export_file_failed">Could not export strings.xml file</string>
     <string name="export_file_success">File successfully saved to %s</string>
     <string name="update_applications">Update applications</string>
-    <string name="show_only_x">Show only top %d</string>
     <string name="apps_repo_not_downloaded">The applications repository has not been downloaded yet. Tap the \"%s\" menu button to download the repository index in order to explore all the available applications.</string>
     <string name="sync_failed">Failed to synchronize.</string>
     <string name="downloading_index_jar">Downloading index.jar…</string>

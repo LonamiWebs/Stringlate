@@ -4,8 +4,6 @@
     <string name="add_new_repo">加入新的版控倉庫</string>
     <string name="apps_repo_not_downloaded">應用軟體庫尚未被下載。輕觸「%s」選單按鈕以下載應用軟體庫索引資料以探索所有可翻譯的應用軟體。</string>
     <string name="cancel">取消</string>
-    <string name="checking_repo_ok">正在檢查數值正確性……</string>
-    <string name="checking_repo_ok_long">檢查擁有者與版控倉庫是否存在</string>
     <string name="clear_icons_cache">清空圖示快取資料</string>
     <string name="copy">複製</string>
     <string name="copy_to_clipboard">複製至剪貼簿</string>
@@ -24,13 +22,9 @@
     <string name="done">完成！</string>
     <string name="downloading_index_jar">正在下載 index.jar……</string>
     <string name="downloading_index_jar_long">包含應用軟體清單的 index.jar 正在被下載……</string>
-    <string name="downloading_strings_locale">正在下載第 %1$d/%2$d 個語言地區的字串……</string>
-    <string name="downloading_strings_locale_description">正在下載 values-%s/strings.xml</string>
-    <string name="downloading_to_translate">正在下載 strings.xml 檔案們來給您翻譯……</string>
     <string name="enter_locale">請輸入語言地區名稱</string>
     <string name="enter_locale_long">請輸入用於即將被建立的 strings.xml 檔案的語言地區名稱（您目前的語言地區為「%s」）：</string>
     <string name="error_gist_filename_empty">Gist 檔名不可為空</string>
-    <string name="error_parsing_json">解析應用程式介面(API)請求的 JSON 格式資料時發生錯誤。</string>
     <string name="exit">離開</string>
     <string name="export_ellipsis">匯出……</string>
     <string name="export_file_failed">無法匯出 strings.xml 檔案</string>
@@ -92,7 +86,6 @@
     <string name="selected_locale">被選取的語言地區：</string>
     <string name="share">分享</string>
     <string name="show_more">顯示更多</string>
-    <string name="show_only_x">只顯示前 %d 個應用軟體</string>
     <string name="show_translated_strings">顯示已翻譯過字串</string>
     <string name="sure_question">您確定嗎？</string>
     <string name="sync_failed">同步失敗。</string>

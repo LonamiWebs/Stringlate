@@ -14,15 +14,9 @@
     <string name="loading_ellipsis">Načítání…</string>
     <string name="no_strings_found_update">Nebyly nalezeny žádné soubory strings.xml, prosím aktualizujte strings.xml.</string>
     <string name="no_strings_found">V tomto repozitáři nebyly nalezeny žádné soubory strings.xml.</string>
-    <string name="error_parsing_json">Chyba při zpracování JSON z API požadavku.</string>
     <string name="scanning_repository">Prohledávání repozitáře…</string>
     <string name="scanning_repository_long">Vyhledávání souborů strings.xml v repozitáři…</string>
-    <string name="downloading_strings_locale">Stahování řetězců pro jazyk %1$d/%2$d…</string>
-    <string name="downloading_to_translate">Stahování souboru strings.xml pro překlad…</string>
-    <string name="downloading_strings_locale_description">Stahování values-%s/strings.xml</string>
     <string name="repo_or_url_required">Prosím zadejte vlastníka projektu a jméno nebo URL.</string>
-    <string name="checking_repo_ok">Kontrola správnosti údajů…</string>
-    <string name="checking_repo_ok_long">Ověřování existence vlastníka a repozitáře.</string>
     <string name="invalid_repo">Zdrojový repozitář zřejmě není platný.</string>
     <string name="translated_string">Přeložený řetězec</string>
     <string name="previous">Předchozí</string>
@@ -75,7 +69,6 @@
     <string name="export_file_failed">Nelze exportovat soubor strings.xml</string>
     <string name="export_file_success">Soubor byl úspěšně uložen do %s</string>
     <string name="update_applications">Aktualizovat aplikace</string>
-    <string name="show_only_x">Zobrazit pouze prvních %d</string>
     <string name="apps_repo_not_downloaded">Repozitáře aplikací ještě nebyly staženy. Abyste si mohli prohlédnout dostupné aplikace, ťukněte na tlačítko \"%s\" pro stažení rejstříku repozitářů.</string>
     <string name="sync_failed">Chyba při synchronizaci.</string>
     <string name="downloading_index_jar">Stahování souboru index.jar…</string>

@@ -5,8 +5,6 @@
     <string name="add_new_repo">添加版本仓库</string>
     <string name="apps_repo_not_downloaded">该应用程序的版本库并未被下载。点击\"%s\"菜单按钮以下载软件索引以探索可用的应用程序</string>
     <string name="cancel">取消</string>
-    <string name="checking_repo_ok">正在验证数值正确性</string>
-    <string name="checking_repo_ok_long">正在检查该所有者及版本库是否存在..</string>
     <string name="clear_icons_cache">清理图标缓存</string>
     <string name="copy">复制</string>
     <string name="copy_to_clipboard">复制到剪贴板</string>
@@ -25,13 +23,9 @@
     <string name="done">完成</string>
     <string name="downloading_index_jar">正在下载index.jar......</string>
     <string name="downloading_index_jar_long">正在下载包含应用程序列表的 index.jar 文件.....</string>
-    <string name="downloading_strings_locale">正在下载第 %1$d/%2$d 个语言</string>
-    <string name="downloading_strings_locale_description">正在下载 values-%s/strings.xml</string>
-    <string name="downloading_to_translate">正在下载 strings.xml 文件来给您翻译......</string>
     <string name="enter_locale">请输入语言名称</string>
     <string name="enter_locale_long">请输入您希望用于 strings.xml 文件的语言的名称 (您当前使用的语言为 \"%s\" )</string>
     <string name="error_gist_filename_empty">Gist 文件名不能为空</string>
-    <string name="error_parsing_json">从 API 请求解析 JSON 时出现错误</string>
     <string name="exit">退出</string>
     <string name="export_ellipsis">导出.....</string>
     <string name="export_file_failed">无法导出 strings.xml 文件</string>
@@ -93,7 +87,6 @@
     <string name="selected_locale">选中的语言</string>
     <string name="share">分享</string>
     <string name="show_more">显示更多</string>
-    <string name="show_only_x">只显示前 % 个应用程序</string>
     <string name="show_translated_strings">显示已翻译过的字符串</string>
     <string name="sync_failed">同步失败.</string>
     <string name="sure_question">您确定吗？</string>

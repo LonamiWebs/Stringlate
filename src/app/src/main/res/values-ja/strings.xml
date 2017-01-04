@@ -14,15 +14,9 @@
     <string name="loading_ellipsis">読み込み中…</string>
     <string name="no_strings_found_update">strings.xml ファイルが見つかりません。 strings.xml を更新してください。</string>
     <string name="no_strings_found">リポジトリに strings.xml ファイルが見つかりません。</string>
-    <string name="error_parsing_json">API リクエストからの JSON を解析中にエラー。</string>
     <string name="scanning_repository">リポジトリのスキャン中…</string>
     <string name="scanning_repository_long">リポジトリで strings.xml ファイルを探しています…</string>
-    <string name="downloading_strings_locale">ロケールの文字列をダウンロード中 %1$d/%2$d…</string>
-    <string name="downloading_to_translate">翻訳する strings.xml ファイルをダウンロード中…</string>
-    <string name="downloading_strings_locale_description">values-%s/strings.xml のダウンロード中</string>
     <string name="repo_or_url_required">プロジェクトの所有者と名前、または URL を入力してください。</string>
-    <string name="checking_repo_ok">値を確認中…</string>
-    <string name="checking_repo_ok_long">所有者とリポジトリの存在を確認中…</string>
     <string name="invalid_repo">入力したリポジトリは正しくないようです。</string>
     <string name="translated_string">翻訳した文字列</string>
     <string name="previous">前へ</string>
@@ -75,7 +69,6 @@
     <string name="export_file_failed">strings.xml ファイルをエクスポートできません</string>
     <string name="export_file_success">ファイルを %s に保存しました</string>
     <string name="update_applications">アプリケーションの更新</string>
-    <string name="show_only_x">先頭 %d のみ表示</string>
     <string name="apps_repo_not_downloaded">アプリケーションのリポジトリはまだダウンロードされていません。 すべての利用可能なアプリケーションを探索するため、\"%s\" メニューボタンを押して、リポジトリの索引をダウンロードしてください。</string>
     <string name="sync_failed">同期に失敗しました。</string>
     <string name="downloading_index_jar">index.jar のダウンロード中…</string>

@@ -44,6 +44,7 @@ for md in os.listdir('help'):
 
 # Save the HTML files to the .../res/raw/ directory
 print('Saving files...')
+os.makedirs(outdir, exist_ok=True)
 for name, html in name_html:
     with open(os.path.join(outdir, name), mode='w') as f:
         f.write(html)
