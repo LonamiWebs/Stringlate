@@ -1,5 +1,7 @@
 package io.github.lonamiwebs.stringlate.classes.resources;
 
+import android.util.Pair;
+
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
@@ -21,6 +23,7 @@ public class Resources implements Iterable<ResourcesString> {
     private File mFile; // Keep track of the original file to be able to save()
     private HashSet<ResourcesString> mStrings;
     private HashSet<String> mUnsavedIDs;
+    private String mRemoteUrl;
 
     private boolean mSavedChanges;
     private boolean mModified;
@@ -30,13 +33,31 @@ public class Resources implements Iterable<ResourcesString> {
     //region Constructors
 
     public static Resources fromFile(File file) {
+        return fromFile(file, null);
+    }
+
+    public static Resources fromFile(File file, File rootDir) {
+        String remoteUrl = null;
+        if (rootDir != null) {
+            remoteUrl = file.getAbsolutePath().substring(rootDir.getAbsolutePath().length());
+            if (remoteUrl.startsWith("/"))
+                remoteUrl = remoteUrl.substring(1);
+        }
+
         if (!file.isFile())
-            return new Resources(file, new HashSet<ResourcesString>());
+            return new Resources(file, new HashSet<ResourcesString>(), remoteUrl);
 
         InputStream is = null;
         try {
             is = new FileInputStream(file);
-            return new Resources(file, ResourcesParser.parseFromXml(is));
+            Pair<HashSet<ResourcesString>, String> result = ResourcesParser.parseFromXml(is);
+            if (result.second == null) {
+                // Keep the remote url that we have
+                return new Resources(file, result.first, remoteUrl);
+            } else {
+                // Keep the saved remote url
+                return new Resources(file, result.first, result.second);
+            }
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
         } finally {
@@ -48,10 +69,11 @@ public class Resources implements Iterable<ResourcesString> {
         return null;
     }
 
-    private Resources(File file, HashSet<ResourcesString> strings) {
+    private Resources(File file, HashSet<ResourcesString> strings, String remoteUrl) {
         mFile = file;
         mStrings = strings;
         mSavedChanges = file.isFile();
+        mRemoteUrl = remoteUrl;
 
         // Keep track of the unsaved strings not to iterate over the list to count them
         mUnsavedIDs = new HashSet<>();
@@ -123,6 +145,10 @@ public class Resources implements Iterable<ResourcesString> {
         return "";
     }
 
+    public String getRemoteUrl() {
+        return mRemoteUrl;
+    }
+
     //endregion
 
     //region Updating (setting) content
@@ -186,6 +212,11 @@ public class Resources implements Iterable<ResourcesString> {
 
     // Determines whether the file was ever modified or not (any of its strings were modified)
     public boolean wasModified() { return mModified; }
+
+    public boolean forceSave() {
+        mSavedChanges = false;
+        return save();
+    }
 
     // If there are unsaved changes, saves the file
     // If the file was saved successfully or there were no changes to save, returns true

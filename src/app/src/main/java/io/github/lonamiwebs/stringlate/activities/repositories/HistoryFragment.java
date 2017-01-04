@@ -44,8 +44,8 @@ public class HistoryFragment extends Fragment {
         mRepositoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String[] ownerRepo = ((String)adapterView.getItemAtPosition(i)).split("/");
-                launchTranslateActivity(new RepoHandler(getContext(), ownerRepo[0], ownerRepo[1]));
+                RepoHandler repo = (RepoHandler)adapterView.getItemAtPosition(i);
+                launchTranslateActivity(repo);
             }
         });
 
@@ -76,7 +76,7 @@ public class HistoryFragment extends Fragment {
     RepoHandler.ChangeListener changeListener = new RepoHandler.ChangeListener() {
         @Override
         public void onRepositoryCountChanged() {
-            ArrayList<String> repositories = RepoHandler.listRepositories(getContext(), false);
+            ArrayList<RepoHandler> repositories = RepoHandler.listRepositories(getContext());
             Collections.sort(repositories);
 
             if (repositories.isEmpty()) {

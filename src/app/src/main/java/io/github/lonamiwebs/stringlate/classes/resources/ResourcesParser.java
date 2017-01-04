@@ -1,5 +1,6 @@
 package io.github.lonamiwebs.stringlate.classes.resources;
 
+import android.util.Pair;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -34,6 +35,7 @@ public class ResourcesParser {
     private final static String ID = "name";
     private final static String TRANSLATABLE = "translatable";
     private final static String MODIFIED = "modified";
+    private final static String REMOTE_PATH = "remote";
 
     private final static boolean DEFAULT_TRANSLATABLE = true;
     private final static boolean DEFAULT_MODIFIED = false;
@@ -42,7 +44,7 @@ public class ResourcesParser {
 
     //region Xml -> Resources
 
-    public static HashSet<ResourcesString> parseFromXml(InputStream in)
+    public static Pair<HashSet<ResourcesString>, String> parseFromXml(InputStream in)
             throws XmlPullParserException, IOException {
 
         try {
@@ -58,13 +60,14 @@ public class ResourcesParser {
         }
     }
 
-    // Reads the <resources> tag and returns a list of its <string> tags
-    private static HashSet<ResourcesString> readResources(XmlPullParser parser)
+    private static Pair<HashSet<ResourcesString>, String> readResources(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
         HashSet<ResourcesString> strings = new HashSet<>();
 
         parser.require(XmlPullParser.START_TAG, ns, RESOURCES);
+        String remotePath = parser.getAttributeValue(null, REMOTE_PATH);
+
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG)
                 continue;
@@ -79,7 +82,8 @@ public class ResourcesParser {
             else
                 skip(parser);
         }
-        return strings;
+
+        return new Pair<>(strings, remotePath);
     }
 
     // Reads a <string name="...">...</string> tag from the xml.
@@ -202,6 +206,7 @@ public class ResourcesParser {
         try {
             serializer.setOutput(out, "UTF-8");
             serializer.startTag(ns, RESOURCES);
+            serializer.attribute(ns, REMOTE_PATH, resources.getRemoteUrl());
 
             for (ResourcesString rs : resources) {
                 if (!rs.hasContent())

@@ -25,4 +25,5 @@ android {
 dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
+    compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.2.201411120430-r'
 }

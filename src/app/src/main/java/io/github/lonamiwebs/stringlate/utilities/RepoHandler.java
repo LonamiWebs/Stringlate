@@ -3,10 +3,7 @@ package io.github.lonamiwebs.stringlate.utilities;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.support.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,7 +11,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,42 +19,44 @@ import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
+import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
-import io.github.lonamiwebs.stringlate.settings.Settings;
+import io.github.lonamiwebs.stringlate.settings.RepoSettings;
 
 // Class used to inter-operate with locally saved GitHub "repositories"
 // What is stored are simply the strings.xml file under a tree directory structure:
 /*
-owner1/
-       repo1/
-             strings.xml
-             strings-es.xml
-       repo2/
-             ...
-owner2/
-       ...
+.
+└── git_url_hash
+    ├── default
+    │   ├── arrays.xml
+    │   └── strings.xml
+    ├── es
+    │   ├── arrays.xml
+    │   └── strings.xml
+    ├── …
+    │   └── …
+    └── info.json
 * */
-public class RepoHandler extends Settings {
+public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Members
 
     private final Context mContext;
-    private final String mOwner, mRepo;
+    private final RepoSettings mSettings;
 
     private final File mRoot;
 
     private final Pattern mValuesLocalePattern; // Match locale from "res/values-(...)/strings.xml"
-    private final Pattern mLocalesPattern; // Match locale from "strings-(...).xml"
     private final ArrayList<String> mLocales;
 
     private static final String BASE_DIR = "repos";
-    private static final String RAW_FILE_URL = "https://raw.githubusercontent.com/%s/%s/master/%s";
 
     private static final String GITHUB_REPO_URL = "https://github.com/%s/%s";
 
     public static final String DEFAULT_LOCALE = "default";
 
-    private static final String SETTINGS_FORMAT = "io.github.lonamiwebs.stringlate.repo.%s.%s";
+    private static final String SETTINGS_FORMAT = "io.github.lonamiwebs.stringlate.repo.%s";
 
     //endregion
 
@@ -89,21 +87,36 @@ public class RepoHandler extends Settings {
     //region Constructors
 
     public static RepoHandler fromBundle(Context context, Bundle bundle) {
-        return new RepoHandler(context, bundle.getString("owner"), bundle.getString("repo"));
+        return new RepoHandler(context, bundle.getString("giturl"));
     }
 
-    public RepoHandler(Context context, String owner, String repo) {
-        super(context, String.format(SETTINGS_FORMAT, owner, repo));
-        mContext = context;
-        mOwner = owner;
-        mRepo = repo;
+    public RepoHandler(Context context, String owner, String repository) {
+        this(context, GitWrapper.buildGitHubUrl(owner, repository));
+    }
 
-        mRoot = new File(mContext.getFilesDir(), BASE_DIR+"/"+mOwner+"/"+mRepo);
+    public RepoHandler(Context context, String gitUrl) {
+        mContext = context;
+        gitUrl = GitWrapper.getGitUri(gitUrl);
+
+        mRoot = new File(mContext.getFilesDir(), BASE_DIR+"/"+getId(gitUrl));
+        mSettings = new RepoSettings(mRoot);
+        mSettings.setGitUrl(gitUrl);
 
         mValuesLocalePattern = Pattern.compile(
                 "res/values(?:-([\\w-]+))?/strings\\.xml");
 
-        mLocalesPattern = Pattern.compile("strings(?:-([\\w-]+))?\\.xml");
+        mLocales = new ArrayList<>();
+        loadLocales();
+    }
+
+    private RepoHandler(Context context, File root) {
+        mContext = context;
+        mRoot = root;
+        mSettings = new RepoSettings(mRoot);
+
+        mValuesLocalePattern = Pattern.compile(
+                "res/values(?:-([\\w-]+))?/strings\\.xml");
+
         mLocales = new ArrayList<>();
         loadLocales();
     }
@@ -113,15 +126,18 @@ public class RepoHandler extends Settings {
     //region Utilities
 
     // Retrieves the File object for the given locale
-    private File getResourcesFile(String locale) {
-        if (locale == null || locale.equals(DEFAULT_LOCALE))
-            return new File(mRoot, "strings.xml");
-        else
-            return new File(mRoot, "strings-"+locale+".xml");
+    private File getResourcesFile(@NonNull String locale) {
+        return new File(mRoot, locale+"/strings.xml");
+    }
+
+    public boolean hasDefaultLocale() {
+        return hasLocale(DEFAULT_LOCALE);
     }
 
     // Determines whether a given locale is saved or not
-    public boolean hasLocale(String locale) { return getResourcesFile(locale).isFile(); }
+    private boolean hasLocale(@NonNull String locale) {
+        return getResourcesFile(locale).isFile();
+    }
 
     // Determines whether any file has been modified,
     // i.e. it is not the original downloaded file any more.
@@ -137,15 +153,22 @@ public class RepoHandler extends Settings {
     public boolean isEmpty() { return mLocales.isEmpty(); }
 
     // Deletes the repository erasing its existence from Earth. Forever. (Unless added again)
-    public void delete() {
+    public boolean delete() {
+        boolean ok = true;
         for (File file : mRoot.listFiles())
-            file.delete();
+            ok &= file.delete();
 
-        mRoot.delete();
-        if (mRoot.getParentFile().listFiles().length == 0)
-            mRoot.getParentFile().delete();
-
+        ok &= mRoot.delete();
         notifyRepositoryCountChanged();
+        return ok;
+    }
+
+    private File getTempCloneDir() {
+        return new File(mContext.getCacheDir(), "tmp_clone");
+    }
+
+    private static String getId(String gitUrl) {
+        return Integer.toHexString(gitUrl.hashCode());
     }
 
     //endregion
@@ -157,11 +180,10 @@ public class RepoHandler extends Settings {
     private void loadLocales() {
         mLocales.clear();
         if (mRoot.isDirectory()) {
-            for (File f : mRoot.listFiles()) {
-                String path = f.getAbsolutePath();
-                Matcher m = mLocalesPattern.matcher(path);
-                if (m.find())
-                    mLocales.add(m.group(1) == null ? DEFAULT_LOCALE : m.group(1));
+            for (File localeDir : mRoot.listFiles()) {
+                if (localeDir.isDirectory()) {
+                    mLocales.add(localeDir.getName());
+                }
             }
         }
         Collections.sort(mLocales, new Comparator<String>() {
@@ -184,6 +206,7 @@ public class RepoHandler extends Settings {
         if (hasLocale(locale))
             return true;
 
+        // TODO Set the remote path… somehow
         Resources resources = Resources.fromFile(getResourcesFile(locale));
         if (resources == null || !resources.save())
             return false;
@@ -204,138 +227,115 @@ public class RepoHandler extends Settings {
     //region Downloading locale files
 
     public void syncResources(ProgressUpdateCallback callback, boolean keepChanges) {
-        scanStringsXml(callback, keepChanges);
+        cloneRepository(callback, keepChanges);
     }
 
-    // Step 1: Scans the current repository to find strings.xml files
-    //         If any file is found, its remote path and locale name is added to a list,
-    //         and the Step 2. is called (downloadLocales).
-    private void scanStringsXml(final ProgressUpdateCallback callback, final boolean keepChanges) {
+    // Step 1: Temporary clone the GitHub repository
+    private void cloneRepository(final ProgressUpdateCallback callback, final boolean keepChanges) {
+        callback.onProgressUpdate(
+                mContext.getString(R.string.cloning_repo),
+                mContext.getString(R.string.cloning_repo_long));
+
+        new AsyncTask<Void, Void, File>() {
+            @Override
+            protected File doInBackground(Void... params) {
+                File dir = getTempCloneDir();
+                GitWrapper.deleteRepo(dir); // Don't care, it's temp and it can't exist on cloning
+                GitWrapper.cloneRepo(mSettings.getGitUrl(), getTempCloneDir());
+                return dir;
+            }
+
+            @Override
+            protected void onPostExecute(File clonedDir) {
+                scanResources(clonedDir, keepChanges, callback);
+            }
+        }.execute();
+    }
+
+    private void scanResources(final File clonedDir, final boolean keepChanges, final ProgressUpdateCallback callback) {
         callback.onProgressUpdate(
                 mContext.getString(R.string.scanning_repository),
                 mContext.getString(R.string.scanning_repository_long));
 
-        // We want to find files on the owner/repo repository
-        // containing 'resources' ('<resources>') on them and the filename
-        // being 'strings.xml'. Some day Java will have named parameters...
-        new AsyncTask<Void, Void, JSONObject>() {
+        new AsyncTask<Void, Void, ArrayList<File>>() {
             @Override
-            protected JSONObject doInBackground(Void... params) {
-                return GitHub.gFindFiles(mOwner, mRepo, "resources", "strings.xml");
+            protected ArrayList<File> doInBackground(Void... params) {
+                return GitWrapper.searchAndroidResources(clonedDir);
             }
 
             @Override
-            protected void onPostExecute(JSONObject result) {
-                ArrayList<String> remotePaths = new ArrayList<>();
-                ArrayList<String> locales = new ArrayList<>();
-                try {
-                    JSONArray items = result.getJSONArray("items");
-                    for (int i = 0; i < items.length(); i++) {
-                        JSONObject item = items.getJSONObject(i);
-                        Matcher m = mValuesLocalePattern.matcher(item.getString("path"));
-                        if (m.find()) {
-                            remotePaths.add(item.getString("path"));
-                            locales.add(m.group(1) == null ? DEFAULT_LOCALE : m.group(1));
+            protected void onPostExecute(ArrayList<File> foundResources) {
+                if (foundResources.size() == 0) {
+                    GitWrapper.deleteRepo(clonedDir); // Clean resources
+                    callback.onProgressFinished(
+                            mContext.getString(R.string.no_strings_found), false);
+                } else {
+                    copyResources(clonedDir, foundResources, keepChanges, callback);
+                }
+            }
+        }.execute();
+    }
+
+    private void copyResources(final File clonedDir, final ArrayList<File> foundResources,
+                               final boolean keepChanges, final ProgressUpdateCallback callback) {
+        callback.onProgressUpdate(
+                mContext.getString(R.string.copying_res),
+                mContext.getString(R.string.copying_res_long));
+
+        // Iterate over all the found resources
+        for (File clonedFile : foundResources) {
+            Matcher m = mValuesLocalePattern.matcher(clonedFile.getAbsolutePath());
+
+            // Ensure that we can tell the locale from the path (otherwise it's invalid)
+            if (m.find()) {
+
+                // Determine the locale, and the final output file (we may have changes there)
+                String locale = m.group(1) == null ? DEFAULT_LOCALE : m.group(1);
+                File outputFile = getResourcesFile(locale);
+
+                // Load in memory the new cloned file, to also ensure it's OK
+                Resources clonedResources = Resources.fromFile(clonedFile, clonedDir);
+                if (clonedResources != null) {
+                    // It's a valid file
+                    if (keepChanges) {
+                        // Overwrite our changes, if any
+                        Resources oldResources = Resources.fromFile(outputFile);
+                        if (oldResources != null) {
+                            for (ResourcesString rs : oldResources) {
+                                if (rs.wasModified())
+                                    clonedResources.setContent(rs.getId(), rs.getContent());
+                            }
                         }
                     }
-                    if (remotePaths.size() == 0) {
-                        callback.onProgressFinished(
-                                mContext.getString(R.string.no_strings_found), false);
+                    // Save to keep our remote url
+                    clonedResources.forceSave();
+
+                    // Now that we're done, move the file to its destination
+                    if (outputFile.getParentFile().isDirectory()) {
+                        if (outputFile.isFile())
+                            outputFile.delete();
                     } else {
-                        downloadLocales(remotePaths, locales, keepChanges, callback);
+                        outputFile.getParentFile().mkdirs();
                     }
-                } catch (JSONException e) {
-                    callback.onProgressFinished(
-                            mContext.getString(R.string.error_parsing_json), false);
+                    clonedFile.renameTo(outputFile);
                 }
             }
-        }.execute();
-    }
-
-    // Step 2: Given the remote paths of the strings.xml files,
-    //         download them to our local "repository".
-    private void downloadLocales(final ArrayList<String> remotePaths,
-                                 final ArrayList<String> locales,
-                                 final boolean keepChanges,
-                                 final ProgressUpdateCallback callback) {
-        callback.onProgressUpdate(
-                mContext.getString(R.string.downloading_strings_locale, 0, remotePaths.size()),
-                mContext.getString(R.string.downloading_to_translate));
-
-        new AsyncTask<Void, Integer, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                for (int i = 0; i < remotePaths.size(); i++) {
-                    publishProgress(i);
-                    downloadLocale(remotePaths.get(i), locales.get(i), keepChanges);
-                }
-                saveRemotePaths(remotePaths);
-                return null;
-            }
-
-            @Override
-            protected void onProgressUpdate(Integer... values) {
-                int i = values[0];
-                callback.onProgressUpdate(
-                        mContext.getString(R.string.downloading_strings_locale, i+1, remotePaths.size()),
-                        mContext.getString(R.string.downloading_strings_locale_description, locales.get(i)));
-
-                super.onProgressUpdate(values);
-            }
-
-            @Override
-            protected void onPostExecute(Void v) {
-                loadLocales();
-                callback.onProgressFinished(null, true);
-                notifyRepositoryCountChanged();
-                super.onPostExecute(v);
-            }
-        }.execute();
-    }
-
-    // Downloads a single locale file to our local "repository"
-    public void downloadLocale(String remotePath, String locale, boolean keepChanges) {
-        final String urlString = String.format(RAW_FILE_URL, mOwner, mRepo, remotePath);
-        final File outputFile = getResourcesFile(locale);
-
-        if (keepChanges) {
-            final ArrayList<ResourcesString> strings = new ArrayList<>();
-            // Load in memory all the previous resource strings for this locale.
-            // After the remote file has been downloaded, add our modifications
-            // to this new file and save it again, so our changes are conserved.
-            Resources resources = Resources.fromFile(outputFile);
-            if (resources != null) {
-                for (ResourcesString rs : resources) {
-                    if (rs.wasModified())
-                        strings.add(rs);
-                }
-            }
-
-            FileDownloader.downloadFile(urlString, outputFile);
-
-            // Now load the remote file from the repository
-            // and set the modified contents from the old file
-            resources = Resources.fromFile(outputFile);
-            if (resources != null) {
-                for (ResourcesString rs : strings) {
-                    // Perhaps the remote files equal our modified content
-                    // In that case, .setContent() will do nothing and the
-                    // new string will remain as non-modified
-                    resources.setContent(rs.getId(), rs.getContent());
-                }
-                resources.save();
-            }
-        } else {
-            // Don't keep any change. Simply download the remote file
-            FileDownloader.downloadFile(urlString, outputFile);
         }
+
+        GitWrapper.deleteRepo(clonedDir); // Clean resources
+        notifyRepositoryCountChanged();
+        callback.onProgressFinished(null, true);
     }
 
     //endregion
 
     //region Loading resources
 
-    public Resources loadResources(String locale) {
+    public Resources loadDefaultResources() {
+        return Resources.fromFile(getResourcesFile(DEFAULT_LOCALE));
+    }
+
+    public Resources loadResources(@NonNull String locale) {
         return Resources.fromFile(getResourcesFile(locale));
     }
 
@@ -355,7 +355,7 @@ public class RepoHandler extends Settings {
         if (!hasLocale(locale))
             return false;
 
-        File defaultFile = getResourcesFile(null);
+        File defaultFile = getResourcesFile(DEFAULT_LOCALE);
         if (!defaultFile.isFile())
             return false;
 
@@ -369,49 +369,18 @@ public class RepoHandler extends Settings {
 
     //region Static repository listing
 
-    // Lists all the owners under the base directory
-    public static ArrayList<String> listOwners(Context context) {
-        ArrayList<String> owners = new ArrayList<>();
+    public static ArrayList<RepoHandler> listRepositories(Context context) {
+        ArrayList<RepoHandler> repositories = new ArrayList<>();
 
         File root = new File(context.getFilesDir(), BASE_DIR);
-        if (root.isDirectory())
-            for (File f : root.listFiles())
-                if (f.isDirectory())
-                    owners.add(f.getName());
-
-        return owners;
-    }
-
-    // Lists all the repositories of the given owner
-    public static ArrayList<String> listRepositories(Context context, String owner) {
-        ArrayList<String> repositories = new ArrayList<>();
-
-        File root = new File(context.getFilesDir(), BASE_DIR+"/"+owner);
-        if (root.isDirectory())
-            for (File f : root.listFiles())
-                if (f.isDirectory())
-                    repositories.add(f.getName());
-
-        return repositories;
-    }
-
-    // Lists all the repositories of all the owners under the base directory
-    // and returns a list to their URLs at GitHub
-    public static ArrayList<String> listRepositories(Context context, boolean prefixUrl) {
-        ArrayList<String> repositories = new ArrayList<>();
-        if (prefixUrl) {
-            for (String owner : listOwners(context)) {
-                for (String repository : listRepositories(context, owner)) {
-                    repositories.add(String.format(GITHUB_REPO_URL, owner, repository));
-                }
-            }
-        } else {
-            for (String owner : listOwners(context)) {
-                for (String repository : listRepositories(context, owner)) {
-                    repositories.add(owner+"/"+repository);
+        if (root.isDirectory()) {
+            for (File f : root.listFiles()) {
+                if (f.isDirectory()) {
+                    repositories.add(new RepoHandler(context, f));
                 }
             }
         }
+
         return repositories;
     }
 
@@ -419,64 +388,13 @@ public class RepoHandler extends Settings {
 
     //region Settings
 
-    //region Settings keys
-
-    private static final String KEY_LAST_LOCALE = "last_locale";
-    private static final String KEY_REMOTE_PATHS = "remote_paths";
-
-    private static final String DEFAULT_LAST_LOCALE = null;
-    private static final HashSet<String> DEFAULT_REMOTE_PATHS = new HashSet<>();
-
-    //endregion
-
-    //region Getting settings
-
     public String getLastLocale() {
-        return getSettings().getString(KEY_LAST_LOCALE, DEFAULT_LAST_LOCALE);
+        return mSettings.getLastLocale();
     }
-
-    public String getRemotePath(String locale) {
-        String defaultPath = null;
-        for (String path : getSettings().getStringSet(KEY_REMOTE_PATHS, DEFAULT_REMOTE_PATHS)) {
-            Matcher m = mValuesLocalePattern.matcher(path);
-            if (m.find()) {
-                // This should never fail actually
-                String pathLocale = m.group(1);
-                if (pathLocale == null)
-                    defaultPath = path;
-                else if (pathLocale.equals(locale))
-                    return path;
-            }
-        }
-
-        // Backwards compatibility with version 0.9.4.1
-        // The defaultPath should never be null up to this point if everything went okay
-        // TODO Remove this on version 1.0 (or similar) and update calls to this method
-        // -- Begin of backwards-compatibility code
-        if (defaultPath == null) {
-            return null;
-        }
-        // -- End of backwards-compatibility code
-        return defaultPath.replace("/values/", String.format("/values-%s/", locale));
-    }
-
-    //endregion
-
-    //region Setting settings
 
     public void setLastLocale(String locale) {
-        editSettings().putString(KEY_LAST_LOCALE, locale).apply();
+        mSettings.setLastLocale(locale);
     }
-
-    private void saveRemotePaths(ArrayList<String> remotePaths) {
-        HashSet<String> paths = new HashSet<>();
-        for (String path : remotePaths)
-            paths.add(path);
-
-        editSettings().putStringSet(KEY_REMOTE_PATHS, paths).apply();
-    }
-
-    //endregion
 
     //endregion
 
@@ -484,18 +402,33 @@ public class RepoHandler extends Settings {
 
     @Override
     public String toString() {
-        return mOwner+"/"+mRepo;
+        // https:// part is a bit redundant, also omit the `.git` part
+        String url = mSettings.getGitUrl();
+        int end = url.endsWith(".git") ? url.lastIndexOf('.') : url.length();
+        return url.substring(url.indexOf("://") + 3, end);
     }
 
     public String toString(boolean onlyRepo) {
-        return onlyRepo ? mRepo : toString();
+        String result = toString();
+        if (onlyRepo)
+            return result.substring(result.lastIndexOf('/')+1);
+        else
+            return result;
     }
 
     public Bundle toBundle() {
         Bundle result = new Bundle();
-        result.putString("owner", mOwner);
-        result.putString("repo", mRepo);
+        result.putString("giturl", mSettings.getGitUrl());
         return result;
+    }
+
+    //endregion
+
+    //region Interface implementations
+
+    @Override
+    public int compareTo(@NonNull RepoHandler o) {
+        return toString().compareTo(o.toString());
     }
 
     //endregion

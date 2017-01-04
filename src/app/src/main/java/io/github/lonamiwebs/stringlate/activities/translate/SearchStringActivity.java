@@ -80,7 +80,7 @@ public class SearchStringActivity extends AppCompatActivity {
 
     private void refreshResourcesListView(String filter) {
         ArrayList<ResourcesTranslation> rts = ResourcesTranslation.fromPairs(
-                mRepo.loadResources(null), mRepo.loadResources(mLocale), filter);
+                mRepo.loadDefaultResources(), mRepo.loadResources(mLocale), filter);
 
         mResourcesListView.setAdapter(new ResourcesTranslationAdapter(
                 this, R.layout.item_resource_list, rts));

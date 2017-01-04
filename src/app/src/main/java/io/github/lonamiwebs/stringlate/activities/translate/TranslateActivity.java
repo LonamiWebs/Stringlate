@@ -110,8 +110,8 @@ public class TranslateActivity extends AppCompatActivity {
         mRepo = RepoHandler.fromBundle(this, getIntent().getBundleExtra(EXTRA_REPO));
         setTitle(mRepo.toString());
 
-        if (mRepo.hasLocale(null)) {
-            mDefaultResources = mRepo.loadResources(null);
+        if (mRepo.hasDefaultLocale()) {
+            mDefaultResources = mRepo.loadDefaultResources();
             loadLocalesSpinner();
             checkTranslationVisibility();
         } else {
@@ -302,7 +302,7 @@ public class TranslateActivity extends AppCompatActivity {
                 if (description != null)
                     Toast.makeText(getApplicationContext(), description, Toast.LENGTH_SHORT).show();
 
-                mDefaultResources = mRepo.loadResources(null);
+                mDefaultResources = mRepo.loadDefaultResources();
                 loadLocalesSpinner();
             }
         }, keepChanges);
@@ -426,9 +426,9 @@ public class TranslateActivity extends AppCompatActivity {
     // Exports the currently selected locale resources to a GitHub Pull Request
     private void exportToPullRequest() {
         if (!isLocaleSelected(true)) return;
-        String remotePath = mRepo.getRemotePath(mSelectedLocale);
+        String remotePath = mSelectedLocaleResources.getRemoteUrl();
         if (remotePath == null) {
-            // Compatibility code
+            // TODO Try to guess the path based on the defaul resources; it probably was created
             Toast.makeText(this, R.string.sync_required, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -741,7 +741,8 @@ public class TranslateActivity extends AppCompatActivity {
         mRepo.setLastLocale(locale);
 
         if (locale != null) {
-            mLocaleSpinner.setSelection(getItemIndex(mLocaleSpinner, locale));
+            int i = getItemIndex(mLocaleSpinner, LocaleString.getDisplay(locale));
+            mLocaleSpinner.setSelection(i);
             mSelectedLocaleResources = mRepo.loadResources(locale);
         } else {
             mSelectedLocaleResources = null;

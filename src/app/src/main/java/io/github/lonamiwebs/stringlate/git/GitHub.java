@@ -53,20 +53,6 @@ public class GitHub {
         return !result.isEmpty();
     }
 
-    // Looks for 'query' in 'owner/repo' repository's files and
-    // returns a JSON with the files for which 'filename' also matches
-    public static JSONObject gFindFiles(String owner, String repo, String query, String filename) {
-        try {
-            return new JSONObject(WebUtils.performCall(
-                    gGetUrl("search/code?q=%s+repo:%s/%s+filename:%s",
-                            query, owner, repo, filename), WebUtils.GET));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public static JSONObject gCreateGist(String description, boolean isPublic,
                                    String filename, String content, String token) {
         try {

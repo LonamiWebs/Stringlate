@@ -5,14 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
@@ -50,7 +46,6 @@ public class AddNewRepositoryFragment extends Fragment {
 
         mOwnerEditText = (AutoCompleteTextView)rootView.findViewById(R.id.ownerEditText);
         mRepositoryEditText = (AutoCompleteTextView)rootView.findViewById(R.id.repositoryEditText);
-        mOwnerEditText.addTextChangedListener(onOwnerChanged);
 
         mUrlEditText = (AutoCompleteTextView)rootView.findViewById(R.id.urlEditText);
 
@@ -69,21 +64,7 @@ public class AddNewRepositoryFragment extends Fragment {
             setUrl(scheme+":"+fullPath);
         }
 
-        changeListener.onRepositoryCountChanged();
-
         return rootView;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        RepoHandler.addChangeListener(changeListener);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        RepoHandler.removeChangeListener(changeListener);
     }
 
     //endregion
@@ -156,18 +137,6 @@ public class AddNewRepositoryFragment extends Fragment {
 
     //endregion
 
-    //region Listeners
-
-    RepoHandler.ChangeListener changeListener = new RepoHandler.ChangeListener() {
-        @Override
-        public void onRepositoryCountChanged() {
-            loadOwnerAutocomplete();
-            loadUrlAutocomplete();
-        }
-    };
-
-    //endregion
-
     //region Checking and adding a new local "repository"
 
     // Step 1
@@ -222,46 +191,6 @@ public class AddNewRepositoryFragment extends Fragment {
             }
         }, false);
         // false, do not keep any previous modification (there should not be any)
-    }
-
-    //endregion
-
-    //region Local repository handling
-
-    private TextWatcher onOwnerChanged = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            loadRepositoryAutocomplete();
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) { }
-    };
-
-    private void loadOwnerAutocomplete() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_dropdown_item_1line, RepoHandler.listOwners(getContext()));
-
-        mOwnerEditText.setAdapter(adapter);
-    }
-
-    private void loadRepositoryAutocomplete() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                RepoHandler.listRepositories(getContext(), mOwnerEditText.getText().toString()));
-
-        mRepositoryEditText.setAdapter(adapter);
-    }
-
-    private void loadUrlAutocomplete() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                RepoHandler.listRepositories(getContext(), true));
-
-        mUrlEditText.setAdapter(adapter);
     }
 
     //endregion
