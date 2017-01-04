@@ -53,13 +53,14 @@ public class GitWrapper {
         return url;
     }
 
-    public static void cloneRepo(String uri, File cloneTo) {
+    public static boolean cloneRepo(String uri, File cloneTo) {
         Git result = null;
 
         try {
             result = Git.cloneRepository().setURI(uri).setDirectory(cloneTo)
                     .setBranch(MASTER_BRANCH).setBare(false).setRemote(REMOTE_NAME)
                     .setNoCheckout(false).setCloneAllBranches(false).setCloneSubmodules(false).call();
+            return true;
         } catch (InvalidRemoteException e) {
             e.printStackTrace();
         } catch (GitAPIException e) {
@@ -71,6 +72,7 @@ public class GitWrapper {
                 result.close();
             }
         }
+        return false;
     }
 
     public static void deleteRepo(File dir) {

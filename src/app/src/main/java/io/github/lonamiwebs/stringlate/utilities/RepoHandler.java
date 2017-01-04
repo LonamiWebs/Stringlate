@@ -51,12 +51,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     private final ArrayList<String> mLocales;
 
     private static final String BASE_DIR = "repos";
-
-    private static final String GITHUB_REPO_URL = "https://github.com/%s/%s";
-
     public static final String DEFAULT_LOCALE = "default";
-
-    private static final String SETTINGS_FORMAT = "io.github.lonamiwebs.stringlate.repo.%s";
 
     //endregion
 
@@ -241,13 +236,18 @@ public class RepoHandler implements Comparable<RepoHandler> {
             protected File doInBackground(Void... params) {
                 File dir = getTempCloneDir();
                 GitWrapper.deleteRepo(dir); // Don't care, it's temp and it can't exist on cloning
-                GitWrapper.cloneRepo(mSettings.getGitUrl(), getTempCloneDir());
-                return dir;
+                if (GitWrapper.cloneRepo(mSettings.getGitUrl(), getTempCloneDir()))
+                    return dir;
+                else
+                    return null;
             }
 
             @Override
             protected void onPostExecute(File clonedDir) {
-                scanResources(clonedDir, keepChanges, callback);
+                if (clonedDir == null)
+                    callback.onProgressFinished(mContext.getString(R.string.invalid_repo), false);
+                else
+                    scanResources(clonedDir, keepChanges, callback);
             }
         }.execute();
     }

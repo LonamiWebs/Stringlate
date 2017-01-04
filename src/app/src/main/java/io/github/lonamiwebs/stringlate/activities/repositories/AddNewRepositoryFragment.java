@@ -3,7 +3,6 @@ package io.github.lonamiwebs.stringlate.activities.repositories;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,9 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
@@ -33,8 +29,6 @@ public class AddNewRepositoryFragment extends Fragment {
     private AutoCompleteTextView mOwnerEditText, mRepositoryEditText;
     private AutoCompleteTextView mUrlEditText;
 
-    private Pattern mOwnerProjectPattern; // Match user and repository name from a GitHub url
-
     //endregion
 
     //region Initialization
@@ -48,9 +42,6 @@ public class AddNewRepositoryFragment extends Fragment {
         mRepositoryEditText = (AutoCompleteTextView)rootView.findViewById(R.id.repositoryEditText);
 
         mUrlEditText = (AutoCompleteTextView)rootView.findViewById(R.id.urlEditText);
-
-        mOwnerProjectPattern = Pattern.compile(
-                "(?:https?://github\\.com/|git@github.com:)([\\w-]+)/([\\w-]+)(?:/.*|\\.git)?");
 
         // Set button events
         rootView.findViewById(R.id.discoverButton).setOnClickListener(onDiscoverClick);
@@ -85,31 +76,21 @@ public class AddNewRepositoryFragment extends Fragment {
             String owner, repository;
             String url;
 
-            owner = repository = null;
             url = mUrlEditText.getText().toString().trim();
+            owner = mOwnerEditText.getText().toString().trim();
+            repository = mRepositoryEditText.getText().toString().trim();
 
-            // If an URL was entered, try to extract the owner and repository
-            if (!url.isEmpty()) {
-                Matcher m = mOwnerProjectPattern.matcher(url);
-                if (m.matches()) {
-                    owner = m.group(1).trim();
-                    repository = m.group(2).trim();
-                }
-            }
-            // If we don't have any owner (and thus repository) yet, retrieve it from the EditTexts
-            if (owner == null) {
-                owner = mOwnerEditText.getText().toString().trim();
-                repository = mRepositoryEditText.getText().toString().trim();
-            }
-
-            if (owner.isEmpty() || repository.isEmpty()) {
+            if (url.isEmpty() && (owner.isEmpty() || repository.isEmpty())) {
                 Toast.makeText(getContext(), R.string.repo_or_url_required,
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Determine whether we already have this repo or if it's a new one
-                RepoHandler repo = new RepoHandler(getContext(), owner, repository);
+                RepoHandler repo = url.isEmpty() ?
+                        new RepoHandler(getContext(), owner, repository) :
+                        new RepoHandler(getContext(), url);
+
                 if (repo.isEmpty())
-                    checkRepositoryOK(owner, repository);
+                    scanDownloadStrings(repo);
                 else
                     launchTranslateActivity(repo);
             }
@@ -139,41 +120,14 @@ public class AddNewRepositoryFragment extends Fragment {
 
     //region Checking and adding a new local "repository"
 
-    // Step 1
-    private void checkRepositoryOK(final String owner, final String repository) {
-        final ProgressDialog progress = ProgressDialog.show(getContext(),
-                getString(R.string.checking_repo_ok),
-                getString(R.string.checking_repo_ok_long), true);
-
+    private void scanDownloadStrings(final RepoHandler repo) {
         if (!GitHub.gCanCall()) {
             Toast.makeText(getContext(),
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        new AsyncTask<Void, Void, Boolean>() {
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                return GitHub.gCheckOwnerRepoOK(owner, repository);
-            }
-
-            @Override
-            protected void onPostExecute(Boolean ok) {
-                if (ok) {
-                    scanDownloadStrings(owner, repository, progress);
-                } else {
-                    Toast.makeText(getContext(),
-                            R.string.invalid_repo, Toast.LENGTH_SHORT).show();
-                    progress.dismiss();
-                }
-            }
-        }.execute();
-    }
-
-    // Steps 2 a 3
-    private void scanDownloadStrings(final String owner, final String repository,
-                                     final ProgressDialog progress) {
-        final RepoHandler repo = new RepoHandler(getContext(), owner, repository);
+        final ProgressDialog progress = ProgressDialog.show(getContext(), "…", "…", true);
         repo.syncResources(new ProgressUpdateCallback() {
             @Override
             public void onProgressUpdate(String title, String description) {

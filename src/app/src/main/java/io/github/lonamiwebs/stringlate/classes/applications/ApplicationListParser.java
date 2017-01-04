@@ -1,6 +1,5 @@
 package io.github.lonamiwebs.stringlate.classes.applications;
 
-import android.util.Log;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -12,7 +11,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.regex.Pattern;
 
 public class ApplicationListParser {
     // We don't use namespaces
@@ -24,10 +22,6 @@ public class ApplicationListParser {
     private static final String DESCRIPTION = "summary";
     private static final String ICON = "icon";
     private static final String SOURCE_URL = "source";
-
-    // We will only parse https GitHub urls
-    private static final Pattern GITHUB_PATTERN =
-            Pattern.compile("^https?://github.com/([\\w-]+)/([\\w-]+)(?:/.*)?$");
 
     //region Xml -> ApplicationsList
 
@@ -67,14 +61,8 @@ public class ApplicationListParser {
                 continue;
 
             String name = parser.getName();
-            if (name.equals("application")) {
-                Application app = readApplication(parser);
-                if (GITHUB_PATTERN.matcher(app.getSourceCodeUrl()).matches()) {
-                    apps.add(app);
-                } else if (app.getSourceCodeUrl().contains("github")) {
-                    Log.w("LONAMIWEBS", "Why didn't this pass?: "+app.getSourceCodeUrl());
-                }
-            }
+            if (name.equals("application"))
+                apps.add(readApplication(parser));
             else
                 skip(parser);
         }
