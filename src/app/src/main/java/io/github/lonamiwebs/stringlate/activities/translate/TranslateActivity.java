@@ -336,7 +336,7 @@ public class TranslateActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String locale = et.getText().toString().trim();
+                        String locale = LocaleString.sanitizeLocale(et.getText().toString());
                         if (LocaleString.isValid(locale)) {
                             if (mRepo.createLocale(locale)) {
                                 loadLocalesSpinner();
