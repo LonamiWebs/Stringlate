@@ -131,7 +131,6 @@
     <string name="is_anonymous_gist">Este es un Gist anónimo</string>
     <string name="issue_description">Descripción de la incidencia (se reemplazará %x con la traducción):</string>
     <string name="issue_title">Título de la incidencia:</string>
-    <string name="pr_login_required">Necesita haber iniciado sesión en GitHub para crear una Pull Request.</string>
     <string name="selected_branch_colon">Rama elegida:</string>
     <string name="share_url">Compartir Url</string>
     <string name="something_went_wrong">Algo fue mal.</string>

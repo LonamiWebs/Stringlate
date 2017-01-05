@@ -130,7 +130,6 @@
     <string name="issue_description">議題描述文字（「%x」會被替換為翻譯資料）：</string>
     <string name="issue_title">議題標題：</string>
     <string name="login_to_github">登入到 GitHub</string>
-    <string name="pr_login_required">您必須登入到 GitHub 以建立一個變更拉取請求。</string>
     <string name="request_auth">請求授權</string>
     <string name="selected_branch_colon">選取版控庫分支：</string>
     <string name="share_url">分享 URL</string>

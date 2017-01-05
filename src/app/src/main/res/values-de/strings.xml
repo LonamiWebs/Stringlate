@@ -126,7 +126,6 @@
     <string name="commit_message">Übernahmenachricht</string>
     <string name="commit_changes">Änderungen übernehmen</string>
     <string name="sync_required">Bitte synchronisieren Sie und versuchen Sie es erneut.</string>
-    <string name="pr_login_required">Sie müssen bei GitHub angemeldet sein, um einen Pull Request zu erstellen.</string>
     <string name="commit_msg_empty">Übernahmenachricht darf nicht leer sein.</string>
     <string name="forking_repo">Repository wird geforkt…</string>
     <string name="forking_repo_long">Die Ausgangsrepository wird geforkt, damit sie Schreibzugriff haben.</string>

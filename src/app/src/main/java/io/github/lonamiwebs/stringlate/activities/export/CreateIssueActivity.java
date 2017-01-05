@@ -12,6 +12,8 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InvalidObjectException;
+
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
@@ -90,7 +92,12 @@ public class CreateIssueActivity extends AppCompatActivity {
         new AsyncTask<String, Void, JSONObject>() {
             @Override
             protected JSONObject doInBackground(String... desc) {
-                return GitHub.gCreateIssue(mRepo, desc[0], desc[1], mSettings.getGitHubToken());
+                try {
+                    return GitHub.gCreateIssue(mRepo, desc[0], desc[1], mSettings.getGitHubToken());
+                } catch (InvalidObjectException ignored) {
+                    // This wasn't a GitHub repository. How did we get here?
+                    return null;
+                }
             }
 
             @Override
@@ -107,6 +114,8 @@ public class CreateIssueActivity extends AppCompatActivity {
 
     private void onIssueCreated(JSONObject jsonObject) {
         try {
+            if (jsonObject == null) throw new JSONException("Invalid GitHub repository.");
+
             String postedUrl = jsonObject.getString("html_url");
             finish();
             CreateUrlSuccessActivity.launchIntent(

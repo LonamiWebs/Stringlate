@@ -126,7 +126,6 @@
     <string name="commit_message">Message du commit</string>
     <string name="commit_changes">Créer un commit avec les changements</string>
     <string name="sync_required">Veuillez synchroniser et réessayer.</string>
-    <string name="pr_login_required">Vous devez être connectés à Github pour effectuer une pull request.</string>
     <string name="commit_msg_empty">Le message de commit ne peut être vide.</string>
     <string name="forking_repo">Création du fork…</string>
     <string name="forking_repo_long">Création d\'un fork du dépôt d\'origine pour avoir les droits en écriture…</string>

@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InvalidObjectException;
 import java.util.ArrayList;
 
 import io.github.lonamiwebs.stringlate.R;
@@ -179,7 +180,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                         String owner = fork.getJSONObject("owner").getString("login");
                         String repoName = fork.getString("name");
                         repo = new RepoHandler(ctx, owner, repoName);
-                    } catch (JSONException e) {
+                    } catch (JSONException | InvalidObjectException e) {
                         e.printStackTrace();
                         publishProgress(new PUData(getString(R.string.fork_failed)));
                         return null;
@@ -195,7 +196,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
 
                     commitResult = GitHub.gCreateCommitFile(token, repo, branch,
                             mXmlContent, mRemotePath, commitMessage);
-                } catch (JSONException e) {
+                } catch (JSONException | InvalidObjectException e) {
                     publishProgress(new PUData(getString(R.string.commit_failed)));
                     e.printStackTrace();
                     return null;
@@ -215,8 +216,12 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                         title = commitMessage;
                         body = "";
                     }
-                    return GitHub.gCreatePullRequest(token, mRepo, title,
-                            mUsername+":"+branch, branch, body);
+                    try {
+                        return GitHub.gCreatePullRequest(token, mRepo, title,
+                                mUsername + ":" + branch, branch, body);
+                    } catch (InvalidObjectException ignored) {
+                        return null;
+                    }
                 }
                 else
                     return commitResult;

@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
 
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 import io.github.lonamiwebs.stringlate.utilities.WebUtils;
@@ -86,7 +87,8 @@ public class GitHub {
     }
 
     public static JSONObject gCreateIssue(RepoHandler repo,
-                                    String title, String description, String token) {
+                                          String title, String description, String token)
+            throws InvalidObjectException {
         try {
             JSONObject params = new JSONObject();
 
@@ -94,7 +96,7 @@ public class GitHub {
             params.put("body", description);
 
             return new JSONObject(WebUtils.performCall(gGetUrl("repos/%s/issues?access_token=%s",
-                    repo.toString(), token), params));
+                    repo.toOwnerRepo(), token), params));
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -112,10 +114,11 @@ public class GitHub {
         }
     }
 
-    public static JSONArray gGetCollaborators(String token, RepoHandler repo) {
+    public static JSONArray gGetCollaborators(String token, RepoHandler repo)
+            throws InvalidObjectException {
         try {
             return new JSONArray(WebUtils.performCall(gGetUrl(
-                    "repos/%s/collaborators?access_token=%s", repo.toString(), token), WebUtils.GET));
+                    "repos/%s/collaborators?access_token=%s", repo.toOwnerRepo(), token), WebUtils.GET));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -146,7 +149,7 @@ public class GitHub {
             }
             // If we're not a collaborator, then we obviously don't have permission
             return new Pair<>(username, false);
-        } catch (JSONException e) {
+        } catch (JSONException | InvalidObjectException e) {
             e.printStackTrace();
             return new Pair<>(username, false);
         }
@@ -155,27 +158,29 @@ public class GitHub {
     public static JSONArray gGetBranches(final RepoHandler repo) {
         try {
             return new JSONArray(WebUtils.performCall(gGetUrl(
-                    "repos/%s/branches", repo.toString()), WebUtils.GET));
-        } catch (JSONException e) {
+                    "repos/%s/branches", repo.toOwnerRepo()), WebUtils.GET));
+        } catch (JSONException | InvalidObjectException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static JSONArray gGetCommits(final String token, final RepoHandler repo) {
+    public static JSONArray gGetCommits(final String token, final RepoHandler repo)
+            throws InvalidObjectException {
         try {
             return new JSONArray(WebUtils.performCall(gGetUrl(
-                    "repos/%s/commits?access_token=%s", repo.toString(), token), WebUtils.GET));
+                    "repos/%s/commits?access_token=%s", repo.toOwnerRepo(), token), WebUtils.GET));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static JSONObject gForkRepository(final String token, final RepoHandler repo) {
+    public static JSONObject gForkRepository(final String token, final RepoHandler repo)
+            throws InvalidObjectException {
         try {
             JSONObject result = new JSONObject(WebUtils.performCall(gGetUrl(
-                    "repos/%s/forks?access_token=%s", repo.toString(), token), WebUtils.POST));
+                    "repos/%s/forks?access_token=%s", repo.toOwnerRepo(), token), WebUtils.POST));
 
             // "Forking a Repository happens asynchronously."
             // One way to know when forking is done is to fetch the list of commits for the fork.
@@ -202,7 +207,8 @@ public class GitHub {
     // base = Branch's name where the changes will be pulled into. This should exist already.
     public static JSONObject gCreatePullRequest(final String token, final RepoHandler originalRepo,
                                                 final String title, final String head,
-                                                final String base, final String body) {
+                                                final String base, final String body)
+            throws InvalidObjectException {
         try {
             JSONObject params = new JSONObject();
             params.put("title", title);
@@ -212,7 +218,7 @@ public class GitHub {
                 params.put("body", body);
 
             return new JSONObject(WebUtils.performCall(gGetUrl(
-                    "repos/%s/pulls?access_token=%s", originalRepo.toString(), token), params));
+                    "repos/%s/pulls?access_token=%s", originalRepo.toOwnerRepo(), token), params));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -223,13 +229,14 @@ public class GitHub {
     public static JSONObject gCreateCommitFile(final String token, final RepoHandler repo,
                                                final String branch, final String content,
                                                final String filename, final String commitMessage)
-            throws JSONException {
+            throws JSONException, InvalidObjectException {
         final String tokenQuery = "?access_token="+token;
+        final String ownerRepo = repo.toOwnerRepo();
 
         // Step 1. Get a reference to HEAD (GET /repos/:owner/:repo/git/refs/:ref)
         // https://developer.github.com/v3/git/refs/#get-a-reference
         JSONObject head = new JSONObject(WebUtils.performCall(
-                gGetUrl("repos/%s/git/refs/heads/%s%s", repo.toString(), branch, tokenQuery), WebUtils.GET));
+                gGetUrl("repos/%s/git/refs/heads/%s%s", ownerRepo, branch, tokenQuery), WebUtils.GET));
 
         // Step 2. Grab the commit that HEAD points to (GET /repos/:owner/:repo/git/commits/:sha)
         // https://developer.github.com/v3/git/commits/#get-a-commit
@@ -245,7 +252,7 @@ public class GitHub {
         newBlob.put("encoding", "utf-8");
 
         JSONObject blob = new JSONObject(WebUtils.performCall(
-                gGetUrl("repos/%s/git/blobs%s", repo.toString(), tokenQuery), newBlob));
+                gGetUrl("repos/%s/git/blobs%s", ownerRepo, tokenQuery), newBlob));
 
         // Step 4. Get a hold of the tree that the commit points to (GET /repos/:owner/:repo/git/trees/:sha)
         // https://developer.github.com/v3/git/trees/#get-a-tree
@@ -274,7 +281,7 @@ public class GitHub {
         }
 
         JSONObject createdTree = new JSONObject(WebUtils.performCall(
-                gGetUrl("repos/%s/git/trees%s", repo.toString(), tokenQuery), newTree));
+                gGetUrl("repos/%s/git/trees%s", ownerRepo, tokenQuery), newTree));
 
         // Step 6. Create a new commit (POST /repos/:owner/:repo/git/commits)
         // https://developer.github.com/v3/git/commits/#create-a-commit
@@ -290,7 +297,7 @@ public class GitHub {
         newCommit.put("tree", createdTree.getString("sha"));
 
         JSONObject repliedNewCommit = new JSONObject(WebUtils.performCall(
-                gGetUrl("repos/%s/git/commits%s", repo.toString(), tokenQuery), newCommit));
+                gGetUrl("repos/%s/git/commits%s", ownerRepo, tokenQuery), newCommit));
 
         // Step 7. Update HEAD (PATCH /repos/:owner/:repo/git/refs/:ref)
         // https://developer.github.com/v3/git/refs/#update-a-reference
@@ -298,7 +305,7 @@ public class GitHub {
         patch.put("sha", repliedNewCommit.getString("sha"));
 
         return new JSONObject(WebUtils.performCall(
-                gGetUrl("repos/%s/git/refs/heads/%s%s", repo.toString(), branch, tokenQuery),
+                gGetUrl("repos/%s/git/refs/heads/%s%s", ownerRepo, branch, tokenQuery),
                 WebUtils.PATCH, patch));
     }
 

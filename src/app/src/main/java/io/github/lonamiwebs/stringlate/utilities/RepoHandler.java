@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InvalidObjectException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,6 +54,9 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     private static final String BASE_DIR = "repos";
     public static final String DEFAULT_LOCALE = "default";
+
+    private static final Pattern OWNER_REPO = Pattern.compile(
+            "(?:https?://github\\.com/|git@github.com:)([\\w-]+)/([\\w-]+)(?:/.*|\\.git)?");
 
     //endregion
 
@@ -395,6 +399,10 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mSettings.setLastLocale(locale);
     }
 
+    public boolean isGitHubRepository() {
+        return OWNER_REPO.matcher(mSettings.getGitUrl()).matches();
+    }
+
     //endregion
 
     //region To other objects
@@ -418,6 +426,15 @@ public class RepoHandler implements Comparable<RepoHandler> {
             return result.substring(result.lastIndexOf('/')+1);
         else
             return result;
+    }
+
+    public String toOwnerRepo() throws InvalidObjectException {
+        Matcher m = OWNER_REPO.matcher(mSettings.getGitUrl());
+        if (m.matches())
+            return String.format("%s/%s", m.group(1), m.group(2));
+        else
+            throw new InvalidObjectException(
+                    "Only repositories with a GitHub url can be converted to owner and repository");
     }
 
     public Bundle toBundle() {

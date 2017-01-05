@@ -130,6 +130,11 @@ public class TranslateActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_translate, menu);
 
+        // Only GitHub repositories are valid ones when exporting to issue or pull request
+        boolean isGitHubRepository = mRepo.isGitHubRepository();
+        menu.findItem(R.id.exportToIssue).setVisible(isGitHubRepository);
+        menu.findItem(R.id.exportToPr).setVisible(isGitHubRepository);
+
         mShowTranslatedMenuItem = menu.findItem(R.id.showTranslatedCheckBox);
         mShowTranslated = mShowTranslatedMenuItem.isChecked();
         return true;
@@ -416,6 +421,10 @@ public class TranslateActivity extends AppCompatActivity {
     // Exports the currently selected locale resources to a GitHub issue
     private void exportToIssue() {
         if (!isLocaleSelected(true)) return;
+        if (!new AppSettings(this).hasGitHubAuthorization()) {
+            Toast.makeText(this, R.string.login_required, Toast.LENGTH_LONG).show();
+            return;
+        }
         Intent intent = new Intent(this, CreateIssueActivity.class);
         intent.putExtra(EXTRA_REPO, mRepo.toBundle());
         intent.putExtra(EXTRA_XML_CONTENT, mRepo.applyDefaultTemplate(mSelectedLocale));
@@ -433,7 +442,7 @@ public class TranslateActivity extends AppCompatActivity {
             return;
         }
         if (!new AppSettings(this).hasGitHubAuthorization()) {
-            Toast.makeText(this, R.string.pr_login_required, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.login_required, Toast.LENGTH_LONG).show();
             return;
         }
         if (!GitHub.gCanCall()) {

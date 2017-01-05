@@ -132,7 +132,7 @@
     <string name="commit_message">Commit message</string>
     <string name="commit_changes">Commit changes</string>
     <string name="sync_required">Please synchronize and try again.</string>
-    <string name="pr_login_required">You need to be logged in to GitHub to create a pull request.</string>
+    <string name="login_required">You need to be logged in to GitHub to do that.</string>
     <string name="commit_msg_empty">Commit message cannot be empty.</string>
     <string name="forking_repo">Forking repository…</string>
     <string name="forking_repo_long">The original repository is being forked for you to have write access…</string>

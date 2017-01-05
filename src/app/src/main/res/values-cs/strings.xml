@@ -126,7 +126,6 @@
     <string name="commit_message">Zpráva ke commitu.</string>
     <string name="commit_changes">Provést commit změn.</string>
     <string name="sync_required">Spusťte prosím synchronizaci a zkuste to znovu.</string>
-    <string name="pr_login_required">Abyste mohli vytvořit pull požadavek, musíte být přihlášeni na GitHub.</string>
     <string name="commit_msg_empty">Zpráva ke commitu nemůže být prázdná.</string>
     <string name="forking_repo">Vytváření forku repozitáře…</string>
     <string name="forking_repo_long">Vytváří se fork původního repozitáře, abyste měli právo k zápisu…</string>
