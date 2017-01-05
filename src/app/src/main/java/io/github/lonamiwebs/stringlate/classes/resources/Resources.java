@@ -37,7 +37,7 @@ public class Resources implements Iterable<ResourcesString> {
     }
 
     public static Resources fromFile(File file, File rootDir) {
-        String remoteUrl = null;
+        String remoteUrl = "";
         if (rootDir != null) {
             remoteUrl = file.getAbsolutePath().substring(rootDir.getAbsolutePath().length());
             if (remoteUrl.startsWith("/"))
@@ -225,6 +225,9 @@ public class Resources implements Iterable<ResourcesString> {
             return true;
 
         try {
+            if (!mFile.getParentFile().isDirectory())
+                mFile.getParentFile().mkdirs();
+
             FileOutputStream out = new FileOutputStream(mFile);
             mSavedChanges = ResourcesParser.parseToXml(this, out);
             mModified = true;
@@ -243,6 +246,7 @@ public class Resources implements Iterable<ResourcesString> {
         return mFile.isFile();
     }
 
+    // TODO Should this delete the parent directory? Not if there were more .xml files though…
     public void delete() {
         mFile.delete();
     }
