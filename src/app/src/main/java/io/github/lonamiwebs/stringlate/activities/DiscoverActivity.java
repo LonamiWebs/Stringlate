@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -82,7 +83,7 @@ public class DiscoverActivity extends AppCompatActivity {
 
         mApplicationList = new ApplicationList(this);
         if (mApplicationList.loadIndexXml()) {
-            refreshListView(null);
+            refreshListView("");
         } else {
             mNoRepositoryTextView.setText(getString(
                     R.string.apps_repo_not_downloaded, getString(R.string.update_applications)));
@@ -134,12 +135,12 @@ public class DiscoverActivity extends AppCompatActivity {
                 boolean allow = !item.isChecked();
                 item.setChecked(allow);
                 mSettings.setDownloadIconsAllowed(allow);
-                refreshListView(null);
+                refreshListView("");
                 return true;
             // Clearing the icons cache
             case R.id.clearIconsCache:
                 String cleared = FileCache.getHumanReadableSize(
-                        new ImageLoader(this, false).clearCache());
+                        this, new ImageLoader(this, false).clearCache());
 
                 Toast.makeText(this,
                         getString(R.string.icon_cache_cleared, cleared), Toast.LENGTH_SHORT).show();
@@ -156,7 +157,7 @@ public class DiscoverActivity extends AppCompatActivity {
 
     //region Update index
 
-    void updateApplicationsIndex() {
+    private void updateApplicationsIndex() {
         // There must be a non-empty title if we want it to be set later
         final ProgressDialog progress = ProgressDialog.show(this, "…", "…", true);
 
@@ -171,7 +172,7 @@ public class DiscoverActivity extends AppCompatActivity {
             public void onProgressFinished(String description, boolean status) {
                 progress.dismiss();
                 if (status) {
-                    refreshListView(null);
+                    refreshListView("");
                 }
                 else
                     Toast.makeText(getApplicationContext(),
@@ -184,7 +185,7 @@ public class DiscoverActivity extends AppCompatActivity {
 
     //region Update list view
 
-    void refreshListView(String filter) {
+    private void refreshListView(@NonNull String filter) {
         // Keep the reference of the new internal slice array list
         ArrayList<Application> appsSlice = mApplicationList.newSlice(filter);
 
@@ -200,12 +201,11 @@ public class DiscoverActivity extends AppCompatActivity {
             mNoRepositoryTextView.setVisibility(GONE);
             mApplicationListView.setVisibility(VISIBLE);
             mApplicationListView.setAdapter(new ApplicationAdapter(
-                    this, R.layout.item_application_list, appsSlice,
-                    mSettings.isDownloadIconsAllowed()));
+                    this, appsSlice, mSettings.isDownloadIconsAllowed()));
         }
     }
 
-    void loadMore() {
+    private void loadMore() {
         // We first need to cast to HeaderViewListAdapter since we're using a footer view
         ApplicationAdapter adapter = (ApplicationAdapter)
                 ((HeaderViewListAdapter)mApplicationListView.getAdapter()).getWrappedAdapter();
@@ -215,7 +215,7 @@ public class DiscoverActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-    void updateShowMoreVisibility(boolean anyAppLeft) {
+    private void updateShowMoreVisibility(boolean anyAppLeft) {
         mShowMoreButton.setVisibility(anyAppLeft ? VISIBLE : GONE);
     }
 

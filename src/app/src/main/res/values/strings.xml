@@ -116,7 +116,6 @@
     <string name="create_issue">Create issue</string>
     <string name="creating_issue_ellipsis">Creating issue…</string>
     <string name="creating_issue_long_ellipsis">Trying to create the issue on GitHub…</string>
-    <string name="issue_title">Issue title:</string>
     <string name="added_x_translation" translatable="false">Added %s (%s) translation</string>
     <string name="added_x_translation_spam" translatable="false">Updated %s (%s) translation\n\nCommit made via Stringlate</string>
     <string name="issue_description">Issue description (%x will be replaced with the translation):</string>
@@ -148,4 +147,7 @@
     <string name="cloning_repo_long">Temporary cloning the remote repository… This might take a while depending on the repository.</string>
     <string name="copying_res">Copying resources…</string>
     <string name="copying_res_long">Validating and copying resources to their final location…</string>
+    <string name="bytes_size_format" translatable="false">%.2f %s</string>
+    <string name="issue_title_colon">Issue title:</string>
+    <string name="issue_title">Issue title</string>
 </resources>

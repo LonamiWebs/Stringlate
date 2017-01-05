@@ -56,7 +56,7 @@ public class ResourcesParser {
         } finally {
             try {
                 in.close();
-            } catch (IOException e) { }
+            } catch (IOException ignored) { }
         }
     }
 
@@ -130,7 +130,6 @@ public class ResourcesParser {
 
         return Boolean.parseBoolean(value);
     }
-
     // Reads the inner xml of a tag before moving to the next one
     // Original source: stackoverflow.com/a/16069754/4759433 by @Maarten
     private static String getInnerXml(XmlPullParser parser)
@@ -308,7 +307,7 @@ public class ResourcesParser {
                         handleSingleTagLine(line, m, resources, writer);
                     } else {
                         // Harder case, we need to handle many tags in a single line
-                        handleMultitagLine(line, resources, writer);
+                        handleMultiTagLine(line, resources, writer);
                     }
                 } else {
                     // Match not found, perhaps this is a tag which spans across multiple lines
@@ -347,9 +346,7 @@ public class ResourcesParser {
             // Should never fail
             String content = resources.getContent(nameMatcher.group(1));
 
-            if (!translatable || content == null || content.isEmpty()) {
-                // Do not add this line to the final result
-            } else {
+            if (translatable && content != null && !content.isEmpty()) {
                 // We have the content and we're the replacement should be made
                 // so perform the replacement and add this line
                 int contentStart = m.start() + m.group(1).length();
@@ -360,10 +357,11 @@ public class ResourcesParser {
                 writer.write(line, contentEnd, line.length()-contentEnd);
                 writer.write('\n'); // New line character was consumed by .readLine()
             }
+            // else do not add this line to the final result
         }
     }
 
-    private static void handleMultitagLine(String line, Resources resources, BufferedWriter writer)
+    private static void handleMultiTagLine(String line, Resources resources, BufferedWriter writer)
             throws IOException {
         int lastIndex = 0; // From where we need to copy until the next tag
 
@@ -389,15 +387,14 @@ public class ResourcesParser {
                 // Always write up to this point
                 writer.write(line, lastIndex, tagStart-lastIndex);
 
-                if (!translatable || content == null || content.isEmpty()) {
-                    // Do not add this tag to the final result
-                } else {
+                if (translatable && content != null && !content.isEmpty()) {
                     // We have the content and we're the replacement should be made
                     // so perform the replacement and add this line
                     writer.write(line, tagStart, contentStart-tagStart);
                     writeSanitize(writer, content);
                     writer.write(line, contentEnd, tagEnd-contentEnd);
                 }
+                // else do not add this tag to the final result
 
                 lastIndex = tagEnd;
             }

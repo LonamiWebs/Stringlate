@@ -28,7 +28,6 @@ public class CreateGistActivity extends AppCompatActivity {
     private AppSettings mSettings;
 
     private String mXmlContent;
-    private String mFilename;
 
     private EditText mDescriptionEditText;
     private CheckBox mIsPublicCheckBox;
@@ -54,10 +53,10 @@ public class CreateGistActivity extends AppCompatActivity {
         // Retrieve the strings.xml content to be exported
         Intent intent = getIntent();
         mXmlContent = intent.getStringExtra(EXTRA_XML_CONTENT);
-        mFilename = intent.getStringExtra(EXTRA_FILENAME);
+        String filename = intent.getStringExtra(EXTRA_FILENAME);
 
-        mFilenameEditText.setText(mFilename);
-        setTitle(getString(R.string.posting_gist_title, mFilename));
+        mFilenameEditText.setText(filename);
+        setTitle(getString(R.string.posting_gist_title, filename));
 
         // Check whether the Gist can be non-anonymous
         boolean notAuth = !mSettings.hasGitHubAuthorization();
@@ -83,7 +82,7 @@ public class CreateGistActivity extends AppCompatActivity {
             mFilenameEditText.setError(getString(R.string.error_gist_filename_empty));
             return;
         }
-        if (!GitHub.gCanCall()) {
+        if (GitHub.gCannotCall()) {
             Toast.makeText(getApplicationContext(),
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
             return;
@@ -98,7 +97,7 @@ public class CreateGistActivity extends AppCompatActivity {
         final boolean isAnonymous = mIsAnonymousCheckBox.isChecked() ||
                 !mSettings.hasGitHubAuthorization();
 
-        final String token = isAnonymous ? null : mSettings.getGitHubToken();
+        final String token = isAnonymous ? "" : mSettings.getGitHubToken();
         new AsyncTask<Void, Void, JSONObject>() {
             @Override
             protected JSONObject doInBackground(Void... params) {

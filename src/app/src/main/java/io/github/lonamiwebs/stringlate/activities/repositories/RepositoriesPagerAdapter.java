@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import io.github.lonamiwebs.stringlate.R;
 
-public class RepositoriesPagerAdapter extends FragmentPagerAdapter {
+class RepositoriesPagerAdapter extends FragmentPagerAdapter {
 
     //region Members
 

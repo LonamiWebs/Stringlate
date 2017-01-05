@@ -1,5 +1,6 @@
 package io.github.lonamiwebs.stringlate.git;
 
+import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import org.json.JSONArray;
@@ -36,29 +37,21 @@ public class GitHub {
     // Determines whether a call to GitHub can be made or not
     // This is equivalent to checking if the user is connected to the internet
 
-    public static boolean gCanCall() {
+    public static boolean gCannotCall() {
         // See http://stackoverflow.com/a/27312494/4759433
         Runtime runtime = Runtime.getRuntime();
         try {
             Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
-            return ipProcess.waitFor() == 0;
+            return ipProcess.waitFor() != 0;
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
 
-        return false;
-    }
-
-    // Determines whether the given combination of owner/repo is OK or not
-    public static boolean gCheckOwnerRepoOK(String owner, String repo) {
-        String result = WebUtils.performCall(
-                gGetUrl("repos/%s/%s", owner, repo), WebUtils.GET);
-
-        return !result.isEmpty();
+        return true;
     }
 
     public static JSONObject gCreateGist(String description, boolean isPublic,
-                                   String filename, String content, String token) {
+                                   String filename, String content, @NonNull String token) {
         try {
             JSONObject params = new JSONObject();
 
@@ -75,7 +68,7 @@ public class GitHub {
 
             params.put("files", filesObject);
 
-            if (token == null || token.isEmpty())
+            if (token.isEmpty())
                 return new JSONObject(WebUtils.performCall(gGetUrl("gists"), params));
             else
                 return new JSONObject(WebUtils.performCall(gGetUrl("gists?access_token="+token), params));
@@ -104,7 +97,7 @@ public class GitHub {
         }
     }
 
-    public static JSONObject gGetUserInfo(String token) {
+    private static JSONObject gGetUserInfo(String token) {
         try {
             return new JSONObject(WebUtils.performCall(gGetUrl(
                     "user?access_token=%s", token), WebUtils.GET));
@@ -114,7 +107,7 @@ public class GitHub {
         }
     }
 
-    public static JSONArray gGetCollaborators(String token, RepoHandler repo)
+    private static JSONArray gGetCollaborators(String token, RepoHandler repo)
             throws InvalidObjectException {
         try {
             return new JSONArray(WebUtils.performCall(gGetUrl(
@@ -165,7 +158,7 @@ public class GitHub {
         }
     }
 
-    public static JSONArray gGetCommits(final String token, final RepoHandler repo)
+    private static JSONArray gGetCommits(final String token, final RepoHandler repo)
             throws InvalidObjectException {
         try {
             return new JSONArray(WebUtils.performCall(gGetUrl(

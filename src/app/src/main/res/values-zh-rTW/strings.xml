@@ -128,7 +128,7 @@
     <string name="github_yes_logged_long">您早已經登入 GitHub。沒有更多操作可以進行。如果部份功能沒辦法正常運作，您可以隨時再次輕觸按鈕以重新進行授權程序。</string>
     <string name="is_anonymous_gist">這是個匿名 Gist</string>
     <string name="issue_description">議題描述文字（「%x」會被替換為翻譯資料）：</string>
-    <string name="issue_title">議題標題：</string>
+    <string name="issue_title_colon">議題標題：</string>
     <string name="login_to_github">登入到 GitHub</string>
     <string name="request_auth">請求授權</string>
     <string name="selected_branch_colon">選取版控庫分支：</string>
@@ -136,4 +136,5 @@
     <string name="something_went_wrong">某個東西出問題了。</string>
     <string name="sync_required">請同步並再試一次。</string>
     <string name="url_copied">URL 已經複製到您的剪貼簿中。</string>
+    <string name="issue_title">議題標題</string>
 </resources>

@@ -4,12 +4,14 @@ import android.content.Context;
 
 import java.io.File;
 
+import io.github.lonamiwebs.stringlate.R;
+
 // Original code at https://github.com/thest1/LazyList (http://stackoverflow.com/a/3068012/4759433)
 public class FileCache {
 
     //region Members
 
-    private File mCacheDir;
+    private final File mCacheDir;
 
     //endregion
 
@@ -46,7 +48,7 @@ public class FileCache {
         return cleared;
     }
 
-    public static String getHumanReadableSize(long sizeInBytes) {
+    public static String getHumanReadableSize(Context ctx, long sizeInBytes) {
         String[] suffixes = new String[] {
                 // Some day phones will have peta bytes, and then I'll laugh
                 "bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"
@@ -58,7 +60,7 @@ public class FileCache {
             i++;
         }
 
-        return String.format("%.2f %s", size, suffixes[i]);
+        return ctx.getString(R.string.bytes_size_format, size, suffixes[i]);
     }
 
     //endregion

@@ -113,7 +113,7 @@
     <string name="create_issue">Créer un rapport de bug</string>
     <string name="creating_issue_ellipsis">Création du rapport de bug…</string>
     <string name="creating_issue_long_ellipsis">Tentative de création du rapport de bug sur Github…</string>
-    <string name="issue_title">Titre du rapport de bug&#160;:</string>
+    <string name="issue_title_colon">Titre du rapport de bug&#160;:</string>
     <string name="issue_description">Description du rapport de bug (%x sera remplacé par la description)&#160;:</string>
     <string name="url_copied">L\'url a été copiée dans le presse papier.</string>
     <string name="share_url">Partager l\'url</string>
@@ -136,4 +136,5 @@
     <string name="creating_pr">Création de la pull request…</string>
     <string name="creating_pr_long">Création de la pull request sur le dépôt d\'origine…</string>
     <string name="something_went_wrong">Une erreur s\'est produite.</string>
+    <string name="issue_title">Titre du rapport de bug&#160;</string>
 </resources>

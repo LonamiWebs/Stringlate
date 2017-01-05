@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -27,20 +28,20 @@ public class ApplicationList implements Iterable<Application> {
 
     //region Members
 
-    public final static String FDROID_REPO_URL = "https://f-droid.org/repo";
+    final static String FDROID_REPO_URL = "https://f-droid.org/repo";
     private final static String FDROID_INDEX_URL = FDROID_REPO_URL+"/index.jar";
 
-    private File mRoot;
-    private Context mContext;
+    private final File mRoot;
+    private final Context mContext;
 
     private static final String BASE_DIR = "index";
 
     private ArrayList<Application> mApplications;
-    private HashSet<String> mInstalledPackages;
+    private final HashSet<String> mInstalledPackages;
 
     // Keep track of a filtered slice, so ListViews can have a "Show more"
     private ArrayList<Application> mApplicationsSlice;
-    private String mSliceFilter;
+    @NonNull private String mSliceFilter;
     private int mLastSliceIndex;
 
     //endregion
@@ -50,6 +51,7 @@ public class ApplicationList implements Iterable<Application> {
     public ApplicationList(Context context) {
         mApplications = new ArrayList<>();
         mContext = context;
+        mSliceFilter = "";
 
         mRoot = new File(mContext.getCacheDir(), BASE_DIR);
 
@@ -66,9 +68,9 @@ public class ApplicationList implements Iterable<Application> {
     //region Getters
 
     // Gets a new slice with the given filter for the application name
-    public ArrayList<Application> newSlice(String filter) {
+    public ArrayList<Application> newSlice(@NonNull String filter) {
         mApplicationsSlice = new ArrayList<>();
-        mSliceFilter = filter == null ? null : filter.trim().toLowerCase();
+        mSliceFilter = filter.trim().toLowerCase();
         mLastSliceIndex = 0;
 
         return mApplicationsSlice;
@@ -81,7 +83,7 @@ public class ApplicationList implements Iterable<Application> {
             return false;
 
         int end;
-        if (mSliceFilter == null) {
+        if (mSliceFilter.isEmpty()) {
             end = mLastSliceIndex + count;
             if (end >= mApplications.size())
                 end = mApplications.size();

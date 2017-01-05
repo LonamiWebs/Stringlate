@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 // Original code at https://github.com/thest1/LazyList (http://stackoverflow.com/a/3068012/4759433)
-public class MemoryCache {
+class MemoryCache {
 
     //region Constant fields
 
@@ -21,7 +21,7 @@ public class MemoryCache {
 
     //region Members
 
-    private Map<String, Bitmap> mCache;
+    private final Map<String, Bitmap> mCache;
 
     // Memory usage and limit
     private long mUsed;

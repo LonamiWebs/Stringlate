@@ -113,7 +113,7 @@
     <string name="create_issue">Neuen Fall ("Problem") erstellen</string>
     <string name="creating_issue_ellipsis">Fall wird erstellt…</string>
     <string name="creating_issue_long_ellipsis">Versuch, einen Fall auf GitHub zu erstellen…</string>
-    <string name="issue_title">Falltitel:</string>
+    <string name="issue_title_colon">Falltitel:</string>
     <string name="issue_description">Fallbeschreibung (%x wird mit der Übersetzung ersetzt):</string>
     <string name="url_copied">Die URL wurde in die Zwischenablage kopiert.</string>
     <string name="share_url">URL teilen</string>
@@ -136,4 +136,5 @@
     <string name="creating_pr">PR wird erstellt…</string>
     <string name="creating_pr_long">PR wird in der Ausgangsrepository erstellt…</string>
     <string name="something_went_wrong">Etwas ist schiefgelaufen.</string>
+    <string name="issue_title">Falltitel</string>
 </resources>

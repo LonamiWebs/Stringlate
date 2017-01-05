@@ -35,16 +35,16 @@ public class ImageLoader {
 
     //region Members
 
-    private Context mContext;
+    private final Context mContext;
 
-    private MemoryCache mMemoryCache;
-    private FileCache mFileCache;
-    private Map<ImageView, String> mImageViews;
+    private final MemoryCache mMemoryCache;
+    private final FileCache mFileCache;
+    private final Map<ImageView, String> mImageViews;
 
-    private ExecutorService mExecutorService;
-    private Handler mHandler;
+    private final ExecutorService mExecutorService;
+    private final Handler mHandler;
 
-    private boolean mAllowInternetDownload;
+    private final boolean mAllowInternetDownload;
 
     //endregion
 
@@ -170,8 +170,8 @@ public class ImageLoader {
     // We need to run this in a different thread because
     // it may download images from the network
     private class ImageLoaderRunnable implements Runnable {
-        Pair<ImageView, String> mImageToLoad;
-        String mPackageName;
+        final Pair<ImageView, String> mImageToLoad;
+        final String mPackageName;
 
         ImageLoaderRunnable(ImageView imageView, String url, String packageName) {
             mImageToLoad = new Pair<>(imageView, url);

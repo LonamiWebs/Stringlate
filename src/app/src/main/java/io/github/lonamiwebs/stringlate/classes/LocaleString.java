@@ -12,7 +12,7 @@ public class LocaleString {
     final private String mLocaleDisplay;
 
     // Support a locale with any separator (i.e. "zh", "zh-TW", "zh_rTW", "zh/TW")
-    final static Pattern SANITIZE_PATTERN = Pattern.compile(
+    private final static Pattern SANITIZE_PATTERN = Pattern.compile(
             "^(\\w{2})(?:[ -_/]r?(\\w{2}))?$", Pattern.CASE_INSENSITIVE);
 
     public LocaleString(@NonNull String locale) {

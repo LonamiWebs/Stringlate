@@ -56,7 +56,7 @@ public class FileDownloader {
                     output.close();
                 if (input != null)
                     input.close();
-            } catch (IOException e) { }
+            } catch (IOException ignored) { }
             if (connection != null)
                 connection.disconnect();
         }

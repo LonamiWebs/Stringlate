@@ -8,10 +8,10 @@ public class ResourcesTranslation {
 
     //region Members
 
-    private String mResourceId;
+    private final String mResourceId;
 
-    private String mOriginalValue;
-    private String mTranslatedValue;
+    private final String mOriginalValue;
+    private final String mTranslatedValue;
 
     //endregion
 

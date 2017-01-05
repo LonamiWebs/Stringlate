@@ -81,7 +81,7 @@ public class WebUtils {
         return sb.toString();
     }
 
-    public static String getQuery(HashMap<String, String> params) throws UnsupportedEncodingException {
+    private static String getQuery(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
         for (Map.Entry<String, String> entry : params.entrySet()) {

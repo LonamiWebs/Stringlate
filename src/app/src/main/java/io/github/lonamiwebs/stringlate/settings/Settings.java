@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 public abstract class Settings {
     private final SharedPreferences mPrefs;
 
-    protected Settings(Context context, String name) {
+    Settings(Context context, String name) {
         if (name == null) {
             mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         } else {
@@ -15,11 +15,11 @@ public abstract class Settings {
         }
     }
 
-    protected SharedPreferences getSettings() {
+    SharedPreferences getSettings() {
         return mPrefs;
     }
 
-    protected SharedPreferences.Editor editSettings() {
+    SharedPreferences.Editor editSettings() {
         return mPrefs.edit();
     }
 }

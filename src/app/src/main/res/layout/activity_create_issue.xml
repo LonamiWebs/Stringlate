@@ -14,12 +14,13 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/issue_title"/>
+        android:text="@string/issue_title_colon"/>
 
     <EditText
         android:id="@+id/issueTitleEditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:hint="@string/issue_title"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -29,7 +30,8 @@
     <EditText
         android:id="@+id/issueDescriptionEditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:inputType="textCapSentences|textMultiLine"/>
 
     <Button
         android:layout_width="match_parent"

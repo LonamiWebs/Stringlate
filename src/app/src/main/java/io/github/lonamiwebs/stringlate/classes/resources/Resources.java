@@ -1,5 +1,6 @@
 package io.github.lonamiwebs.stringlate.classes.resources;
 
+import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -20,10 +21,10 @@ public class Resources implements Iterable<ResourcesString> {
 
     //region Members
 
-    private File mFile; // Keep track of the original file to be able to save()
-    private HashSet<ResourcesString> mStrings;
-    private HashSet<String> mUnsavedIDs;
-    private String mRemoteUrl;
+    private final File mFile; // Keep track of the original file to be able to save()
+    private final HashSet<ResourcesString> mStrings;
+    private final HashSet<String> mUnsavedIDs;
+    private final String mRemoteUrl;
 
     private boolean mSavedChanges;
     private boolean mModified;
@@ -64,12 +65,12 @@ public class Resources implements Iterable<ResourcesString> {
             try {
                 if (is != null)
                     is.close();
-            } catch (IOException e) { }
+            } catch (IOException ignored) { }
         }
         return null;
     }
 
-    private Resources(File file, HashSet<ResourcesString> strings, String remoteUrl) {
+    private Resources(File file, HashSet<ResourcesString> strings, @NonNull String remoteUrl) {
         mFile = file;
         mStrings = strings;
         mSavedChanges = file.isFile();
@@ -145,7 +146,7 @@ public class Resources implements Iterable<ResourcesString> {
         return "";
     }
 
-    public String getRemoteUrl() {
+    @NonNull public String getRemoteUrl() {
         return mRemoteUrl;
     }
 
@@ -153,12 +154,12 @@ public class Resources implements Iterable<ResourcesString> {
 
     //region Updating (setting) content
 
-    public void setContent(String resourceId, String content) {
+    public void setContent(String resourceId, @NonNull String content) {
         if (resourceId == null || resourceId.isEmpty())
             return;
 
         // If the content is empty (or null), treat it as deleting this ID
-        if (content == null || content.isEmpty()) {
+        if (content.isEmpty()) {
             deleteId(resourceId);
             return;
         }

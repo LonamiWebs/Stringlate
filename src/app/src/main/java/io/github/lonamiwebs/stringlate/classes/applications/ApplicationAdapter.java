@@ -1,6 +1,7 @@
 package io.github.lonamiwebs.stringlate.classes.applications;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +18,16 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class ApplicationAdapter extends ArrayAdapter<Application> {
-    private ImageLoader mImageLoader;
+    private final ImageLoader mImageLoader;
 
-    public ApplicationAdapter(Context context, int resource, List<Application> apps,
+    public ApplicationAdapter(Context context, List<Application> apps,
                               boolean allowInternetDownload) {
-        super(context, resource, apps);
+        super(context, R.layout.item_application_list, apps);
         mImageLoader = new ImageLoader(context, allowInternetDownload);
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    @NonNull
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         Application app = getItem(position);
 
         // This may be the first time we use the recycled view

@@ -1,5 +1,7 @@
 package io.github.lonamiwebs.stringlate.classes.resources;
 
+import android.support.annotation.NonNull;
+
 public class ResourcesString implements Comparable<ResourcesString> {
 
     //region Members
@@ -33,7 +35,7 @@ public class ResourcesString implements Comparable<ResourcesString> {
         return mId;
     }
 
-    public String getContent() {
+    @NonNull public String getContent() {
         return mContent;
     }
 
@@ -41,7 +43,7 @@ public class ResourcesString implements Comparable<ResourcesString> {
         return mContent.length();
     }
 
-    public boolean hasContent() { return mContent != null && !mContent.isEmpty(); }
+    boolean hasContent() { return mContent != null && !mContent.isEmpty(); }
 
     public boolean wasModified() { return mModified; }
 
@@ -51,10 +53,7 @@ public class ResourcesString implements Comparable<ResourcesString> {
     }
 
     @Override
-    public int compareTo(ResourcesString resourcesString) {
-        if (resourcesString == null)
-            return -1;
-
+    public int compareTo(@NonNull ResourcesString resourcesString) {
         return mId.compareTo(resourcesString.mId);
     }
 
@@ -63,7 +62,7 @@ public class ResourcesString implements Comparable<ResourcesString> {
     //region Setters
 
     // Returns true if the content was successfully set
-    public boolean setContent(String content) {
+    boolean setContent(String content) {
         content = content.trim();
         if (!mContent.equals(content)) {
             mContent = content;

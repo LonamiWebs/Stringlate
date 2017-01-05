@@ -113,7 +113,7 @@
     <string name="create_issue">Nahlásit problém</string>
     <string name="creating_issue_ellipsis">Vytváření hlášení…</string>
     <string name="creating_issue_long_ellipsis">Pokus o vytvoření hlášení na GitHubu…</string>
-    <string name="issue_title">Název problému:</string>
+    <string name="issue_title_colon">Název problému:</string>
     <string name="issue_description">Popis problému (%x bude nahrazeno překladem):</string>
     <string name="url_copied">URL byla zkopírována do schránky</string>
     <string name="share_url">Sdílet URL</string>
@@ -136,4 +136,5 @@
     <string name="creating_pr">Vytváření pull požadavku…</string>
     <string name="creating_pr_long">Vytváří se pull požadavek v původním repozitáři…</string>
     <string name="something_went_wrong">Něco se pokazilo.</string>
+    <string name="issue_title">Název problému</string>
 </resources>

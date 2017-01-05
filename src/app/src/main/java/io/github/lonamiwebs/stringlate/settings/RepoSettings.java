@@ -12,7 +12,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashSet;
 
 // We can't quite save the SharedPreferences in a custom path so… use JSON (easier than XML)
 public class RepoSettings {
@@ -23,11 +22,9 @@ public class RepoSettings {
 
     private static final String KEY_GIT_URL = "git_url";
     private static final String KEY_LAST_LOCALE = "last_locale";
-    private static final String KEY_REMOTE_PATHS = "remote_paths";
 
     private static final String DEFAULT_GIT_URL = "";
     private static final String DEFAULT_LAST_LOCALE = null;
-    private static final HashSet<String> DEFAULT_REMOTE_PATHS = new HashSet<>();
 
     //region Constructor
 

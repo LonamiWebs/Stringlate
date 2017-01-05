@@ -82,8 +82,7 @@ public class SearchStringActivity extends AppCompatActivity {
         ArrayList<ResourcesTranslation> rts = ResourcesTranslation.fromPairs(
                 mRepo.loadDefaultResources(), mRepo.loadResources(mLocale), filter);
 
-        mResourcesListView.setAdapter(new ResourcesTranslationAdapter(
-                this, R.layout.item_resource_list, rts));
+        mResourcesListView.setAdapter(new ResourcesTranslationAdapter(this, rts));
     }
 
     //endregion

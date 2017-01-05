@@ -2,7 +2,6 @@ package io.github.lonamiwebs.stringlate.git;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -61,11 +60,7 @@ public class GitWrapper {
                     .setBranch(MASTER_BRANCH).setBare(false).setRemote(REMOTE_NAME)
                     .setNoCheckout(false).setCloneAllBranches(false).setCloneSubmodules(false).call();
             return true;
-        } catch (InvalidRemoteException e) {
-            e.printStackTrace();
         } catch (GitAPIException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (result != null) {
@@ -91,7 +86,7 @@ public class GitWrapper {
         return result;
     }
 
-    public static void searchAndroidResources(File dir, ArrayList<File> result) {
+    private static void searchAndroidResources(File dir, ArrayList<File> result) {
         if (!dir.getName().startsWith(".")) {
             if (dir.isDirectory()) {
                 for (File child : dir.listFiles())

@@ -67,7 +67,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         void onRepositoryCountChanged();
     }
 
-    private static ArrayList<ChangeListener> mChangeListeners = new ArrayList<>();
+    private final static ArrayList<ChangeListener> mChangeListeners = new ArrayList<>();
 
     public static void addChangeListener(ChangeListener listener) {
         mChangeListeners.add(listener);

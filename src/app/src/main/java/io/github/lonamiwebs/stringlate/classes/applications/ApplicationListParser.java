@@ -12,7 +12,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class ApplicationListParser {
+class ApplicationListParser {
     // We don't use namespaces
     private static final String ns = null;
 
@@ -25,7 +25,7 @@ public class ApplicationListParser {
 
     //region Xml -> ApplicationsList
 
-    public static ArrayList<Application> parseFromXml(InputStream in, HashSet<String> installedPackages)
+    static ArrayList<Application> parseFromXml(InputStream in, HashSet<String> installedPackages)
             throws XmlPullParserException, IOException {
 
         try {
@@ -38,14 +38,14 @@ public class ApplicationListParser {
             // Now set which applications are installed on the device
             for (Application app : apps) {
                 if (installedPackages.contains(app.getPackageName()))
-                    app.setInstalled(true);
+                    app.setInstalled();
             }
 
             return apps;
         } finally {
             try {
                 in.close();
-            } catch (IOException e) { }
+            } catch (IOException ignored) { }
         }
     }
 
@@ -139,7 +139,7 @@ public class ApplicationListParser {
 
     //region ApplicationList -> Xml
 
-    public static boolean parseToXml(ApplicationList applications, OutputStream out) {
+    static boolean parseToXml(ApplicationList applications, OutputStream out) {
         XmlSerializer serializer = Xml.newSerializer();
         try {
             serializer.setOutput(out, "UTF-8");

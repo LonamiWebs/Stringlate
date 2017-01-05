@@ -20,7 +20,8 @@
         android:id="@+id/gistDescriptionEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/default_gist_share_description"/>
+        android:text="@string/default_gist_share_description"
+        android:hint="@string/default_gist_share_description"/>
 
     <TextView
         android:layout_width="match_parent"

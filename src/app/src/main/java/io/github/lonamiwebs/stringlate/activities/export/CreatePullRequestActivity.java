@@ -44,7 +44,6 @@ public class CreatePullRequestActivity extends AppCompatActivity {
 
     private RepoHandler mRepo;
     private String mXmlContent;
-    private String mLocale;
     private String mRemotePath;
     private String mUsername;
 
@@ -68,11 +67,11 @@ public class CreatePullRequestActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
         mXmlContent = intent.getStringExtra(EXTRA_XML_CONTENT);
-        mLocale = intent.getStringExtra(EXTRA_LOCALE);
+        String locale = intent.getStringExtra(EXTRA_LOCALE);
         mRemotePath = intent.getStringExtra(EXTRA_REMOTE_PATH);
 
         mCommitMessageEditText.setText(getString(
-                R.string.added_x_translation_spam, mLocale, LocaleString.getDisplay(mLocale)));
+                R.string.added_x_translation_spam, locale, LocaleString.getDisplay(locale)));
 
         checkPermissions();
         checkBranches();
@@ -82,7 +81,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
 
     //region First time setup
 
-    void checkPermissions() {
+    private void checkPermissions() {
         new AsyncTask<Void, Void, Pair<String, Boolean>>() {
             @Override
             protected Pair<String, Boolean> doInBackground(Void... params) {
@@ -102,7 +101,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
         }.execute();
     }
 
-    void checkBranches() {
+    private void checkBranches() {
         new AsyncTask<Void, Void, ArrayList<String>>() {
             @Override
             protected ArrayList<String> doInBackground(Void... params) {

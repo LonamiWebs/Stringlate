@@ -285,7 +285,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Synchronize our local strings.xml files with the remote GitHub repository
     private void updateStrings(boolean keepChanges) {
-        if (!GitHub.gCanCall()) {
+        if (GitHub.gCannotCall()) {
             Toast.makeText(getApplicationContext(),
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
             return;
@@ -436,8 +436,8 @@ public class TranslateActivity extends AppCompatActivity {
     private void exportToPullRequest() {
         if (!isLocaleSelected(true)) return;
         String remotePath = mSelectedLocaleResources.getRemoteUrl();
-        if (remotePath == null) {
-            // TODO Try to guess the path based on the defaul resources; it probably was created
+        if (remotePath.isEmpty()) {
+            // TODO Try to guess the path based on the default resources; it probably was created
             Toast.makeText(this, R.string.sync_required, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -445,7 +445,7 @@ public class TranslateActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.login_required, Toast.LENGTH_LONG).show();
             return;
         }
-        if (!GitHub.gCanCall()) {
+        if (GitHub.gCannotCall()) {
             Toast.makeText(this,
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
             return;
@@ -574,7 +574,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     //region EditText events
 
-    private TextWatcher onTranslationChanged = new TextWatcher() {
+    private final TextWatcher onTranslationChanged = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
@@ -595,7 +595,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     //region Spinner events
 
-    AdapterView.OnItemSelectedListener
+    private final AdapterView.OnItemSelectedListener
             eOnLocaleSelected = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
@@ -619,7 +619,7 @@ public class TranslateActivity extends AppCompatActivity {
         public void onNothingSelected(AdapterView<?> parent) { }
     };
 
-    AdapterView.OnItemSelectedListener
+    private final AdapterView.OnItemSelectedListener
             eOnStringIdSelected = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
@@ -638,7 +638,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Checks whether the translation layout (EditText and previous/next buttons)
     // should be visible (there is at least one non-default locale) or not.
-    void checkTranslationVisibility() {
+    private void checkTranslationVisibility() {
         if (mLocaleSpinner.getCount() == 0) {
             Toast.makeText(this, R.string.add_locale_to_start, Toast.LENGTH_SHORT).show();
             findViewById(R.id.translationLayout).setVisibility(View.GONE);
@@ -647,7 +647,7 @@ public class TranslateActivity extends AppCompatActivity {
         }
     }
 
-    void updateProgress() {
+    private void updateProgress() {
         int unsavedCount;
         if (mSelectedLocaleResources == null) {
             unsavedCount = 0;
@@ -768,7 +768,7 @@ public class TranslateActivity extends AppCompatActivity {
     // Checks whether the current resources are saved or not
     // If they're not, the user is asked to save them first
     // callback.onCallback will be called with FALSE if the operation was CANCELLED
-    void checkResourcesSaved(final Callback<Boolean> callback) {
+    private void checkResourcesSaved(final Callback<Boolean> callback) {
         if (!isLocaleSelected(false)) {
             callback.onCallback(true);
             return;
@@ -813,7 +813,7 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     // Ensures that there is at least a locale selected
-    boolean isLocaleSelected(boolean showWarning) {
+    private boolean isLocaleSelected(boolean showWarning) {
         boolean localeSelected = mSelectedLocaleResources != null;
         if (!localeSelected && showWarning) {
             Toast.makeText(this, R.string.no_locale_selected, Toast.LENGTH_SHORT).show();

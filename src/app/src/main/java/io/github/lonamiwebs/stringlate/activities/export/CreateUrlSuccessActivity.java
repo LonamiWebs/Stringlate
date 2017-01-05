@@ -21,7 +21,7 @@ public class CreateUrlSuccessActivity extends AppCompatActivity {
 
     //region Members
 
-    String mPostedUrl;
+    private String mPostedUrl;
 
     //endregion
 

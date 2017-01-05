@@ -20,11 +20,11 @@ public class Application {
             new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     private Date mLastUpdated;
-    private String mPackageName;
-    private String mName;
-    private String mDescription;
-    private String mIconName;
-    private String mSourceCodeUrl;
+    private final String mPackageName;
+    private final String mName;
+    private final String mDescription;
+    private final String mIconName;
+    private final String mSourceCodeUrl;
 
     private boolean mIsInstalled;
 
@@ -94,8 +94,8 @@ public class Application {
 
     //region Setters
 
-    public void setInstalled(boolean installed) {
-        mIsInstalled = installed;
+    void setInstalled() {
+        mIsInstalled = true;
     }
 
     //endregion

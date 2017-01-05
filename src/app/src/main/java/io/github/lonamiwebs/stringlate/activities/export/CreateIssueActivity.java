@@ -32,7 +32,6 @@ public class CreateIssueActivity extends AppCompatActivity {
 
     private RepoHandler mRepo;
     private String mXmlContent;
-    private String mLocale;
 
     private EditText mIssueTitleEditText;
     private EditText mIssueDescriptionEditText;
@@ -55,11 +54,11 @@ public class CreateIssueActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
         mXmlContent = intent.getStringExtra(EXTRA_XML_CONTENT);
-        mLocale = intent.getStringExtra(EXTRA_LOCALE);
+        String locale = intent.getStringExtra(EXTRA_LOCALE);
 
-        String display = LocaleString.getDisplay(mLocale);
-        mIssueTitleEditText.setText(getString(R.string.added_x_translation, mLocale, display));
-        mIssueDescriptionEditText.setText(getString(R.string.new_issue_template, mLocale, display));
+        String display = LocaleString.getDisplay(locale);
+        mIssueTitleEditText.setText(getString(R.string.added_x_translation, locale, display));
+        mIssueDescriptionEditText.setText(getString(R.string.new_issue_template, locale, display));
     }
 
     //endregion
@@ -69,7 +68,7 @@ public class CreateIssueActivity extends AppCompatActivity {
     public void onCreateIssue(final View v) {
         String title = mIssueTitleEditText.getText().toString().trim();
         if (title.isEmpty()) {
-            Toast.makeText(this, "The issue title cannot be empty.", Toast.LENGTH_SHORT);
+            Toast.makeText(this, "The issue title cannot be empty.", Toast.LENGTH_SHORT).show();
             return;
         }
         String description = mIssueDescriptionEditText.getText().toString().trim();
@@ -79,7 +78,7 @@ public class CreateIssueActivity extends AppCompatActivity {
         } else {
             description = description.replace("%x", String.format("```xml\n%s\n```", mXmlContent));
         }
-        if (!GitHub.gCanCall()) {
+        if (GitHub.gCannotCall()) {
             Toast.makeText(this,
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
             return;

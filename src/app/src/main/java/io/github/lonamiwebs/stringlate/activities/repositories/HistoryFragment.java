@@ -73,7 +73,7 @@ public class HistoryFragment extends Fragment {
 
     //region Listeners
 
-    RepoHandler.ChangeListener changeListener = new RepoHandler.ChangeListener() {
+    private final RepoHandler.ChangeListener changeListener = new RepoHandler.ChangeListener() {
         @Override
         public void onRepositoryCountChanged() {
             ArrayList<RepoHandler> repositories = RepoHandler.listRepositories(getContext());

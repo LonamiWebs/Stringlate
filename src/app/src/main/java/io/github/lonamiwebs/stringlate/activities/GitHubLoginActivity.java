@@ -26,8 +26,8 @@ public class GitHubLoginActivity extends AppCompatActivity {
 
     //region Members
 
-    AppSettings mSettings;
-    TextView mInfoTextView;
+    private AppSettings mSettings;
+    private TextView mInfoTextView;
 
     //endregion
 
