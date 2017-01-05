@@ -73,7 +73,10 @@ public class RepositoriesActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Online help
             case R.id.help:
-                startActivity(new Intent(this, OnlineHelpActivity.class));
+                // Avoid the "Remove unused resources" from removing these files…
+                if (R.raw.en != 0 && R.raw.es != 0) {
+                    startActivity(new Intent(this, OnlineHelpActivity.class));
+                }
                 return true;
             // Login to GitHub
             case R.id.github_login:
