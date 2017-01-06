@@ -20,7 +20,7 @@ import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
-import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.settings.RepoSettings;
@@ -304,7 +304,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
                         // Overwrite our changes, if any
                         Resources oldResources = Resources.fromFile(outputFile);
                         if (oldResources != null) {
-                            for (ResourcesString rs : oldResources) {
+                            for (ResTag rs : oldResources) {
                                 if (rs.wasModified())
                                     clonedResources.setContent(rs.getId(), rs.getContent());
                             }

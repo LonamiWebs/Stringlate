@@ -15,14 +15,17 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 
-// Class to manage multiple ResourcesString,
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResString;
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
+
+// Class to manage multiple ResTag,
 // usually parsed from strings.xml files
-public class Resources implements Iterable<ResourcesString> {
+public class Resources implements Iterable<ResTag> {
 
     //region Members
 
     private final File mFile; // Keep track of the original file to be able to save()
-    private final HashSet<ResourcesString> mStrings;
+    private final HashSet<ResTag> mStrings;
     private final HashSet<String> mUnsavedIDs;
     private final String mRemoteUrl;
 
@@ -46,12 +49,12 @@ public class Resources implements Iterable<ResourcesString> {
         }
 
         if (!file.isFile())
-            return new Resources(file, new HashSet<ResourcesString>(), remoteUrl);
+            return new Resources(file, new HashSet<ResTag>(), remoteUrl);
 
         InputStream is = null;
         try {
             is = new FileInputStream(file);
-            Pair<HashSet<ResourcesString>, String> result = ResourcesParser.parseFromXml(is);
+            Pair<HashSet<ResTag>, String> result = ResourcesParser.parseFromXml(is);
             if (result.second == null) {
                 // Keep the remote url that we have
                 return new Resources(file, result.first, remoteUrl);
@@ -70,7 +73,7 @@ public class Resources implements Iterable<ResourcesString> {
         return null;
     }
 
-    private Resources(File file, HashSet<ResourcesString> strings, @NonNull String remoteUrl) {
+    private Resources(File file, HashSet<ResTag> strings, @NonNull String remoteUrl) {
         mFile = file;
         mStrings = strings;
         mSavedChanges = file.isFile();
@@ -93,7 +96,7 @@ public class Resources implements Iterable<ResourcesString> {
         File mModifiedFile = new File(path);
 
         if (mModifiedFile.isFile()) {
-            for (ResourcesString rs : mStrings) {
+            for (ResTag rs : mStrings) {
                 String content = rs.getContent();
                 // Clear the content and then set the original one
                 // so 'modified' equals true
@@ -110,7 +113,7 @@ public class Resources implements Iterable<ResourcesString> {
         // -- End of backwards-compatibility code
 
         mModified = false;
-        for (ResourcesString rs : mStrings) {
+        for (ResTag rs : mStrings) {
             if (rs.wasModified()) {
                 mModified = true;
                 break;
@@ -131,7 +134,7 @@ public class Resources implements Iterable<ResourcesString> {
     }
 
     public boolean contains(String resourceId) {
-        for (ResourcesString rs : mStrings)
+        for (ResTag rs : mStrings)
             if (rs.getId().equals(resourceId))
                 return true;
 
@@ -139,7 +142,7 @@ public class Resources implements Iterable<ResourcesString> {
     }
 
     public String getContent(String resourceId) {
-        for (ResourcesString rs : mStrings)
+        for (ResTag rs : mStrings)
             if (rs.getId().equals(resourceId))
                 return rs.getContent();
 
@@ -165,7 +168,7 @@ public class Resources implements Iterable<ResourcesString> {
         }
 
         boolean found = false;
-        for (ResourcesString rs : mStrings)
+        for (ResTag rs : mStrings)
             if (rs.getId().equals(resourceId)) {
                 if (rs.setContent(content)) {
                     mSavedChanges = false;
@@ -177,7 +180,10 @@ public class Resources implements Iterable<ResourcesString> {
             }
 
         if (!found) {
-            ResourcesString string = new ResourcesString(resourceId);
+            // TODO Uhm… Maybe pass the original resource…? But how do I handle parents…?
+            // Maybe I should make this have ALL the ResTag's from the original so it's
+            // always found…? I don't know…
+            ResTag string = new ResString(resourceId);
             string.setContent(content); // Will also update its modified = true state
             mStrings.add(string);
 
@@ -191,7 +197,7 @@ public class Resources implements Iterable<ResourcesString> {
     //region Deleting content
 
     public void deleteId(String resourceId) {
-        for (ResourcesString rs : mStrings)
+        for (ResTag rs : mStrings)
             if (rs.getId().equals(resourceId)) {
                 mStrings.remove(rs);
                 break;
@@ -257,8 +263,8 @@ public class Resources implements Iterable<ResourcesString> {
     //region Iterator wrapper
 
     @Override
-    public Iterator<ResourcesString> iterator() {
-        ArrayList<ResourcesString> strings = new ArrayList<>(mStrings);
+    public Iterator<ResTag> iterator() {
+        ArrayList<ResTag> strings = new ArrayList<>(mStrings);
         Collections.sort(strings);
         return strings.iterator();
     }

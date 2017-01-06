@@ -40,11 +40,11 @@ import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
-import io.github.lonamiwebs.stringlate.classes.resources.ResourcesString;
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
+import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_FILENAME;
@@ -670,7 +670,7 @@ public class TranslateActivity extends AppCompatActivity {
             int currentChars = 0;
             int totalChars = 0;
             int chars;
-            for (ResourcesString rs : mDefaultResources) {
+            for (ResTag rs : mDefaultResources) {
                 chars = rs.getContentLength();
                 totalChars += chars;
                 if (mSelectedLocaleResources.contains(rs.getId())) {
@@ -719,12 +719,12 @@ public class TranslateActivity extends AppCompatActivity {
 
         ArrayList<String> spinnerArray = new ArrayList<>();
         if (mShowTranslated) {
-            for (ResourcesString rs : mDefaultResources)
+            for (ResTag rs : mDefaultResources)
                 spinnerArray.add(rs.getId());
         } else {
             // If we're not showing the strings with a translation, we also need to
             // make sure that the currently selected locale doesn't already have them
-            for (ResourcesString rs : mDefaultResources)
+            for (ResTag rs : mDefaultResources)
                 if (!mSelectedLocaleResources.contains(rs.getId()))
                     spinnerArray.add(rs.getId());
 

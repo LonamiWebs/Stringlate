@@ -20,6 +20,9 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResString;
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
+
 // Class used to parse strings.xml files into Resources objects
 // Please NOTE that strings with `translatable="false"` will NOT be parsed
 // The application doesn't need these to work (as of now, if any use is found, revert this file)
@@ -44,7 +47,7 @@ public class ResourcesParser {
 
     //region Xml -> Resources
 
-    public static Pair<HashSet<ResourcesString>, String> parseFromXml(InputStream in)
+    public static Pair<HashSet<ResTag>, String> parseFromXml(InputStream in)
             throws XmlPullParserException, IOException {
 
         try {
@@ -60,10 +63,10 @@ public class ResourcesParser {
         }
     }
 
-    private static Pair<HashSet<ResourcesString>, String> readResources(XmlPullParser parser)
+    private static Pair<HashSet<ResTag>, String> readResources(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
-        HashSet<ResourcesString> strings = new HashSet<>();
+        HashSet<ResTag> strings = new HashSet<>();
 
         parser.require(XmlPullParser.START_TAG, ns, RESOURCES);
         String remotePath = parser.getAttributeValue(null, REMOTE_PATH);
@@ -74,7 +77,7 @@ public class ResourcesParser {
 
             String name = parser.getName();
             if (name.equals(STRING)) {
-                ResourcesString rs = readResourceString(parser);
+                ResString rs = readResourceString(parser);
                 // Avoid strings that cannot be translated (these will be null)
                 if (rs != null)
                     strings.add(rs);
@@ -88,7 +91,7 @@ public class ResourcesParser {
 
     // Reads a <string name="...">...</string> tag from the xml.
     // Returns null if the string cannot be translated
-    private static ResourcesString readResourceString(XmlPullParser parser)
+    private static ResString readResourceString(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
         String id, content;
@@ -118,7 +121,7 @@ public class ResourcesParser {
             if (content.isEmpty())
                 return null;
             else
-                return new ResourcesString(id, content, modified);
+                return new ResString(id, content, modified);
         }
     }
 
@@ -207,7 +210,7 @@ public class ResourcesParser {
             serializer.startTag(ns, RESOURCES);
             serializer.attribute(ns, REMOTE_PATH, resources.getRemoteUrl());
 
-            for (ResourcesString rs : resources) {
+            for (ResTag rs : resources) {
                 if (!rs.hasContent())
                     continue;
 
