@@ -296,8 +296,19 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 String locale = m.group(1) == null ? DEFAULT_LOCALE : m.group(1);
                 File outputFile = getResourcesFile(locale);
 
+                // If this is the default locale, save its remote path
+                if (locale.equals(DEFAULT_LOCALE)) {
+                    String remotePath = clonedFile.getAbsolutePath()
+                            .substring(clonedDir.getAbsolutePath().length());
+
+                    if (remotePath.startsWith("/"))
+                        remotePath = remotePath.substring(1);
+
+                    addRemotePath(clonedFile.getName(), remotePath);
+                }
+
                 // Load in memory the new cloned file, to also ensure it's OK
-                Resources clonedResources = Resources.fromFile(clonedFile, clonedDir);
+                Resources clonedResources = Resources.fromFile(clonedFile);
                 if (clonedResources != null) {
                     // It's a valid file
                     if (keepChanges) {
@@ -310,8 +321,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
                             }
                         }
                     }
-                    // Save to keep our remote url
-                    clonedResources.forceSave();
 
                     // Now that we're done, move the file to its destination
                     if (outputFile.getParentFile().isDirectory()) {
@@ -401,6 +410,16 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     public boolean isGitHubRepository() {
         return OWNER_REPO.matcher(mSettings.getGitUrl()).matches();
+    }
+
+    private void addRemotePath(String filename, String remotePath) {
+        mSettings.addRemotePath(filename, remotePath);
+    }
+
+    public String getRemoteUrl() {
+        // Stub! (What does stub even mean though?)
+        // TODO Edit this to actually work (remember to make changes where this is called)
+        return "";
     }
 
     //endregion

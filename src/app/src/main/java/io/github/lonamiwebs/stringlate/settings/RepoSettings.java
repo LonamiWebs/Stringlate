@@ -12,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 
 // We can't quite save the SharedPreferences in a custom path so… use JSON (easier than XML)
 public class RepoSettings {
@@ -22,6 +24,7 @@ public class RepoSettings {
 
     private static final String KEY_GIT_URL = "git_url";
     private static final String KEY_LAST_LOCALE = "last_locale";
+    private static final String KEY_REMOTE_PATHS = "remote_paths";
 
     private static final String DEFAULT_GIT_URL = "";
     private static final String DEFAULT_LAST_LOCALE = null;
@@ -46,7 +49,20 @@ public class RepoSettings {
         return mSettings.optString(KEY_LAST_LOCALE, DEFAULT_LAST_LOCALE);
     }
 
-    // TODO Save the remote paths here or when exporting it will get messed up......
+    private HashMap<String, String> getRemotePaths() {
+        HashMap<String, String> map = new HashMap<>();
+        JSONObject json = mSettings.optJSONObject(KEY_REMOTE_PATHS);
+        if (json != null) {
+            try {
+                Iterator<String> keysItr = json.keys();
+                while (keysItr.hasNext()) {
+                    String key = keysItr.next();
+                    map.put(key, json.getString(key));
+                }
+            } catch (JSONException ignored) { }
+        }
+        return map;
+    }
 
     //endregion
 
@@ -60,6 +76,16 @@ public class RepoSettings {
 
     public void setLastLocale(String locale) {
         try { mSettings.put(KEY_LAST_LOCALE, locale); }
+        catch (JSONException ignored) { }
+        save();
+    }
+
+    public void addRemotePath(String filename, String remotePath) {
+        try {
+            HashMap<String, String> map = getRemotePaths();
+            map.put(filename, remotePath);
+            mSettings.put(KEY_REMOTE_PATHS, new JSONObject(map));
+        }
         catch (JSONException ignored) { }
         save();
     }

@@ -435,7 +435,7 @@ public class TranslateActivity extends AppCompatActivity {
     // Exports the currently selected locale resources to a GitHub Pull Request
     private void exportToPullRequest() {
         if (!isLocaleSelected(true)) return;
-        String remotePath = mSelectedLocaleResources.getRemoteUrl();
+        String remotePath = mRepo.getRemoteUrl();
         if (remotePath.isEmpty()) {
             // TODO Try to guess the path based on the default resources; it probably was created
             Toast.makeText(this, R.string.sync_required, Toast.LENGTH_SHORT).show();

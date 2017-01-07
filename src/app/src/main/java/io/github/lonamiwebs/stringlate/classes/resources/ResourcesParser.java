@@ -1,6 +1,5 @@
 package io.github.lonamiwebs.stringlate.classes.resources;
 
-import android.util.Pair;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -57,7 +56,7 @@ public class ResourcesParser {
 
     //region Xml -> Resources
 
-    public static Pair<HashSet<ResTag>, String> parseFromXml(InputStream in)
+    public static HashSet<ResTag> parseFromXml(InputStream in)
             throws XmlPullParserException, IOException {
 
         try {
@@ -73,7 +72,7 @@ public class ResourcesParser {
         }
     }
 
-    private static Pair<HashSet<ResTag>, String> readResources(XmlPullParser parser)
+    private static HashSet<ResTag> readResources(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
         HashSet<ResTag> strings = new HashSet<>();
@@ -106,7 +105,7 @@ public class ResourcesParser {
             }
         }
 
-        return new Pair<>(strings, remotePath);
+        return strings;
     }
 
     // Reads a <string name="...">...</string> tag from the xml.
@@ -310,7 +309,6 @@ public class ResourcesParser {
         try {
             serializer.setOutput(out, "UTF-8");
             serializer.startTag(ns, RESOURCES);
-            serializer.attribute(ns, REMOTE_PATH, resources.getRemoteUrl());
 
             for (ResTag rs : resources) {
                 if (!rs.hasContent())
