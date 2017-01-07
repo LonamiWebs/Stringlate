@@ -297,39 +297,39 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 File outputFile = getResourcesFile(locale);
 
                 // If this is the default locale, save its remote path
+                // and clean it by removing all the translatable="false" tags
                 if (locale.equals(DEFAULT_LOCALE)) {
+                    ResourcesParser.cleanXml(clonedFile, outputFile);
+
+                    // Skip the '/' at the beginning (substring +1)
                     String remotePath = clonedFile.getAbsolutePath()
-                            .substring(clonedDir.getAbsolutePath().length());
-
-                    if (remotePath.startsWith("/"))
-                        remotePath = remotePath.substring(1);
-
+                            .substring(clonedDir.getAbsolutePath().length()+1);
                     addRemotePath(clonedFile.getName(), remotePath);
                 }
-
-                // Load in memory the new cloned file, to also ensure it's OK
-                Resources clonedResources = Resources.fromFile(clonedFile);
-                if (clonedResources != null) {
-                    // It's a valid file
-                    if (keepChanges) {
-                        // Overwrite our changes, if any
-                        Resources oldResources = Resources.fromFile(outputFile);
-                        if (oldResources != null) {
-                            for (ResTag rs : oldResources) {
-                                if (rs.wasModified())
-                                    clonedResources.setContent(rs.getId(), rs.getContent());
+                else {
+                    // Load in memory the new cloned file, to also ensure it's OK
+                    Resources clonedResources = Resources.fromFile(clonedFile);
+                    if (clonedResources != null) {
+                        if (keepChanges) {
+                            // Overwrite our changes, if any
+                            Resources oldResources = Resources.fromFile(outputFile);
+                            if (oldResources != null) {
+                                for (ResTag rs : oldResources) {
+                                    if (rs.wasModified())
+                                        clonedResources.setContent(rs.getId(), rs.getContent());
+                                }
                             }
                         }
-                    }
 
-                    // Now that we're done, move the file to its destination
-                    if (outputFile.getParentFile().isDirectory()) {
-                        if (outputFile.isFile())
-                            outputFile.delete();
-                    } else {
-                        outputFile.getParentFile().mkdirs();
+                        // Now that we're done, move the file to its destination
+                        if (outputFile.getParentFile().isDirectory()) {
+                            if (outputFile.isFile())
+                                outputFile.delete();
+                        } else {
+                            outputFile.getParentFile().mkdirs();
+                        }
+                        clonedFile.renameTo(outputFile);
                     }
-                    clonedFile.renameTo(outputFile);
                 }
             }
         }

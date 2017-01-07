@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -391,6 +392,62 @@ public class ResourcesParser {
         }
 
         serializer.endTag(ns, PLURALS);
+    }
+
+    //endregion
+
+    //region Xml -> Xml without untranslatable strings
+
+    private static final Pattern TAG_UNTRANSLATABLE_PATTERN =
+            //                 tagName    translatable    =     "false"
+            Pattern.compile("<([\\w-]+).*?translatable\\s*=\\s*\"false\".*?>");
+
+    public static void cleanXml(File inFile, File outFile) {
+        try {
+            if (!outFile.getParentFile().isDirectory())
+                outFile.getParentFile().mkdirs();
+
+            FileInputStream in = new FileInputStream(inFile);
+            FileOutputStream out = new FileOutputStream(outFile);
+
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
+
+            while ((line = reader.readLine()) != null) {
+                // Check whether this line is translatable or not
+                Matcher m = TAG_UNTRANSLATABLE_PATTERN.matcher(line);
+                if (m.find()) {
+                    // TODO We assume that there are not two tags in the same line,
+                    // neither the tag spans across multiple lines (either start or end tag)
+                    String tagName = m.group(1);
+                    switch (tagName) {
+                        case STRING:
+                        case STRING_ARRAY:
+                        case PLURALS:
+                            // Look for the closing tag and omit all the lines in between
+                            Pattern closing = Pattern.compile("</\\s*" + tagName);
+                            while (!closing.matcher(line).find())
+                                line = reader.readLine();
+                            break;
+                        default:
+                            // What is this tag doing here…? What tag even could it be?
+                            writer.write(line);
+                            writer.write('\n');
+                            break;
+                    }
+                } else {
+                    // This line may be a comment, or translatable, we don't care. Simply append it
+                    writer.write(line);
+                    writer.write('\n');
+                }
+            }
+
+            writer.close();
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //endregion
