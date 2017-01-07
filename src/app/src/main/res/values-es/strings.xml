@@ -34,7 +34,7 @@
     <string name="delete_ellipsis">Borrar…</string>
     <string name="delete_string">Borrar texto</string>
     <string name="delete_locale">Borrar traducción</string>
-    <string name="delete_repository">Repositorio borrado</string>
+    <string name="delete_repository">Borrar repositorio</string>
     <string name="no_locale_selected">No se ha elegido idioma.</string>
     <string name="sure_question">¿Estás seguro/a?</string>
     <string name="delete_locale_confirm_long">¿Realmente quieres borrar la traducción \"%s\"? Perderás todo el texto.</string>
