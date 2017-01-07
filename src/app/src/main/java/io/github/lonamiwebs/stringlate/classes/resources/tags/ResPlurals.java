@@ -24,6 +24,10 @@ public class ResPlurals {
 
     //region Getters
 
+    public String getId() {
+        return mId;
+    }
+
     public Item getItem(@NonNull final String quantity) {
         for (Item i : mItems)
             if (i.mQuantity.equals(quantity))
@@ -31,27 +35,33 @@ public class ResPlurals {
         return null;
     }
 
+    public Iterable<Item> expand() {
+        return mItems;
+    }
+
     //endregion
 
     //region Setters
 
-    public void addItem(@NonNull final String quantity, @NonNull final String content) {
-        mItems.add(new Item(this, quantity, content));
+    public void addItem(@NonNull final String quantity,
+                        @NonNull final String content, final boolean modified) {
+        mItems.add(new Item(this, quantity, content, modified));
     }
 
     //endregion
 
     //region Sub classes
 
-    private class Item extends ResTag {
+    public class Item extends ResTag {
         @NonNull final ResPlurals mParent;
         @NonNull final String mQuantity;
 
-        Item(@NonNull final ResPlurals parent,
-                    @NonNull final String quantity, @NonNull final String content) {
+        Item(@NonNull final ResPlurals parent, @NonNull final String quantity,
+             @NonNull final String content, final boolean modified) {
             mParent = parent;
             mQuantity = quantity;
             mContent = content.trim();
+            mModified = modified;
         }
 
         @Override
@@ -59,6 +69,14 @@ public class ResPlurals {
         public String getId() {
             // ':' is not a valid separator for the <string>'s, so use it to avoid conflicts
             return String.format("%s:%s", mParent.mId, mQuantity);
+        }
+
+        public String getQuantity() {
+            return mQuantity;
+        }
+
+        public ResPlurals getParent() {
+            return mParent;
         }
     }
 

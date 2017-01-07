@@ -181,8 +181,10 @@ public class Resources implements Iterable<ResTag> {
 
         if (!found) {
             // TODO Uhm… Maybe pass the original resource…? But how do I handle parents…?
-            // Maybe I should make this have ALL the ResTag's from the original so it's
-            // always found…? I don't know…
+            // An option perhaps would be to pass the original string -> .clone() -> .setContent
+            // But actually, this works, because the ID is the same (despite being an
+            // item from a strings array or not), and when exporting I simply look for
+            // the required ID. But although this works I should make this better.
             ResTag string = new ResString(resourceId);
             string.setContent(content); // Will also update its modified = true state
             mStrings.add(string);

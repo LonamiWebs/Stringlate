@@ -16,11 +16,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResPlurals;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResString;
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResStringArray;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 
 // Class used to parse strings.xml files into Resources objects
@@ -34,10 +37,17 @@ public class ResourcesParser {
     private final static String ns = null;
 
     private final static String RESOURCES = "resources";
+
     private final static String STRING = "string";
+    private final static String STRING_ARRAY = "string-array";
+    private final static String PLURALS = "plurals";
+    private final static String ITEM = "item";
+
     private final static String ID = "name";
     private final static String TRANSLATABLE = "translatable";
+    private final static String QUANTITY = "quantity";
     private final static String MODIFIED = "modified";
+
     private final static String REMOTE_PATH = "remote";
 
     private final static boolean DEFAULT_TRANSLATABLE = true;
@@ -76,14 +86,24 @@ public class ResourcesParser {
                 continue;
 
             String name = parser.getName();
-            if (name.equals(STRING)) {
-                ResString rs = readResourceString(parser);
-                // Avoid strings that cannot be translated (these will be null)
-                if (rs != null)
-                    strings.add(rs);
+            switch (name) {
+                case STRING:
+                    ResTag rs = readResourceString(parser);
+                    if (rs != null)
+                        strings.add(rs);
+                    break;
+                case STRING_ARRAY:
+                    for (ResTag item : readResourceStringArray(parser))
+                        strings.add(item);
+                    break;
+                case PLURALS:
+                    for (ResTag item : readResourcePlurals(parser))
+                        strings.add(item);
+                    break;
+                default:
+                    skip(parser);
+                    break;
             }
-            else
-                skip(parser);
         }
 
         return new Pair<>(strings, remotePath);
@@ -114,7 +134,7 @@ public class ResourcesParser {
             // Android uses \n for new line, XML doesn't so manually replace it
             // But first, replace the XML new lines with normal spaces
             content = getInnerXml(parser);
-            content = content.replace('\n', ' ').replace("\\n", "\n"); // 4 \, it's regex
+            content = content.replace('\n', ' ').replace("\\n", "\n");
 
             parser.require(XmlPullParser.END_TAG, ns, STRING);
 
@@ -122,6 +142,83 @@ public class ResourcesParser {
                 return null;
             else
                 return new ResString(id, content, modified);
+        }
+    }
+
+    // Reads a <string-array name="...">...</string-array> tag from the xml.
+    private static Iterable<ResStringArray.Item> readResourceStringArray(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+
+        ResStringArray result;
+        String id;
+
+        parser.require(XmlPullParser.START_TAG, ns, STRING_ARRAY);
+
+        if (!readBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE)) {
+            // We don't care about not-translatable strings
+            skipInnerXml(parser);
+            parser.require(XmlPullParser.END_TAG, ns, STRING_ARRAY);
+            return new ArrayList<>();
+        } else {
+            id = parser.getAttributeValue(null, ID);
+            result = new ResStringArray(id);
+
+            while (parser.next() != XmlPullParser.END_TAG) {
+                if (parser.getEventType() != XmlPullParser.START_TAG)
+                    continue;
+
+                String name = parser.getName();
+                if (name.equals(ITEM)) {
+                    parser.require(XmlPullParser.START_TAG, ns, ITEM);
+                    boolean modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
+                    String content = getInnerXml(parser).replace('\n', ' ').replace("\\n", "\n");
+                    if (!content.isEmpty())
+                        result.addItem(content, modified);
+                } else {
+                    skip(parser);
+                }
+            }
+
+            return result.expand();
+        }
+    }
+
+    // Reads a <string-array name="...">...</string-array> tag from the xml.
+    private static Iterable<ResPlurals.Item> readResourcePlurals(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+
+        ResPlurals result;
+        String id;
+
+        parser.require(XmlPullParser.START_TAG, ns, PLURALS);
+
+        if (!readBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE)) {
+            // We don't care about not-translatable strings
+            skipInnerXml(parser);
+            parser.require(XmlPullParser.END_TAG, ns, PLURALS);
+            return new ArrayList<>();
+        } else {
+            id = parser.getAttributeValue(null, ID);
+            result = new ResPlurals(id);
+
+            while (parser.next() != XmlPullParser.END_TAG) {
+                if (parser.getEventType() != XmlPullParser.START_TAG)
+                    continue;
+
+                String name = parser.getName();
+                if (name.equals(ITEM)) {
+                    parser.require(XmlPullParser.START_TAG, ns, ITEM);
+                    String quantity = parser.getAttributeValue(null, QUANTITY);
+                    boolean modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
+                    String content = getInnerXml(parser).replace('\n', ' ').replace("\\n", "\n");
+                    if (!content.isEmpty())
+                        result.addItem(quantity, content, modified);
+                } else {
+                    skip(parser);
+                }
+            }
+
+            return result.expand();
         }
     }
 
@@ -205,6 +302,11 @@ public class ResourcesParser {
 
     public static boolean parseToXml(Resources resources, OutputStream out) {
         XmlSerializer serializer = Xml.newSerializer();
+
+        // We need to keep track of the parents which we have done already.
+        // This is because we previously expanded the children, but they're
+        // wrapped under the same parent (which we cannot duplicate).
+        HashSet<String> doneParents = new HashSet<>();
         try {
             serializer.setOutput(out, "UTF-8");
             serializer.startTag(ns, RESOURCES);
@@ -214,16 +316,23 @@ public class ResourcesParser {
                 if (!rs.hasContent())
                     continue;
 
-                serializer.startTag(ns, STRING);
-                serializer.attribute(ns, ID, rs.getId());
-
-                // Only save changes that differ from the default, to save space
-                if (rs.wasModified() != DEFAULT_MODIFIED)
-                    serializer.attribute(ns, MODIFIED, Boolean.toString(rs.wasModified()));
-
-                // Replace the new lines by \n again
-                serializer.text(rs.getContent().replace("\n", "\\n"));
-                serializer.endTag(ns, STRING);
+                if (rs instanceof ResString) {
+                    parseString(serializer, (ResString)rs);
+                }
+                else if (rs instanceof ResStringArray.Item) {
+                    ResStringArray parent = ((ResStringArray.Item)rs).getParent();
+                    if (!doneParents.contains(parent.getId())) {
+                        doneParents.add(parent.getId());
+                        parseStringArray(serializer, parent);
+                    }
+                }
+                else if (rs instanceof ResPlurals.Item) {
+                    ResPlurals parent = ((ResPlurals.Item)rs).getParent();
+                    if (!doneParents.contains(parent.getId())) {
+                        doneParents.add(parent.getId());
+                        parsePlurals(serializer, parent);
+                    }
+                }
             }
             serializer.endTag(ns, RESOURCES);
             serializer.flush();
@@ -232,6 +341,58 @@ public class ResourcesParser {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private static void parseString(XmlSerializer serializer, ResString string)
+            throws IOException {
+        serializer.startTag(ns, STRING);
+        serializer.attribute(ns, ID, string.getId());
+
+        // Only save changes that differ from the default, to save space
+        if (string.wasModified() != DEFAULT_MODIFIED)
+            serializer.attribute(ns, MODIFIED, Boolean.toString(string.wasModified()));
+
+        // Replace the new lines by \n again
+        serializer.text(string.getContent().replace("\n", "\\n"));
+        serializer.endTag(ns, STRING);
+    }
+
+    private static void parseStringArray(XmlSerializer serializer, ResStringArray array)
+            throws IOException {
+        serializer.startTag(ns, STRING_ARRAY);
+        serializer.attribute(ns, ID, array.getId());
+
+        // Ensure that we save the strings in the correct order
+        array.sort();
+        for (ResStringArray.Item item : array.expand()) {
+            serializer.startTag(ns, ITEM);
+            if (item.wasModified() != DEFAULT_MODIFIED)
+                serializer.attribute(ns, MODIFIED, Boolean.toString(item.wasModified()));
+
+            serializer.text(item.getContent().replace("\n", "\\n"));
+            serializer.endTag(ns, ITEM);
+        }
+
+        serializer.endTag(ns, STRING_ARRAY);
+    }
+
+    private static void parsePlurals(XmlSerializer serializer, ResPlurals plurals)
+            throws IOException {
+        serializer.startTag(ns, PLURALS);
+        serializer.attribute(ns, ID, plurals.getId());
+
+        for (ResPlurals.Item item : plurals.expand()) {
+            serializer.startTag(ns, ITEM);
+            serializer.attribute(ns, QUANTITY, item.getQuantity());
+
+            if (item.wasModified() != DEFAULT_MODIFIED)
+                serializer.attribute(ns, MODIFIED, Boolean.toString(item.wasModified()));
+
+            serializer.text(item.getContent().replace("\n", "\\n"));
+            serializer.endTag(ns, ITEM);
+        }
+
+        serializer.endTag(ns, PLURALS);
     }
 
     //endregion
