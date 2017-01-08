@@ -35,10 +35,6 @@ public class Resources implements Iterable<ResTag> {
     //region Constructors
 
     public static Resources fromFile(File file) {
-        return fromFile(file, null);
-    }
-
-    public static Resources fromFile(File file, File rootDir) {
         if (!file.isFile())
             return new Resources(file, new HashSet<ResTag>());
 
@@ -115,6 +111,10 @@ public class Resources implements Iterable<ResTag> {
 
     public int unsavedCount() {
         return mUnsavedIDs.size();
+    }
+
+    public boolean isEmpty() {
+        return mStrings.isEmpty();
     }
 
     public boolean contains(String resourceId) {

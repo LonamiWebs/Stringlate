@@ -129,6 +129,10 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return new File(mRoot, locale+"/strings.xml");
     }
 
+    private File getDefaultResourcesFile(@NonNull String filename) {
+        return new File(mRoot, DEFAULT_LOCALE+"/"+filename);
+    }
+
     public boolean hasDefaultLocale() {
         return hasLocale(DEFAULT_LOCALE);
     }
@@ -285,6 +289,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 mContext.getString(R.string.copying_res),
                 mContext.getString(R.string.copying_res_long));
 
+        // TODO Maybe remove all the previous default-locale files? Maybe their name changed
         // Iterate over all the found resources
         for (File clonedFile : foundResources) {
             Matcher m = mValuesLocalePattern.matcher(clonedFile.getAbsolutePath());
@@ -293,23 +298,28 @@ public class RepoHandler implements Comparable<RepoHandler> {
             if (m.find()) {
 
                 // Determine the locale, and the final output file (we may have changes there)
-                String locale = m.group(1) == null ? DEFAULT_LOCALE : m.group(1);
-                File outputFile = getResourcesFile(locale);
-
-                // If this is the default locale, save its remote path
-                // and clean it by removing all the translatable="false" tags
-                if (locale.equals(DEFAULT_LOCALE)) {
+                File outputFile;
+                if (m.group(1) == null) {
+                    // If this is the default locale, save its remote path
+                    // and clean it by removing all the translatable="false" tags
+                    outputFile = getDefaultResourcesFile(clonedFile.getName());
                     ResourcesParser.cleanXml(clonedFile, outputFile);
 
-                    // Skip the '/' at the beginning (substring +1)
-                    String remotePath = clonedFile.getAbsolutePath()
-                            .substring(clonedDir.getAbsolutePath().length()+1);
-                    addRemotePath(clonedFile.getName(), remotePath);
-                }
-                else {
-                    // Load in memory the new cloned file, to also ensure it's OK
+                    // Ensure the clean file has at least one translatable string, else ignore it
+                    Resources cleanResources = Resources.fromFile(outputFile);
+                    if (cleanResources != null && !cleanResources.isEmpty()) {
+                        // Skip the '/' at the beginning (substring +1)
+                        String remotePath = clonedFile.getAbsolutePath()
+                                .substring(clonedDir.getAbsolutePath().length()+1);
+                        addRemotePath(clonedFile.getName(), remotePath);
+                    }
+                } else {
+                    // Get the file corresponding to this locale (group(1))
+                    outputFile = getResourcesFile(m.group(1));
+
+                    // Load in memory the new cloned file, to ensure it's OK
                     Resources clonedResources = Resources.fromFile(clonedFile);
-                    if (clonedResources != null) {
+                    if (clonedResources != null && !clonedResources.isEmpty()) {
                         if (keepChanges) {
                             // Overwrite our changes, if any
                             Resources oldResources = Resources.fromFile(outputFile);

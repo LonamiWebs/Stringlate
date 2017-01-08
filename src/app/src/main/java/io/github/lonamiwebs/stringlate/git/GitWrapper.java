@@ -22,6 +22,7 @@ public class GitWrapper {
     // No regex is required for '<string', which includes '<string-array'
     private static final Pattern PATTERN_XML = Pattern.compile("\\.xml$", Pattern.CASE_INSENSITIVE);
     private static final String STR_STRING = "<string";
+    private static final String STR_PLURALS = "<plurals";
 
     public static String buildGitHubUrl(String owner, String repository) {
         return String.format(BASE_GITHUB_URL, owner, repository);
@@ -94,22 +95,23 @@ public class GitWrapper {
             } else {
                 // dir is a file really
                 if (PATTERN_XML.matcher(dir.getName()).find()) {
-                    if (fileContains(dir, STR_STRING))
+                    if (fileContains(dir, STR_STRING, STR_PLURALS))
                         result.add(dir);
                 }
             }
         }
     }
 
-    private static boolean fileContains(File file, String needle) {
+    private static boolean fileContains(File file, String... needles) {
         try {
             FileInputStream in = new FileInputStream(file);
 
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             while ((line = reader.readLine()) != null) {
-                if (line.contains(needle))
-                    return true;
+                for (String n : needles)
+                    if (line.contains(n))
+                        return true;
             }
 
             in.close();
