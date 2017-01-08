@@ -34,30 +34,36 @@ public class Resources implements Iterable<ResTag> {
 
     //region Constructors
 
+    @NonNull
     public static Resources fromFile(File file) {
-        if (!file.isFile())
-            return new Resources(file, new HashSet<ResTag>());
-
-        InputStream is = null;
-        try {
-            is = new FileInputStream(file);
-            HashSet<ResTag> result = ResourcesParser.parseFromXml(is);
-            return new Resources(file, result);
-        } catch (IOException | XmlPullParserException e) {
-            e.printStackTrace();
-        } finally {
+        if (file.isFile()) {
+            InputStream is = null;
             try {
-                if (is != null)
-                    is.close();
-            } catch (IOException ignored) { }
+                is = new FileInputStream(file);
+                HashSet<ResTag> result = ResourcesParser.parseFromXml(is);
+                return new Resources(file, result);
+            } catch (IOException | XmlPullParserException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (is != null)
+                        is.close();
+                } catch (IOException ignored) { }
+            }
         }
-        return null;
+        return new Resources(file, new HashSet<ResTag>());
+    }
+
+    // Empty resources cannot be saved
+    @NonNull
+    public static Resources empty() {
+        return new Resources(null, new HashSet<ResTag>());
     }
 
     private Resources(File file, HashSet<ResTag> strings) {
         mFile = file;
         mStrings = strings;
-        mSavedChanges = file.isFile();
+        mSavedChanges = mFile != null && mFile.isFile();
 
         // Keep track of the unsaved strings not to iterate over the list to count them
         mUnsavedIDs = new HashSet<>();
@@ -68,7 +74,7 @@ public class Resources implements Iterable<ResTag> {
         // TODO Remove this on version 1.0 (or similar)
 
         // -- Begin of backwards-compatibility code
-        String path = mFile.getAbsolutePath();
+        String path = mFile == null ? "" : mFile.getAbsolutePath();
         int extensionIndex = path.lastIndexOf('.');
         if (extensionIndex > -1)
             path = path.substring(0, extensionIndex);
@@ -174,6 +180,10 @@ public class Resources implements Iterable<ResTag> {
         }
     }
 
+    public void addTag(ResTag rt) {
+        mStrings.add(rt);
+    }
+
     //endregion
 
     //region Deleting content
@@ -191,7 +201,7 @@ public class Resources implements Iterable<ResTag> {
     //region File saving and deleting
 
     public String getFilename() {
-        return mFile.getName();
+        return mFile == null ? "strings.xml" : mFile.getName();
     }
 
     // Determines whether the files was saved or not
@@ -207,6 +217,9 @@ public class Resources implements Iterable<ResTag> {
     public boolean save() {
         if (mSavedChanges)
             return true;
+
+        if (mFile == null)
+            return false;
 
         try {
             if (!mFile.getParentFile().isDirectory())
@@ -231,8 +244,8 @@ public class Resources implements Iterable<ResTag> {
     }
 
     // TODO Should this delete the parent directory? Not if there were more .xml files though…
-    public void delete() {
-        mFile.delete();
+    public boolean delete() {
+        return mFile != null && mFile.delete();
     }
 
     //endregion

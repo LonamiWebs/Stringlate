@@ -133,6 +133,10 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return new File(mRoot, DEFAULT_LOCALE+"/"+filename);
     }
 
+    public File[] getDefaultResourcesFiles() {
+        return new File(mRoot, DEFAULT_LOCALE).listFiles();
+    }
+
     public boolean hasDefaultLocale() {
         return hasLocale(DEFAULT_LOCALE);
     }
@@ -205,9 +209,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
         if (hasLocale(locale))
             return true;
 
-        // TODO Set the remote path… somehow
         Resources resources = Resources.fromFile(getResourcesFile(locale));
-        if (resources == null || !resources.save())
+        if (!resources.save())
             return false;
 
         mLocales.add(locale);
@@ -307,7 +310,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
                     // Ensure the clean file has at least one translatable string, else ignore it
                     Resources cleanResources = Resources.fromFile(outputFile);
-                    if (cleanResources != null && !cleanResources.isEmpty()) {
+                    if (!cleanResources.isEmpty()) {
                         // Skip the '/' at the beginning (substring +1)
                         String remotePath = clonedFile.getAbsolutePath()
                                 .substring(clonedDir.getAbsolutePath().length()+1);
@@ -319,15 +322,12 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
                     // Load in memory the new cloned file, to ensure it's OK
                     Resources clonedResources = Resources.fromFile(clonedFile);
-                    if (clonedResources != null && !clonedResources.isEmpty()) {
+                    if (!clonedResources.isEmpty()) {
                         if (keepChanges) {
                             // Overwrite our changes, if any
-                            Resources oldResources = Resources.fromFile(outputFile);
-                            if (oldResources != null) {
-                                for (ResTag rs : oldResources) {
-                                    if (rs.wasModified())
-                                        clonedResources.setContent(rs.getId(), rs.getContent());
-                                }
+                            for (ResTag rs : Resources.fromFile(outputFile)) {
+                                if (rs.wasModified())
+                                    clonedResources.setContent(rs.getId(), rs.getContent());
                             }
                         }
 
@@ -354,7 +354,14 @@ public class RepoHandler implements Comparable<RepoHandler> {
     //region Loading resources
 
     public Resources loadDefaultResources() {
-        return Resources.fromFile(getResourcesFile(DEFAULT_LOCALE));
+        // Mix up all the resource files into one
+        Resources resources = Resources.empty();
+        for (File f : getDefaultResourcesFiles()) {
+            for (ResTag rt : Resources.fromFile(f)) {
+                resources.addTag(rt);
+            }
+        }
+        return resources;
     }
 
     public Resources loadResources(@NonNull String locale) {
@@ -378,11 +385,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
             return false;
 
         File defaultFile = getResourcesFile(DEFAULT_LOCALE);
-        if (!defaultFile.isFile())
-            return false;
-
-        return ResourcesParser.applyTemplate(defaultFile,
-                loadResources(locale), out);
+        return defaultFile.isFile() &&
+                ResourcesParser.applyTemplate(defaultFile, loadResources(locale), out);
     }
 
     //endregion
