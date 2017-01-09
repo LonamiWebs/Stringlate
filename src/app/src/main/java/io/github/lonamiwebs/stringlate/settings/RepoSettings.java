@@ -90,6 +90,10 @@ public class RepoSettings {
         save();
     }
 
+    public void clearRemotePaths() {
+        mSettings.remove(KEY_REMOTE_PATHS);
+    }
+
     //endregion
 
     //region Load/save

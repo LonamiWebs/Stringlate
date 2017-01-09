@@ -14,6 +14,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -302,6 +304,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
         // Delete all the previous default resources since their
         // names might have changed, been removed, or some new added.
+        mSettings.clearRemotePaths();
         for (File f : getDefaultResourcesFiles())
             f.delete();
 
@@ -470,6 +473,19 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     public boolean hasRemoteUrls() {
         return getDefaultResourcesFiles().length == mSettings.getRemotePaths().size();
+    }
+
+    // Return a map consisting of (default local resources/templates, remote path)
+    // and replacing the "values" by the corresponding "values-xx"
+    public HashMap<File, String> getTemplateRemotePaths(String locale) {
+        HashMap<File, String> result = new HashMap<>();
+        HashMap<String, String> fileRemote =  mSettings.getRemotePaths();
+        for (Map.Entry<String, String> fr : fileRemote.entrySet()) {
+            File template = getDefaultResourcesFile(fr.getKey());
+            String remote = fr.getValue().replace("/values/", "/values-"+locale+"/");
+            result.put(template, remote);
+        }
+        return result;
     }
 
     //endregion

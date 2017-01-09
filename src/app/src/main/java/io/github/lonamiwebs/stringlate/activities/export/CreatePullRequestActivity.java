@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
@@ -191,14 +192,17 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                     publishProgress(new PUData(getString(R.string.creating_commit),
                             getString(R.string.creating_commit_long)));
 
-                    final HashMap<String, String> fileContents = new HashMap<>();
-                    for (File template : mRepo.getDefaultResourcesFiles()) {
-                        String content = mRepo.applyTemplate(template, mLocale);
-                        if (!content.isEmpty())
-                            fileContents.put(template.getName(), content);
+                    final HashMap<String, String> remoteContents = new HashMap<>();
+                    for (Map.Entry<File, String> templateRemote :
+                            mRepo.getTemplateRemotePaths(mLocale).entrySet()) {
+                        // Iterate over the local template files and the remote paths for this locale
+                        String content = mRepo.applyTemplate(templateRemote.getKey(), mLocale);
+                        if (!content.isEmpty()) {
+                            remoteContents.put(templateRemote.getValue(), content);
+                        }
                     }
                     commitResult = GitHub.gCreateCommitFile(token, repo,
-                            branch, fileContents, commitMessage);
+                            branch, remoteContents, commitMessage);
 
                 } catch (JSONException | InvalidObjectException e) {
                     publishProgress(new PUData(getString(R.string.commit_failed)));
