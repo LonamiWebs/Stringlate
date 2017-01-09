@@ -14,12 +14,17 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.git.GitHub;
+import java.io.File;
+import java.util.HashMap;
 
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_FILENAME;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_XML_CONTENT;
+import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.git.GitHub;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
+
+import static android.view.View.GONE;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
 
 public class CreateGistActivity extends AppCompatActivity {
 
@@ -27,7 +32,8 @@ public class CreateGistActivity extends AppCompatActivity {
 
     private AppSettings mSettings;
 
-    private String mXmlContent;
+    private RepoHandler mRepo;
+    private String mLocale;
 
     private EditText mDescriptionEditText;
     private CheckBox mIsPublicCheckBox;
@@ -52,11 +58,20 @@ public class CreateGistActivity extends AppCompatActivity {
 
         // Retrieve the strings.xml content to be exported
         Intent intent = getIntent();
-        mXmlContent = intent.getStringExtra(EXTRA_XML_CONTENT);
-        String filename = intent.getStringExtra(EXTRA_FILENAME);
+        mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
+        mLocale = intent.getStringExtra(EXTRA_LOCALE);
 
-        mFilenameEditText.setText(filename);
-        setTitle(getString(R.string.posting_gist_title, filename));
+        File[] defaultResources = mRepo.getDefaultResourcesFiles();
+        if (defaultResources.length > 1) {
+            // More than one file, don't allow to change the filename - use the original filename
+            mFilenameEditText.setVisibility(GONE);
+            setTitle(getString(R.string.posting_gist_title, ""));
+        } else {
+            // Only one file, let the user change it if they want to
+            String filename = defaultResources[0].getName();
+            mFilenameEditText.setText(filename);
+            setTitle(getString(R.string.posting_gist_title, filename));
+        }
 
         // Check whether the Gist can be non-anonymous
         boolean notAuth = !mSettings.hasGitHubAuthorization();
@@ -77,11 +92,26 @@ public class CreateGistActivity extends AppCompatActivity {
     //region Button events
 
     public void onPostGist(final View v) {
-        final String filename = mFilenameEditText.getText().toString().trim();
-        if (filename.length() == 0) {
-            mFilenameEditText.setError(getString(R.string.error_gist_filename_empty));
-            return;
+        final HashMap<String, String> fileContents = new HashMap<>();
+
+        File[] defaultResources = mRepo.getDefaultResourcesFiles();
+        if (defaultResources.length > 1) {
+            for (File template : defaultResources) {
+                String content = mRepo.applyTemplate(template, mLocale);
+                if (!content.isEmpty())
+                    fileContents.put(template.getName(), content);
+            }
+        } else {
+            final String filename = mFilenameEditText.getText().toString().trim();
+            if (filename.length() == 0) {
+                mFilenameEditText.setError(getString(R.string.error_gist_filename_empty));
+                return;
+            } else {
+                fileContents.put(filename,
+                        mRepo.applyTemplate(defaultResources[0], mLocale));
+            }
         }
+
         if (GitHub.gCannotCall()) {
             Toast.makeText(getApplicationContext(),
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
@@ -101,7 +131,7 @@ public class CreateGistActivity extends AppCompatActivity {
         new AsyncTask<Void, Void, JSONObject>() {
             @Override
             protected JSONObject doInBackground(Void... params) {
-                return GitHub.gCreateGist(description, isPublic, filename, mXmlContent, token);
+                return GitHub.gCreateGist(description, isPublic, fileContents, token);
             }
 
             @Override

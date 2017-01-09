@@ -46,6 +46,22 @@ public class LocaleString {
         return locale;
     }
 
+    // Useful when exporting to issue for example
+    public static String getEnglishDisplay(@NonNull String locale) {
+        if (locale.contains("-")) {
+            for (Locale l : Locale.getAvailableLocales())
+                if (!l.getCountry().isEmpty())
+                    if (locale.equals(l.getLanguage()+"-r"+l.getCountry()))
+                        return l.getDisplayName(Locale.ENGLISH);
+        } else {
+            for (Locale l : Locale.getAvailableLocales())
+                if (locale.equals(l.getLanguage()))
+                    if (l.getCountry().isEmpty())
+                        return l.getDisplayName(Locale.ENGLISH);
+        }
+        return locale;
+    }
+
     public static boolean isValid(@NonNull String locale) {
         if (locale.contains("-")) {
             for (Locale l : Locale.getAvailableLocales())

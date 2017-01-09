@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -133,12 +134,19 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return new File(mRoot, DEFAULT_LOCALE+"/"+filename);
     }
 
+    @NonNull
     public File[] getDefaultResourcesFiles() {
-        return new File(mRoot, DEFAULT_LOCALE).listFiles();
+        File root = new File(mRoot, DEFAULT_LOCALE);
+        if (root.isDirectory()) {
+            File[] files = root.listFiles();
+            if (files != null)
+                return files;
+        }
+        return new File[0];
     }
 
     public boolean hasDefaultLocale() {
-        return hasLocale(DEFAULT_LOCALE);
+        return getDefaultResourcesFiles().length > 0;
     }
 
     // Determines whether a given locale is saved or not
@@ -292,7 +300,11 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 mContext.getString(R.string.copying_res),
                 mContext.getString(R.string.copying_res_long));
 
-        // TODO Maybe remove all the previous default-locale files? Maybe their name changed
+        // Delete all the previous default resources since their
+        // names might have changed, been removed, or some new added.
+        for (File f : getDefaultResourcesFiles())
+            f.delete();
+
         // Iterate over all the found resources
         for (File clonedFile : foundResources) {
             Matcher m = mValuesLocalePattern.matcher(clonedFile.getAbsolutePath());
@@ -305,41 +317,52 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 if (m.group(1) == null) {
                     // If this is the default locale, save its remote path
                     // and clean it by removing all the translatable="false" tags
-                    outputFile = getDefaultResourcesFile(clonedFile.getName());
-                    ResourcesParser.cleanXml(clonedFile, outputFile);
 
-                    // Ensure the clean file has at least one translatable string, else ignore it
-                    Resources cleanResources = Resources.fromFile(outputFile);
-                    if (!cleanResources.isEmpty()) {
+                    // First load the cloned resources to ensure the contain translatable strings
+                    Resources clonedResources = Resources.fromFile(clonedFile);
+                    if (!clonedResources.isEmpty()) {
+                        // Clean the untranslatable strings while saving the clean file
+                        outputFile = getDefaultResourcesFile(clonedFile.getName());
+                        ResourcesParser.cleanXml(clonedFile, outputFile);
+
                         // Skip the '/' at the beginning (substring +1)
                         String remotePath = clonedFile.getAbsolutePath()
                                 .substring(clonedDir.getAbsolutePath().length()+1);
+
                         addRemotePath(clonedFile.getName(), remotePath);
                     }
                 } else {
                     // Get the file corresponding to this locale (group(1))
                     outputFile = getResourcesFile(m.group(1));
 
-                    // Load in memory the new cloned file, to ensure it's OK
-                    Resources clonedResources = Resources.fromFile(clonedFile);
-                    if (!clonedResources.isEmpty()) {
-                        if (keepChanges) {
-                            // Overwrite our changes, if any
-                            for (ResTag rs : Resources.fromFile(outputFile)) {
-                                if (rs.wasModified())
-                                    clonedResources.setContent(rs.getId(), rs.getContent());
+                    // Load in memory the old saved resources. We need to work
+                    // on this file because we're going to be merging changes
+                    // in order to handle multiple cloned resource files
+
+                    // TODO Optimize to pack strings corresponding to the same locale and
+                    // process it all at once, thus avoiding loading oldResources all the time
+                    Resources oldResources = Resources.fromFile(outputFile);
+
+                    // Also load the new resources (to both ensure it's OK and to copy the strings)
+                    Resources newResources = Resources.fromFile(clonedFile);
+
+                    if (keepChanges) {
+                        // We want to our previous keep changes, and so we
+                        // will only add the tags which were NOT modified
+                        for (ResTag rt : newResources) {
+                            if (!oldResources.wasModified(rt.getId())) {
+                                oldResources.addTag(rt);
                             }
                         }
-
-                        // Now that we're done, move the file to its destination
-                        if (outputFile.getParentFile().isDirectory()) {
-                            if (outputFile.isFile())
-                                outputFile.delete();
-                        } else {
-                            outputFile.getParentFile().mkdirs();
+                    } else {
+                        // We don't want to keep any change, simply merge the tags
+                        for (ResTag rt : newResources) {
+                            oldResources.addTag(rt);
                         }
-                        clonedFile.renameTo(outputFile);
                     }
+
+                    // Save the changes
+                    oldResources.save();
                 }
             }
         }
@@ -368,25 +391,40 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return Resources.fromFile(getResourcesFile(locale));
     }
 
-    // Applies the default resources as a template for the given locale's
-    // resources, returning the result as a String (might be null if failed)
-    public String applyDefaultTemplate(String locale) {
+    @NonNull
+    public String applyTemplate(File template, String locale) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        if (applyDefaultTemplate(locale, out))
+        if (applyTemplate(template, locale, out))
             return out.toString();
         else
-            return null;
+            return "";
     }
 
-    // Applies the default resources as a template for the given
-    // locale's resources, outputting the result to the given stream
-    public boolean applyDefaultTemplate(String locale, OutputStream out) {
-        if (!hasLocale(locale))
-            return false;
+    // TODO Why do I load the resources all the time - can't I just pass the loaded one?
+    public boolean applyTemplate(File template, String locale, OutputStream out) {
+        return hasLocale(locale) &&
+                template.isFile() &&
+                ResourcesParser.applyTemplate(template, loadResources(locale), out);
+    }
 
-        File defaultFile = getResourcesFile(DEFAULT_LOCALE);
-        return defaultFile.isFile() &&
-                ResourcesParser.applyTemplate(defaultFile, loadResources(locale), out);
+    @NonNull
+    public String mergeDefaultTemplate(String locale) {
+        // TODO What should we do if any fails? How can it even fail?
+        File[] files = getDefaultResourcesFiles();
+        if (files.length > 1) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            for (File template : files) {
+                String header = mContext.getString(R.string.xml_comment_filename, template.getName());
+                try {
+                    out.write(header.getBytes());
+                    applyTemplate(template, locale, out);
+                    out.write("\n".getBytes());
+                } catch (IOException ignored) { }
+            }
+            return out.toString();
+        } else {
+            return applyTemplate(files[0], locale);
+        }
     }
 
     //endregion
@@ -430,10 +468,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mSettings.addRemotePath(filename, remotePath);
     }
 
-    public String getRemoteUrl() {
-        // Stub! (What does stub even mean though?)
-        // TODO Edit this to actually work (remember to make changes where this is called)
-        return "";
+    public boolean hasRemoteUrls() {
+        return getDefaultResourcesFiles().length == mSettings.getRemotePaths().size();
     }
 
     //endregion
@@ -467,7 +503,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             return String.format("%s/%s", m.group(1), m.group(2));
         else
             throw new InvalidObjectException(
-                    "Only repositories with a GitHub url can be converted to owner and repository");
+                    "Only repositories with a GitHub url can be converted to owner and repository.");
     }
 
     public Bundle toBundle() {

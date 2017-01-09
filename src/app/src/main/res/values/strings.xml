@@ -150,4 +150,7 @@
     <string name="bytes_size_format" translatable="false">%.2f %s</string>
     <string name="issue_title_colon">Issue title:</string>
     <string name="issue_title">Issue title</string>
+    <string name="xml_comment_filename" translatable="false">&lt;!-- File \"%s\" --&gt;\n</string>
+    <string name="issue_title_empty">The issue title cannot be empty.</string>
+    <string name="issue_desc_x">The issue description must contain \"%x\".</string>
 </resources>

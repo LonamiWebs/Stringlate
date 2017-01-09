@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -47,12 +49,10 @@ import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_FILENAME;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REMOTE_PATH;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_XML_CONTENT;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_CREATE_FILE;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_OPEN_TREE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_STRING_SELECTED;
 
 public class TranslateActivity extends AppCompatActivity {
@@ -226,6 +226,9 @@ public class TranslateActivity extends AppCompatActivity {
                 case RESULT_STRING_SELECTED:
                     setStringId(data.getStringExtra("id"));
                     break;
+                case RESULT_OPEN_TREE:
+                    doExportManyToSd(data.getData());
+                    break;
             }
         }
     }
@@ -374,47 +377,97 @@ public class TranslateActivity extends AppCompatActivity {
     // Exports the currently selected locale resources to the SD card
     private void exportToSd() {
         if (!isLocaleSelected(true)) return;
-        String filename = mSelectedLocaleResources.getFilename();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
+        File[] files = mRepo.getDefaultResourcesFiles();
+        if (files.length == 1) {
+            // Export a single file
+            String filename = files[0].getName();
 
-            intent.setType("text/xml");
-            intent.putExtra(Intent.EXTRA_TITLE, filename);
-            startActivityForResult(intent, RESULT_CREATE_FILE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+                intent.setType("text/xml");
+                intent.putExtra(Intent.EXTRA_TITLE, filename);
+                startActivityForResult(intent, RESULT_CREATE_FILE);
+            } else {
+                File output = new File(getCreateExportRoot(), files[0].getName());
+                doExportToSd(Uri.fromFile(output));
+            }
         } else {
-            File output = new File(Environment.getExternalStorageDirectory(),
-                    mSelectedLocaleResources.getFilename());
-            doExportToSd(Uri.fromFile(output));
+            // Export multiple files
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                // I don't know why "document tree" doesn't work with ≥ KitKat
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                startActivityForResult(intent, RESULT_OPEN_TREE);
+            } else {
+                File root = getCreateExportRoot();
+                doExportManyToSd(Uri.fromFile(root));
+            }
         }
     }
 
+    private File getCreateExportRoot() {
+        String path;
+        try {
+            path = getString(R.string.app_name) + "/" + mRepo.toOwnerRepo();
+        } catch (InvalidObjectException ignored) {
+            path = getString(R.string.app_name);
+        }
+        File root = new File(Environment.getExternalStorageDirectory(), path);
+        if (root.isDirectory())
+            root.mkdirs();
+        return root;
+    }
+
+    // This method will only work if there is one template
     private void doExportToSd(Uri uri) {
         if (!isLocaleSelected(true)) return;
         try {
-            ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "w");
-            FileOutputStream out = new FileOutputStream(pfd.getFileDescriptor());
-            if (!mRepo.applyDefaultTemplate(mSelectedLocale, out))
-                throw new IOException("Apply default template failed");
-
+            doExportToSd(uri, mRepo.getDefaultResourcesFiles()[0]);
             Toast.makeText(this, getString(R.string.export_file_success, uri.getPath()),
                     Toast.LENGTH_SHORT).show();
-
-            out.close();
-            pfd.close();
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.export_file_failed, Toast.LENGTH_SHORT).show();
         }
     }
 
+    private void doExportManyToSd(Uri uri) {
+        if (!isLocaleSelected(true)) return;
+        DocumentFile pickedDir = DocumentFile.fromTreeUri(this, uri);
+
+        try {
+            for (File template : mRepo.getDefaultResourcesFiles()) {
+                DocumentFile outFile = pickedDir.createFile("text/xml", template.getName());
+                doExportToSd(outFile.getUri(), template);
+            }
+            Toast.makeText(this, getString(R.string.export_file_success, uri.getPath()),
+                    Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, R.string.export_file_failed, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void doExportToSd(Uri uri, File template)
+            throws IOException {
+
+        ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "w");
+        FileOutputStream out = new FileOutputStream(pfd.getFileDescriptor());
+        if (!mRepo.applyTemplate(template, mSelectedLocale, out))
+            throw new IOException("Apply default template failed.");
+
+        out.close();
+        pfd.close();
+    }
+
     // Exports the currently selected locale resources to a GitHub Gist
     private void exportToGist() {
         if (!isLocaleSelected(true)) return;
         Intent intent = new Intent(this, CreateGistActivity.class);
-        intent.putExtra(EXTRA_XML_CONTENT, mRepo.applyDefaultTemplate(mSelectedLocale));
-        intent.putExtra(EXTRA_FILENAME, mSelectedLocaleResources.getFilename());
+        intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+        intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
         startActivity(intent);
     }
 
@@ -427,7 +480,6 @@ public class TranslateActivity extends AppCompatActivity {
         }
         Intent intent = new Intent(this, CreateIssueActivity.class);
         intent.putExtra(EXTRA_REPO, mRepo.toBundle());
-        intent.putExtra(EXTRA_XML_CONTENT, mRepo.applyDefaultTemplate(mSelectedLocale));
         intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
         startActivity(intent);
     }
@@ -435,9 +487,8 @@ public class TranslateActivity extends AppCompatActivity {
     // Exports the currently selected locale resources to a GitHub Pull Request
     private void exportToPullRequest() {
         if (!isLocaleSelected(true)) return;
-        String remotePath = mRepo.getRemoteUrl();
-        if (remotePath.isEmpty()) {
-            // TODO Try to guess the path based on the default resources; it probably was created
+        if (!mRepo.hasRemoteUrls()) {
+            // TODO Remove this check by version 1.0 or so? Or can we be really missing the urls somehow?
             Toast.makeText(this, R.string.sync_required, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -452,16 +503,14 @@ public class TranslateActivity extends AppCompatActivity {
         }
         Intent intent = new Intent(this, CreatePullRequestActivity.class);
         intent.putExtra(EXTRA_REPO, mRepo.toBundle());
-        intent.putExtra(EXTRA_XML_CONTENT, mRepo.applyDefaultTemplate(mSelectedLocale));
         intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
-        intent.putExtra(EXTRA_REMOTE_PATH, remotePath);
         startActivity(intent);
     }
 
     // Exports the currently selected locale resources to a plain text share intent
     private void exportToShare() {
         if (!isLocaleSelected(true)) return;
-        String xml = mRepo.applyDefaultTemplate(mSelectedLocale);
+        String xml = mRepo.mergeDefaultTemplate(mSelectedLocale);
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, xml);
@@ -473,7 +522,7 @@ public class TranslateActivity extends AppCompatActivity {
     private void exportToCopy() {
         if (!isLocaleSelected(true)) return;
         String filename = mSelectedLocaleResources.getFilename();
-        String xml = mRepo.applyDefaultTemplate(mSelectedLocale);
+        String xml = mRepo.mergeDefaultTemplate(mSelectedLocale);
 
         ClipboardManager clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(ClipData.newPlainText(filename, xml));

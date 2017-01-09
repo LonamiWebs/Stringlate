@@ -79,7 +79,6 @@ public class ResourcesParser {
         HashSet<ResTag> strings = new HashSet<>();
 
         parser.require(XmlPullParser.START_TAG, ns, RESOURCES);
-        String remotePath = parser.getAttributeValue(null, REMOTE_PATH);
 
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG)
@@ -121,6 +120,7 @@ public class ResourcesParser {
 
         if (!readBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE)) {
             // We don't care about not-translatable strings
+            // TODO Actually there shouldn't be any though if we already cleaned the .xml file?
             skipInnerXml(parser);
             parser.require(XmlPullParser.END_TAG, ns, STRING);
             return null;
@@ -300,7 +300,7 @@ public class ResourcesParser {
 
     //region Resources -> Xml
 
-    public static boolean parseToXml(Resources resources, OutputStream out) {
+    static boolean parseToXml(Resources resources, OutputStream out) {
         XmlSerializer serializer = Xml.newSerializer();
 
         // We need to keep track of the parents which we have done already.
@@ -561,8 +561,8 @@ public class ResourcesParser {
         boolean translatable = tranMatcher.find() ?
                 "true".equals(tranMatcher.group(1)) : DEFAULT_TRANSLATABLE;
 
+        // Should never fail
         if (nameMatcher.find()) {
-            // Should never fail
             String content = resources.getContent(nameMatcher.group(1));
 
             if (translatable && content != null && !content.isEmpty()) {

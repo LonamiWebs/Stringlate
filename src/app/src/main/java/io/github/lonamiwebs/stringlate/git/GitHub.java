@@ -9,6 +9,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InvalidObjectException;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 import io.github.lonamiwebs.stringlate.utilities.WebUtils;
@@ -51,7 +53,8 @@ public class GitHub {
     }
 
     public static JSONObject gCreateGist(String description, boolean isPublic,
-                                   String filename, String content, @NonNull String token) {
+                                         HashMap<String, String> fileContents,
+                                         @NonNull String token) {
         try {
             JSONObject params = new JSONObject();
 
@@ -60,12 +63,14 @@ public class GitHub {
 
             params.put("public", isPublic);
 
-            JSONObject fileObject = new JSONObject();
-            fileObject.put("content", content);
-
             JSONObject filesObject = new JSONObject();
-            filesObject.put(filename, fileObject);
+            for (Map.Entry<String, String> fileContent : fileContents.entrySet()) {
+                JSONObject fileObject = new JSONObject();
+                fileObject.put("content", fileContent.getValue());
 
+                // Add this file object (with content) using the filename as key
+                filesObject.put(fileContent.getKey(), fileObject);
+            }
             params.put("files", filesObject);
 
             if (token.isEmpty())
@@ -220,8 +225,9 @@ public class GitHub {
 
     // Really big thanks to http://www.levibotelho.com/development/commit-a-file-with-the-github-api
     public static JSONObject gCreateCommitFile(final String token, final RepoHandler repo,
-                                               final String branch, final String content,
-                                               final String filename, final String commitMessage)
+                                               final String branch,
+                                               final HashMap<String, String> pathContents,
+                                               final String commitMessage)
             throws JSONException, InvalidObjectException {
         final String tokenQuery = "?access_token="+token;
         final String ownerRepo = repo.toOwnerRepo();
@@ -240,12 +246,18 @@ public class GitHub {
 
         // Step 3. Post your new file to the server (POST /repos/:owner/:repo/git/blobs)
         // https://developer.github.com/v3/git/blobs/#create-a-blob
-        JSONObject newBlob = new JSONObject();
-        newBlob.put("content", content);
-        newBlob.put("encoding", "utf-8");
+        final HashMap<String, JSONObject> pathBlobs = new HashMap<>();
 
-        JSONObject blob = new JSONObject(WebUtils.performCall(
-                gGetUrl("repos/%s/git/blobs%s", ownerRepo, tokenQuery), newBlob));
+        for (Map.Entry<String, String> pathContent : pathContents.entrySet()) {
+            JSONObject newBlob = new JSONObject();
+            newBlob.put("content", pathContent.getValue());
+            newBlob.put("encoding", "utf-8");
+
+            JSONObject blob = new JSONObject(WebUtils.performCall(
+                    gGetUrl("repos/%s/git/blobs%s", ownerRepo, tokenQuery), newBlob));
+
+            pathBlobs.put(pathContent.getKey(), blob);
+        }
 
         // Step 4. Get a hold of the tree that the commit points to (GET /repos/:owner/:repo/git/trees/:sha)
         // https://developer.github.com/v3/git/trees/#get-a-tree
@@ -260,14 +272,16 @@ public class GitHub {
         JSONObject newTree = new JSONObject();
         newTree.put("base_tree", baseTree.get("sha"));
         {
-            JSONObject blobFileTree = new JSONObject();
-            blobFileTree.put("path", filename);
-            blobFileTree.put("mode", "100644"); // 100644 (blob), 100755 (executable), 040000 (subdirectory/tree), 160000 (submodule/commit), or 120000 (blob specifying path of symlink)
-            blobFileTree.put("type", "blob"); // "blob", "tree", or "commit"
-            blobFileTree.put("sha", blob.getString("sha"));
-            // More files could be added to the array
             JSONArray blobFileArray = new JSONArray();
-            blobFileArray.put(0, blobFileTree);
+            for (Map.Entry<String, JSONObject> pathBlob : pathBlobs.entrySet()) {
+                JSONObject blobFileTree = new JSONObject();
+                blobFileTree.put("path", pathBlob.getKey());
+                blobFileTree.put("mode", "100644"); // 100644 (blob), 100755 (executable), 040000 (subdirectory/tree), 160000 (submodule/commit), or 120000 (blob specifying path of symlink)
+                blobFileTree.put("type", "blob"); // "blob", "tree", or "commit"
+                blobFileTree.put("sha", pathBlob.getValue().getString("sha"));
+
+                blobFileArray.put(blobFileTree);
+            }
 
             // Finally put the array with our files
             newTree.put("tree", blobFileArray);

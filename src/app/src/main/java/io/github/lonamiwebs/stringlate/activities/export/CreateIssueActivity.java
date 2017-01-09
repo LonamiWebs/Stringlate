@@ -16,13 +16,12 @@ import java.io.InvalidObjectException;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
-import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.git.GitHub;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_XML_CONTENT;
 
 public class CreateIssueActivity extends AppCompatActivity {
 
@@ -31,7 +30,7 @@ public class CreateIssueActivity extends AppCompatActivity {
     private AppSettings mSettings;
 
     private RepoHandler mRepo;
-    private String mXmlContent;
+    private String mLocale;
 
     private EditText mIssueTitleEditText;
     private EditText mIssueDescriptionEditText;
@@ -53,12 +52,11 @@ public class CreateIssueActivity extends AppCompatActivity {
         // Retrieve the strings.xml content to be exported
         Intent intent = getIntent();
         mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
-        mXmlContent = intent.getStringExtra(EXTRA_XML_CONTENT);
-        String locale = intent.getStringExtra(EXTRA_LOCALE);
+        mLocale = intent.getStringExtra(EXTRA_LOCALE);
 
-        String display = LocaleString.getDisplay(locale);
-        mIssueTitleEditText.setText(getString(R.string.added_x_translation, locale, display));
-        mIssueDescriptionEditText.setText(getString(R.string.new_issue_template, locale, display));
+        String display = LocaleString.getEnglishDisplay(mLocale);
+        mIssueTitleEditText.setText(getString(R.string.added_x_translation, mLocale, display));
+        mIssueDescriptionEditText.setText(getString(R.string.new_issue_template, mLocale, display));
     }
 
     //endregion
@@ -68,15 +66,16 @@ public class CreateIssueActivity extends AppCompatActivity {
     public void onCreateIssue(final View v) {
         String title = mIssueTitleEditText.getText().toString().trim();
         if (title.isEmpty()) {
-            Toast.makeText(this, "The issue title cannot be empty.", Toast.LENGTH_SHORT).show();
+            mIssueTitleEditText.setError(getString(R.string.issue_title_empty));
             return;
         }
         String description = mIssueDescriptionEditText.getText().toString().trim();
         if (!description.contains("%x")) {
-            Toast.makeText(this, "The issue description must contain \"%x\".", Toast.LENGTH_SHORT).show();
+            mIssueDescriptionEditText.setError(getString(R.string.issue_desc_x));
             return;
         } else {
-            description = description.replace("%x", String.format("```xml\n%s\n```", mXmlContent));
+            String xml = mRepo.mergeDefaultTemplate(mLocale);
+            description = description.replace("%x", String.format("```xml\n%s\n```", xml));
         }
         if (GitHub.gCannotCall()) {
             Toast.makeText(this,

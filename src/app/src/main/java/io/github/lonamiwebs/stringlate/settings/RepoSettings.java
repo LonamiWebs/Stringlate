@@ -49,7 +49,7 @@ public class RepoSettings {
         return mSettings.optString(KEY_LAST_LOCALE, DEFAULT_LAST_LOCALE);
     }
 
-    private HashMap<String, String> getRemotePaths() {
+    public HashMap<String, String> getRemotePaths() {
         HashMap<String, String> map = new HashMap<>();
         JSONObject json = mSettings.optJSONObject(KEY_REMOTE_PATHS);
         if (json != null) {

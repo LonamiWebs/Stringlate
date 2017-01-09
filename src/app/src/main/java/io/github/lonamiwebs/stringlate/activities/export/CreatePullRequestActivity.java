@@ -18,19 +18,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.InvalidObjectException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
-import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.git.GitHub;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REMOTE_PATH;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_XML_CONTENT;
 
 public class CreatePullRequestActivity extends AppCompatActivity {
 
@@ -43,8 +43,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
     private EditText mCommitMessageEditText;
 
     private RepoHandler mRepo;
-    private String mXmlContent;
-    private String mRemotePath;
+    private String mLocale;
     private String mUsername;
 
     private Boolean mNeedFork = null;
@@ -66,12 +65,11 @@ public class CreatePullRequestActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
-        mXmlContent = intent.getStringExtra(EXTRA_XML_CONTENT);
-        String locale = intent.getStringExtra(EXTRA_LOCALE);
-        mRemotePath = intent.getStringExtra(EXTRA_REMOTE_PATH);
+        mLocale = intent.getStringExtra(EXTRA_LOCALE);
 
         mCommitMessageEditText.setText(getString(
-                R.string.added_x_translation_spam, locale, LocaleString.getDisplay(locale)));
+                R.string.added_x_translation_spam, mLocale,
+                LocaleString.getEnglishDisplay(mLocale)));
 
         checkPermissions();
         checkBranches();
@@ -193,8 +191,15 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                     publishProgress(new PUData(getString(R.string.creating_commit),
                             getString(R.string.creating_commit_long)));
 
-                    commitResult = GitHub.gCreateCommitFile(token, repo, branch,
-                            mXmlContent, mRemotePath, commitMessage);
+                    final HashMap<String, String> fileContents = new HashMap<>();
+                    for (File template : mRepo.getDefaultResourcesFiles()) {
+                        String content = mRepo.applyTemplate(template, mLocale);
+                        if (!content.isEmpty())
+                            fileContents.put(template.getName(), content);
+                    }
+                    commitResult = GitHub.gCreateCommitFile(token, repo,
+                            branch, fileContents, commitMessage);
+
                 } catch (JSONException | InvalidObjectException e) {
                     publishProgress(new PUData(getString(R.string.commit_failed)));
                     e.printStackTrace();

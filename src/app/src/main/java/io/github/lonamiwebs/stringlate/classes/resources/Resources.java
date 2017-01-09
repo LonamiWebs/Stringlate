@@ -139,6 +139,16 @@ public class Resources implements Iterable<ResTag> {
         return "";
     }
 
+    // Determines whether the resource ID was modified or not
+    // If this resource ID doesn't exist, then it obviously wasn't modified
+    public boolean wasModified(String resourceId) {
+        for (ResTag rs : mStrings)
+            if (rs.getId().equals(resourceId))
+                return rs.wasModified();
+
+        return false;
+    }
+
     //endregion
 
     //region Updating (setting) content
@@ -181,7 +191,8 @@ public class Resources implements Iterable<ResTag> {
     }
 
     public void addTag(ResTag rt) {
-        mStrings.add(rt);
+        if (mStrings.add(rt))
+            mSavedChanges = false;
     }
 
     //endregion
