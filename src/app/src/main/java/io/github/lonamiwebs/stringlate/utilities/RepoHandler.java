@@ -412,7 +412,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     @NonNull
     public String mergeDefaultTemplate(String locale) {
-        // TODO What should we do if any fails? How can it even fail?
+        // TODO What should we do if any fails? How can it even fail? No translations for a file?
         File[] files = getDefaultResourcesFiles();
         if (files.length > 1) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();

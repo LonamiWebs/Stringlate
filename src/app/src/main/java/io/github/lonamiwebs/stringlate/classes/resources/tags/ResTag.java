@@ -28,6 +28,9 @@ public abstract class ResTag implements Comparable<ResTag> {
 
     public boolean wasModified() { return mModified; }
 
+    @NonNull
+    public abstract ResTag clone(String newContent);
+
     //endregion
 
     //region Setters

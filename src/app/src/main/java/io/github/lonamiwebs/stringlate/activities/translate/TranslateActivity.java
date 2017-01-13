@@ -72,7 +72,7 @@ public class TranslateActivity extends AppCompatActivity {
     private TextView mProgressTextView;
 
     private String mSelectedLocale;
-    private String mSelectedResourceId;
+    private ResTag mSelectedResource;
     private boolean mShowTranslated;
     private MenuItem mShowTranslatedMenuItem;
 
@@ -631,7 +631,7 @@ public class TranslateActivity extends AppCompatActivity {
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             if (mSelectedLocaleResources != null) {
                 String content = mTranslatedStringEditText.getText().toString();
-                mSelectedLocaleResources.setContent(mSelectedResourceId, content);
+                mSelectedLocaleResources.setContent(mSelectedResource, content);
                 updateProgress();
             }
         }
@@ -897,8 +897,8 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Updates the selected resource ID and also the EditTexts for its contents
     private void updateSelectedResourceId(String resourceId) {
-        mSelectedResourceId = resourceId;
-        mOriginalStringEditText.setText(mDefaultResources.getContent(resourceId));
+        mSelectedResource = mDefaultResources.getTag(resourceId);
+        mOriginalStringEditText.setText(mSelectedResource.getContent());
         mTranslatedStringEditText.setText(mSelectedLocaleResources.getContent(resourceId));
         checkPreviousNextVisibility();
     }

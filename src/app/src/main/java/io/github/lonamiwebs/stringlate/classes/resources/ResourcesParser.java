@@ -16,8 +16,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,12 +49,14 @@ public class ResourcesParser {
     private final static String ID = "name";
     private final static String TRANSLATABLE = "translatable";
     private final static String QUANTITY = "quantity";
+    private final static String INDEX = "index";
     private final static String MODIFIED = "modified";
 
     private final static String REMOTE_PATH = "remote";
 
     private final static boolean DEFAULT_TRANSLATABLE = true;
     private final static boolean DEFAULT_MODIFIED = false;
+    private final static int DEFAULT_INDEX = -1;
 
     //endregion
 
@@ -171,9 +176,11 @@ public class ResourcesParser {
                 if (name.equals(ITEM)) {
                     parser.require(XmlPullParser.START_TAG, ns, ITEM);
                     boolean modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
+                    int index = readIntAttr(parser, INDEX, DEFAULT_INDEX);
+
                     String content = getInnerXml(parser).replace('\n', ' ').replace("\\n", "\n");
                     if (!content.isEmpty())
-                        result.addItem(content, modified);
+                        result.addItem(content, modified, index);
                 } else {
                     skip(parser);
                 }
@@ -230,6 +237,15 @@ public class ResourcesParser {
 
         return Boolean.parseBoolean(value);
     }
+
+    private static int readIntAttr(XmlPullParser parser, String attr, int defaultV) {
+        String value = parser.getAttributeValue(null, attr);
+        if (value == null)
+            return defaultV;
+
+        return Integer.parseInt(value);
+    }
+
     // Reads the inner xml of a tag before moving to the next one
     // Original source: stackoverflow.com/a/16069754/4759433 by @Maarten
     private static String getInnerXml(XmlPullParser parser)
@@ -361,13 +377,14 @@ public class ResourcesParser {
         serializer.startTag(ns, STRING_ARRAY);
         serializer.attribute(ns, ID, array.getId());
 
-        // Ensure that we save the strings in the correct order
-        array.sort();
         for (ResStringArray.Item item : array.expand()) {
             serializer.startTag(ns, ITEM);
             if (item.wasModified() != DEFAULT_MODIFIED)
                 serializer.attribute(ns, MODIFIED, Boolean.toString(item.wasModified()));
 
+            // We MUST save the index because the user might have
+            // translated first the non-first item from the array. Darn it!
+            serializer.attribute(ns, INDEX, Integer.toString(item.getIndex()));
             serializer.text(item.getContent().replace("\n", "\\n"));
             serializer.endTag(ns, ITEM);
         }
@@ -454,41 +471,43 @@ public class ResourcesParser {
 
     //region Using another file as a template
 
-    //region Matches
-
-    private static final Pattern STRING_TAG_PATTERN =
-    //                        <string        attr   =     "value"      >content</    string    >
-            Pattern.compile("(<string(?:\\s+\\w+\\s*=\\s*\"\\w+\")+\\s*>)(.+?)(</\\s*string\\s*>)");
-
-    private static final Pattern STRING_CLOSE_TAG_PATTERN =
-    //                       </    string    >
-            Pattern.compile("</\\s*string\\s*>");
-
-    private static final Pattern STRING_NAME_PATTERN =
-    //                       name    =     "value__"
-            Pattern.compile("name\\s*=\\s*\"(\\w+)\"");
-
-    private static final Pattern STRING_TRANSLATABLE_PATTERN =
-    //                       translatable    =     "value__"
-            Pattern.compile("translatable\\s*=\\s*\"(\\w+)\"");
-
-    //endregion
-
     //region Writer utilities
 
-    // TODO < and > should not ALWAYS be replaced (although XmlSerializer does that too)
-    // If the xml made by string is valid, then these should be kept
-    private static void writeSanitize(BufferedWriter writer, String string)
-            throws IOException {
+    private static void writeSanitize(PrintWriter writer, String string) {
         char c;
-        for (int i = 0; i < string.length(); i++) {
+        int length = string.length();
+        // First count '<' and '>' on the string. If there is the
+        // same amount  of each on the string, assume it's valid HTML
+        int open = 0;
+        for (int i = 0; i < length; i++) {
+            switch (string.charAt(i)) {
+                case '<': open++; break;
+                case '>': open--; break;
+            }
+        }
+        boolean replaceLtGt = open > 0; // Using > is actually OK (open will be negative)
+
+        for (int i = 0; i < length; i++) {
             c = string.charAt(i);
             switch (c) {
-                case '&': writer.write("&amp;"); break;
-                case '<': writer.write("&lt;"); break;
-                case '>': writer.write("&gt;"); break;
-                case '\n': writer.write("\\n"); break;
-                default: writer.write(c); break;
+                // These should always be escaped
+                case '&': writer.append("&amp;"); break;
+                case '\'': writer.append("\\'"); break;
+
+                // We might or not need to replace <>
+                case '<': writer.append(replaceLtGt ? "&lt;" : "<"); break;
+                case '>': writer.append(replaceLtGt ? "&gt;" : ">"); break;
+
+                // Quotes are a bit special
+                case '"':
+                    if (i == 0 || i == string.length() - 1)
+                        writer.append('"');
+                    else
+                        writer.append("\\\"");
+                    break;
+
+                // Normal character
+                default: writer.append(c); break;
             }
         }
     }
@@ -497,196 +516,254 @@ public class ResourcesParser {
 
     //region Applying the template
 
-    // Approach used: read the original xml file line by line and
-    // find the <string> tags with a regex so we can tell where to replace.
-    // Then apply the replacements accordingly when writing to the output stream.
-    public static boolean applyTemplate(File originalFile, Resources resources, OutputStream out) {
-        // Read the file line by line. We will ignore those that contain
-        // translatable="false" or those for which we have no translation
+    // This will match either <string>, <string-array>, <plurals> or <item> from start to end.
+    // It will also match the attributes (attribute_a="value" attribute_b="value") and the content.
+    private static Pattern RES_TAG_PATTERN = Pattern.compile(
+            "<(string(?:-array)?|plurals|item)((?:\\s+\\w+\\s*=\\s*\"\\w+\")*)\\s*>([\\S\\s]*?)(?:</\\s*\\1\\s*>)");
 
+    // This should be matched against the .group(2) from the above pattern
+    private static Pattern ATTRIBUTE_PATTERN = Pattern.compile("(\\w+)\\s*=\\s*\"(\\w+)\"");
+
+    //region Actual code
+
+    private static class DirtyRange {
+        final int start, end;
+        DirtyRange(int s, int e) {
+            start = s;
+            end = e;
+        }
+    }
+
+    // Replacement holder - on the original xml (the "template")
+    // there will exist several of these to indicate where the
+    // replacements should be made
+    private static class ReplaceHolder {
+        final int start, end;
+        final String replacement;
+
+        ReplaceHolder(int start, int end, String replacement) {
+            this.start = start;
+            this.end = end;
+            this.replacement = replacement;
+        }
+    }
+
+    private static String getAttr(String attrs, String attrName) {
+        Matcher m = ATTRIBUTE_PATTERN.matcher(attrs);
+        while (m.find()) {
+            if (m.group(1).equals(attrName))
+                return m.group(2);
+        }
+        return "";
+    }
+
+    private static boolean isWhitespace(String string) {
+        for (int i = 0; i < string.length(); i++)
+            if (!Character.isWhitespace(string.charAt(i)))
+                return false;
+        return true;
+    }
+
+    // Will return an empty string if there is no available translation
+    private static String cleanMissingStrings(String xml, Resources resources) {
+        // TODO Ignore "<!-- <string name="missing">value</string> -->" comments?
+        // Maybe scan for comments and if a match is found inside a comment… Discard it?
+        // Or maybe it's just over complication.
+        //
+        // TODO Instead a replacement range, perhaps I could just eat that part up…?
+        // Well that's what I do anyway when writing the replacement.
+        boolean haveAny = false;
+
+        // 1. Find dirty tags (those which we have no translation for)
+        Queue<DirtyRange> dirtyRanges = new LinkedList<>();
+
+        Matcher mTag = RES_TAG_PATTERN.matcher(xml);
+        while (mTag.find()) {
+            String id = getAttr(mTag.group(2), ID);
+            if (resources.contains(id)) {
+                // This file contains at least one translation
+                haveAny = true;
+            } else {
+                // We don't have a translation, so this tag is dirty. Decrease
+                // the range by 1 not to eat up the next character (due to the i++)
+                dirtyRanges.add(new DirtyRange(mTag.start(), mTag.end()-1));
+            }
+        }
+
+        // There is no string we have a translation for, so return an empty string
+        if (!haveAny)
+            return "";
+
+        // We might want to early terminate if we have a translation for all the strings
+        if (dirtyRanges.isEmpty())
+            return xml;
+
+        // 2. Remove the dirty tags and mark those lines as dirty too
+        int line = 0;
+        int lastLine = -1; // To avoid adding the same line twice
+        Queue<Integer> dirtyLines = new LinkedList<>();
+
+        // Save result here
+        StringBuilder noDirty = new StringBuilder();
+
+        // Get first range and iterate over the characters of the xml
+        DirtyRange range = dirtyRanges.poll();
+        for (int i = 0; i < xml.length(); i++) {
+            char c = xml.charAt(i);
+
+            if (range == null || i < range.start) {
+                // Copy this character since it's not part of the dirty tag
+                noDirty.append(c);
+
+                // Note how we increment the line iff it was copied,
+                // otherwise it was removed and should be excluded
+                if (c == '\n') {
+                    line++;
+                }
+            } else {
+                // Omit these characters since we're in a dirty tag,
+                // and mark the line as dirty iff it wasn't marked before
+                if (lastLine != line) {
+                    dirtyLines.add(line);
+                    lastLine = line;
+                }
+
+                // >= not to skip to the next character
+                if (i >= range.end) {
+                    // We're outside the range now, so pick up the next range
+                    range = dirtyRanges.poll();
+                }
+            }
+        }
+
+        // Store our new xml
+        xml = noDirty.toString();
+
+        // 3. Clean the dirty lines iff they're whitespace only
+        String[] lines = xml.split("\\n");
+        Integer dirtyLine = dirtyLines.poll();
+
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < lines.length; i++) {
+            // If there are no more dirty lines
+            // Or we are not at a dirty line yet
+            // Or this line is not all whitespace, append it
+            if (dirtyLine == null || i != dirtyLine || !isWhitespace(lines[i])) {
+                result.append(lines[i]);
+                result.append('\n');
+            } else {
+                // Get the next dirty line while ignoring this line too
+                dirtyLine = dirtyLines.poll();
+            }
+        }
+
+        // We can finally return the clean xml
+        return result.toString();
+    }
+
+    // This assumes a clean xml, i.e., we have a translation for all the strings in it
+    private static boolean writeReplaceStrings(String xml, Resources resources, OutputStream out) {
+        // Match on the original xml to determine where replacements will be made
+        Matcher mTag = RES_TAG_PATTERN.matcher(xml);
+
+        // Matches will be in order, so use a queue (first in, first out)
+        Queue<ReplaceHolder> holders = new LinkedList<>();
+        while (mTag.find()) {
+            int contentStart = mTag.start(3);
+            int contentEnd = contentStart + mTag.group(3).length();
+
+            String id = getAttr(mTag.group(2), ID);
+            if (id.isEmpty())
+                continue;
+
+            // Should never fail - plus do we even care it's empty? No resource would be found
+            // Also, we obviously have this string translated (xml was cleaned, right?),
+            // thus there is no need to ensure whether we need to delete the line or not
+            Matcher mItem;
+            switch (mTag.group(1)) {
+                case STRING:
+                    holders.add(new ReplaceHolder(contentStart, contentEnd,
+                            resources.getContent(id)));
+                    break;
+                case STRING_ARRAY:
+                    ResStringArray array = ((ResStringArray.Item)resources.getTag(id)).getParent();
+                    int i = 0;
+                    mItem = RES_TAG_PATTERN.matcher(mTag.group(3));
+                    while (mItem.find()) {
+                        if (mItem.group(1).equals(ITEM)) {
+                            // We must take the base offset (contentStart) into account…
+                            int cs = contentStart + mItem.start(3);
+                            int ce = cs + mItem.group(3).length();
+
+                            // We might not have this content, but we wish to keep the order
+                            ResStringArray.Item item = array.getItem(i);
+                            String content = item == null ? "" : item.getContent();
+                            holders.add(new ReplaceHolder(cs, ce, content));
+                            i++;
+                        }
+                    }
+                    break;
+                case PLURALS:
+                    ResPlurals plurals = ((ResPlurals.Item)resources.getTag(id)).getParent();
+                    mItem = RES_TAG_PATTERN.matcher(mTag.group(3));
+                    while (mItem.find()) {
+                        if (mItem.group(1).equals(ITEM)) {
+                            String quantity = getAttr(mItem.group(2), QUANTITY);
+                            int cs = contentStart + mItem.start(3);
+                            int ce = cs + mItem.group(3).length();
+
+                            // We might not have this content, but we wish to keep the order
+                            ResPlurals.Item item = plurals.getItem(quantity);
+                            String content = item == null ? "" : item.getContent();
+                            holders.add(new ReplaceHolder(cs, ce, content));
+                        }
+                    }
+                    break;
+                // case ITEM: break; // Should not be on the wild though
+            }
+        }
+
+        // Write the result by applying the required replacements
+        PrintWriter writer = new PrintWriter(out);
+        ReplaceHolder holder = holders.poll();
+        for (int i = 0; i < xml.length(); i++) {
+            if (holder == null || i < holder.start) {
+                // There are no more holders left, simply copy the characters
+                writer.append(xml.charAt(i));
+            } else {
+                // We reached the current replacement holder
+                // Replace the original content with our new content
+                writeSanitize(writer, holder.replacement);
+                i = holder.end - 1; // Skip to the end of the tag
+                // Decrease the range by 1 not to eat up the next character (due to the i++)
+
+                holder = holders.poll(); // Next holder
+            }
+        }
+        writer.close();
+        return writer.checkError();
+    }
+
+    public static boolean applyTemplate(File template, Resources resources, OutputStream out) {
         try {
-            FileInputStream in = new FileInputStream(originalFile);
+            StringBuilder sb = new StringBuilder();
+            FileInputStream in = new FileInputStream(template);
 
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
+            while ((line = reader.readLine()) != null)
+                sb.append(line).append('\n');
 
-            while ((line = reader.readLine()) != null) {
-                // Match on the current line to determine where replacements will be made
-                Matcher m = STRING_TAG_PATTERN.matcher(line);
-                if (m.find()) {
-                    // Count the occurrences of </string>
-                    int count = 0;
-                    Matcher closeTagMatcher = STRING_CLOSE_TAG_PATTERN.matcher(line);
-                    while (closeTagMatcher.find()) {
-                        count++;
-                    }
-                    if (count == 1) {
-                        // Best case, single line with a single tag
-                        handleSingleTagLine(line, m, resources, writer);
-                    } else {
-                        // Harder case, we need to handle many tags in a single line
-                        handleMultiTagLine(line, resources, writer);
-                    }
-                } else {
-                    // Match not found, perhaps this is a tag which spans across multiple lines
-                    if (line.contains("<string")) {
-                        // Even the <string> tag declaration can span across multiple lines!
-                        handleMultilineTag(line, reader, resources, writer);
-                    } else {
-                        // This line has no <string> tag, simply append it to the result
-                        writer.write(line);
-                        writer.write('\n'); // New line character was consumed by .readLine()
-                    }
-                }
-            }
-
-            writer.flush();
-            in.close();
+            // The xml will be empty if we have no translation for this file.
+            String xml = cleanMissingStrings(sb.toString(), resources);
+            return !xml.isEmpty() && writeReplaceStrings(xml, resources, out);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
-
-        return true;
     }
 
-    private static void handleSingleTagLine(String line, Matcher m,
-                                            Resources resources, BufferedWriter writer)
-            throws IOException {
-        // Match found, determine whether it's translatable or not and its name
-        // Find the resource ID on the first group ('<string name="...">')
-        Matcher nameMatcher = STRING_NAME_PATTERN.matcher(m.group(1));
-        Matcher tranMatcher = STRING_TRANSLATABLE_PATTERN.matcher(m.group(1));
-        boolean translatable = tranMatcher.find() ?
-                "true".equals(tranMatcher.group(1)) : DEFAULT_TRANSLATABLE;
-
-        // Should never fail
-        if (nameMatcher.find()) {
-            String content = resources.getContent(nameMatcher.group(1));
-
-            if (translatable && content != null && !content.isEmpty()) {
-                // We have the content and we're the replacement should be made
-                // so perform the replacement and add this line
-                int contentStart = m.start() + m.group(1).length();
-                int contentEnd = contentStart + m.group(2).length();
-
-                writer.write(line, 0, contentStart);
-                writeSanitize(writer, content);
-                writer.write(line, contentEnd, line.length()-contentEnd);
-                writer.write('\n'); // New line character was consumed by .readLine()
-            }
-            // else do not add this line to the final result
-        }
-    }
-
-    private static void handleMultiTagLine(String line, Resources resources, BufferedWriter writer)
-            throws IOException {
-        int lastIndex = 0; // From where we need to copy until the next tag
-
-        // We need to iterate over all the matches on this line
-        Matcher m = STRING_TAG_PATTERN.matcher(line);
-        while (m.find()) {
-            // Match found, determine whether it's translatable or not and its name
-            // Find the resource ID on the first group ('<string name="...">')
-            Matcher nameMatcher = STRING_NAME_PATTERN.matcher(m.group(1));
-            Matcher tranMatcher = STRING_TRANSLATABLE_PATTERN.matcher(m.group(1));
-            boolean translatable = tranMatcher.find() ?
-                    "true".equals(tranMatcher.group(1)) : DEFAULT_TRANSLATABLE;
-
-            if (nameMatcher.find()) {
-                // Should never fail
-                String content = resources.getContent(nameMatcher.group(1));
-
-                int tagStart = m.start();
-                int contentStart = tagStart + m.group(1).length();
-                int contentEnd = contentStart + m.group(2).length();
-                int tagEnd = contentEnd + m.group(3).length();
-
-                // Always write up to this point
-                writer.write(line, lastIndex, tagStart-lastIndex);
-
-                if (translatable && content != null && !content.isEmpty()) {
-                    // We have the content and we're the replacement should be made
-                    // so perform the replacement and add this line
-                    writer.write(line, tagStart, contentStart-tagStart);
-                    writeSanitize(writer, content);
-                    writer.write(line, contentEnd, tagEnd-contentEnd);
-                }
-                // else do not add this tag to the final result
-
-                lastIndex = tagEnd;
-            }
-        }
-        writer.write(line, lastIndex, line.length()-lastIndex);
-        writer.write('\n'); // New line character was consumed by .readLine()
-    }
-
-    private static void handleMultilineTag(String line, BufferedReader reader,
-                                           Resources resources, BufferedWriter writer)
-            throws IOException {
-        // We need to find the translated contents, and whether it's translatable or not
-        String content = null;
-        Boolean translatable = null;
-        boolean consumeTag = false;
-
-        // If the string is valid, we'll need to know how the tag was defined
-        StringBuilder sb = new StringBuilder();
-        boolean contentStarted = false;
-
-        do {
-            if (content == null) {
-                Matcher nameMatcher = STRING_NAME_PATTERN.matcher(line);
-                if (nameMatcher.find()) {
-                    content = resources.getContent(nameMatcher.group(1));
-                    // If this string has no translation, then consume the tag
-                    if (content == null || content.isEmpty())
-                        consumeTag = true;
-                }
-            }
-            if (translatable == null) {
-                Matcher tranMatcher = STRING_TRANSLATABLE_PATTERN.matcher(line);
-                if (tranMatcher.find()) {
-                    translatable = "true".equals(tranMatcher.group(1));
-                    if (!translatable) {
-                        // This tag cannot be translated, then consume it
-                        consumeTag = true;
-                    }
-                }
-            }
-            if (line.contains(">")) {
-                contentStarted = true;
-                if (content == null) {
-                    // If the content started but we have no translation, consume the tag
-                    consumeTag = true;
-                } else {
-                    // Otherwise, append the start of this line, since it's part of the tag
-                    // Then, append our translated content and reach '</string', we're done!
-                    sb.append(line.substring(0, line.indexOf('>')+1));
-                    writer.write(sb.toString());
-                    writeSanitize(writer, content);
-
-                    int endTag;
-                    while ((endTag = line.indexOf("</string")) == -1)
-                        line = reader.readLine();
-                    writer.write(line, endTag, line.length()-endTag);
-                    writer.write('\n');
-                    // Exit since we're done
-                    break;
-                }
-            }
-
-            if (consumeTag) {
-                while (!line.contains("</string"))
-                    line = reader.readLine();
-                break;
-            } else if (!contentStarted) {
-                // If the content hasn't started yet, append the lines which are part of the tag
-                sb.append(line);
-                sb.append('\n');
-            }
-        } while ((line = reader.readLine()) != null);
-    }
+    //endregion
 
     //endregion
 

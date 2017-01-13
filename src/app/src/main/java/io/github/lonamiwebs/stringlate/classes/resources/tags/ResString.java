@@ -32,5 +32,13 @@ public class ResString extends ResTag {
         return mId;
     }
 
+    @Override
+    @NonNull
+    public ResTag clone(String newContent) {
+        ResString result = new ResString(mId, mContent, mModified);
+        result.setContent(newContent);
+        return result;
+    }
+
     //endregion
 }

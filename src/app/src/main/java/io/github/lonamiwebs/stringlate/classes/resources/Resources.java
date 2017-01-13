@@ -14,7 +14,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import io.github.lonamiwebs.stringlate.classes.resources.tags.ResString;
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResPlurals;
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResStringArray;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 
 // Class to manage multiple ResTag,
@@ -124,37 +125,45 @@ public class Resources implements Iterable<ResTag> {
     }
 
     public boolean contains(String resourceId) {
-        for (ResTag rs : mStrings)
-            if (rs.getId().equals(resourceId))
-                return true;
-
-        return false;
+        return getTag(resourceId) != null;
     }
 
     public String getContent(String resourceId) {
-        for (ResTag rs : mStrings)
-            if (rs.getId().equals(resourceId))
-                return rs.getContent();
+        ResTag tag = getTag(resourceId);
+        return tag == null ? "" : tag.getContent();
+    }
 
-        return "";
+    public ResTag getTag(String resourceId) {
+        // TODO If the resource ID contains ':', then we should not bother looking at the parents
+        for (ResTag rs : mStrings) {
+            if (rs instanceof ResStringArray.Item) {
+                if (((ResStringArray.Item)rs).getParent().getId().equals(resourceId))
+                    return rs;
+            } else if (rs instanceof ResPlurals.Item) {
+                if (((ResPlurals.Item)rs).getParent().getId().equals(resourceId))
+                    return rs;
+            }
+            if (rs.getId().equals(resourceId))
+                return rs;
+        }
+
+        return null;
     }
 
     // Determines whether the resource ID was modified or not
     // If this resource ID doesn't exist, then it obviously wasn't modified
     public boolean wasModified(String resourceId) {
-        for (ResTag rs : mStrings)
-            if (rs.getId().equals(resourceId))
-                return rs.wasModified();
-
-        return false;
+        ResTag rs = getTag(resourceId);
+        return rs != null && rs.wasModified();
     }
 
     //endregion
 
     //region Updating (setting) content
 
-    public void setContent(String resourceId, @NonNull String content) {
-        if (resourceId == null || resourceId.isEmpty())
+    public void setContent(ResTag original, @NonNull String content) {
+        String resourceId = original == null ? "" : original.getId();
+        if (resourceId.isEmpty())
             return;
 
         // If the content is empty (or null), treat it as deleting this ID
@@ -176,15 +185,8 @@ public class Resources implements Iterable<ResTag> {
             }
 
         if (!found) {
-            // TODO Uhm… Maybe pass the original resource…? But how do I handle parents…?
-            // An option perhaps would be to pass the original string -> .clone() -> .setContent
-            // But actually, this works, because the ID is the same (despite being an
-            // item from a strings array or not), and when exporting I simply look for
-            // the required ID. But although this works I should make this better.
-            ResTag string = new ResString(resourceId);
-            string.setContent(content); // Will also update its modified = true state
-            mStrings.add(string);
-
+            ResTag clone = original.clone(content);
+            mStrings.add(clone);
             mSavedChanges = false;
             mUnsavedIDs.add(resourceId);
         }

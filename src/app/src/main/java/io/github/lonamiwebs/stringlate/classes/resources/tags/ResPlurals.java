@@ -39,13 +39,22 @@ public class ResPlurals {
         return mItems;
     }
 
+    private ResPlurals fakeClone() {
+        // We're losing the original items… But this is the desired behaviour
+        // because when setting the content for a new translation for the first
+        // time, we need it to be a new parent
+        return new ResPlurals(mId);
+    }
+
     //endregion
 
     //region Setters
 
-    public void addItem(@NonNull final String quantity,
+    public Item addItem(@NonNull final String quantity,
                         @NonNull final String content, final boolean modified) {
-        mItems.add(new Item(this, quantity, content, modified));
+        Item result = new Item(this, quantity, content, modified);
+        mItems.add(result);
+        return result;
     }
 
     //endregion
@@ -69,6 +78,15 @@ public class ResPlurals {
         public String getId() {
             // ':' is not a valid separator for the <string>'s, so use it to avoid conflicts
             return String.format("%s:%s", mParent.mId, mQuantity);
+        }
+
+        @Override
+        @NonNull
+        public ResTag clone(String newContent) {
+            ResPlurals parent = mParent.fakeClone();
+            Item result = parent.addItem(mQuantity, mContent, mModified);
+            result.setContent(newContent);
+            return result;
         }
 
         public String getQuantity() {
