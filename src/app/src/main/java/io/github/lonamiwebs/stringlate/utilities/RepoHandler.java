@@ -442,13 +442,17 @@ public class RepoHandler implements Comparable<RepoHandler> {
         File root = new File(context.getFilesDir(), BASE_DIR);
         if (root.isDirectory()) {
             for (File f : root.listFiles()) {
-                if (f.isDirectory()) {
+                if (isValidRepoDir(f)) {
                     repositories.add(new RepoHandler(context, f));
                 }
             }
         }
 
         return repositories;
+    }
+
+    private static boolean isValidRepoDir(File dir) {
+        return dir.isDirectory() && RepoSettings.exists(dir);
     }
 
     //endregion
@@ -535,6 +539,75 @@ public class RepoHandler implements Comparable<RepoHandler> {
     @Override
     public int compareTo(@NonNull RepoHandler o) {
         return toString().compareTo(o.toString());
+    }
+
+    //endregion
+
+    //region Backwards-compatible code
+
+    // TODO As usual, remove this code by version 1.0 or so
+    public static boolean checkUpgradeRepositories(Context context) {
+        // The regex used to match for 'strings-locale.xml' files
+        Pattern localesPattern = Pattern.compile("strings(?:-([\\w-]+))?\\.xml");
+
+        File root = new File(context.getFilesDir(), BASE_DIR);
+        if (!root.isDirectory()) {
+            // The user never used Stringlate
+            return true;
+        }
+
+        boolean allOk = true;
+        for (File owner : root.listFiles()) {
+            if (isValidRepoDir(owner)) {
+                // Skip repositories which are valid - these don't need to be converted
+                continue;
+            }
+
+            for (File repository : owner.listFiles()) {
+                if (!repository.isDirectory()) {
+                    // If this is not a directory, whatever it is, is not valid
+                    continue;
+                }
+
+                // We now have a valid old repository.
+                // The first step is to create a new instance so the settings get created
+                RepoHandler repo = new RepoHandler(context,
+                        owner.getName(), repository.getName());
+
+                // The second step is to scan the files under 'repository'
+                // These will be named 'strings-locale.xml'
+                for (File strings : repository.listFiles()) {
+                    Matcher m = localesPattern.matcher(strings.getName());
+                    if (m.matches()) {
+                        // Retrieve the locale and copy it to the new location
+                        if (m.group(1) == null) {
+                            // Default locale. Make sure to clean it too. Since only
+                            // strings.xml files were supported, assume this is the name
+                            File newStrings = repo.getDefaultResourcesFile("strings.xml");
+                            ResourcesParser.cleanXml(strings, newStrings);
+                        } else {
+                            String locale = m.group(1);
+                            File newStrings = repo.getResourcesFile(locale);
+
+                            // Ensure the parent directory exists before moving the file
+                            if (!newStrings.getParentFile().isDirectory())
+                                allOk &= newStrings.getParentFile().mkdirs();
+
+                            allOk &= strings.renameTo(newStrings);
+                        }
+                    }
+                    if (strings.isFile()) {
+                        // After we're done processing the file, delete it
+                        allOk &= strings.delete();
+                    }
+                }
+                // After we're done processing the whole repository, delete it
+                allOk &= repository.delete();
+            }
+            // After we're done processing all the repositories from this owner, delete it
+            allOk &= owner.delete();
+        }
+        return allOk;
     }
 
     //endregion

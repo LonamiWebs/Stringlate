@@ -64,6 +64,10 @@ public class RepoSettings {
         return map;
     }
 
+    public static boolean exists(final File repoDir) {
+        return new File(repoDir, FILENAME).isFile();
+    }
+
     //endregion
 
     //region Setters

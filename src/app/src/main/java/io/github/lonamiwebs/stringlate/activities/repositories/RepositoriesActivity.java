@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.GitHubLoginActivity;
 import io.github.lonamiwebs.stringlate.activities.OnlineHelpActivity;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_REPO_DISCOVERED;
 
@@ -31,6 +32,14 @@ public class RepositoriesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repositories);
+
+        // Compatibility code
+        try {
+            RepoHandler.checkUpgradeRepositories(this);
+        } catch (Exception e) {
+            // We don't want any upgrade checking to break our application…
+            e.printStackTrace();
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
