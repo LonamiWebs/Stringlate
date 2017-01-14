@@ -1,14 +1,20 @@
 package io.github.lonamiwebs.stringlate.git;
 
+import android.content.Context;
+import android.util.DisplayMetrics;
+
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GitWrapper {
@@ -81,6 +87,8 @@ public class GitWrapper {
         return ok;
     }
 
+    //region Searching Android resources
+
     public static ArrayList<File> searchAndroidResources(File dir) {
         ArrayList<File> result = new ArrayList<>();
         searchAndroidResources(dir, result);
@@ -121,4 +129,142 @@ public class GitWrapper {
 
         return false;
     }
+
+    //endregion
+
+    //region Searching Android icon
+
+    private static final Pattern ICON_PATTERN = Pattern.compile(
+            "<application[\\s\\S]+?android:icon=\"@(mipmap|drawable)/(\\w+)\"[\\s\\S]+?>");
+
+    private static final String MANIFEST = "AndroidManifest.xml";
+
+    public static File findProperIcon(final File dir, final Context ctx) {
+        ArrayList<File> foundIcons = new ArrayList<>();
+        findIconFromManifest(dir, dir, foundIcons);
+        if (foundIcons.isEmpty())
+            return null;
+
+        String density;
+        int wantedDensity = getDensityIndex(ctx.getResources().getDisplayMetrics().densityDpi);
+        // Check whether we're looking on drawables or mipmaps (usual is mipmap)
+        // If we're using mipmaps, we want the corresponding drawable size (2 less) because:
+        //   mipmap-mdpi has the same size as drawable-xdpi (2 more)
+        //   mipmap-xhdpi has the same size as drawable-xxxhdpi (2 more)
+        // All files should either be mipmaps or drawables so just check the first
+        if (!foundIcons.get(0).getAbsolutePath().contains("drawable-")) {
+            // Using mipmaps, decrease by 2
+            wantedDensity -= 2;
+            if (wantedDensity < 0)
+                wantedDensity = 0;
+        }
+
+        int i = wantedDensity;
+        while (i <= MAX_DENSITY_INDEX) {
+            // Try to find this density on the files, if it's not found, increase
+            density = getDensitySuffix(i);
+            for (File f : foundIcons) {
+                if (f.getAbsolutePath().contains(density)) {
+                    return f;
+                }
+            }
+            i++;
+        }
+        // Not found? Try going backwards (-1, we already checked wantedDensity)
+        i = wantedDensity-1;
+        while (i >= 0) {
+            density = getDensitySuffix(i);
+            for (File f : foundIcons) {
+                if (f.getAbsolutePath().contains(density)) {
+                    return f;
+                }
+            }
+            i--;
+        }
+        // Just return a random one, this shouldn't happen
+        return foundIcons.get(i);
+    }
+
+    private final static int MAX_DENSITY_INDEX = 6;
+
+    private static int getDensityIndex(final int density) {
+        switch(density) {
+            case DisplayMetrics.DENSITY_LOW: return 0;
+            case DisplayMetrics.DENSITY_MEDIUM: return 1;
+            case DisplayMetrics.DENSITY_TV: return 2;
+            case DisplayMetrics.DENSITY_HIGH: return 3;
+            case DisplayMetrics.DENSITY_XHIGH: return 4;
+            case DisplayMetrics.DENSITY_XXHIGH: return 5;
+            default: case DisplayMetrics.DENSITY_XXXHIGH: return 6;
+        }
+    }
+
+    private static String getDensitySuffix(final int index) {
+        switch (index) {
+            case 0: return "-ldpi";
+            case 1: return "-mdpi";
+            case 2: return "-tvdpi";
+            case 3: return "-hdpi";
+            case 4: return "-xhdpi";
+            case 5: return "-xxhdpi";
+            default: case 6: return "-xxxhdpi";
+        }
+    }
+
+    // Finds the android:icon="…" on a AndroidManifest.xml
+    // and then returns the search on that path (pointing to the icon files)
+    public static void findIconFromManifest(final File parent,
+                                            final File dir, final ArrayList<File> foundIcons) {
+        if (!dir.getName().startsWith(".")) {
+            if (dir.isDirectory()) {
+                for (File child : dir.listFiles()) {
+                    findIconFromManifest(parent, child, foundIcons);
+                    if (!foundIcons.isEmpty()) {
+                        // Exit as soon as we find the icons
+                        return;
+                    }
+                }
+            } else {
+                // dir is a file really
+                if (dir.getName().equals(MANIFEST)) {
+                    // Look for the pattern
+                    try {
+                        Scanner s = new Scanner(dir);
+                        String found = s.findWithinHorizon(ICON_PATTERN, 0);
+                        s.close();
+
+                        if (found != null) {
+                            Matcher m = ICON_PATTERN.matcher(found);
+                            if (m.find()) {
+                                String type = m.group(1);
+                                String name = m.group(2);
+                                findIcons(parent, type, name, false, foundIcons);
+                            }
+                        }
+                    } catch (FileNotFoundException ignored) { }
+                }
+            }
+        }
+    }
+
+    // resourceDir might be 'mipmap(-density)' or 'drawable(-density)'
+    private static void findIcons(final File dir, final String resourceDir,
+                                  final String name, boolean inResDir,
+                                  final ArrayList<File> foundIcons) {
+        if (!dir.getName().startsWith(".")) {
+            if (dir.isDirectory()) {
+                inResDir = dir.getName().startsWith(resourceDir);
+                for (File child : dir.listFiles()) {
+                    findIcons(child, resourceDir, name, inResDir, foundIcons);
+                }
+            } else if (inResDir) {
+                // We don't care about the files unless we're already on the resources directory
+                if (dir.getName().startsWith(name)) {
+                    foundIcons.add(dir);
+                }
+            }
+        }
+    }
+
+    //endregion
 }

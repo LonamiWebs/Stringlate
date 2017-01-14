@@ -25,6 +25,7 @@ public class RepoSettings {
     private static final String KEY_GIT_URL = "git_url";
     private static final String KEY_LAST_LOCALE = "last_locale";
     private static final String KEY_REMOTE_PATHS = "remote_paths";
+    private static final String KEY_ICON_PATH = "icon_path";
 
     private static final String DEFAULT_GIT_URL = "";
     private static final String DEFAULT_LAST_LOCALE = null;
@@ -68,6 +69,15 @@ public class RepoSettings {
         return new File(repoDir, FILENAME).isFile();
     }
 
+    public File getIconFile() {
+        String path = mSettings.optString(KEY_ICON_PATH, "");
+        if (path.isEmpty())
+            return null;
+
+        File result = new File(path);
+        return result.isFile() ? result : null;
+    }
+
     //endregion
 
     //region Setters
@@ -96,6 +106,12 @@ public class RepoSettings {
 
     public void clearRemotePaths() {
         mSettings.remove(KEY_REMOTE_PATHS);
+    }
+
+    public void setIconFile(File file) {
+        try { mSettings.put(KEY_LAST_LOCALE, file == null ? "" : file.getAbsolutePath()); }
+        catch (JSONException ignored) { }
+        save();
     }
 
     //endregion
