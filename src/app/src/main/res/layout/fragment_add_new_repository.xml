@@ -21,24 +21,26 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <AutoCompleteTextView
+        <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/owner_hint"
             android:id="@+id/ownerEditText"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:maxLines="1"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/slash" />
 
-        <AutoCompleteTextView
+        <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/repository_hint"
             android:id="@+id/repositoryEditText"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:maxLines="1"/>
 
     </LinearLayout>
 
@@ -48,7 +50,7 @@
         android:textAlignment="center"
         android:text="@string/or" />
 
-    <AutoCompleteTextView
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/github_repo_url_hint"

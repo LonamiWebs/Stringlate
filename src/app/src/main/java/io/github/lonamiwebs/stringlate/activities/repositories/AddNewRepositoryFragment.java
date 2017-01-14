@@ -1,21 +1,24 @@
 package io.github.lonamiwebs.stringlate.activities.repositories;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.git.GitHub;
+import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
 
 import static android.app.Activity.RESULT_OK;
@@ -26,8 +29,8 @@ public class AddNewRepositoryFragment extends Fragment {
 
     //region Members
 
-    private AutoCompleteTextView mOwnerEditText, mRepositoryEditText;
-    private AutoCompleteTextView mUrlEditText;
+    private EditText mOwnerEditText, mRepositoryEditText;
+    private EditText mUrlEditText;
 
     //endregion
 
@@ -38,10 +41,10 @@ public class AddNewRepositoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_new_repository, container, false);
 
-        mOwnerEditText = (AutoCompleteTextView)rootView.findViewById(R.id.ownerEditText);
-        mRepositoryEditText = (AutoCompleteTextView)rootView.findViewById(R.id.repositoryEditText);
+        mOwnerEditText = (EditText)rootView.findViewById(R.id.ownerEditText);
+        mRepositoryEditText = (EditText)rootView.findViewById(R.id.repositoryEditText);
 
-        mUrlEditText = (AutoCompleteTextView)rootView.findViewById(R.id.urlEditText);
+        mUrlEditText = (EditText)rootView.findViewById(R.id.urlEditText);
 
         // Set button events
         rootView.findViewById(R.id.discoverButton).setOnClickListener(onDiscoverClick);
@@ -54,6 +57,32 @@ public class AddNewRepositoryFragment extends Fragment {
             String fullPath = data.getEncodedSchemeSpecificPart();
             setUrl(scheme+":"+fullPath);
         }
+
+        // If the user presses enter on an EditText, select the next one
+        mOwnerEditText.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int kc, KeyEvent e) {
+                if (e.getAction() == KeyEvent.ACTION_DOWN && kc == KeyEvent.KEYCODE_ENTER) {
+                    mRepositoryEditText.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        // Or, if we're on the repository EditText, hide the keybaord
+        mRepositoryEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int kc, KeyEvent e) {
+                if (e.getAction() == KeyEvent.ACTION_DOWN && kc == KeyEvent.KEYCODE_ENTER) {
+                    InputMethodManager imm = (InputMethodManager)
+                            getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    imm.hideSoftInputFromWindow(mRepositoryEditText.getWindowToken(), 0);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         return rootView;
     }
