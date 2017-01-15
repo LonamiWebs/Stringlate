@@ -632,7 +632,6 @@ public class TranslateActivity extends AppCompatActivity {
             if (mSelectedLocaleResources != null) {
                 String content = mTranslatedStringEditText.getText().toString();
                 mSelectedLocaleResources.setContent(mSelectedResource, content);
-                updateProgress();
             }
         }
 
@@ -901,6 +900,7 @@ public class TranslateActivity extends AppCompatActivity {
         mOriginalStringEditText.setText(mSelectedResource.getContent());
         mTranslatedStringEditText.setText(mSelectedLocaleResources.getContent(resourceId));
         checkPreviousNextVisibility();
+        updateProgress();
     }
 
     private void checkPreviousNextVisibility() {
