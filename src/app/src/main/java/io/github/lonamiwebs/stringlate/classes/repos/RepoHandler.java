@@ -142,6 +142,26 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return new File(mRoot, DEFAULT_LOCALE+"/"+filename);
     }
 
+    // Used when cloning. An application might have multiple files with the same name
+    // but under different directories (i.e., F-Droid has two "strings.xml" files).
+    // If this is the case, append an index (i.e., "strings.xml" -> "strings2.xml")
+    private File getUniqueDefaultResourcesFile(@NonNull String filename) {
+        File result = getDefaultResourcesFile(filename);
+        if (result.isFile()) {
+            // We assume it contains .xml
+            int i = filename.lastIndexOf('.');
+            String name = filename.substring(0, i);
+            String ext = filename.substring(i);
+
+            i = 2;
+            while (result.isFile()) {
+                result = getDefaultResourcesFile(name+i+ext);
+                i++;
+            }
+        }
+        return result;
+    }
+
     @NonNull
     public File[] getDefaultResourcesFiles() {
         File root = new File(mRoot, DEFAULT_LOCALE);
@@ -336,14 +356,14 @@ public class RepoHandler implements Comparable<RepoHandler> {
                     Resources clonedResources = Resources.fromFile(clonedFile);
                     if (!clonedResources.isEmpty()) {
                         // Clean the untranslatable strings while saving the clean file
-                        outputFile = getDefaultResourcesFile(clonedFile.getName());
+                        outputFile = getUniqueDefaultResourcesFile(clonedFile.getName());
                         ResourcesParser.cleanXml(clonedFile, outputFile);
 
                         // Skip the '/' at the beginning (substring +1)
                         String remotePath = clonedFile.getAbsolutePath()
                                 .substring(clonedDir.getAbsolutePath().length()+1);
 
-                        addRemotePath(clonedFile.getName(), remotePath);
+                        addRemotePath(outputFile.getName(), remotePath);
                     }
                 } else {
                     // Get the file corresponding to this locale (group(1))
