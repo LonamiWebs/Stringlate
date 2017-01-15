@@ -63,6 +63,10 @@ public class RepoHandler implements Comparable<RepoHandler> {
     private static final Pattern OWNER_REPO = Pattern.compile(
             "(?:https?://github\\.com/|git@github.com:)([\\w-]+)/([\\w-]+)(?:/.*|\\.git)?");
 
+    // Match "dontranslate.xml", "do-not-translate.xml", "donottranslate.xml" and such
+    private static final Pattern DO_NOT_TRANSLATE = Pattern.compile(
+            "(?:do?[ _-]*no?t?|[u|i]n)[ _-]*trans(?:lat(?:e|able))?\\.xml");
+
     //endregion
 
     //region Interfaces and events
@@ -322,8 +326,13 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 if (m.group(1) == null) {
                     // If this is the default locale, save its remote path
                     // and clean it by removing all the translatable="false" tags
+                    //
+                    // However, if the file name is something like "do not translate", skip it
+                    Matcher untranslatable = DO_NOT_TRANSLATE.matcher(clonedFile.getName());
+                    if (untranslatable.matches())
+                        continue;
 
-                    // First load the cloned resources to ensure the contain translatable strings
+                    // First load the cloned resources to ensure it contains translatable strings
                     Resources clonedResources = Resources.fromFile(clonedFile);
                     if (!clonedResources.isEmpty()) {
                         // Clean the untranslatable strings while saving the clean file
