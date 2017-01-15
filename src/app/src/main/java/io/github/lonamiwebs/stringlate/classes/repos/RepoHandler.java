@@ -65,7 +65,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     // Match "dontranslate.xml", "do-not-translate.xml", "donottranslate.xml" and such
     private static final Pattern DO_NOT_TRANSLATE = Pattern.compile(
-            "(?:do?[ _-]*no?t?|[u|i]n)[ _-]*trans(?:lat(?:e|able))?\\.xml");
+            "(?:do?[ _-]*no?t?|[u|i]n)[ _-]*trans(?:lat(?:e|able))?");
 
     //endregion
 
@@ -349,7 +349,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
                     //
                     // However, if the file name is something like "do not translate", skip it
                     Matcher untranslatable = DO_NOT_TRANSLATE.matcher(clonedFile.getName());
-                    if (untranslatable.matches())
+                    if (untranslatable.find())
                         continue;
 
                     // First load the cloned resources to ensure it contains translatable strings
