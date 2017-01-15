@@ -14,7 +14,8 @@
         <activity
             android:name=".activities.repositories.RepositoriesActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,13 +35,18 @@
         </activity>
         <activity
             android:name=".activities.DiscoverActivity"
-            android:label="@string/discover">
+            android:label="@string/discover"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".activities.translate.TranslateActivity" />
-        <activity android:name=".activities.export.CreateGistActivity" />
+        <activity
+            android:name=".activities.translate.TranslateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.export.CreateGistActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".activities.OnlineHelpActivity" />
         <activity android:name=".activities.translate.SearchStringActivity" />
         <activity
@@ -59,10 +65,12 @@
         </activity>
         <activity
             android:name=".activities.export.CreateIssueActivity"
-            android:label="@string/create_issue" />
+            android:label="@string/create_issue"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.export.CreatePullRequestActivity"
-            android:label="@string/create_pr" />
+            android:label="@string/create_pr"
+            android:screenOrientation="portrait"/>
         <activity android:name=".activities.export.CreateUrlSuccessActivity" />
     </application>
 </manifest>
