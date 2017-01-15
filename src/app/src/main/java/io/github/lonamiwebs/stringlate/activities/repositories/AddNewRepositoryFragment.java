@@ -19,7 +19,7 @@ import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
-import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 
 import static android.app.Activity.RESULT_OK;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;

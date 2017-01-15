@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.GitHubLoginActivity;
 import io.github.lonamiwebs.stringlate.activities.OnlineHelpActivity;
-import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_REPO_DISCOVERED;
 

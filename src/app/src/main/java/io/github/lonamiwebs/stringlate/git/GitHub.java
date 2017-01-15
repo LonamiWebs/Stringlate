@@ -12,7 +12,7 @@ import java.io.InvalidObjectException;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.utilities.WebUtils;
 
 // Static GitHub API interface that uses AsyncTasks

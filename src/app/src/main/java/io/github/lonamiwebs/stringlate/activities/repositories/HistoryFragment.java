@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,7 +16,8 @@ import java.util.Collections;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
-import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerAdapter;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -87,8 +87,8 @@ public class HistoryFragment extends Fragment {
             } else {
                 mRepositoriesTitle.setVisibility(VISIBLE);
                 mHistoryMessageTextView.setText(R.string.history_contains_repos_hint);
-                mRepositoryListView.setAdapter(new ArrayAdapter<>(getContext(),
-                        android.R.layout.simple_list_item_1, repositories));
+                mRepositoryListView.setAdapter(
+                        new RepoHandlerAdapter(getContext(), repositories));
             }
         }
     };

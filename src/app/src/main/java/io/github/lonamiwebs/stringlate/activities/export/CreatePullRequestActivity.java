@@ -28,7 +28,7 @@ import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;

@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.utilities;
+package io.github.lonamiwebs.stringlate.classes.repos;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -504,6 +506,10 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return result;
     }
 
+    public File getIconFile() {
+        return mSettings.getIconFile();
+    }
+
     //endregion
 
     //region To other objects
@@ -519,6 +525,30 @@ public class RepoHandler implements Comparable<RepoHandler> {
             Log.w("RepoHandler", "Please report that \""+url+"\" got somehow saved…");
             return url; // We must have a really weird url. Maybe saved invalid repo somehow?
         }
+    }
+
+    public String getHost() {
+        String url = mSettings.getGitUrl();
+        try {
+            return new URL(url).getHost();
+        } catch (MalformedURLException e) {
+            // Should never happen
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    public String getPath() {
+        String url = mSettings.getGitUrl();
+        try {
+            String path = new URL(url).getPath();
+            int end = path.endsWith(".git") ? path.lastIndexOf('.') : path.length();
+            return path.substring(0, end);
+        } catch (MalformedURLException e) {
+            // Should never happen
+            e.printStackTrace();
+        }
+        return url;
     }
 
     public String toString(boolean onlyRepo) {

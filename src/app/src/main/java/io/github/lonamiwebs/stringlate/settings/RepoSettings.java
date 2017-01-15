@@ -109,7 +109,7 @@ public class RepoSettings {
     }
 
     public void setIconFile(File file) {
-        try { mSettings.put(KEY_LAST_LOCALE, file == null ? "" : file.getAbsolutePath()); }
+        try { mSettings.put(KEY_ICON_PATH, file == null ? "" : file.getAbsolutePath()); }
         catch (JSONException ignored) { }
         save();
     }

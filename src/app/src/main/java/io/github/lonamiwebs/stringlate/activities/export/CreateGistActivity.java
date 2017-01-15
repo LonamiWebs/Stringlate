@@ -20,7 +20,7 @@ import java.util.HashMap;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 
 import static android.view.View.GONE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
