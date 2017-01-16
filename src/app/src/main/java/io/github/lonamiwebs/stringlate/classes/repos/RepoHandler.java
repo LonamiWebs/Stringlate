@@ -329,6 +329,23 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 mContext.getString(R.string.copying_res),
                 mContext.getString(R.string.copying_res_long));
 
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                doCopyResources(clonedDir, foundResources, keepChanges);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void _) {
+                notifyRepositoryCountChanged();
+                callback.onProgressFinished(null, true);
+            }
+        }.execute();
+    }
+
+    private void doCopyResources(final File clonedDir, final ArrayList<File> foundResources,
+                                 final boolean keepChanges) {
         // Delete all the previous default resources since their
         // names might have changed, been removed, or some new added.
         mSettings.clearRemotePaths();
@@ -415,8 +432,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
         }
 
         GitWrapper.deleteRepo(clonedDir); // Clean resources
-        notifyRepositoryCountChanged();
-        callback.onProgressFinished(null, true);
     }
 
     //endregion
