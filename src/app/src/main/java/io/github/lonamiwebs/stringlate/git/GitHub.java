@@ -1,5 +1,8 @@
 package io.github.lonamiwebs.stringlate.git;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
@@ -7,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,18 +40,11 @@ public class GitHub {
 
     // Determines whether a call to GitHub can be made or not
     // This is equivalent to checking if the user is connected to the internet
-
-    public static boolean gCannotCall() {
-        // See http://stackoverflow.com/a/27312494/4759433
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
-            return ipProcess.waitFor() != 0;
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
-
-        return true;
+    public static boolean gCannotCall(Context ctx) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager)ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo == null || !activeNetworkInfo.isConnected();
     }
 
     public static JSONObject gCreateGist(String description, boolean isPublic,

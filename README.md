@@ -30,6 +30,8 @@ online help by going to the [help index](help/index.md).
 - **Internet**. Required to be able to fetch a remote GitHub repository in
   order to download its contents. Also used to post a GitHub *Gist* and to
   load the *Discover* activity.
+- **Access network state**. Required to warn the user that they're not
+  connected to the internet (and to prevent the application from crashing).
 
 ## Notes
 This application has not yet been tested on pre-Lollipop devices and it

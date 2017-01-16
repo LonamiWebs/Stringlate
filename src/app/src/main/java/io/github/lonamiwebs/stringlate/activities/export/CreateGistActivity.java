@@ -112,8 +112,8 @@ public class CreateGistActivity extends AppCompatActivity {
             }
         }
 
-        if (GitHub.gCannotCall()) {
-            Toast.makeText(getApplicationContext(),
+        if (GitHub.gCannotCall(this)) {
+            Toast.makeText(this,
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
             return;
         }

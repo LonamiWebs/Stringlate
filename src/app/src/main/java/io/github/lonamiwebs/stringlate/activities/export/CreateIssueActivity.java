@@ -77,7 +77,7 @@ public class CreateIssueActivity extends AppCompatActivity {
             String xml = mRepo.mergeDefaultTemplate(mLocale);
             description = description.replace("%x", String.format("```xml\n%s\n```", xml));
         }
-        if (GitHub.gCannotCall()) {
+        if (GitHub.gCannotCall(this)) {
             Toast.makeText(this,
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
             return;

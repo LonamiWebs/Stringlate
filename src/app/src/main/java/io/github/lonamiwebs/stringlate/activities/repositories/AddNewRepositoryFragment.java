@@ -150,7 +150,7 @@ public class AddNewRepositoryFragment extends Fragment {
     //region Checking and adding a new local "repository"
 
     private void scanDownloadStrings(final RepoHandler repo) {
-        if (GitHub.gCannotCall()) {
+        if (GitHub.gCannotCall(getContext())) {
             Toast.makeText(getContext(),
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
             return;

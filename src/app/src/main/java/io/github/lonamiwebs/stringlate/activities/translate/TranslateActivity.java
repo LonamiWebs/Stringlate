@@ -288,8 +288,8 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Synchronize our local strings.xml files with the remote GitHub repository
     private void updateStrings(boolean keepChanges) {
-        if (GitHub.gCannotCall()) {
-            Toast.makeText(getApplicationContext(),
+        if (GitHub.gCannotCall(this)) {
+            Toast.makeText(this,
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -496,7 +496,7 @@ public class TranslateActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.login_required, Toast.LENGTH_LONG).show();
             return;
         }
-        if (GitHub.gCannotCall()) {
+        if (GitHub.gCannotCall(this)) {
             Toast.makeText(this,
                     R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
             return;
