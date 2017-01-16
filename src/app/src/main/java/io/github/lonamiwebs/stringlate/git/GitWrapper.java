@@ -59,13 +59,15 @@ public class GitWrapper {
         return url;
     }
 
-    public static boolean cloneRepo(String uri, File cloneTo) {
+    public static boolean cloneRepo(final String uri, final File cloneTo,
+                                    final GitCloneProgressCallback callback) {
         Git result = null;
 
         try {
             result = Git.cloneRepository().setURI(uri).setDirectory(cloneTo)
                     .setBranch(MASTER_BRANCH).setBare(false).setRemote(REMOTE_NAME)
-                    .setNoCheckout(false).setCloneAllBranches(false).setCloneSubmodules(false).call();
+                    .setNoCheckout(false).setCloneAllBranches(false).setCloneSubmodules(false)
+                    .setProgressMonitor(callback).call();
             return true;
         } catch (GitAPIException e) {
             e.printStackTrace();

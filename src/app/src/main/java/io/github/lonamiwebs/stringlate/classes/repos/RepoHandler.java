@@ -26,6 +26,7 @@ import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
+import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.settings.RepoSettings;
@@ -264,22 +265,22 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Downloading locale files
 
-    public void syncResources(ProgressUpdateCallback callback, boolean keepChanges) {
+    public void syncResources(final GitCloneProgressCallback callback, final boolean keepChanges) {
         cloneRepository(callback, keepChanges);
     }
 
     // Step 1: Temporary clone the GitHub repository
-    private void cloneRepository(final ProgressUpdateCallback callback, final boolean keepChanges) {
+    private void cloneRepository(final GitCloneProgressCallback callback, final boolean keepChanges) {
         callback.onProgressUpdate(
                 mContext.getString(R.string.cloning_repo),
-                mContext.getString(R.string.cloning_repo_long));
+                mContext.getString(R.string.cloning_repo_progress, 0.0f));
 
         new AsyncTask<Void, Void, File>() {
             @Override
             protected File doInBackground(Void... params) {
                 File dir = getTempCloneDir();
                 GitWrapper.deleteRepo(dir); // Don't care, it's temp and it can't exist on cloning
-                if (GitWrapper.cloneRepo(mSettings.getGitUrl(), getTempCloneDir()))
+                if (GitWrapper.cloneRepo(mSettings.getGitUrl(), getTempCloneDir(), callback))
                     return dir;
                 else
                     return null;

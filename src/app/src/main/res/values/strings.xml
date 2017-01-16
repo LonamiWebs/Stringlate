@@ -144,7 +144,7 @@
     <string name="something_went_wrong">Something went wrong.</string>
     <string name="warning_experimental" translatable="false">Please note that this feature is still experimental. Use with care!!</string>
     <string name="cloning_repo">Cloning repository…</string>
-    <string name="cloning_repo_long">Temporary cloning the remote repository… This might take a while depending on the repository.</string>
+    <string name="cloning_repo_progress">Temporary cloning the remote repository… %.1f%%</string>
     <string name="copying_res">Copying resources…</string>
     <string name="copying_res_long">Validating and copying resources to their final location…</string>
     <string name="bytes_size_format" translatable="false">%.2f %s</string>

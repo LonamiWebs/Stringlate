@@ -41,13 +41,13 @@ import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
+import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.interfaces.Callback;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -297,7 +297,7 @@ public class TranslateActivity extends AppCompatActivity {
         final ProgressDialog progress = ProgressDialog.show(this,
                 getString(R.string.loading_ellipsis), null, true);
 
-        mRepo.syncResources(new ProgressUpdateCallback() {
+        mRepo.syncResources(new GitCloneProgressCallback(this) {
             @Override
             public void onProgressUpdate(String title, String description) {
                 progress.setTitle(title);

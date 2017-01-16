@@ -17,9 +17,9 @@ import android.widget.Toast;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
-import io.github.lonamiwebs.stringlate.git.GitHub;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
+import io.github.lonamiwebs.stringlate.git.GitHub;
 
 import static android.app.Activity.RESULT_OK;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -157,7 +157,7 @@ public class AddNewRepositoryFragment extends Fragment {
         }
 
         final ProgressDialog progress = ProgressDialog.show(getContext(), "…", "…", true);
-        repo.syncResources(new ProgressUpdateCallback() {
+        repo.syncResources(new GitCloneProgressCallback(getActivity()) {
             @Override
             public void onProgressUpdate(String title, String description) {
                 progress.setTitle(title);
