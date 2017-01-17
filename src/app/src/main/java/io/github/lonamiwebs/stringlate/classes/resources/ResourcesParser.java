@@ -1,5 +1,6 @@
 package io.github.lonamiwebs.stringlate.classes.resources;
 
+import android.support.annotation.NonNull;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -419,51 +420,119 @@ public class ResourcesParser {
             //                 tagName    translatable    =     "false"
             Pattern.compile("<([\\w-]+).*?translatable\\s*=\\s*\"false\".*?>");
 
-    public static void cleanXml(File inFile, File outFile) {
+    public static boolean cleanXml(File inFile, File outFile) {
         try {
+            String bufferLine;
+            FileInputStream in = new FileInputStream(inFile);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+            // TODO I probably have a lot of methods to read a file into a string… Make it common
+            StringBuilder sb = new StringBuilder();
+            while ((bufferLine = reader.readLine()) != null)
+                sb.append(bufferLine).append('\n');
+
+            reader.close();
+            String xml = sb.toString();
+            boolean haveAny = false;
+
+            // 1. Find dirty tags (those which are untranslatable)
+            Queue<DirtyRange> dirtyRanges = new LinkedList<>();
+
+            Matcher mTag = RES_TAG_PATTERN.matcher(xml);
+            while (mTag.find()) {
+                String translatable = getAttr(mTag.group(2), TRANSLATABLE);
+                if (translatable.equals("false")) {
+                    // Decrease the range by 1 not to eat up the next character (due to the i++)
+                    dirtyRanges.add(new DirtyRange(mTag.start(), mTag.end()-1));
+                } else {
+                    // This file contains at least one translatable string
+                    haveAny = true;
+                }
+            }
+
+            // TODO The rest of code is copied from cleanMissingStrings I only change one part…
+            // There are no translatable strings, so do nothing (and don't create any file)
+            if (!haveAny)
+                return false;
+
+            // There is at least one translatable string, so we need to clean the xml
             if (!outFile.getParentFile().isDirectory())
                 outFile.getParentFile().mkdirs();
 
-            FileInputStream in = new FileInputStream(inFile);
             FileOutputStream out = new FileOutputStream(outFile);
-
-            String line;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
 
-            while ((line = reader.readLine()) != null) {
-                // Check whether this line is translatable or not
-                Matcher m = TAG_UNTRANSLATABLE_PATTERN.matcher(line);
-                if (m.find()) {
-                    // TODO We assume that there are not two tags in the same line,
-                    // neither the tag spans across multiple lines (either start or end tag)
-                    String tagName = m.group(1);
-                    switch (tagName) {
-                        case STRING:
-                        case STRING_ARRAY:
-                        case PLURALS:
-                            // Look for the closing tag and omit all the lines in between
-                            Pattern closing = Pattern.compile("</\\s*" + tagName);
-                            while (!closing.matcher(line).find())
-                                line = reader.readLine();
-                            break;
-                        default:
-                            // What is this tag doing here…? What tag even could it be?
-                            writer.write(line);
-                            writer.write('\n');
-                            break;
+            // We might want to early terminate if all strings are translatable
+            if (dirtyRanges.isEmpty()) {
+                // Simply copy the file, there's nothing to clean
+                writer.write(xml);
+                writer.close();
+                return true;
+            }
+
+            // 2. Remove the dirty tags and mark those lines as dirty too
+            int line = 0;
+            int lastLine = -1; // To avoid adding the same line twice
+            Queue<Integer> dirtyLines = new LinkedList<>();
+
+            // Save result here
+            StringBuilder noDirty = new StringBuilder();
+
+            // Get first range and iterate over the characters of the xml
+            DirtyRange range = dirtyRanges.poll();
+            for (int i = 0; i < xml.length(); i++) {
+                char c = xml.charAt(i);
+
+                if (range == null || i < range.start) {
+                    // Copy this character since it's not part of the dirty tag
+                    noDirty.append(c);
+
+                    // Note how we increment the line iff it was copied,
+                    // otherwise it was removed and should be excluded
+                    if (c == '\n') {
+                        line++;
                     }
                 } else {
-                    // This line may be a comment, or translatable, we don't care. Simply append it
-                    writer.write(line);
+                    // Omit these characters since we're in a dirty tag,
+                    // and mark the line as dirty iff it wasn't marked before
+                    if (lastLine != line) {
+                        dirtyLines.add(line);
+                        lastLine = line;
+                    }
+
+                    // >= not to skip to the next character
+                    if (i >= range.end) {
+                        // We're outside the range now, so pick up the next range
+                        range = dirtyRanges.poll();
+                    }
+                }
+            }
+
+            // Store our new xml
+            xml = noDirty.toString();
+
+            // 3. Clean the dirty lines iff they're whitespace only
+            String[] lines = xml.split("\\n");
+            Integer dirtyLine = dirtyLines.poll();
+
+            for (int i = 0; i < lines.length; i++) {
+                // If there are no more dirty lines
+                // Or we are not at a dirty line yet
+                // Or this line is not all whitespace, append it
+                if (dirtyLine == null || i != dirtyLine || !isWhitespace(lines[i])) {
+                    writer.write(lines[i]);
                     writer.write('\n');
+                } else {
+                    // Get the next dirty line while ignoring this line too
+                    dirtyLine = dirtyLines.poll();
                 }
             }
 
             writer.close();
-            reader.close();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -548,6 +617,7 @@ public class ResourcesParser {
         }
     }
 
+    @NonNull
     private static String getAttr(String attrs, String attrName) {
         Matcher m = ATTRIBUTE_PATTERN.matcher(attrs);
         while (m.find()) {

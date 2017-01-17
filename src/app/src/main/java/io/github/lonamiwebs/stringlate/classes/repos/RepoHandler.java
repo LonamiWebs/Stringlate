@@ -370,13 +370,10 @@ public class RepoHandler implements Comparable<RepoHandler> {
                     if (untranslatable.find())
                         continue;
 
-                    // First load the cloned resources to ensure it contains translatable strings
-                    Resources clonedResources = Resources.fromFile(clonedFile);
-                    if (!clonedResources.isEmpty()) {
-                        // Clean the untranslatable strings while saving the clean file
-                        outputFile = getUniqueDefaultResourcesFile(clonedFile.getName());
-                        ResourcesParser.cleanXml(clonedFile, outputFile);
-
+                    // If cleaning the file success, then it contained translatable strings
+                    // This will clean the untranslatable strings while saving the clean file
+                    outputFile = getUniqueDefaultResourcesFile(clonedFile.getName());
+                    if (ResourcesParser.cleanXml(clonedFile, outputFile)) {
                         // Skip the '/' at the beginning (substring +1)
                         String remotePath = clonedFile.getAbsolutePath()
                                 .substring(clonedDir.getAbsolutePath().length()+1);
