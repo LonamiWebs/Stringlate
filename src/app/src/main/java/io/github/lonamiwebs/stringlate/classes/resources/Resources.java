@@ -256,9 +256,17 @@ public class Resources implements Iterable<ResTag> {
         return mFile.isFile();
     }
 
-    // TODO Should this delete the parent directory? Not if there were more .xml files though…
     public boolean delete() {
-        return mFile != null && mFile.delete();
+        boolean ok = mFile != null && mFile.delete();
+        if (ok) {
+            // If the directory is empty, delete it too
+            File parent = mFile.getParentFile();
+            String[] children = parent.list();
+            if (children == null || children.length == 0) {
+                ok = parent.delete();
+            }
+        }
+        return ok;
     }
 
     //endregion

@@ -2,9 +2,7 @@ package io.github.lonamiwebs.stringlate.utilities;
 
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -52,7 +50,7 @@ public class WebUtils {
 
     // Source: http://stackoverflow.com/a/31357311/4759433
     private static String performCall(URL url, String method, String data) {
-        StringBuilder sb = new StringBuilder();
+        String result = "";
         try {
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod(method);
@@ -68,17 +66,12 @@ public class WebUtils {
                 os.close();
             }
 
-            String line;
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-                sb.append('\n');
-            }
+            result = Utils.readCloseStream(conn.getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return sb.toString();
+        return result;
     }
 
     private static String getQuery(HashMap<String, String> params) throws UnsupportedEncodingException {

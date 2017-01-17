@@ -7,14 +7,12 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -29,6 +27,7 @@ import io.github.lonamiwebs.stringlate.classes.resources.tags.ResPlurals;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResString;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResStringArray;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
+import io.github.lonamiwebs.stringlate.utilities.Utils;
 
 // Class used to parse strings.xml files into Resources objects
 // Please NOTE that strings with `translatable="false"` will NOT be parsed
@@ -115,7 +114,7 @@ public class ResourcesParser {
     }
 
     // Reads a <string name="...">...</string> tag from the xml.
-    // Returns null if the string cannot be translated
+    // This assumes that the .xml has been cleaned (i.e. there are no untranslatable strings)
     private static ResString readResourceString(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
@@ -124,31 +123,23 @@ public class ResourcesParser {
 
         parser.require(XmlPullParser.START_TAG, ns, STRING);
 
-        if (!readBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE)) {
-            // We don't care about not-translatable strings
-            // TODO Actually there shouldn't be any though if we already cleaned the .xml file?
-            skipInnerXml(parser);
-            parser.require(XmlPullParser.END_TAG, ns, STRING);
+        id = parser.getAttributeValue(null, ID);
+
+        // Metadata
+        modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
+
+        // The content must be read last, since it also consumes the tag
+        // Android uses \n for new line, XML doesn't so manually replace it
+        // But first, replace the XML new lines with normal spaces
+        content = getInnerXml(parser);
+        content = content.replace('\n', ' ').replace("\\n", "\n");
+
+        parser.require(XmlPullParser.END_TAG, ns, STRING);
+
+        if (content.isEmpty())
             return null;
-        } else {
-            id = parser.getAttributeValue(null, ID);
-
-            // Metadata
-            modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
-
-            // The content must be read last, since it also consumes the tag
-            // Android uses \n for new line, XML doesn't so manually replace it
-            // But first, replace the XML new lines with normal spaces
-            content = getInnerXml(parser);
-            content = content.replace('\n', ' ').replace("\\n", "\n");
-
-            parser.require(XmlPullParser.END_TAG, ns, STRING);
-
-            if (content.isEmpty())
-                return null;
-            else
-                return new ResString(id, content, modified);
-        }
+        else
+            return new ResString(id, content, modified);
     }
 
     // Reads a <string-array name="...">...</string-array> tag from the xml.
@@ -422,17 +413,7 @@ public class ResourcesParser {
 
     public static boolean cleanXml(File inFile, File outFile) {
         try {
-            String bufferLine;
-            FileInputStream in = new FileInputStream(inFile);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-            // TODO I probably have a lot of methods to read a file into a string… Make it common
-            StringBuilder sb = new StringBuilder();
-            while ((bufferLine = reader.readLine()) != null)
-                sb.append(bufferLine).append('\n');
-
-            reader.close();
-            String xml = sb.toString();
+            String xml = Utils.readFile(inFile);
             boolean haveAny = false;
 
             // 1. Find dirty tags (those which are untranslatable)
@@ -470,65 +451,7 @@ public class ResourcesParser {
                 return true;
             }
 
-            // 2. Remove the dirty tags and mark those lines as dirty too
-            int line = 0;
-            int lastLine = -1; // To avoid adding the same line twice
-            Queue<Integer> dirtyLines = new LinkedList<>();
-
-            // Save result here
-            StringBuilder noDirty = new StringBuilder();
-
-            // Get first range and iterate over the characters of the xml
-            DirtyRange range = dirtyRanges.poll();
-            for (int i = 0; i < xml.length(); i++) {
-                char c = xml.charAt(i);
-
-                if (range == null || i < range.start) {
-                    // Copy this character since it's not part of the dirty tag
-                    noDirty.append(c);
-
-                    // Note how we increment the line iff it was copied,
-                    // otherwise it was removed and should be excluded
-                    if (c == '\n') {
-                        line++;
-                    }
-                } else {
-                    // Omit these characters since we're in a dirty tag,
-                    // and mark the line as dirty iff it wasn't marked before
-                    if (lastLine != line) {
-                        dirtyLines.add(line);
-                        lastLine = line;
-                    }
-
-                    // >= not to skip to the next character
-                    if (i >= range.end) {
-                        // We're outside the range now, so pick up the next range
-                        range = dirtyRanges.poll();
-                    }
-                }
-            }
-
-            // Store our new xml
-            xml = noDirty.toString();
-
-            // 3. Clean the dirty lines iff they're whitespace only
-            String[] lines = xml.split("\\n");
-            Integer dirtyLine = dirtyLines.poll();
-
-            for (int i = 0; i < lines.length; i++) {
-                // If there are no more dirty lines
-                // Or we are not at a dirty line yet
-                // Or this line is not all whitespace, append it
-                if (dirtyLine == null || i != dirtyLine || !isWhitespace(lines[i])) {
-                    writer.write(lines[i]);
-                    writer.write('\n');
-                } else {
-                    // Get the next dirty line while ignoring this line too
-                    dirtyLine = dirtyLines.poll();
-                }
-            }
-
-            writer.close();
+            removeDirtyRanges(xml, dirtyRanges, out);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -639,9 +562,6 @@ public class ResourcesParser {
         // TODO Ignore "<!-- <string name="missing">value</string> -->" comments?
         // Maybe scan for comments and if a match is found inside a comment… Discard it?
         // Or maybe it's just over complication.
-        //
-        // TODO Instead a replacement range, perhaps I could just eat that part up…?
-        // Well that's what I do anyway when writing the replacement.
         boolean haveAny = false;
 
         // 1. Find dirty tags (those which we have no translation for)
@@ -668,67 +588,18 @@ public class ResourcesParser {
         if (dirtyRanges.isEmpty())
             return xml;
 
-        // 2. Remove the dirty tags and mark those lines as dirty too
-        int line = 0;
-        int lastLine = -1; // To avoid adding the same line twice
-        Queue<Integer> dirtyLines = new LinkedList<>();
+        try {
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        // Save result here
-        StringBuilder noDirty = new StringBuilder();
+            // 2. Remove the dirty tags and mark those lines as dirty too
+            removeDirtyRanges(xml, dirtyRanges, output);
 
-        // Get first range and iterate over the characters of the xml
-        DirtyRange range = dirtyRanges.poll();
-        for (int i = 0; i < xml.length(); i++) {
-            char c = xml.charAt(i);
-
-            if (range == null || i < range.start) {
-                // Copy this character since it's not part of the dirty tag
-                noDirty.append(c);
-
-                // Note how we increment the line iff it was copied,
-                // otherwise it was removed and should be excluded
-                if (c == '\n') {
-                    line++;
-                }
-            } else {
-                // Omit these characters since we're in a dirty tag,
-                // and mark the line as dirty iff it wasn't marked before
-                if (lastLine != line) {
-                    dirtyLines.add(line);
-                    lastLine = line;
-                }
-
-                // >= not to skip to the next character
-                if (i >= range.end) {
-                    // We're outside the range now, so pick up the next range
-                    range = dirtyRanges.poll();
-                }
-            }
+            // Return the clean xml
+            return output.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
         }
-
-        // Store our new xml
-        xml = noDirty.toString();
-
-        // 3. Clean the dirty lines iff they're whitespace only
-        String[] lines = xml.split("\\n");
-        Integer dirtyLine = dirtyLines.poll();
-
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < lines.length; i++) {
-            // If there are no more dirty lines
-            // Or we are not at a dirty line yet
-            // Or this line is not all whitespace, append it
-            if (dirtyLine == null || i != dirtyLine || !isWhitespace(lines[i])) {
-                result.append(lines[i]);
-                result.append('\n');
-            } else {
-                // Get the next dirty line while ignoring this line too
-                dirtyLine = dirtyLines.poll();
-            }
-        }
-
-        // We can finally return the clean xml
-        return result.toString();
     }
 
     // This assumes a clean xml, i.e., we have a translation for all the strings in it
@@ -815,27 +686,82 @@ public class ResourcesParser {
     }
 
     public static boolean applyTemplate(File template, Resources resources, OutputStream out) {
-        try {
-            StringBuilder sb = new StringBuilder();
-            FileInputStream in = new FileInputStream(template);
-
-            String line;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            while ((line = reader.readLine()) != null)
-                sb.append(line).append('\n');
-
-            // The xml will be empty if we have no translation for this file.
-            String xml = cleanMissingStrings(sb.toString(), resources);
-            return !xml.isEmpty() && writeReplaceStrings(xml, resources, out);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        // The xml will be empty if we have no translation for this file.
+        String xml = cleanMissingStrings(Utils.readFile(template), resources);
+        return !xml.isEmpty() && writeReplaceStrings(xml, resources, out);
     }
 
     //endregion
 
     //endregion
+
+    //endregion
+
+    //region Private utilities
+
+    // Removes the dirty ranges on string. If a line containing
+    // a dirty range is then empty, this line will also be removed.
+    // The result will be output to the given output stream.
+    private static void removeDirtyRanges(final String string,
+                                          final Queue<DirtyRange> dirtyRanges,
+                                          final OutputStream output)
+            throws IOException {
+        int line = 0;
+        int lastLine = -1; // To avoid adding the same line twice
+        Queue<Integer> dirtyLines = new LinkedList<>();
+
+        // Save result here
+        StringBuilder noDirty = new StringBuilder();
+
+        // Get first range and iterate over the characters of the xml
+        DirtyRange range = dirtyRanges.poll();
+        for (int i = 0; i < string.length(); i++) {
+            char c = string.charAt(i);
+
+            if (range == null || i < range.start) {
+                // Copy this character since it's not part of the dirty tag
+                noDirty.append(c);
+
+                // Note how we increment the line iff it was copied,
+                // otherwise it was removed and should be excluded
+                if (c == '\n') {
+                    line++;
+                }
+            } else {
+                // Omit these characters since we're in a dirty tag,
+                // and mark the line as dirty iff it wasn't marked before
+                if (lastLine != line) {
+                    dirtyLines.add(line);
+                    lastLine = line;
+                }
+
+                // >= not to skip to the next character
+                if (i >= range.end) {
+                    // We're outside the range now, so pick up the next range
+                    range = dirtyRanges.poll();
+                }
+            }
+        }
+
+        // Clean the dirty lines iff they're whitespace only
+        String[] lines = noDirty.toString().split("\\n");
+        Integer dirtyLine = dirtyLines.poll();
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
+        for (int i = 0; i < lines.length; i++) {
+            // If there are no more dirty lines
+            // Or we are not at a dirty line yet
+            // Or this line is not all whitespace, append it
+            if (dirtyLine == null || i != dirtyLine || !isWhitespace(lines[i])) {
+                writer.write(lines[i]);
+                writer.write('\n');
+            } else {
+                // Get the next dirty line while ignoring this line too
+                dirtyLine = dirtyLines.poll();
+            }
+        }
+        writer.close();
+    }
 
     //endregion
 }

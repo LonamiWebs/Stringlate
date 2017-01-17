@@ -19,6 +19,7 @@ import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.utilities.Utils;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -77,11 +78,8 @@ public class CreateIssueActivity extends AppCompatActivity {
             String xml = mRepo.mergeDefaultTemplate(mLocale);
             description = description.replace("%x", String.format("```xml\n%s\n```", xml));
         }
-        if (GitHub.gCannotCall(this)) {
-            Toast.makeText(this,
-                    R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
+        if (Utils.isNotConnected(this, true))
             return;
-        }
 
         final ProgressDialog progress = ProgressDialog.show(this,
                 getString(R.string.creating_issue_ellipsis),

@@ -19,7 +19,7 @@ import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
-import io.github.lonamiwebs.stringlate.git.GitHub;
+import io.github.lonamiwebs.stringlate.utilities.Utils;
 
 import static android.app.Activity.RESULT_OK;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -150,11 +150,8 @@ public class AddNewRepositoryFragment extends Fragment {
     //region Checking and adding a new local "repository"
 
     private void scanDownloadStrings(final RepoHandler repo) {
-        if (GitHub.gCannotCall(getContext())) {
-            Toast.makeText(getContext(),
-                    R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
+        if (Utils.isNotConnected(getContext(), true))
             return;
-        }
 
         final ProgressDialog progress = ProgressDialog.show(getContext(), "…", "…", true);
         repo.syncResources(new GitCloneProgressCallback(getActivity()) {

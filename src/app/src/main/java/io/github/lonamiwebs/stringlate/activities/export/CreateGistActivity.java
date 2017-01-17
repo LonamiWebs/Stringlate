@@ -21,6 +21,7 @@ import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.utilities.Utils;
 
 import static android.view.View.GONE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
@@ -111,12 +112,8 @@ public class CreateGistActivity extends AppCompatActivity {
                         mRepo.applyTemplate(defaultResources[0], mLocale));
             }
         }
-
-        if (GitHub.gCannotCall(this)) {
-            Toast.makeText(this,
-                    R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
+        if (Utils.isNotConnected(this, true))
             return;
-        }
 
         final ProgressDialog progress = ProgressDialog.show(this,
                 getString(R.string.posting_gist_ellipsis),

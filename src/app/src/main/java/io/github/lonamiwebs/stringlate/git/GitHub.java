@@ -1,8 +1,5 @@
 package io.github.lonamiwebs.stringlate.git;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
@@ -37,15 +34,6 @@ public class GitHub {
     //endregion
 
     //region Public methods
-
-    // Determines whether a call to GitHub can be made or not
-    // This is equivalent to checking if the user is connected to the internet
-    public static boolean gCannotCall(Context ctx) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager)ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo == null || !activeNetworkInfo.isConnected();
-    }
 
     public static JSONObject gCreateGist(String description, boolean isPublic,
                                          HashMap<String, String> fileContents,

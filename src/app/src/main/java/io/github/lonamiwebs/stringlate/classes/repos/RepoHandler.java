@@ -337,7 +337,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             }
 
             @Override
-            protected void onPostExecute(Void _) {
+            protected void onPostExecute(Void ignore) {
                 notifyRepositoryCountChanged();
                 callback.onProgressFinished(null, true);
             }
