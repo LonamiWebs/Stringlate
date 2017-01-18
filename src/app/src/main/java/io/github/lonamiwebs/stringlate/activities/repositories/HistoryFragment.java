@@ -1,9 +1,11 @@
 package io.github.lonamiwebs.stringlate.activities.repositories;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +48,25 @@ public class HistoryFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 RepoHandler repo = (RepoHandler)adapterView.getItemAtPosition(i);
                 launchTranslateActivity(repo);
+            }
+        });
+        mRepositoryListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final RepoHandler repo = (RepoHandler)parent.getItemAtPosition(position);
+                // TODO Copy paste from TranslateActivity
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.sure_question)
+                        .setMessage(getString(R.string.delete_repository_confirm_long, repo.toString()))
+                        .setPositiveButton(getString(R.string.delete_repository), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                repo.delete();
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.cancel), null)
+                        .show();
+                return true;
             }
         });
 
