@@ -5,6 +5,8 @@
 - [¿Cómo cargo mi trabajo previo?](#load-progress)
 - [¿Qué significa `%s` ó `%1$d/%2$d`?](#string-symbols)
 - [¿Por qué algunos idiomas tienen más cadenas que otros?](#locale-missing-strings)
+- [Soy desarrollador, ¿debería escapar ciertas secuencias?](#escape-equences)
+- [¿Hay soporte para los proyectos hospedados fuera de GitHub?](#non-github-repos)
 - [¡Usaré esta app para causar el caos!](#chaos)
 
 ## Soy nuevo en GitHub. ¿Dónde empiezo? <a name="im-new"></a>
@@ -94,6 +96,17 @@ aquellos textos que ya han sido traducidos *no* se muestran para no molestar
 (si ya estos ya están traducidos, ¡lo normal es que traduzcas el resto!). Sin
 embargo, si quieres verlos todos, por ejemplo para revisar alguna falta de
 ortografía, puedes abrir el menú y activar "*Mostrar el texto traducido*".
+
+## Soy desarrollador, ¿debería escapar ciertas secuencias? <a name="escape-equences"></a>
+No, no deberías escapar ninguna secuencia. Estos casos deberían ser manejados
+automáticamente al leer y escribir el xml. Si aún así reconoces alguna secuencia
+escapada en la cadena original, por favor abre una nueva incidencia para que la
+podamos manejar automáticamente también (y debatir sobre cómo deberíamos hacerlo).
+
+## ¿Hay soporte para los proyectos hospedados fuera de GitHub? <a name="non-github-repos"></a>
+¡Sí! Puedes introducir o bien una URL de GitHub ó de GitLab y será reconocida.
+Si el proyecto está hospedado en algún otro lugar, debes introducir la misma
+URL que usarías para clonar el repositorio (probablemente termine en `.git`).
 
 ## ¡Usaré esta app para causar el caos! <a name="chaos"></a>
 Por favor **no lo hagas**. Los desarrolladores de aplicaciones son gente como

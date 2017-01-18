@@ -5,6 +5,8 @@
 - [How do I load my previous work?](#load-progress)
 - [What does `%s` or `%1$d/%2$d` mean?](#string-symbols)
 - [Why do some locales have more strings than others?](#locale-missing-strings)
+- [I am a dev, should I escape certain sequences?](#escape-equences)
+- [Are projects hosted outside GitHub supported?](#non-github-repos)
 - [I will use this app to cause chaos!](#chaos)
 
 ## I am new to GitHub. Where do I start? <a name="im-new"></a>
@@ -88,6 +90,17 @@ disturb (if they are translated already, usual thing is you want to translate
 the strings left!). However, if you still want to see all the strings, for
 example, to review them looking for typos, you can open the menu and enable
 "*Show translated strings*".
+
+## I am a dev, should I escape certain sequences? <a name="escape-equences"></a>
+No, you should not escape the sequences. These are automatically handled when
+parsing and serializing the xml. If you do recognise a escaped sequence on the
+original string, please drop an issue so we can handle it too (and debate about
+how that one should be escaped).
+
+## Are projects hosted outside GitHub supported? <a name="non-github-repos"></a>
+Yes! You can either enter a GitHub or GitLab URL and it will be recognised.
+If the project is hosted somewhere else, you need to provide the same URL
+you would use when cloning it (probably ending with `.git`).
 
 ## I will use this app to cause chaos! <a name="chaos"></a>
 Please **don't**. Application developers are people like you, with good

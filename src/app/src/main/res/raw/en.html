@@ -389,6 +389,8 @@ pre code:after {
 <li><a href="#load-progress">How do I load my previous work?</a></li>
 <li><a href="#string-symbols">What does <code>%s</code> or <code>%1$d/%2$d</code> mean?</a></li>
 <li><a href="#locale-missing-strings">Why do some locales have more strings than others?</a></li>
+<li><a href="#escape-equences">I am a dev, should I escape certain sequences?</a></li>
+<li><a href="#non-github-repos">Are projects hosted outside GitHub supported?</a></li>
 <li><a href="#chaos">I will use this app to cause chaos!</a></li>
 </ul>
 
@@ -479,6 +481,19 @@ disturb (if they are translated already, usual thing is you want to translate
 the strings left!). However, if you still want to see all the strings, for
 example, to review them looking for typos, you can open the menu and enable
 "<em>Show translated strings</em>".</p>
+
+<h2>I am a dev, should I escape certain sequences? <a name="escape-equences"></a></h2>
+
+<p>No, you should not escape the sequences. These are automatically handled when
+parsing and serializing the xml. If you do recognise a escaped sequence on the
+original string, please drop an issue so we can handle it too (and debate about
+how that one should be escaped).</p>
+
+<h2>Are projects hosted outside GitHub supported? <a name="non-github-repos"></a></h2>
+
+<p>Yes! You can either enter a GitHub or GitLab URL and it will be recognised.
+If the project is hosted somewhere else, you need to provide the same URL
+you would use when cloning it (probably ending with <code>.git</code>).</p>
 
 <h2>I will use this app to cause chaos! <a name="chaos"></a></h2>
 
