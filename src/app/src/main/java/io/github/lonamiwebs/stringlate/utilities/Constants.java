@@ -31,4 +31,11 @@ public class Constants {
     public final static String GITHUB_CLIENT_SECRET = "863d91a38332b3648cd951c0c498fd2520a8dd9d";
     // Not very secret anymore is it ^ ? Some discussion available at:
     // http://stackoverflow.com/q/4057277 and http://stackoverflow.com/q/4419915
+
+    // Material colors (700): https://material.io/guidelines/style/color.html
+    public final static int[] MATERIAL_COLORS = {
+            0xFFD32F2F, 0xFFC2185B, 0xFF7B1FA2, 0xFF512DA8, 0xFF303F9F, 0xFF1976D2,
+            0xFF0288D1, 0xFF0097A7, 0xFF00796B, 0xFF388E3C, 0xFF689F38, 0xFFAFB42B,
+            0xFFFBC02D, 0xFFFFA000, 0xFFF57C00, 0xFFE64A19, 0xFF5D4037, 0xFF616161
+    };
 }

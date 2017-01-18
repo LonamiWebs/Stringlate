@@ -593,6 +593,14 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return url;
     }
 
+    public String getName() {
+        String url = mSettings.getGitUrl();
+        int slash = url.lastIndexOf('/');
+        if (slash < 0)
+            return url; // Should not happen
+        return url.substring(slash+1);
+    }
+
     public String toString(boolean onlyRepo) {
         String result = toString();
         if (onlyRepo)
