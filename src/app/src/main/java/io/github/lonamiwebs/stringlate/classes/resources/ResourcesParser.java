@@ -129,10 +129,7 @@ public class ResourcesParser {
         modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
 
         // The content must be read last, since it also consumes the tag
-        // Android uses \n for new line, XML doesn't so manually replace it
-        // But first, replace the XML new lines with normal spaces
-        content = getInnerXml(parser);
-        content = content.replace('\n', ' ').replace("\\n", "\n");
+        content = ResTag.desanitizeContent(getInnerXml(parser));
 
         parser.require(XmlPullParser.END_TAG, ns, STRING);
 
@@ -170,7 +167,7 @@ public class ResourcesParser {
                     boolean modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
                     int index = readIntAttr(parser, INDEX, DEFAULT_INDEX);
 
-                    String content = getInnerXml(parser).replace('\n', ' ').replace("\\n", "\n");
+                    String content = ResTag.desanitizeContent(getInnerXml(parser));
                     if (!content.isEmpty())
                         result.addItem(content, modified, index);
                 } else {
@@ -209,7 +206,7 @@ public class ResourcesParser {
                     parser.require(XmlPullParser.START_TAG, ns, ITEM);
                     String quantity = parser.getAttributeValue(null, QUANTITY);
                     boolean modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
-                    String content = getInnerXml(parser).replace('\n', ' ').replace("\\n", "\n");
+                    String content = ResTag.desanitizeContent(getInnerXml(parser));
                     if (!content.isEmpty())
                         result.addItem(quantity, content, modified);
                 } else {
@@ -240,6 +237,7 @@ public class ResourcesParser {
 
     // Reads the inner xml of a tag before moving to the next one
     // Original source: stackoverflow.com/a/16069754/4759433 by @Maarten
+    // TODO This will fail with: &lt;a&gt;text</a>
     private static String getInnerXml(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
@@ -359,8 +357,7 @@ public class ResourcesParser {
         if (string.wasModified() != DEFAULT_MODIFIED)
             serializer.attribute(ns, MODIFIED, Boolean.toString(string.wasModified()));
 
-        // Replace the new lines by \n again
-        serializer.text(string.getContent().replace("\n", "\\n"));
+        serializer.text(ResTag.sanitizeContent(string.getContent()));
         serializer.endTag(ns, STRING);
     }
 
@@ -377,7 +374,7 @@ public class ResourcesParser {
             // We MUST save the index because the user might have
             // translated first the non-first item from the array. Darn it!
             serializer.attribute(ns, INDEX, Integer.toString(item.getIndex()));
-            serializer.text(item.getContent().replace("\n", "\\n"));
+            serializer.text(ResTag.sanitizeContent(item.getContent()));
             serializer.endTag(ns, ITEM);
         }
 
@@ -396,7 +393,7 @@ public class ResourcesParser {
             if (item.wasModified() != DEFAULT_MODIFIED)
                 serializer.attribute(ns, MODIFIED, Boolean.toString(item.wasModified()));
 
-            serializer.text(item.getContent().replace("\n", "\\n"));
+            serializer.text(ResTag.sanitizeContent(item.getContent()));
             serializer.endTag(ns, ITEM);
         }
 
@@ -462,49 +459,6 @@ public class ResourcesParser {
     //endregion
 
     //region Using another file as a template
-
-    //region Writer utilities
-
-    private static void writeSanitize(PrintWriter writer, String string) {
-        char c;
-        int length = string.length();
-        // First count '<' and '>' on the string. If there is the
-        // same amount  of each on the string, assume it's valid HTML
-        int open = 0;
-        for (int i = 0; i < length; i++) {
-            switch (string.charAt(i)) {
-                case '<': open++; break;
-                case '>': open--; break;
-            }
-        }
-        boolean replaceLtGt = open > 0; // Using > is actually OK (open will be negative)
-
-        for (int i = 0; i < length; i++) {
-            c = string.charAt(i);
-            switch (c) {
-                // These should always be escaped
-                case '&': writer.append("&amp;"); break;
-                case '\'': writer.append("\\'"); break;
-
-                // We might or not need to replace <>
-                case '<': writer.append(replaceLtGt ? "&lt;" : "<"); break;
-                case '>': writer.append(replaceLtGt ? "&gt;" : ">"); break;
-
-                // Quotes are a bit special
-                case '"':
-                    if (i == 0 || i == string.length() - 1)
-                        writer.append('"');
-                    else
-                        writer.append("\\\"");
-                    break;
-
-                // Normal character
-                default: writer.append(c); break;
-            }
-        }
-    }
-
-    //endregion
 
     //region Applying the template
 
@@ -674,7 +628,7 @@ public class ResourcesParser {
             } else {
                 // We reached the current replacement holder
                 // Replace the original content with our new content
-                writeSanitize(writer, holder.replacement);
+                writer.append(ResTag.sanitizeContent(holder.replacement));
                 i = holder.end - 1; // Skip to the end of the tag
                 // Decrease the range by 1 not to eat up the next character (due to the i++)
 
