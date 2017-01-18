@@ -137,7 +137,6 @@
     <string name="creating_pr_long">Создание пулл-реквеста в оригинальный репозиторий…</string>
     <string name="something_went_wrong">Что-то не так.</string>
     <string name="cloning_repo">Клонирование репозитория…</string>
-    <string name="cloning_repo_long">Временное клонирование репозитория… Время зависит от репозитория.</string>
     <string name="copying_res">Копирование ресурсов…</string>
     <string name="copying_res_long">Валидация и копирование ресурсов в финальное расположение…</string>
     <string name="issue_title_colon">Заголовок issue:</string>

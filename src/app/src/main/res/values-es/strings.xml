@@ -137,9 +137,11 @@
     <string name="creating_pr_long">Creando una Pull Request en el repositorio original…</string>
     <string name="something_went_wrong">Algo fue mal.</string>
     <string name="cloning_repo">Clonando repositorio…</string>
-    <string name="cloning_repo_long">Clonando temporalmente el repositorio remoto… Esto puede llevar un rato dependiendo del repositorio.</string>
     <string name="copying_res">Copiando recursos…</string>
     <string name="copying_res_long">Validando y copiando recursos a su ubicación final…</string>
     <string name="issue_title_colon">Título de la incidencia:</string>
     <string name="issue_title">Título de la incidencia</string>
+    <string name="cloning_repo_progress">Clonando temporalmente el repositorio… %.1f%%</string>
+    <string name="issue_desc_x">La descripción debe contener \"%x\".</string>
+    <string name="title_empty">El título no puede estar vacío.</string>
 </resources>

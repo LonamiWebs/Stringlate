@@ -67,7 +67,7 @@ public class CreateIssueActivity extends AppCompatActivity {
     public void onCreateIssue(final View v) {
         String title = mIssueTitleEditText.getText().toString().trim();
         if (title.isEmpty()) {
-            mIssueTitleEditText.setError(getString(R.string.issue_title_empty));
+            mIssueTitleEditText.setError(getString(R.string.title_empty));
             return;
         }
         String description = mIssueDescriptionEditText.getText().toString().trim();
