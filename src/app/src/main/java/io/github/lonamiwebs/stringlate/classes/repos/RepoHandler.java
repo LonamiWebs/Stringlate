@@ -429,6 +429,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         }
 
         GitWrapper.deleteRepo(clonedDir); // Clean resources
+        loadLocales(); // Reload the locales
     }
 
     //endregion

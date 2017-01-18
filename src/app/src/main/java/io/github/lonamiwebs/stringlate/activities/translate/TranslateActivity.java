@@ -109,7 +109,10 @@ public class TranslateActivity extends AppCompatActivity {
         // Retrieve the owner and repository name
         mRepo = RepoHandler.fromBundle(this, getIntent().getBundleExtra(EXTRA_REPO));
         setTitle(mRepo.toString());
+        loadResources();
+    }
 
+    private void loadResources() {
         if (mRepo.hasDefaultLocale()) {
             mDefaultResources = mRepo.loadDefaultResources();
             loadLocalesSpinner();
@@ -307,8 +310,7 @@ public class TranslateActivity extends AppCompatActivity {
                 if (description != null)
                     Toast.makeText(getApplicationContext(), description, Toast.LENGTH_SHORT).show();
 
-                mDefaultResources = mRepo.loadDefaultResources();
-                loadLocalesSpinner();
+                loadResources();
             }
         }, keepChanges);
     }
