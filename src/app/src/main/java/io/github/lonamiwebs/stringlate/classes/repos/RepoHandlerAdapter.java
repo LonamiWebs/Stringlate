@@ -76,7 +76,7 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
             }
         }
         if (first == null) {
-            name = String.valueOf(name.charAt(0));
+            name = String.valueOf(name.charAt(0)).toUpperCase();
         } else {
             name = String.valueOf(first);
             if (last != null)
