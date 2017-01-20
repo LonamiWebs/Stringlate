@@ -1,7 +1,6 @@
 package io.github.lonamiwebs.stringlate.activities.repositories;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,7 +22,6 @@ import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerAdapter;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
 
 public class HistoryFragment extends Fragment {
 
@@ -47,7 +45,7 @@ public class HistoryFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 RepoHandler repo = (RepoHandler)adapterView.getItemAtPosition(i);
-                launchTranslateActivity(repo);
+                TranslateActivity.launch(getContext(), repo);
             }
         });
         mRepositoryListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -113,16 +111,6 @@ public class HistoryFragment extends Fragment {
             }
         }
     };
-
-    //endregion
-
-    //region Utilities
-
-    private void launchTranslateActivity(RepoHandler repo) {
-        Intent intent = new Intent(getContext(), TranslateActivity.class);
-        intent.putExtra(EXTRA_REPO, repo.toBundle());
-        startActivity(intent);
-    }
 
     //endregion
 }

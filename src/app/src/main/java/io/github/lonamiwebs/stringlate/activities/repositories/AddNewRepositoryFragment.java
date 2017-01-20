@@ -19,6 +19,7 @@ import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
+import io.github.lonamiwebs.stringlate.utilities.Api;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
 import static android.app.Activity.RESULT_OK;
@@ -51,11 +52,17 @@ public class AddNewRepositoryFragment extends Fragment {
         rootView.findViewById(R.id.nextButton).setOnClickListener(onNextClick);
 
         // Check if we opened the application because a GitHub link was clicked
-        Uri data = getActivity().getIntent().getData();
+        final Intent intent = getActivity().getIntent();
+        final Uri data = intent.getData();
         if (data != null) {
             String scheme = data.getScheme();
             String fullPath = data.getEncodedSchemeSpecificPart();
             setUrl(scheme+":"+fullPath);
+        }
+        // Or we were opened from the Api
+        if (intent.getAction().equals(Api.ACTION_TRANSLATE) &&
+                intent.hasExtra(Api.EXTRA_GIT_URL)) {
+            setUrl(intent.getStringExtra(Api.EXTRA_GIT_URL));
         }
 
         // If the user presses enter on an EditText, select the next one

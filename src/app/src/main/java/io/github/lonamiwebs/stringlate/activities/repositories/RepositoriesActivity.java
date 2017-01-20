@@ -13,7 +13,9 @@ import android.view.MenuItem;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.GitHubLoginActivity;
 import io.github.lonamiwebs.stringlate.activities.OnlineHelpActivity;
+import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.utilities.Api;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_REPO_DISCOVERED;
 
@@ -53,8 +55,32 @@ public class RepositoriesActivity extends AppCompatActivity {
 
         // Check if we opened the application because a GitHub link was clicked
         // If this is the case then we should show the "Add repository" fragment
-        if (getIntent().getData() != null) {
+        final Intent intent = getIntent();
+        final String action = intent.getAction();
+        if (action.equals(Intent.ACTION_VIEW)) {
+            // Opened via a GitHub.com url
             mViewPager.setCurrentItem(1, false);
+        } else if (action.equals(Api.ACTION_TRANSLATE)) {
+
+            // Opened via our custom Api, ensure we have the required extras
+            if (intent.hasExtra(Api.EXTRA_GIT_URL)) {
+                final String gitUrl = intent.getStringExtra(Api.EXTRA_GIT_URL);
+                RepoHandler repo = new RepoHandler(this, gitUrl);
+                if (repo.isEmpty()) {
+                    // This repository is empty, clean any created
+                    // garbage and show the "Add repository" fragment
+                    repo.delete();
+                    mViewPager.setCurrentItem(1, false);
+                } else {
+                    // We already had this repository so directly
+                    // show the "Translate" activity and finish this
+                    TranslateActivity.launch(this, repo);
+                    finish();
+                }
+            } else {
+                // No extra was given, finish taking no further action
+                finish();
+            }
         }
     }
 

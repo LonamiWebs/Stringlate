@@ -85,6 +85,12 @@ public class TranslateActivity extends AppCompatActivity {
 
     //region Initialization
 
+    public static void launch(final Context ctx, final RepoHandler repo) {
+        Intent intent = new Intent(ctx, TranslateActivity.class);
+        intent.putExtra(EXTRA_REPO, repo.toBundle());
+        ctx.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
