@@ -206,7 +206,7 @@ public class ApplicationList implements Iterable<Application> {
                     @Override
                     public int compare(Application t1, Application t2) {
                         if (t1.isInstalled() == t2.isInstalled()) {
-                            return t1.getName().compareTo(t2.getName());
+                            return t1.getName().compareToIgnoreCase(t2.getName());
                         } else {
                             return t1.isInstalled() ? -1 : 1;
                         }
