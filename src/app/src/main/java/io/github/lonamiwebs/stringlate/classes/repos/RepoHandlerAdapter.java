@@ -45,7 +45,7 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
         ImageView iconView = (ImageView)convertView.findViewById(R.id.appIcon);
         File iconFile = repo.getIconFile();
         if (iconFile == null)
-            iconView.setImageBitmap(getBitmap(repo.getName()));
+            iconView.setImageBitmap(getBitmap(repo.getName(false)));
         else
             iconView.setImageURI(Uri.fromFile(iconFile));
 

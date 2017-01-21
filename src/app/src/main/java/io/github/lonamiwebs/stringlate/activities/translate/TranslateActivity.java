@@ -114,7 +114,7 @@ public class TranslateActivity extends AppCompatActivity {
 
         // Retrieve the owner and repository name
         mRepo = RepoHandler.fromBundle(this, getIntent().getBundleExtra(EXTRA_REPO));
-        setTitle(mRepo.toString());
+        setTitle(mRepo.getName(false));
         loadResources();
     }
 

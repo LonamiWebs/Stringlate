@@ -594,20 +594,19 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return url;
     }
 
-    public String getName() {
+    public String getName(boolean extension) {
         String url = mSettings.getGitUrl();
         int slash = url.lastIndexOf('/');
         if (slash < 0)
             return url; // Should not happen
-        return url.substring(slash+1);
-    }
 
-    public String toString(boolean onlyRepo) {
-        String result = toString();
-        if (onlyRepo)
-            return result.substring(result.lastIndexOf('/')+1);
-        else
-            return result;
+        url = url.substring(slash + 1);
+        if (!extension) {
+            int dot = url.lastIndexOf('.');
+            if (dot >= 0)
+                url = url.substring(0, dot);
+        }
+        return url;
     }
 
     public String toOwnerRepo() throws InvalidObjectException {

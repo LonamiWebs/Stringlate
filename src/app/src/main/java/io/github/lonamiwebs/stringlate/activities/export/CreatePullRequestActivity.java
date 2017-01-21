@@ -287,8 +287,8 @@ public class CreatePullRequestActivity extends AppCompatActivity {
             if (result == null) throw new JSONException("Null result");
 
             String postedUrl = mNeedFork ? result.getString("html_url")
-                    : String.format("https://github.com/%s/commit/%s",
-                    mRepo.toString(), result.getJSONObject("object").getString("sha"));
+                    : String.format("https://github.com%s/commit/%s",
+                    mRepo.getPath(), result.getJSONObject("object").getString("sha"));
 
             finish();
             CreateUrlSuccessActivity.launchIntent(
