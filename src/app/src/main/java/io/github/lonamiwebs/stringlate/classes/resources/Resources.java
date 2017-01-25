@@ -28,6 +28,8 @@ public class Resources implements Iterable<ResTag> {
     private final HashSet<ResTag> mStrings;
     private final HashSet<String> mUnsavedIDs;
 
+    private ResTag mLastTag; // The last tag returned by getTag()
+
     private boolean mSavedChanges;
     private boolean mModified;
 
@@ -133,22 +135,35 @@ public class Resources implements Iterable<ResTag> {
         return tag == null ? "" : tag.getContent();
     }
 
-    // TODO Improve by caching the last returned resourceId?
     public ResTag getTag(String resourceId) {
-        // TODO If the resource ID contains ':', then we should not bother looking at the parents
-        for (ResTag rs : mStrings) {
-            if (rs instanceof ResStringArray.Item) {
-                if (((ResStringArray.Item)rs).getParent().getId().equals(resourceId))
-                    return rs;
-            } else if (rs instanceof ResPlurals.Item) {
-                if (((ResPlurals.Item)rs).getParent().getId().equals(resourceId))
-                    return rs;
-            }
-            if (rs.getId().equals(resourceId))
-                return rs;
+        if (mLastTag != null && mLastTag.getId().equals(resourceId)) {
+            return mLastTag;
         }
 
-        return null;
+        mLastTag = null;
+        // TODO Make a constant value for ':' somewhere else
+        if (resourceId.contains(":")) {
+            for (ResTag rs : mStrings) {
+                if (rs.getId().equals(resourceId)) {
+                    mLastTag = rs;
+                    break;
+                }
+            }
+        } else {
+            for (ResTag rs : mStrings) {
+                if (rs instanceof ResStringArray.Item) {
+                    if (((ResStringArray.Item)rs).getParent().getId().equals(resourceId))
+                        return mLastTag = rs;
+                } else if (rs instanceof ResPlurals.Item) {
+                    if (((ResPlurals.Item)rs).getParent().getId().equals(resourceId))
+                        return mLastTag = rs;
+                }
+                if (rs.getId().equals(resourceId))
+                    return mLastTag = rs;
+            }
+        }
+
+        return mLastTag;
     }
 
     // Determines whether the resource ID was modified or not
