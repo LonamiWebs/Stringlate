@@ -452,6 +452,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     @NonNull
+    // Returns "" if the template wasn't applied successfully
+    // TODO Handle the above case more gracefully, display a toast error maybe
     public String applyTemplate(File template, String locale) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         if (applyTemplate(template, locale, out))
@@ -461,6 +463,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     // TODO Why do I load the resources all the time - can't I just pass the loaded one?
+    // Returns TRUE if the template was applied successfully
     public boolean applyTemplate(File template, String locale, OutputStream out) {
         return hasLocale(locale) &&
                 template.isFile() &&

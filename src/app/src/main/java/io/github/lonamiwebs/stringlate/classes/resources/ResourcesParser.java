@@ -557,6 +557,7 @@ public class ResourcesParser {
     }
 
     // This assumes a clean xml, i.e., we have a translation for all the strings in it
+    // Returns TRUE if there were no errors
     private static boolean writeReplaceStrings(String xml, Resources resources, OutputStream out) {
         // Match on the original xml to determine where replacements will be made
         Matcher mTag = RES_TAG_PATTERN.matcher(xml);
@@ -636,9 +637,10 @@ public class ResourcesParser {
             }
         }
         writer.close();
-        return writer.checkError();
+        return !writer.checkError();
     }
 
+    // Returns TRUE if the template was applied successfully
     public static boolean applyTemplate(File template, Resources resources, OutputStream out) {
         // The xml will be empty if we have no translation for this file.
         String xml = cleanMissingStrings(Utils.readFile(template), resources);
