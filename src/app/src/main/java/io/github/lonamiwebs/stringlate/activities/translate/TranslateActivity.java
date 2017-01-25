@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -797,6 +798,11 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Sets the current locale also updating the spinner selection
     private void setCurrentLocale(String locale) {
+        // Clear the previous EditText fields
+        mOriginalStringEditText.setText("");
+        mTranslatedStringEditText.setText("");
+
+        // Update the selected locale
         mSelectedLocale = locale;
         mRepo.setLastLocale(locale);
 
@@ -810,6 +816,9 @@ public class TranslateActivity extends AppCompatActivity {
 
         checkTranslationVisibility();
         loadStringIDsSpinner();
+
+        // There might be no strings, in which case we need to hide some buttons
+        checkPreviousNextVisibility();
     }
 
     //endregion
@@ -898,23 +907,28 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     // Updates the selected resource ID and also the EditTexts for its contents
-    private void updateSelectedResourceId(String resourceId) {
-        mSelectedResource = mDefaultResources.getTag(resourceId);
-        mOriginalStringEditText.setText(mSelectedResource.getContent());
-        mTranslatedStringEditText.setText(mSelectedLocaleResources.getContent(resourceId));
+    private void updateSelectedResourceId(@NonNull String resourceId) {
+        if (resourceId.isEmpty()) {
+            mSelectedResource = null;
+            mOriginalStringEditText.setText("");
+            mTranslatedStringEditText.setText("");
+        } else {
+            mSelectedResource = mDefaultResources.getTag(resourceId);
+            mOriginalStringEditText.setText(mSelectedResource.getContent());
+            mTranslatedStringEditText.setText(mSelectedLocaleResources.getContent(resourceId));
+        }
         checkPreviousNextVisibility();
         updateProgress();
     }
 
     private void checkPreviousNextVisibility() {
-        int i = mStringIdSpinner.getSelectedItemPosition();
         int countM1 = mStringIdSpinner.getCount()-1;
-
-        if (countM1 == 0) {
+        if (countM1 <= 0) {
             // Special case: set visibility to GONE so the Save button grows
             mPreviousButton.setVisibility(View.GONE);
             mNextButton.setVisibility(View.GONE);
         } else {
+            int i = mStringIdSpinner.getSelectedItemPosition();
             mPreviousButton.setVisibility(i == 0 ? View.INVISIBLE : View.VISIBLE);
             mNextButton.setVisibility(i == countM1 ? View.INVISIBLE : View.VISIBLE);
         }
