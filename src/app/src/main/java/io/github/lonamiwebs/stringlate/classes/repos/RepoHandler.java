@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.Pair;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -60,9 +61,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     private static final String BASE_DIR = "repos";
     public static final String DEFAULT_LOCALE = "default";
-
-    private static final Pattern OWNER_REPO = Pattern.compile(
-            "(?:https?://github\\.com/|git@github.com:)([\\w-]+)/([\\w-]+)(?:/.*|\\.git)?");
 
     // Match "dontranslate.xml", "do-not-translate.xml", "donottranslate.xml" and such
     private static final Pattern DO_NOT_TRANSLATE = Pattern.compile(
@@ -528,7 +526,12 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     public boolean isGitHubRepository() {
-        return OWNER_REPO.matcher(mSettings.getGitUrl()).matches();
+        try {
+            GitWrapper.getGitHubOwnerRepo(mSettings.getGitUrl());
+            return true;
+        } catch (InvalidObjectException ignored) {
+            return false;
+        }
     }
 
     private void addRemotePath(String filename, String remotePath) {
@@ -613,12 +616,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     public String toOwnerRepo() throws InvalidObjectException {
-        Matcher m = OWNER_REPO.matcher(mSettings.getGitUrl());
-        if (m.matches())
-            return String.format("%s/%s", m.group(1), m.group(2));
-        else
-            throw new InvalidObjectException(
-                    "Only repositories with a GitHub url can be converted to owner and repository.");
+        Pair<String, String> pair = GitWrapper.getGitHubOwnerRepo(mSettings.getGitUrl());
+        return String.format("%s/%s", pair.first, pair.second);
     }
 
     public Bundle toBundle() {

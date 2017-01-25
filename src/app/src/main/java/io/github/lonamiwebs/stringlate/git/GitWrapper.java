@@ -2,6 +2,7 @@ package io.github.lonamiwebs.stringlate.git;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Pair;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -12,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -30,6 +32,10 @@ public class GitWrapper {
     private static final String STR_STRING = "<string";
     private static final String STR_PLURALS = "<plurals";
 
+    // GitHub URLs (and GitLab) are well-known
+    private static final Pattern OWNER_REPO = Pattern.compile(
+            "(?:https?://|git@)(git(?:hub|lab).com)[/:]([\\w-]+)/([\\w-]+)(?:/.*|\\.git)?");
+
     public static String buildGitHubUrl(String owner, String repository) {
         return String.format(BASE_GITHUB_URL, owner, repository);
     }
@@ -38,25 +44,32 @@ public class GitWrapper {
     public static String getGitUri(String url) {
         url = url.trim();
 
-        // TODO Convert SSH to HTTP?
         if (url.startsWith("git://")) {
             return url;
         }
         else if (url.contains("github") || url.contains("gitlab")) {
-            // Make sure we use the https version or things will go wrong (301 - moved permanently)
-            if (url.startsWith("http:"))
-                url = url.replace("http:", "https:");
-
-            if (!url.endsWith(".git")) {
-                // GitHub actually works with 'git://' prefix or without the '.git' suffix.
-                // GitLab also works with or without '.git' suffix.
-                // However since the UI interfaces append '.git', we do so too.
-                return url+".git";
+            // Since we know how these URLs work, match the owner and the repository name.
+            // This will allow us to handle any URL on the site (even "/issues", "/wiki"…)
+            Matcher m = OWNER_REPO.matcher(url);
+            if (m.matches()) {
+                String host = m.group(1);
+                String owner = m.group(2);
+                String repo = m.group(3);
+                return String.format("https://%s/%s/%s.git", host, owner, repo);
             }
         }
 
         // Hope that the url is valid
         return url;
+    }
+
+    public static Pair<String, String> getGitHubOwnerRepo(final String url)
+            throws InvalidObjectException {
+        Matcher m = OWNER_REPO.matcher(url);
+        if (m.matches() && m.group(1).equals("github")) {
+            return new Pair<>(m.group(2), m.group(3));
+        }
+        throw new InvalidObjectException("Not a GitHub repository.");
     }
 
     public static boolean cloneRepo(final String uri, final File cloneTo,
