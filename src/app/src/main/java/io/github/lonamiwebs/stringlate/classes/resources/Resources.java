@@ -133,6 +133,7 @@ public class Resources implements Iterable<ResTag> {
         return tag == null ? "" : tag.getContent();
     }
 
+    // TODO Improve by caching the last returned resourceId?
     public ResTag getTag(String resourceId) {
         // TODO If the resource ID contains ':', then we should not bother looking at the parents
         for (ResTag rs : mStrings) {
@@ -172,21 +173,47 @@ public class Resources implements Iterable<ResTag> {
             return;
         }
 
-        boolean found = false;
-        for (ResTag rs : mStrings)
-            if (rs.getId().equals(resourceId)) {
-                if (rs.setContent(content)) {
-                    mSavedChanges = false;
-                    mUnsavedIDs.add(resourceId);
-                }
-
-                found = true;
-                break;
+        ResTag rs = getTag(resourceId);
+        if (rs != null) {
+            if (rs.setContent(content)) {
+                mSavedChanges = false;
+                mUnsavedIDs.add(resourceId);
             }
+        } else {
+            // We need to treat string arrays and plurals specially
+            // For these, we need to find the parent, and if it exists
+            // then we need to add the child to the existing parent
+            boolean handled = false;
+            if (original instanceof ResStringArray.Item) {
+                ResStringArray.Item ori = (ResStringArray.Item)original;
+                ResStringArray.Item existingChild =
+                        (ResStringArray.Item)getTag(ori.getParent().getId());
 
-        if (!found) {
-            ResTag clone = original.clone(content);
-            mStrings.add(clone);
+                if (existingChild != null) {
+                    // The parent existed, so add the new string to it, and the
+                    // resulting new string to our local array of children
+                    ResStringArray parent = existingChild.getParent();
+                    mStrings.add(parent.addItem(content, true, ori.getIndex()));
+                    handled = true;
+                } // else the parent didn't exist, so behave as the general case
+
+            } else if (original instanceof ResPlurals.Item) {
+                ResPlurals.Item ori = (ResPlurals.Item)original;
+                ResPlurals.Item existingChild =
+                        (ResPlurals.Item)getTag(ori.getParent().getId());
+
+                if (existingChild != null) {
+                    // The parent existed, so add the new string to it, and the
+                    // resulting new string to our local array of children
+                    ResPlurals parent = existingChild.getParent();
+                    mStrings.add(parent.addItem(ori.getQuantity(), content, true));
+                    handled = true;
+                } // else the parent didn't exist, so behave as the general case
+            }
+            if (!handled) {
+                ResTag clone = original.clone(content);
+                mStrings.add(clone);
+            }
             mSavedChanges = false;
             mUnsavedIDs.add(resourceId);
         }
