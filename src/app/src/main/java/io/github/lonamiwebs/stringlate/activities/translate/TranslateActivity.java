@@ -170,22 +170,29 @@ public class TranslateActivity extends AppCompatActivity {
 
             // Exporting resources
             case R.id.exportToSdcard:
-                exportToSd();
-                return true;
             case R.id.exportToGist:
-                exportToGist();
-                return true;
             case R.id.exportToIssue:
-                exportToIssue();
-                return true;
             case R.id.exportToPr:
-                exportToPullRequest();
-                return true;
             case R.id.exportShare:
-                exportToShare();
-                return true;
             case R.id.exportCopy:
-                exportToCopy();
+                // Since all the exports check these conditions, check them here only
+                if (!isLocaleSelected(true))
+                    return true;
+
+                if (mSelectedLocaleResources.isEmpty()) {
+                    Toast.makeText(this, R.string.no_strings_to_export, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                // Perform the requested export
+                switch (item.getItemId()) {
+                    case R.id.exportToSdcard: exportToSd(); break;
+                    case R.id.exportToGist: exportToGist(); break;
+                    case R.id.exportToIssue: exportToIssue(); break;
+                    case R.id.exportToPr: exportToPullRequest(); break;
+                    case R.id.exportShare: exportToShare(); break;
+                    case R.id.exportCopy: exportToCopy(); break;
+                }
                 return true;
 
             // Deleting resources
@@ -379,11 +386,12 @@ public class TranslateActivity extends AppCompatActivity {
     // There is no need to check if the resources are saved when exporting.
     // The exported values are always the in-memory values, which are also
     // always up-to-date.
+    //
+    // NOTE THAT NEITHER OF THESE CHECK WHETHER A LOCALE IS SELECTED OR NOT
+    // They all also assume that at least there is *one* string for any template
 
     // Exports the currently selected locale resources to the SD card
     private void exportToSd() {
-        if (!isLocaleSelected(true)) return;
-
         File[] files = mRepo.getDefaultResourcesFiles();
         if (files.length == 1) {
             // Export a single file
@@ -428,7 +436,6 @@ public class TranslateActivity extends AppCompatActivity {
 
     // This method will only work if there is one template
     private void doExportToSd(Uri uri) {
-        if (!isLocaleSelected(true)) return;
         try {
             doExportToSd(uri, mRepo.getDefaultResourcesFiles()[0]);
             Toast.makeText(this, getString(R.string.export_file_success, uri.getPath()),
@@ -440,8 +447,6 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     private void doExportManyToSd(Uri uri) {
-        if (!isLocaleSelected(true)) return;
-
         boolean ok = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // DocumentFile.fromTreeUri:
@@ -450,8 +455,11 @@ public class TranslateActivity extends AppCompatActivity {
             DocumentFile pickedDir = DocumentFile.fromTreeUri(this, uri);
             try {
                 for (File template : mRepo.getDefaultResourcesFiles()) {
-                    DocumentFile outFile = pickedDir.createFile("text/xml", template.getName());
-                    doExportToSd(outFile.getUri(), template);
+                    // Do not bother creating a file unless there is some strings for it
+                    if (mRepo.canApplyTemplate(template, mSelectedLocale)) {
+                        DocumentFile outFile = pickedDir.createFile("text/xml", template.getName());
+                        doExportToSd(outFile.getUri(), template);
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -464,8 +472,11 @@ public class TranslateActivity extends AppCompatActivity {
                     throw new IOException("Could not create the root directory.");
 
                 for (File template : mRepo.getDefaultResourcesFiles()) {
-                    File outFile = new File(root, template.getName());
-                    doExportToSd(Uri.fromFile(outFile), template);
+                    // Do not bother creating a file unless there is some strings for it
+                    if (mRepo.canApplyTemplate(template, mSelectedLocale)) {
+                        File outFile = new File(root, template.getName());
+                        doExportToSd(Uri.fromFile(outFile), template);
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -494,7 +505,6 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to a GitHub Gist
     private void exportToGist() {
-        if (!isLocaleSelected(true)) return;
         Intent intent = new Intent(this, CreateGistActivity.class);
         intent.putExtra(EXTRA_REPO, mRepo.toBundle());
         intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
@@ -503,7 +513,6 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to a GitHub issue
     private void exportToIssue() {
-        if (!isLocaleSelected(true)) return;
         if (!new AppSettings(this).hasGitHubAuthorization()) {
             Toast.makeText(this, R.string.login_required, Toast.LENGTH_LONG).show();
             return;
@@ -516,7 +525,6 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to a GitHub Pull Request
     private void exportToPullRequest() {
-        if (!isLocaleSelected(true)) return;
         if (!mRepo.hasRemoteUrls()) {
             // TODO Remove this check by version 1.0 or so? Or can we be really missing the urls somehow?
             Toast.makeText(this, R.string.sync_required, Toast.LENGTH_SHORT).show();
@@ -537,7 +545,6 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to a plain text share intent
     private void exportToShare() {
-        if (!isLocaleSelected(true)) return;
         String xml = mRepo.mergeDefaultTemplate(mSelectedLocale);
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
@@ -548,7 +555,6 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Exports the currently selected locale resources to the primary clipboard
     private void exportToCopy() {
-        if (!isLocaleSelected(true)) return;
         String filename = mSelectedLocaleResources.getFilename();
         String xml = mRepo.mergeDefaultTemplate(mSelectedLocale);
 

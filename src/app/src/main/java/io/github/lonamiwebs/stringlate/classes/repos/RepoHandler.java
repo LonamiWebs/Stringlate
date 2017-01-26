@@ -460,6 +460,21 @@ public class RepoHandler implements Comparable<RepoHandler> {
             return "";
     }
 
+    // Returns TRUE if the template can be applied.
+    // This means that if for the given template there is no available
+    // string on the given locale, the apply cannot be applied since
+    // there will be no strings to replace.
+    public boolean canApplyTemplate(File template, String locale) {
+        if (hasLocale(locale) && template.isFile()) {
+            Resources templateResources = Resources.fromFile(template);
+            Resources localeResources = loadResources(locale);
+            for (ResTag rt : localeResources)
+                if (templateResources.contains(rt.getId()))
+                    return true;
+        }
+        return false;
+    }
+
     // TODO Why do I load the resources all the time - can't I just pass the loaded one?
     // Returns TRUE if the template was applied successfully
     public boolean applyTemplate(File template, String locale, OutputStream out) {

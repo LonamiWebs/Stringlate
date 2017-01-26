@@ -153,4 +153,5 @@
     <string name="xml_comment_filename" translatable="false">&lt;!-- File \"%s\" --&gt;\n</string>
     <string name="title_empty">The title cannot be empty.</string>
     <string name="issue_desc_x">The issue description must contain \"%x\".</string>
+    <string name="no_strings_to_export">There are no strings to export.</string>
 </resources>
