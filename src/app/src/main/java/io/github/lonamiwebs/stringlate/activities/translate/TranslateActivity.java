@@ -597,7 +597,51 @@ public class TranslateActivity extends AppCompatActivity {
     private void toggleShowTranslated(MenuItem item) {
         mShowTranslated = !mShowTranslated;
         item.setChecked(mShowTranslated);
+
+        String lastId = mSelectedResource.getId();
         loadStringIDsSpinner();
+
+        // Set the last string that was being used
+        if (mShowTranslated) {
+            setStringId(lastId);
+        } else {
+            // Not all strings are being shown, so in case we don't
+            // find it under non-translatable, select the next available
+            // string. If there isn't any, select previous one, or none.
+            String id; // Current ResTag id
+            String selectId = null; // Id that will be selected at the end
+            boolean hasTranslation;
+            boolean selectNext = false;
+            for (ResTag rs : mDefaultResources) {
+                id = rs.getId();
+                hasTranslation = mSelectedLocaleResources.contains(rs.getId());
+
+                if (hasTranslation) {
+                    // If we do have a translation for the string we want to select
+                    // (but these are not shown), then we need to select the next one
+                    if (lastId.equals(id)) {
+                        selectNext = true;
+                    }
+                } else {
+                    // If we don't have a translation for the string we want to select,
+                    // then that's perfect, simply select it and exit the loop
+                    //
+                    // Or otherwise, if we don't have a translation for it,
+                    // selectNext will be true, so we need to select the next string
+                    if (lastId.equals(id) || selectNext) {
+                        selectId = id;
+                        break;
+                    } else {
+                        // We won't be able to select the next string if there are
+                        // no more, this is why we also need to remember the last string
+                        selectId = id;
+                    }
+                }
+            }
+            if (selectId != null) {
+                setStringId(selectId);
+            }
+        }
     }
 
     //endregion
