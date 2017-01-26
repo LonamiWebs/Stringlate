@@ -441,17 +441,41 @@ public class TranslateActivity extends AppCompatActivity {
 
     private void doExportManyToSd(Uri uri) {
         if (!isLocaleSelected(true)) return;
-        DocumentFile pickedDir = DocumentFile.fromTreeUri(this, uri);
 
-        try {
-            for (File template : mRepo.getDefaultResourcesFiles()) {
-                DocumentFile outFile = pickedDir.createFile("text/xml", template.getName());
-                doExportToSd(outFile.getUri(), template);
+        boolean ok = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // DocumentFile.fromTreeUri:
+            //   "This is only useful on devices running LOLLIPOP or later,
+            //    and will return null when called on earlier platform versions."
+            DocumentFile pickedDir = DocumentFile.fromTreeUri(this, uri);
+            try {
+                for (File template : mRepo.getDefaultResourcesFiles()) {
+                    DocumentFile outFile = pickedDir.createFile("text/xml", template.getName());
+                    doExportToSd(outFile.getUri(), template);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                ok = false;
             }
+        } else {
+            try {
+                File root = new File(uri.getPath());
+                if (!root.isDirectory() && !root.mkdirs())
+                    throw new IOException("Could not create the root directory.");
+
+                for (File template : mRepo.getDefaultResourcesFiles()) {
+                    File outFile = new File(root, template.getName());
+                    doExportToSd(Uri.fromFile(outFile), template);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                ok = false;
+            }
+        }
+        if (ok) {
             Toast.makeText(this, getString(R.string.export_file_success, uri.getPath()),
                     Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
             Toast.makeText(this, R.string.export_file_failed, Toast.LENGTH_SHORT).show();
         }
     }
