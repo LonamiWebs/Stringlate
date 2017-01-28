@@ -23,11 +23,16 @@
             android:layout_weight="1"
             android:hint="@string/search_id_content_ellipsis" />
 
-        <ImageView
+        <ImageButton
+            android:id="@+id/clearFilterButton"
             android:src="@drawable/ic_search_36dp"
+            android:contentDescription="@string/clear_filter"
+            android:background="@null"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:padding="4dp" />
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:onClick="onClearFilterClick"/>
 
     </LinearLayout>
 

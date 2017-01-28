@@ -154,4 +154,6 @@
     <string name="title_empty">The title cannot be empty.</string>
     <string name="issue_desc_x">The issue description must contain \"%x\".</string>
     <string name="no_strings_to_export">There are no strings to export.</string>
+    <string name="filtering_strings_with">Filtering strings with \"%s\"</string>
+    <string name="clear_filter">Clear filter</string>
 </resources>

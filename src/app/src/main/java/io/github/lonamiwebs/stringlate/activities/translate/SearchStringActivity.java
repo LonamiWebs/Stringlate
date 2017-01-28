@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class SearchStringActivity extends AppCompatActivity {
     private RepoHandler mRepo;
     private String mLocale;
 
+    private EditText mSearchEditText;
     private ListView mResourcesListView;
 
     //endregion
@@ -39,8 +41,9 @@ public class SearchStringActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_string);
 
-        EditText searchEditText = (EditText)findViewById(R.id.searchEditText);
+        mSearchEditText = (EditText)findViewById(R.id.searchEditText);
         mResourcesListView = (ListView)findViewById(R.id.resourcesListView);
+        final ImageButton clearFilterButton = (ImageButton)findViewById(R.id.clearFilterButton);
 
         Intent intent = getIntent();
         mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
@@ -50,7 +53,7 @@ public class SearchStringActivity extends AppCompatActivity {
                 LocaleString.getDisplay(mLocale), mLocale));
 
         refreshResourcesListView(null);
-        searchEditText.addTextChangedListener(new TextWatcher() {
+        mSearchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
             @Override
@@ -58,13 +61,23 @@ public class SearchStringActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                refreshResourcesListView(charSequence.toString());
+                String search = charSequence.toString();
+                refreshResourcesListView(search);
+                if (search.isEmpty()) {
+                    clearFilterButton.setImageResource(R.drawable.ic_search_36dp);
+                } else {
+                    clearFilterButton.setImageResource(R.drawable.ic_backspace_36dp);
+                }
             }
         });
 
         mResourcesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // Save the current search
+                mRepo.setStringFilter(mSearchEditText.getText().toString());
+
+                // Return the selected string to the parent activity
                 ResourcesTranslation rt = (ResourcesTranslation)mResourcesListView.getItemAtPosition(i);
                 Intent data = new Intent();
                 data.putExtra("id", rt.getId());
@@ -72,6 +85,16 @@ public class SearchStringActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        mSearchEditText.setText(mRepo.getStringFilter());
+    }
+
+    //endregion
+
+    //region Button events
+
+    public void onClearFilterClick(final View v) {
+        mSearchEditText.setText("");
     }
 
     //endregion

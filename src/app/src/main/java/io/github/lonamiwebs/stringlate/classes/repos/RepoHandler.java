@@ -574,6 +574,19 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return mSettings.getIconFile();
     }
 
+    @NonNull
+    public String getStringFilter() {
+        return mSettings.getStringFilter();
+    }
+
+    public void clearStringFilter() {
+        setStringFilter("");
+    }
+
+    public void setStringFilter(@NonNull final String filter) {
+        mSettings.setStringFilter(filter);
+    }
+
     //endregion
 
     //region To other objects
