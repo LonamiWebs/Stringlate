@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResPlurals;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResStringArray;
@@ -25,7 +27,7 @@ public class Resources implements Iterable<ResTag> {
     //region Members
 
     private final File mFile; // Keep track of the original file to be able to save()
-    private final HashSet<ResTag> mStrings;
+    private final HashMap<String, ResTag> mStrings;
     private final HashSet<String> mUnsavedIDs;
 
     private ResTag mLastTag; // The last tag returned by getTag()
@@ -46,7 +48,7 @@ public class Resources implements Iterable<ResTag> {
             InputStream is = null;
             try {
                 is = new FileInputStream(file);
-                HashSet<ResTag> result = ResourcesParser.parseFromXml(is);
+                HashMap<String, ResTag> result = ResourcesParser.parseFromXml(is);
                 return new Resources(file, result);
             } catch (IOException | XmlPullParserException e) {
                 e.printStackTrace();
@@ -57,16 +59,16 @@ public class Resources implements Iterable<ResTag> {
                 } catch (IOException ignored) { }
             }
         }
-        return new Resources(file, new HashSet<ResTag>());
+        return new Resources(file, new HashMap<String, ResTag>());
     }
 
     // Empty resources cannot be saved
     @NonNull
     public static Resources empty() {
-        return new Resources(null, new HashSet<ResTag>());
+        return new Resources(null, new HashMap<String, ResTag>());
     }
 
-    private Resources(File file, HashSet<ResTag> strings) {
+    private Resources(File file, HashMap<String, ResTag> strings) {
         mFile = file;
         mStrings = strings;
         mSavedChanges = mFile != null && mFile.isFile();
@@ -89,12 +91,13 @@ public class Resources implements Iterable<ResTag> {
         File mModifiedFile = new File(path);
 
         if (mModifiedFile.isFile()) {
-            for (ResTag rs : mStrings) {
-                String content = rs.getContent();
+            for (Map.Entry<String, ResTag> srt : mStrings.entrySet()) {
+                ResTag rt = srt.getValue();
+                String content = rt.getContent();
                 // Clear the content and then set the original one
                 // so 'modified' equals true
-                rs.setContent("");
-                rs.setContent(content);
+                rt.setContent("");
+                rt.setContent(content);
             }
             // Set saved changes = false to force saving
             mSavedChanges = false;
@@ -106,8 +109,8 @@ public class Resources implements Iterable<ResTag> {
         // -- End of backwards-compatibility code
 
         mModified = false;
-        for (ResTag rs : mStrings) {
-            if (rs.wasModified()) {
+        for (Map.Entry<String, ResTag> srt : mStrings.entrySet()) {
+            if (srt.getValue().wasModified()) {
                 mModified = true;
                 break;
             }
@@ -144,26 +147,21 @@ public class Resources implements Iterable<ResTag> {
             return mLastTag;
         }
 
-        mLastTag = null;
-        // TODO Make a constant value for ':' somewhere else
-        if (resourceId.contains(":")) {
-            for (ResTag rs : mStrings) {
-                if (rs.getId().equals(resourceId)) {
-                    mLastTag = rs;
-                    break;
+        mLastTag = mStrings.get(resourceId);
+        if (mLastTag == null && !resourceId.contains(":")) {
+            // We might be looking for a parent string, not the ResTag itself
+            // This is a fallback to the slightly slower method
+            for (Map.Entry<String, ResTag> srt : mStrings.entrySet()) {
+                ResTag rt = srt.getValue();
+
+                if (rt instanceof ResStringArray.Item) {
+                    if (((ResStringArray.Item)rt).getParent().getId().equals(resourceId))
+                        return mLastTag = rt;
                 }
-            }
-        } else {
-            for (ResTag rs : mStrings) {
-                if (rs instanceof ResStringArray.Item) {
-                    if (((ResStringArray.Item)rs).getParent().getId().equals(resourceId))
-                        return mLastTag = rs;
-                } else if (rs instanceof ResPlurals.Item) {
-                    if (((ResPlurals.Item)rs).getParent().getId().equals(resourceId))
-                        return mLastTag = rs;
+                else if (rt instanceof ResPlurals.Item) {
+                    if (((ResPlurals.Item)rt).getParent().getId().equals(resourceId))
+                        return mLastTag = rt;
                 }
-                if (rs.getId().equals(resourceId))
-                    return mLastTag = rs;
             }
         }
 
@@ -212,7 +210,8 @@ public class Resources implements Iterable<ResTag> {
                     // The parent existed, so add the new string to it, and the
                     // resulting new string to our local array of children
                     ResStringArray parent = existingChild.getParent();
-                    mStrings.add(parent.addItem(content, true, ori.getIndex()));
+                    ResTag newItem = parent.addItem(content, true, ori.getIndex());
+                    mStrings.put(newItem.getId(), newItem);
                     handled = true;
                 } // else the parent didn't exist, so behave as the general case
 
@@ -225,13 +224,14 @@ public class Resources implements Iterable<ResTag> {
                     // The parent existed, so add the new string to it, and the
                     // resulting new string to our local array of children
                     ResPlurals parent = existingChild.getParent();
-                    mStrings.add(parent.addItem(ori.getQuantity(), content, true));
+                    ResTag newItem = parent.addItem(ori.getQuantity(), content, true);
+                    mStrings.put(newItem.getId(), newItem);
                     handled = true;
                 } // else the parent didn't exist, so behave as the general case
             }
             if (!handled) {
                 ResTag clone = original.clone(content);
-                mStrings.add(clone);
+                mStrings.put(clone.getId(), clone);
             }
             mSavedChanges = false;
             mUnsavedIDs.add(resourceId);
@@ -239,7 +239,8 @@ public class Resources implements Iterable<ResTag> {
     }
 
     public void addTag(ResTag rt) {
-        if (mStrings.add(rt))
+        // If it's null, there was no old value, so changes won't not saved
+        if (mStrings.put(rt.getId(), rt) == null)
             mSavedChanges = false;
     }
 
@@ -248,11 +249,7 @@ public class Resources implements Iterable<ResTag> {
     //region Deleting content
 
     public void deleteId(String resourceId) {
-        for (ResTag rs : mStrings)
-            if (rs.getId().equals(resourceId)) {
-                mStrings.remove(rs);
-                break;
-            }
+        mStrings.remove(resourceId);
     }
 
     //endregion
@@ -329,15 +326,16 @@ public class Resources implements Iterable<ResTag> {
 
     @Override
     public Iterator<ResTag> iterator() {
-        ArrayList<ResTag> strings;
+        final ArrayList<ResTag> strings = new ArrayList<>(mStrings.size());
         if (mFilter.isEmpty()) {
-            strings = new ArrayList<>(mStrings);
+            for (Map.Entry<String, ResTag> srt : mStrings.entrySet()) {
+                strings.add(srt.getValue());
+            }
         } else {
-            strings = new ArrayList<>(mStrings.size());
-            for (ResTag rt : mStrings) {
-                if (rt.getId().toLowerCase().contains(mFilter) ||
-                        rt.getContent().toLowerCase().contains(mFilter)) {
-                    strings.add(rt);
+            for (Map.Entry<String, ResTag> srt : mStrings.entrySet()) {
+                if (srt.getKey().toLowerCase().contains(mFilter) ||
+                        srt.getValue().getContent().toLowerCase().contains(mFilter)) {
+                    strings.add(srt.getValue());
                 }
             }
         }

@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -62,7 +63,7 @@ public class ResourcesParser {
 
     //region Xml -> Resources
 
-    public static HashSet<ResTag> parseFromXml(InputStream in)
+    public static HashMap<String, ResTag> parseFromXml(InputStream in)
             throws XmlPullParserException, IOException {
 
         try {
@@ -78,10 +79,10 @@ public class ResourcesParser {
         }
     }
 
-    private static HashSet<ResTag> readResources(XmlPullParser parser)
+    private static HashMap<String, ResTag> readResources(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
-        HashSet<ResTag> strings = new HashSet<>();
+        HashMap<String, ResTag> strings = new HashMap<>();
 
         parser.require(XmlPullParser.START_TAG, ns, RESOURCES);
 
@@ -94,15 +95,15 @@ public class ResourcesParser {
                 case STRING:
                     ResTag rs = readResourceString(parser);
                     if (rs != null)
-                        strings.add(rs);
+                        strings.put(rs.getId(), rs);
                     break;
                 case STRING_ARRAY:
                     for (ResTag item : readResourceStringArray(parser))
-                        strings.add(item);
+                        strings.put(item.getId(), item);
                     break;
                 case PLURALS:
                     for (ResTag item : readResourcePlurals(parser))
-                        strings.add(item);
+                        strings.put(item.getId(), item);
                     break;
                 default:
                     skip(parser);
