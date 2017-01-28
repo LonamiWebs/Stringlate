@@ -579,10 +579,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return mSettings.getStringFilter();
     }
 
-    public void clearStringFilter() {
-        setStringFilter("");
-    }
-
     public void setStringFilter(@NonNull final String filter) {
         mSettings.setStringFilter(filter);
     }

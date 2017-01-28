@@ -33,6 +33,9 @@ public class Resources implements Iterable<ResTag> {
     private boolean mSavedChanges;
     private boolean mModified;
 
+    @NonNull
+    private String mFilter;
+
     //endregion
 
     //region Constructors
@@ -67,6 +70,7 @@ public class Resources implements Iterable<ResTag> {
         mFile = file;
         mStrings = strings;
         mSavedChanges = mFile != null && mFile.isFile();
+        mFilter = "";
 
         // Keep track of the unsaved strings not to iterate over the list to count them
         mUnsavedIDs = new HashSet<>();
@@ -313,11 +317,30 @@ public class Resources implements Iterable<ResTag> {
 
     //endregion
 
+    //region Iterator filtering
+
+    public void setFilter(@NonNull String filter) {
+        mFilter = filter.toLowerCase();
+    }
+
+    //endregion
+
     //region Iterator wrapper
 
     @Override
     public Iterator<ResTag> iterator() {
-        ArrayList<ResTag> strings = new ArrayList<>(mStrings);
+        ArrayList<ResTag> strings;
+        if (mFilter.isEmpty()) {
+            strings = new ArrayList<>(mStrings);
+        } else {
+            strings = new ArrayList<>(mStrings.size());
+            for (ResTag rt : mStrings) {
+                if (rt.getId().toLowerCase().contains(mFilter) ||
+                        rt.getContent().toLowerCase().contains(mFilter)) {
+                    strings.add(rt);
+                }
+            }
+        }
         Collections.sort(strings);
         return strings.iterator();
     }

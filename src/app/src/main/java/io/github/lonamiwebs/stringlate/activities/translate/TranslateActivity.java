@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -72,6 +74,9 @@ public class TranslateActivity extends AppCompatActivity {
     private ProgressBar mProgressProgressBar;
     private TextView mProgressTextView;
 
+    private LinearLayout mFilterAppliedLayout;
+    private TextView mFilterAppliedTextView;
+
     private String mSelectedLocale;
     private ResTag mSelectedResource;
     private boolean mShowTranslated;
@@ -110,18 +115,25 @@ public class TranslateActivity extends AppCompatActivity {
         mProgressProgressBar = (ProgressBar)findViewById(R.id.progressProgressBar);
         mProgressTextView = (TextView)findViewById(R.id.progressTextView);
 
+        mFilterAppliedLayout = (LinearLayout)findViewById(R.id.filterAppliedLayout);
+        mFilterAppliedTextView = (TextView)findViewById(R.id.filterAppliedTextView);
+
         mLocaleSpinner.setOnItemSelectedListener(eOnLocaleSelected);
         mStringIdSpinner.setOnItemSelectedListener(eOnStringIdSelected);
 
-        // Retrieve the owner and repository name
         mRepo = RepoHandler.fromBundle(this, getIntent().getBundleExtra(EXTRA_REPO));
         setTitle(mRepo.getName(false));
+
         loadResources();
+        onFilterUpdated(mRepo.getStringFilter());
     }
 
     private void loadResources() {
         if (mRepo.hasDefaultLocale()) {
             mDefaultResources = mRepo.loadDefaultResources();
+            // TODO Better way to handle the filters? But mRepo might need it unfiltered internally
+            mDefaultResources.setFilter(mRepo.getStringFilter());
+
             loadLocalesSpinner();
             checkTranslationVisibility();
         } else {
@@ -241,6 +253,7 @@ public class TranslateActivity extends AppCompatActivity {
                     doExportToSd(data.getData());
                     break;
                 case RESULT_STRING_SELECTED:
+                    onFilterUpdated(data.getStringExtra("filter"));
                     setStringId(data.getStringExtra("id"));
                     break;
                 case RESULT_OPEN_TREE:
@@ -626,9 +639,10 @@ public class TranslateActivity extends AppCompatActivity {
     // Toggles the "Show translated strings" checkbox and updates the spinner
     private void toggleShowTranslated(MenuItem item) {
         mShowTranslated = !mShowTranslated;
-        item.setChecked(mShowTranslated);
-
-        String lastId = mSelectedResource.getId();
+        if (item != null) {
+            item.setChecked(mShowTranslated);
+        }
+        String lastId = mSelectedResource == null ? null : mSelectedResource.getId();
         loadStringIDsSpinner();
 
         // Set the last string that was being used
@@ -695,6 +709,10 @@ public class TranslateActivity extends AppCompatActivity {
         }
         else
             Toast.makeText(this, R.string.save_error, Toast.LENGTH_SHORT).show();
+    }
+
+    public void onClearFilterClick(final View v) {
+        onFilterUpdated("");
     }
 
     //endregion
@@ -822,6 +840,30 @@ public class TranslateActivity extends AppCompatActivity {
                     mSelectedLocaleResources.unsavedCount()));
     }
 
+    private void onFilterUpdated(@NonNull final String filter) {
+        // Update the filter, it might have been changed from the Search activity
+        // and JSON doesn't load the changes from the file but rather keeps a copy
+        mRepo.setStringFilter(filter);
+
+        if (mDefaultResources != null)
+            mDefaultResources.setFilter(filter);
+
+        if (mSelectedLocaleResources != null) {
+            mSelectedLocaleResources.setFilter(filter);
+
+            String lastId = mSelectedResource == null ? null : mSelectedResource.getId();
+            loadStringIDsSpinner();
+            setStringId(lastId);
+        }
+
+        if (filter.isEmpty()) {
+            mFilterAppliedLayout.setVisibility(View.GONE);
+        } else {
+            mFilterAppliedLayout.setVisibility(View.VISIBLE);
+            mFilterAppliedTextView.setText(getString(R.string.filtering_strings_with, filter));
+        }
+    }
+
     //endregion
 
     //region Spinner loading
@@ -843,6 +885,7 @@ public class TranslateActivity extends AppCompatActivity {
     private void loadStringIDsSpinner() {
         if (!isLocaleSelected(false)) return;
 
+        Log.i("LONAMIWEBS", "Called load strings…");
         ArrayList<String> spinnerArray = new ArrayList<>();
         if (mShowTranslated) {
             for (ResTag rs : mDefaultResources)
@@ -884,6 +927,7 @@ public class TranslateActivity extends AppCompatActivity {
             int i = getItemIndex(mLocaleSpinner, LocaleString.getDisplay(locale));
             mLocaleSpinner.setSelection(i);
             mSelectedLocaleResources = mRepo.loadResources(locale);
+            mSelectedLocaleResources.setFilter(mRepo.getStringFilter());
         } else {
             mSelectedLocaleResources = null;
         }
@@ -1011,6 +1055,9 @@ public class TranslateActivity extends AppCompatActivity {
     // Sadly, the spinners don't provide any method to retrieve
     // an item position given its value. This method helps that
     private int getItemIndex(Spinner spinner, String str) {
+        if (str == null || str.isEmpty())
+            return -1;
+
         for (int i = 0; i < spinner.getCount(); i++)
             if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(str))
                 return i;
