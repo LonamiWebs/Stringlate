@@ -17,7 +17,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
@@ -61,6 +61,8 @@ import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_STRING_
 public class TranslateActivity extends AppCompatActivity {
 
     //region Members
+
+    private AppSettings mSettings;
 
     private EditText mOriginalStringEditText;
     private EditText mTranslatedStringEditText;
@@ -101,6 +103,8 @@ public class TranslateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_translate);
+
+        mSettings = new AppSettings(this);
 
         mOriginalStringEditText = (EditText)findViewById(R.id.originalStringEditText);
         mTranslatedStringEditText = (EditText)findViewById(R.id.translatedStringEditText);
@@ -178,6 +182,17 @@ public class TranslateActivity extends AppCompatActivity {
             // Adding locales
             case R.id.addLocale:
                 promptAddLocale();
+                return true;
+
+            // Sorting modes
+            case R.id.sortAlphabetically:
+                mSettings.setStringSortMode(AppSettings.SORT_ALPHABETICALLY);
+                loadStringIDsSpinner();
+                return true;
+
+            case R.id.sortLength:
+                mSettings.setStringSortMode(AppSettings.SORT_STRING_LENGTH);
+                loadStringIDsSpinner();
                 return true;
 
             // Exporting resources
@@ -885,17 +900,19 @@ public class TranslateActivity extends AppCompatActivity {
     private void loadStringIDsSpinner() {
         if (!isLocaleSelected(false)) return;
 
-        Log.i("LONAMIWEBS", "Called load strings…");
         ArrayList<String> spinnerArray = new ArrayList<>();
+        final Iterator<ResTag> it = mDefaultResources.sortIterator(mSettings.getStringsComparator());
         if (mShowTranslated) {
-            for (ResTag rs : mDefaultResources)
-                spinnerArray.add(rs.getId());
+            while (it.hasNext())
+                spinnerArray.add(it.next().getId());
         } else {
             // If we're not showing the strings with a translation, we also need to
             // make sure that the currently selected locale doesn't already have them
-            for (ResTag rs : mDefaultResources)
-                if (!mSelectedLocaleResources.contains(rs.getId()))
-                    spinnerArray.add(rs.getId());
+            while (it.hasNext()) {
+                ResTag rt = it.next();
+                if (!mSelectedLocaleResources.contains(rt.getId()))
+                    spinnerArray.add(rt.getId());
+            }
 
             // Show a warning so the user (or developer) knows that things are working
             if (spinnerArray.size() == 0)

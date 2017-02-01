@@ -15,6 +15,17 @@
     <item android:id="@+id/addLocale"
         android:title="@string/add_locale" />
 
+    <item android:id="@+id/sortBy"
+        android:title="@string/sort_by_ellipsis">
+        <menu>
+            <item android:id="@+id/sortAlphabetically"
+                android:title="@string/sort_alphabetically" />
+
+            <item android:id="@+id/sortLength"
+                android:title="@string/sort_string_length" />
+        </menu>
+    </item>
+
     <item android:id="@+id/export"
         android:title="@string/export_ellipsis">
         <menu>

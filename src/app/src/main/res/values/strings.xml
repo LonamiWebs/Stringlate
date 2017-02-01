@@ -156,4 +156,7 @@
     <string name="no_strings_to_export">There are no strings to export.</string>
     <string name="filtering_strings_with">Filtering strings with \"%s\"</string>
     <string name="clear_filter">Clear filter</string>
+    <string name="sort_by_ellipsis">Sort by…</string>
+    <string name="sort_alphabetically">Alphabetically</string>
+    <string name="sort_string_length">String length</string>
 </resources>

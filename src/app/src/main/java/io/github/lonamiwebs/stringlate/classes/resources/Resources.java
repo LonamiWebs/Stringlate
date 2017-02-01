@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -326,6 +327,10 @@ public class Resources implements Iterable<ResTag> {
 
     @Override
     public Iterator<ResTag> iterator() {
+        return sortIterator(null);
+    }
+
+    public Iterator<ResTag> sortIterator(final Comparator<ResTag> comparator) {
         final ArrayList<ResTag> strings = new ArrayList<>(mStrings.size());
         if (mFilter.isEmpty()) {
             for (Map.Entry<String, ResTag> srt : mStrings.entrySet()) {
@@ -339,7 +344,9 @@ public class Resources implements Iterable<ResTag> {
                 }
             }
         }
-        Collections.sort(strings);
+        if (comparator != null)
+            Collections.sort(strings, comparator);
+
         return strings.iterator();
     }
 
