@@ -56,8 +56,11 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     private final File mRoot;
 
-    private final Pattern mValuesLocalePattern; // Match locale from "res/values-(...)/strings.xml"
-    private final ArrayList<String> mLocales;
+    private final ArrayList<String> mLocales = new ArrayList<>();
+
+    // Match locale from "values-(…)/strings.xml"
+    private final Pattern mValuesLocalePattern =
+            Pattern.compile("values(?:-([\\w-]+))?/.+?\\.xml");
 
     private static final String BASE_DIR = "repos";
     public static final String DEFAULT_LOCALE = "default";
@@ -110,9 +113,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mSettings = new RepoSettings(mRoot);
         mSettings.setGitUrl(gitUrl);
 
-        mValuesLocalePattern = Pattern.compile("res/values(?:-([\\w-]+))?/.+?\\.xml");
-
-        mLocales = new ArrayList<>();
         loadLocales();
     }
 
@@ -121,10 +121,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mRoot = root;
         mSettings = new RepoSettings(mRoot);
 
-        mValuesLocalePattern = Pattern.compile(
-                "res/values(?:-([\\w-]+))?/strings\\.xml");
-
-        mLocales = new ArrayList<>();
         loadLocales();
     }
 
