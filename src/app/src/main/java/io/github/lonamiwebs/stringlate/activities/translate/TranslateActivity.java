@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +36,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InvalidObjectException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
@@ -164,6 +166,23 @@ public class TranslateActivity extends AppCompatActivity {
         mShowTranslatedMenuItem = menu.findItem(R.id.showTranslatedCheckBox);
         mShowTranslated = mShowTranslatedMenuItem.isChecked();
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // http://stackoverflow.com/a/22288914/4759433
+        if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+            try {
+                final Method m = menu.getClass().getDeclaredMethod(
+                        "setOptionalIconsVisible", Boolean.TYPE);
+                m.setAccessible(true);
+                m.invoke(menu, true);
+            }
+            catch (Exception e) {
+                Log.w("TranslateActivity", "Could not make the menu icons visible.", e);
+            }
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

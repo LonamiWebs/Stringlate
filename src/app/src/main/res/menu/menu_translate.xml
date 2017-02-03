@@ -8,13 +8,16 @@
         app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/updateStrings"
-        android:title="@string/update_strings"/>
+        android:title="@string/update_strings"
+        android:icon="@drawable/ic_sync_black_24dp"/>
 
     <item android:id="@+id/addLocale"
-        android:title="@string/add_locale" />
+        android:title="@string/add_locale"
+        android:icon="@drawable/ic_note_add_black_24dp"/>
 
     <item android:id="@+id/sortBy"
-        android:title="@string/sort_by_ellipsis">
+        android:title="@string/sort_by_ellipsis"
+        android:icon="@drawable/ic_sort_black_24dp">
         <menu>
             <item android:id="@+id/sortAlphabetically"
                 android:title="@string/sort_alphabetically" />
@@ -25,7 +28,8 @@
     </item>
 
     <item android:id="@+id/export"
-        android:title="@string/export_ellipsis">
+        android:title="@string/export_ellipsis"
+        android:icon="@drawable/ic_share_black_24dp">
         <menu>
             <item android:id="@+id/exportToSdcard"
                 android:title="@string/export_sd_card" />
@@ -48,7 +52,8 @@
     </item>
 
     <item android:id="@+id/delete"
-        android:title="@string/delete_ellipsis">
+        android:title="@string/delete_ellipsis"
+        android:icon="@drawable/ic_delete_black_24dp">
         <menu>
             <item android:id="@+id/deleteString"
                 android:title="@string/delete_string" />
