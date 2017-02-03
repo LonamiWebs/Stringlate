@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -48,25 +51,7 @@ public class HistoryFragment extends Fragment {
                 TranslateActivity.launch(getContext(), repo);
             }
         });
-        mRepositoryListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final RepoHandler repo = (RepoHandler)parent.getItemAtPosition(position);
-                // TODO Copy paste from TranslateActivity
-                new AlertDialog.Builder(getContext())
-                        .setTitle(R.string.sure_question)
-                        .setMessage(getString(R.string.delete_repository_confirm_long, repo.toString()))
-                        .setPositiveButton(getString(R.string.delete_repository), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                repo.delete();
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.cancel), null)
-                        .show();
-                return true;
-            }
-        });
+        registerForContextMenu(mRepositoryListView);
 
         mHistoryMessageTextView = (TextView)rootView.findViewById(R.id.historyMessageTextView);
         mRepositoriesTitle = (TextView)rootView.findViewById(R.id.repositoriesTitle);
@@ -86,6 +71,48 @@ public class HistoryFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         RepoHandler.removeChangeListener(changeListener);
+    }
+
+    //endregion
+
+    //region Menu
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.repositoryListView) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.menu_history, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info =
+                (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+
+        final RepoHandler repo = (RepoHandler)mRepositoryListView.getItemAtPosition(info.position);
+        switch (item.getItemId()) {
+            case R.id.deleteRepo:
+                promptDeleteRepo(repo);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    private void promptDeleteRepo(final RepoHandler repo) {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.sure_question)
+                .setMessage(getString(R.string.delete_repository_confirm_long, repo.toString()))
+                .setPositiveButton(getString(R.string.delete_repository), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        repo.delete();
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show();
     }
 
     //endregion
