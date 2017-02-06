@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -29,7 +28,6 @@ public class Resources implements Iterable<ResTag> {
 
     private final File mFile; // Keep track of the original file to be able to save()
     private final HashMap<String, ResTag> mStrings;
-    private final HashSet<String> mUnsavedIDs;
 
     private ResTag mLastTag; // The last tag returned by getTag()
 
@@ -74,9 +72,6 @@ public class Resources implements Iterable<ResTag> {
         mStrings = strings;
         mSavedChanges = mFile != null && mFile.isFile();
         mFilter = "";
-
-        // Keep track of the unsaved strings not to iterate over the list to count them
-        mUnsavedIDs = new HashSet<>();
 
         // Backwards compatibility with version 0.9
         // If the .modified file exists, assume all the local strings were modified
@@ -124,10 +119,6 @@ public class Resources implements Iterable<ResTag> {
 
     public int count() {
         return mStrings.size();
-    }
-
-    public int unsavedCount() {
-        return mUnsavedIDs.size();
     }
 
     public boolean isEmpty() {
@@ -195,7 +186,6 @@ public class Resources implements Iterable<ResTag> {
         if (rs != null) {
             if (rs.setContent(content)) {
                 mSavedChanges = false;
-                mUnsavedIDs.add(resourceId);
             }
         } else {
             // We need to treat string arrays and plurals specially
@@ -235,7 +225,6 @@ public class Resources implements Iterable<ResTag> {
                 mStrings.put(clone.getId(), clone);
             }
             mSavedChanges = false;
-            mUnsavedIDs.add(resourceId);
         }
     }
 
@@ -259,11 +248,6 @@ public class Resources implements Iterable<ResTag> {
 
     public String getFilename() {
         return mFile == null ? "strings.xml" : mFile.getName();
-    }
-
-    // Determines whether the files was saved or not
-    public boolean areSaved() {
-        return mSavedChanges;
     }
 
     // Determines whether the file was ever modified or not (any of its strings were modified)
@@ -292,10 +276,6 @@ public class Resources implements Iterable<ResTag> {
         // We do not want empty files, if it exists and it's empty delete it
         if (mFile.isFile() && mFile.length() == 0)
             mFile.delete();
-
-        // Clear the unsaved IDs if we succeeded
-        if (mSavedChanges)
-            mUnsavedIDs.clear();
 
         return mFile.isFile();
     }

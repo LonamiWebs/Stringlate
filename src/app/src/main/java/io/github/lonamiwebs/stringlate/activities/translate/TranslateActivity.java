@@ -72,7 +72,6 @@ public class TranslateActivity extends AppCompatActivity {
     private Spinner mStringIdSpinner;
 
     private Button mPreviousButton;
-    private Button mSaveButton;
     private Button mNextButton;
     private ProgressBar mProgressProgressBar;
     private TextView mProgressTextView;
@@ -115,7 +114,6 @@ public class TranslateActivity extends AppCompatActivity {
         mStringIdSpinner = (Spinner)findViewById(R.id.stringIdSpinner);
 
         mPreviousButton = (Button)findViewById(R.id.previousButton);
-        mSaveButton = (Button)findViewById(R.id.saveButton);
         mNextButton = (Button)findViewById(R.id.nextButton);
         mProgressProgressBar = (ProgressBar)findViewById(R.id.progressProgressBar);
         mProgressTextView = (TextView)findViewById(R.id.progressTextView);
@@ -297,8 +295,8 @@ public class TranslateActivity extends AppCompatActivity {
 
     //region Repository synchronizing menu events
 
-    // Synchronize our local strings.xml files with the remote GitHub repository,
-    // previously checking if the strings.xml was saved and asking whether
+    // Synchronize our local strings.xml files with the remote GitHub
+    // repository, previously saving the strings.xml and asking whether
     // files should be overwritten after synchronizing (if any change was made)
     private void updateStrings() {
         save();
@@ -407,11 +405,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     //region Exporting menu events
 
-    // There is no need to check if the resources are saved when exporting.
-    // The exported values are always the in-memory values, which are also
-    // always up-to-date.
-    //
-    // NOTE THAT NEITHER OF THESE CHECK WHETHER A LOCALE IS SELECTED OR NOT
+    // NOTE THAT NEITHER OF THESE METHODS CHECK WHETHER A LOCALE IS SELECTED OR NOT
     // They all also assume that at least there is *one* string for any template
 
     // Exports the currently selected locale resources to the SD card
@@ -717,17 +711,22 @@ public class TranslateActivity extends AppCompatActivity {
         incrementStringIdIndex(+1);
     }
 
-    public void onSaveClick(final View v) {
-        save();
-    }
-
     private void save() {
-        if (isLocaleSelected(false) && mSelectedLocaleResources.unsavedCount() > 0) {
+        if (isLocaleSelected(false)) {
             if (mSelectedLocaleResources.save()) {
-                Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
                 updateProgress();
-            } else
-                Toast.makeText(this, R.string.save_error, Toast.LENGTH_SHORT).show();
+            } else {
+                new AlertDialog.Builder(this)
+                        .setMessage(R.string.save_error)
+                        .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                save();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null)
+                        .show();
+            }
         }
     }
 
@@ -803,14 +802,11 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     private void updateProgress() {
-        int unsavedCount;
         if (mSelectedLocaleResources == null) {
-            unsavedCount = 0;
             mProgressProgressBar.setMax(1);
             mProgressProgressBar.setProgress(0);
             mProgressTextView.setText("");
         } else {
-            unsavedCount = mSelectedLocaleResources.unsavedCount();
             int stringsCount = mDefaultResources.count();
             // The selected resources might have more strings than the default does.
             // For example, when an application got updated and dropped some unused strings.
@@ -843,11 +839,6 @@ public class TranslateActivity extends AppCompatActivity {
             mProgressTextView.setText(getString(R.string.translation_progress,
                     translatedCount, stringsCount, percentage));
         }
-
-        if (unsavedCount == 0)
-            mSaveButton.setText(R.string.save);
-        else
-            mSaveButton.setText(getString(R.string.save_count, unsavedCount));
     }
 
     private void onFilterUpdated(@NonNull final String filter) {
@@ -1006,15 +997,9 @@ public class TranslateActivity extends AppCompatActivity {
 
     private void checkPreviousNextVisibility() {
         int countM1 = mStringIdSpinner.getCount()-1;
-        if (countM1 <= 0) {
-            // Special case: set visibility to GONE so the Save button grows
-            mPreviousButton.setVisibility(View.GONE);
-            mNextButton.setVisibility(View.GONE);
-        } else {
-            int i = mStringIdSpinner.getSelectedItemPosition();
-            mPreviousButton.setVisibility(i == 0 ? View.INVISIBLE : View.VISIBLE);
-            mNextButton.setVisibility(i == countM1 ? View.INVISIBLE : View.VISIBLE);
-        }
+        int i = mStringIdSpinner.getSelectedItemPosition();
+        mPreviousButton.setVisibility(i == 0 ? View.INVISIBLE : View.VISIBLE);
+        mNextButton.setVisibility(i == countM1 ? View.INVISIBLE : View.VISIBLE);
     }
 
     // Sadly, the spinners don't provide any method to retrieve

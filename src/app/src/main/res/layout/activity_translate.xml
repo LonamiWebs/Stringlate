@@ -125,30 +125,25 @@
 
                 <Button
                     android:text="@string/previous"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:id="@+id/previousButton"
-                    android:onClick="onPreviousClick"/>
-
-                <Button
-                    android:text="@string/save"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"
                     style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_weight="1"
-                    android:id="@+id/saveButton"
-                    android:onClick="onSaveClick"/>
+                    android:id="@+id/previousButton"
+                    android:onClick="onPreviousClick"
+                    android:layout_weight="1"/>
 
                 <Button
                     android:text="@string/next"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="textEnd"
                     android:layout_gravity="end"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:id="@+id/nextButton"
-                    android:onClick="onNextClick"/>
+                    android:onClick="onNextClick"
+                    android:layout_weight="1"/>
             </LinearLayout>
 
             <ProgressBar
