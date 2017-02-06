@@ -50,7 +50,6 @@ import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
@@ -261,17 +260,6 @@ public class TranslateActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        checkResourcesSaved(new Callback<Boolean>() {
-            @Override
-            public void onCallback(Boolean actionTaken) {
-                if (actionTaken)
-                    finish();
-            }
-        });
-    }
-
     //endregion
 
     //region UI events
@@ -297,6 +285,12 @@ public class TranslateActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        save();
+    }
+
     //endregion
 
     //region Menu events
@@ -307,47 +301,30 @@ public class TranslateActivity extends AppCompatActivity {
     // previously checking if the strings.xml was saved and asking whether
     // files should be overwritten after synchronizing (if any change was made)
     private void updateStrings() {
-        // We need to save the context for the inner AlertBuilder
-        final Context context = this;
-
-        checkResourcesSaved(new Callback<Boolean>() {
-            @Override
-            public void onCallback(Boolean actionTaken) {
-                if (!actionTaken)
-                    return;
-
-                // We need to save the files before syncing, or it will ask
-                // again after the synchronization finished (and it looks out of place)
-                if (isLocaleSelected(false) && !mSelectedLocaleResources.areSaved()) {
-                    Toast.makeText(context, R.string.save_before_sync_required, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (mRepo.anyModified()) {
-                    // Do not mistake unsaved changes (modifications, .isSaved())
-                    // with the file being ever modified (.wasModified())
-                    new AlertDialog.Builder(context)
-                            .setTitle(R.string.files_modified)
-                            .setMessage(R.string.files_modified_keep_changes)
-                            .setPositiveButton(R.string.keep_changes, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    updateStrings(true);
-                                }
-                            })
-                            .setNegativeButton(R.string.discard_changes, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    updateStrings(false);
-                                }
-                            })
-                            .show();
-                } else {
-                    // No file has been modified, simply update the strings discarding changes
-                    updateStrings(false);
-                }
-            }
-        });
+        save();
+        if (mRepo.anyModified()) {
+            // Do not mistake unsaved changes (modifications, .isSaved())
+            // with the file being ever modified (.wasModified())
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.files_modified)
+                    .setMessage(R.string.files_modified_keep_changes)
+                    .setPositiveButton(R.string.keep_changes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            updateStrings(true);
+                        }
+                    })
+                    .setNegativeButton(R.string.discard_changes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            updateStrings(false);
+                        }
+                    })
+                    .show();
+        } else {
+            // No file has been modified, simply update the strings discarding changes
+            updateStrings(false);
+        }
     }
 
     // Synchronize our local strings.xml files with the remote GitHub repository
@@ -728,6 +705,10 @@ public class TranslateActivity extends AppCompatActivity {
 
     //region Button events
 
+    public void onClearFilterClick(final View v) {
+        onFilterUpdated("");
+    }
+
     public void onPreviousClick(final View v) {
         incrementStringIdIndex(-1);
     }
@@ -737,16 +718,17 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     public void onSaveClick(final View v) {
-        if (mSelectedLocaleResources.save()) {
-            Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
-            updateProgress();
-        }
-        else
-            Toast.makeText(this, R.string.save_error, Toast.LENGTH_SHORT).show();
+        save();
     }
 
-    public void onClearFilterClick(final View v) {
-        onFilterUpdated("");
+    private void save() {
+        if (isLocaleSelected(false) && mSelectedLocaleResources.unsavedCount() > 0) {
+            if (mSelectedLocaleResources.save()) {
+                Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
+                updateProgress();
+            } else
+                Toast.makeText(this, R.string.save_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     //endregion
@@ -779,13 +761,8 @@ public class TranslateActivity extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
             final LocaleString selectedLocale = (LocaleString)parent.getItemAtPosition(i);
             if (isLocaleSelected(false)) {
-                checkResourcesSaved(new Callback<Boolean>() {
-                    @Override
-                    public void onCallback(Boolean actionTaken) {
-                        if (actionTaken)
-                            setCurrentLocale(selectedLocale.getCode());
-                    }
-                });
+                save();
+                setCurrentLocale(selectedLocale.getCode());
             } else {
                 // If it's the first time we're selecting a locale,
                 // we don't care unsaved changes (because there isn't any)
@@ -870,8 +847,7 @@ public class TranslateActivity extends AppCompatActivity {
         if (unsavedCount == 0)
             mSaveButton.setText(R.string.save);
         else
-            mSaveButton.setText(getString(R.string.save_count,
-                    mSelectedLocaleResources.unsavedCount()));
+            mSaveButton.setText(getString(R.string.save_count, unsavedCount));
     }
 
     private void onFilterUpdated(@NonNull final String filter) {
@@ -978,53 +954,6 @@ public class TranslateActivity extends AppCompatActivity {
     //endregion
 
     //region Utilities
-
-    // Checks whether the current resources are saved or not
-    // If they're not, the user is asked to save them first
-    // callback.onCallback will be called with FALSE if the operation was CANCELLED
-    private void checkResourcesSaved(final Callback<Boolean> callback) {
-        if (!isLocaleSelected(false)) {
-            callback.onCallback(true);
-            return;
-        }
-
-        if (mSelectedLocaleResources.areSaved())
-            callback.onCallback(true);
-        else {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.save_resources_question)
-                    .setMessage(R.string.save_resources_question_long)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            if (mSelectedLocaleResources.save()) {
-                                callback.onCallback(true);
-                                updateProgress();
-                            }
-                            else {
-                                Toast.makeText(getApplicationContext(),
-                                        R.string.save_error, Toast.LENGTH_SHORT).show();
-
-                                callback.onCallback(false);
-                            }
-                        }
-                    })
-                    .setNegativeButton(R.string.do_not_save, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            callback.onCallback(true);
-                        }
-                    })
-                    .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            callback.onCallback(false);
-                        }
-                    })
-                    .show();
-        }
-    }
 
     // Ensures that there is at least a locale selected
     private boolean isLocaleSelected(boolean showWarning) {
