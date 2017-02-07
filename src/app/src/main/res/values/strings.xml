@@ -159,4 +159,5 @@
     <string name="sort_by_ellipsis">Sort by…</string>
     <string name="sort_alphabetically">Alphabetically</string>
     <string name="sort_string_length">String length</string>
+    <string name="retry">Retry</string>
 </resources>
