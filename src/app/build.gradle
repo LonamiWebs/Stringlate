@@ -7,8 +7,8 @@ android {
         applicationId "io.github.lonamiwebs.stringlate"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 981
-        versionName "0.9.8b"
+        versionCode 990
+        versionName "0.9.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:design:25.1.1'
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:design:25.1.0'
     compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.2.201411120430-r'
 }
