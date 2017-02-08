@@ -137,8 +137,18 @@
     <string name="creating_pr_long">Создание пулл-реквеста в оригинальный репозиторий…</string>
     <string name="something_went_wrong">Что-то не так.</string>
     <string name="cloning_repo">Клонирование репозитория…</string>
+    <string name="cloning_repo_progress">Временное клонирование удаленного репозитория… %.1f%%</string>
     <string name="copying_res">Копирование ресурсов…</string>
     <string name="copying_res_long">Валидация и копирование ресурсов в финальное расположение…</string>
     <string name="issue_title_colon">Заголовок issue:</string>
     <string name="issue_title">Заголовок issue</string>
+    <string name="title_empty">Название не м.б. пустым.</string>
+    <string name="issue_desc_x">Описание issue должно содержать \"%x\".</string>
+    <string name="no_strings_to_export">Нет строк для экспорта</string>
+    <string name="filtering_strings_with">Фильтрация строк с \"%s"</string>
+    <string name="clear_filter">Очистить фильтр</string>
+    <string name="sort_by_ellipsis">Сортировка…</string>
+    <string name="sort_alphabetically">По алфавиту</string>
+    <string name="sort_string_length">Длина строки</string>
+    <string name="retry">Повтор</string>
 </resources>
