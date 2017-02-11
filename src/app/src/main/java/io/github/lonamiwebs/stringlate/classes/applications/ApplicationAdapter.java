@@ -11,14 +11,21 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class ApplicationAdapter extends ArrayAdapter<Application> {
     private final ImageLoader mImageLoader;
+
+    // https://developer.android.com/training/improving-layouts/smooth-scrolling.html#ViewHolder
+    private static class ViewHolder {
+        ImageView iconView;
+        TextView appName, appDescription;
+        View installIndicator;
+    }
 
     public ApplicationAdapter(Context context, List<Application> apps,
                               boolean allowInternetDownload) {
@@ -31,22 +38,27 @@ public class ApplicationAdapter extends ArrayAdapter<Application> {
         Application app = getItem(position);
 
         // This may be the first time we use the recycled view
-        if (convertView == null)
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
                     .inflate(R.layout.item_application_list, parent, false);
 
-        ImageView iconView = (ImageView)convertView.findViewById(R.id.appIcon);
-        if (app.isInstalled()) {
-            mImageLoader.loadImageAsync(iconView, app.getIconUrl(getContext()), app.getPackageName());
-        } else {
-            mImageLoader.loadImageAsync(iconView, app.getIconUrl(getContext()), null);
+            final ViewHolder holder = new ViewHolder();
+            holder.iconView = (ImageView)convertView.findViewById(R.id.appIcon);
+            holder.appName = (TextView)convertView.findViewById(R.id.appName);
+            holder.appDescription = (TextView)convertView.findViewById(R.id.appDescription);
+            holder.installIndicator = convertView.findViewById(R.id.installIndicatorView);
+            convertView.setTag(holder);
         }
+        if (app != null) {
+            final ViewHolder holder = (ViewHolder)convertView.getTag();
+            mImageLoader.loadImageAsync(holder.iconView,
+                    app.getIconUrl(getContext()), app.isInstalled() ? app.getPackageName() : null);
 
-        ((TextView)convertView.findViewById(R.id.appName)).setText(app.getName());
-        ((TextView)convertView.findViewById(R.id.appDescription)).setText(app.getDescription());
-
-        int visibility = app.isInstalled() ? VISIBLE : GONE;
-        convertView.findViewById(R.id.installIndicatorView).setVisibility(visibility);
+            holder.appName.setText(app.getName());
+            holder.appDescription.setText(app.getDescription());
+            int visibility = app.isInstalled() ? VISIBLE : GONE;
+            holder.installIndicator.setVisibility(visibility);
+        }
 
         return convertView;
     }

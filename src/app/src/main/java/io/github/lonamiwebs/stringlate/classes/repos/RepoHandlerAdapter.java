@@ -26,6 +26,12 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
 
     private final int mSize; // Used to generate the image
 
+    // https://developer.android.com/training/improving-layouts/smooth-scrolling.html#ViewHolder
+    private static class ViewHolder {
+        ImageView iconView;
+        TextView pathTextView, hostTextView;
+    }
+
     public RepoHandlerAdapter(Context context, List<RepoHandler> repositories) {
         // Treat the repositories like applications
         // We can show an icon, the title, and the host as description
@@ -38,23 +44,27 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
         RepoHandler repo = getItem(position);
 
         // This may be the first time we use the recycled view
-        if (convertView == null)
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
                     .inflate(R.layout.item_application_list, parent, false);
 
-        ImageView iconView = (ImageView)convertView.findViewById(R.id.appIcon);
-        File iconFile = repo.getIconFile();
-        if (iconFile == null)
-            iconView.setImageBitmap(getBitmap(repo.getName(false)));
-        else
-            iconView.setImageURI(Uri.fromFile(iconFile));
+            final ViewHolder holder = new ViewHolder();
+            holder.iconView = (ImageView)convertView.findViewById(R.id.appIcon);
+            holder.pathTextView = (TextView)convertView.findViewById(R.id.appName);
+            holder.hostTextView = (TextView)convertView.findViewById(R.id.appDescription);
+            convertView.setTag(holder);
+        }
+        if (repo != null) {
+            final ViewHolder holder = (ViewHolder)convertView.getTag();
+            File iconFile = repo.getIconFile();
+            if (iconFile == null)
+                holder.iconView.setImageBitmap(getBitmap(repo.getName(false)));
+            else
+                holder.iconView.setImageURI(Uri.fromFile(iconFile));
 
-        TextView pathTextView = (TextView)convertView.findViewById(R.id.appName);
-        pathTextView.setText(repo.getPath());
-
-        TextView hostTextView = (TextView)convertView.findViewById(R.id.appDescription);
-        hostTextView.setText(repo.getHost());
-
+            holder.pathTextView.setText(repo.getPath());
+            holder.hostTextView.setText(repo.getHost());
+        }
         return convertView;
     }
 
