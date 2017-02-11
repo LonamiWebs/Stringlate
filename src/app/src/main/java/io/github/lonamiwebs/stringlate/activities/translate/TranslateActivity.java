@@ -89,6 +89,8 @@ public class TranslateActivity extends AppCompatActivity {
 
     private RepoHandler mRepo;
 
+    private boolean loaded;
+
     //endregion
 
     //region Initialization
@@ -101,6 +103,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        loaded = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_translate);
 
@@ -129,6 +132,10 @@ public class TranslateActivity extends AppCompatActivity {
 
         loadResources();
         onFilterUpdated(mRepo.getStringFilter());
+
+        // loadStringIDsSpinner is called too often at startup, use this flag to avoid it
+        loaded = true;
+        loadStringIDsSpinner();
     }
 
     private void loadResources() {
@@ -884,7 +891,7 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     private void loadStringIDsSpinner() {
-        if (!isLocaleSelected(false)) return;
+        if (!loaded || !isLocaleSelected(false)) return;
 
         ArrayList<String> spinnerArray = new ArrayList<>();
         final Iterator<ResTag> it = mDefaultResources.sortIterator(mSettings.getStringsComparator());
