@@ -66,7 +66,7 @@ public class GitWrapper {
     public static Pair<String, String> getGitHubOwnerRepo(final String url)
             throws InvalidObjectException {
         Matcher m = OWNER_REPO.matcher(url);
-        if (m.matches() && m.group(1).equals("github")) {
+        if (m.matches() && m.group(1).equalsIgnoreCase("github.com")) {
             return new Pair<>(m.group(2), m.group(3));
         }
         throw new InvalidObjectException("Not a GitHub repository.");
