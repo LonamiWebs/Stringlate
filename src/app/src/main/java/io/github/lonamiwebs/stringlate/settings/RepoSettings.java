@@ -27,6 +27,7 @@ public class RepoSettings {
     private static final String KEY_REMOTE_PATHS = "remote_paths";
     private static final String KEY_ICON_PATH = "icon_path";
     private static final String KEY_SEARCH_FILTER = "search_filter";
+    private static final String KEY_CREATED_ISSUES = "created_issues";
 
     private static final String DEFAULT_GIT_URL = "";
     private static final String DEFAULT_LAST_LOCALE = null;
@@ -84,6 +85,22 @@ public class RepoSettings {
         return mSettings.optString(KEY_SEARCH_FILTER, "");
     }
 
+    // HashMap<Locale string, GitHub issue number>
+    public HashMap<String, Integer> getCreatedIssues() {
+        HashMap<String, Integer> map = new HashMap<>();
+        JSONObject json = mSettings.optJSONObject(KEY_CREATED_ISSUES);
+        if (json != null) {
+            try {
+                Iterator<String> keysItr = json.keys();
+                while (keysItr.hasNext()) {
+                    String key = keysItr.next();
+                    map.put(key, json.getInt(key));
+                }
+            } catch (JSONException ignored) { }
+        }
+        return map;
+    }
+
     //endregion
 
     //region Setters
@@ -122,6 +139,16 @@ public class RepoSettings {
 
     public void setStringFilter(@NonNull final String filter) {
         try { mSettings.put(KEY_SEARCH_FILTER, filter); }
+        catch (JSONException ignored) { }
+        save();
+    }
+
+    public void addCreatedIssue(String locale, int issueNumber) {
+        try {
+            HashMap<String, Integer> map = getCreatedIssues();
+            map.put(locale, issueNumber);
+            mSettings.put(KEY_CREATED_ISSUES, new JSONObject(map));
+        }
         catch (JSONException ignored) { }
         save();
     }

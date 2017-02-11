@@ -579,6 +579,10 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mSettings.setStringFilter(filter);
     }
 
+    public void addCreatedIssue(String locale, int issueNumber) {
+        mSettings.addCreatedIssue(locale, issueNumber);
+    }
+
     //endregion
 
     //region To other objects

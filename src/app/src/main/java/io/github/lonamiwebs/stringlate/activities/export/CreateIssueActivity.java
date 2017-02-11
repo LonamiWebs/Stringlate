@@ -113,6 +113,9 @@ public class CreateIssueActivity extends AppCompatActivity {
             if (jsonObject == null) throw new JSONException("Invalid GitHub repository.");
 
             String postedUrl = jsonObject.getString("html_url");
+            int issueNumber = jsonObject.getInt("number");
+            mRepo.addCreatedIssue(mLocale, issueNumber);
+
             finish();
             CreateUrlSuccessActivity.launchIntent(
                     this, getString(R.string.create_issue_success), postedUrl);
