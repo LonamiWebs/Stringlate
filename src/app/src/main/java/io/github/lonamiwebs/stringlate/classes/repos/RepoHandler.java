@@ -583,6 +583,12 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mSettings.addCreatedIssue(locale, issueNumber);
     }
 
+    // -1 if not found
+    public int getCreatedIssue(String locale) {
+        Integer issue = mSettings.getCreatedIssues().get(locale);
+        return issue == null ? -1 : issue;
+    }
+
     //endregion
 
     //region To other objects

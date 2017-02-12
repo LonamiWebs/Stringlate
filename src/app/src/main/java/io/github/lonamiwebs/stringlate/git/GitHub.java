@@ -85,6 +85,22 @@ public class GitHub {
         }
     }
 
+    public static JSONObject gCommentIssue(RepoHandler repo,
+                                           int issueNumber, String body, String token)
+            throws InvalidObjectException {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("body", body);
+            return new JSONObject(WebUtils.performCall(gGetUrl(
+                    "repos/%s/issues/%d/comments?access_token=%s",
+                    repo.toOwnerRepo(), issueNumber, token), params));
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private static JSONObject gGetUserInfo(String token) {
         try {
             return new JSONObject(WebUtils.performCall(gGetUrl(

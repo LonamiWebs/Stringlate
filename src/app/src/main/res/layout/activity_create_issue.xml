@@ -11,16 +11,24 @@
     android:orientation="vertical"
     tools:context="io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity">
 
-    <TextView
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/issueTitleLayout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/issue_title_colon"/>
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/issueTitleEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/issue_title"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/issue_title_colon"/>
+
+        <EditText
+            android:id="@+id/issueTitleEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/issue_title"/>
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"

@@ -36,6 +36,8 @@ public class CreateIssueActivity extends AppCompatActivity {
     private EditText mIssueTitleEditText;
     private EditText mIssueDescriptionEditText;
 
+    private int mExistingIssueNumber;
+
     //endregion
 
     //region Initialization
@@ -54,10 +56,16 @@ public class CreateIssueActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
+        mExistingIssueNumber = mRepo.getCreatedIssue(mLocale);
 
         String display = LocaleString.getEnglishDisplay(mLocale);
-        mIssueTitleEditText.setText(getString(R.string.added_x_translation, mLocale, display));
-        mIssueDescriptionEditText.setText(getString(R.string.new_issue_template, mLocale, display));
+        if (mExistingIssueNumber == -1) {
+            mIssueTitleEditText.setText(getString(R.string.added_x_translation, mLocale, display));
+            mIssueDescriptionEditText.setText(getString(R.string.new_issue_template, mLocale, display));
+        } else {
+            findViewById(R.id.issueTitleLayout).setVisibility(View.GONE);
+            mIssueDescriptionEditText.setText(getString(R.string.comment_issue_template, mLocale, display));
+        }
     }
 
     //endregion
@@ -65,10 +73,13 @@ public class CreateIssueActivity extends AppCompatActivity {
     //region Button events
 
     public void onCreateIssue(final View v) {
-        String title = mIssueTitleEditText.getText().toString().trim();
-        if (title.isEmpty()) {
-            mIssueTitleEditText.setError(getString(R.string.title_empty));
-            return;
+        String title = null;
+        if (mExistingIssueNumber == -1) {
+            title = mIssueTitleEditText.getText().toString().trim();
+            if (title.isEmpty()) {
+                mIssueTitleEditText.setError(getString(R.string.title_empty));
+                return;
+            }
         }
         String description = mIssueDescriptionEditText.getText().toString().trim();
         if (!description.contains("%x")) {
@@ -89,7 +100,12 @@ public class CreateIssueActivity extends AppCompatActivity {
             @Override
             protected JSONObject doInBackground(String... desc) {
                 try {
-                    return GitHub.gCreateIssue(mRepo, desc[0], desc[1], mSettings.getGitHubToken());
+                    if (mExistingIssueNumber == -1)
+                        return GitHub.gCreateIssue(mRepo, desc[0],
+                                desc[1], mSettings.getGitHubToken());
+                    else
+                        return GitHub.gCommentIssue(mRepo, mExistingIssueNumber,
+                                desc[1], mSettings.getGitHubToken());
                 } catch (InvalidObjectException ignored) {
                     // This wasn't a GitHub repository. How did we get here?
                     return null;
@@ -113,14 +129,17 @@ public class CreateIssueActivity extends AppCompatActivity {
             if (jsonObject == null) throw new JSONException("Invalid GitHub repository.");
 
             String postedUrl = jsonObject.getString("html_url");
-            int issueNumber = jsonObject.getInt("number");
-            mRepo.addCreatedIssue(mLocale, issueNumber);
+            if (mExistingIssueNumber == -1) {
+                mExistingIssueNumber = jsonObject.getInt("number");
+                mRepo.addCreatedIssue(mLocale, mExistingIssueNumber);
+            }
 
             finish();
             CreateUrlSuccessActivity.launchIntent(
                     this, getString(R.string.create_issue_success), postedUrl);
         }
         catch (JSONException e) {
+            e.printStackTrace();
             Toast.makeText(this, R.string.create_issue_error, Toast.LENGTH_SHORT).show();
         }
     }

@@ -120,6 +120,7 @@
     <string name="added_x_translation_spam" translatable="false">Updated %s (%s) translation\n\nCommit made via Stringlate</string>
     <string name="issue_description">Issue description (%x will be replaced with the translation):</string>
     <string name="new_issue_template" translatable="false">I have translated your application into `%s` (*%s*). Here is the xml:\n%%x\n\n---\n\n*Translation made with [Stringlate](https://github.com/LonamiWebs/Stringlate).*</string>
+    <string name="comment_issue_template" translatable="false">I have updated the `%s` (*%s*) translation:\n%%x\n\n---\n\n*Translation made with [Stringlate](https://github.com/LonamiWebs/Stringlate).*</string>
     <string name="url_copied">The Url has been copied to your clipboard.</string>
     <string name="share_url">Share Url</string>
     <string name="create_issue_success">Your issue has been created, well done!</string>
