@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/importRepo"
+        android:title="@string/import_repository" />
+    <item android:id="@+id/exportRepo"
+        android:title="@string/export_repository" />
     <item android:id="@+id/deleteRepo"
         android:title="@string/delete_repository" />
 </menu>

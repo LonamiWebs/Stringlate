@@ -1,7 +1,12 @@
 package io.github.lonamiwebs.stringlate.activities.repositories;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -14,7 +19,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -23,8 +33,10 @@ import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerAdapter;
 
+import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_CREATE_FILE;
 
 public class HistoryFragment extends Fragment {
 
@@ -33,6 +45,9 @@ public class HistoryFragment extends Fragment {
     private ListView mRepositoryListView;
     private TextView mHistoryMessageTextView;
     private TextView mRepositoriesTitle;
+
+    // Not the best solution. How else could extra data by passed to activity results?
+    private RepoHandler mLastSelectedRepo;
 
     //endregion
 
@@ -91,10 +106,16 @@ public class HistoryFragment extends Fragment {
         AdapterView.AdapterContextMenuInfo info =
                 (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
-        final RepoHandler repo = (RepoHandler)mRepositoryListView.getItemAtPosition(info.position);
+        mLastSelectedRepo = (RepoHandler)mRepositoryListView.getItemAtPosition(info.position);
         switch (item.getItemId()) {
+            case R.id.importRepo:
+                // TODO Allow importing the repositories
+                return true;
+            case R.id.exportRepo:
+                exportToSd();
+                return true;
             case R.id.deleteRepo:
-                promptDeleteRepo(repo);
+                promptDeleteRepo(mLastSelectedRepo);
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -113,6 +134,69 @@ public class HistoryFragment extends Fragment {
                 })
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show();
+    }
+
+    //endregion
+
+    //region Importing and exporting
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case RESULT_CREATE_FILE:
+                    doExportToSd(data.getData());
+                    break;
+            }
+        }
+    }
+
+    // Ripped off from TranslateActivity.java
+    // The following 3 methods make use of mLastSelectedRepo - will fail if it is null
+    private void exportToSd() {
+        String filename = mLastSelectedRepo.getName(false)+".zip";
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+            intent.setType("application/zip");
+            intent.putExtra(Intent.EXTRA_TITLE, filename);
+            startActivityForResult(intent, RESULT_CREATE_FILE);
+        } else {
+            File output = new File(getCreateExportRoot(), filename);
+            doExportToSd(Uri.fromFile(output));
+        }
+    }
+
+    private File getCreateExportRoot() {
+        String path;
+        try {
+            path = getString(R.string.app_name) + "/" + mLastSelectedRepo.toOwnerRepo();
+        } catch (InvalidObjectException ignored) {
+            path = getString(R.string.app_name);
+        }
+        File root = new File(Environment.getExternalStorageDirectory(), path);
+        if (root.isDirectory())
+            root.mkdirs();
+        return root;
+    }
+
+    private void doExportToSd(Uri uri) {
+        try {
+            ParcelFileDescriptor pfd = getContext().getContentResolver().openFileDescriptor(uri, "w");
+            FileOutputStream out = new FileOutputStream(pfd.getFileDescriptor());
+            mLastSelectedRepo.exportZip(out);
+            out.close();
+            pfd.close();
+            Toast.makeText(getContext(), getString(R.string.export_file_success, uri.getPath()),
+                    Toast.LENGTH_SHORT).show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), R.string.export_file_failed, Toast.LENGTH_SHORT).show();
+        }
     }
 
     //endregion

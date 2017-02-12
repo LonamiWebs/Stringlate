@@ -31,6 +31,7 @@ import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.settings.RepoSettings;
+import io.github.lonamiwebs.stringlate.utilities.ZipUtils;
 
 // Class used to inter-operate with locally saved GitHub "repositories"
 // What is stored are simply the strings.xml file under a tree directory structure:
@@ -732,6 +733,18 @@ public class RepoHandler implements Comparable<RepoHandler> {
             allOk &= owner.delete();
         }
         return allOk;
+    }
+
+    //endregion
+
+    //region Importing and exporting
+
+    public void exportZip(OutputStream output) {
+        try {
+            ZipUtils.zipFolder(mRoot, output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //endregion

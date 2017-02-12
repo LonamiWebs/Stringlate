@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -20,10 +21,10 @@ public class ZipUtils {
 
     //region Public methods
 
-    public static void zipFolder(final File srcFolder, final File dstZipFile) throws IOException {
+    public static void zipFolder(final File srcFolder, final OutputStream out) throws IOException {
         ZipOutputStream zip = null;
         try {
-            zip = new ZipOutputStream(new FileOutputStream(dstZipFile));
+            zip = new ZipOutputStream(out);
             addFolderToZip("", srcFolder, zip);
         } finally {
             if (zip != null) {

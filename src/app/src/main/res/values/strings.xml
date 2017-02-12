@@ -161,4 +161,6 @@
     <string name="sort_alphabetically">Alphabetically</string>
     <string name="sort_string_length">String length</string>
     <string name="retry">Retry</string>
+    <string name="import_repository">Import repository</string>
+    <string name="export_repository">Export repository</string>
 </resources>
