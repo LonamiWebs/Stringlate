@@ -6,9 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Enumeration;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class ZipUtils {
@@ -35,11 +34,10 @@ public class ZipUtils {
         }
     }
 
-    public static void unzipRecursive(final File srcZipFile, final File dstRoot) throws IOException {
-        ZipFile zip = new ZipFile(srcZipFile);
-        Enumeration<? extends ZipEntry> entries = zip.entries();
-        while (entries.hasMoreElements()) {
-            ZipEntry entry = entries.nextElement();
+    public static void unzipRecursive(final InputStream inputStream, final File dstRoot) throws IOException {
+        ZipInputStream zip = new ZipInputStream(inputStream);
+        ZipEntry entry;
+        while ((entry = zip.getNextEntry()) != null) {
             File dstFile = new File(dstRoot, entry.getName());
 
             File parent = dstFile.getParentFile();
@@ -47,22 +45,18 @@ public class ZipUtils {
                 throw new IOException("Could not create root directory: "+parent.getAbsolutePath());
 
             if (!entry.isDirectory()) {
-                InputStream in = null;
                 FileOutputStream out = null;
                 try {
-                    in = zip.getInputStream(entry);
                     out = new FileOutputStream(dstFile);
 
                     int count;
                     byte[] buffer = new byte[BUFFER_SIZE];
-                    while ((count = in.read(buffer, 0, BUFFER_SIZE)) != -1)
+                    while ((count = zip.read(buffer, 0, BUFFER_SIZE)) != -1)
                         out.write(buffer, 0, count);
                 } finally {
-                    if (in != null) {
-                        try {
-                            in.close();
-                        } catch (IOException ignored) { }
-                    }
+                    try {
+                        zip.closeEntry();
+                    } catch (IOException ignored) { }
                     if (out != null) {
                         try {
                             out.close();

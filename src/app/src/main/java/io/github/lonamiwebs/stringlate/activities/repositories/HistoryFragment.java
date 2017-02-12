@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InvalidObjectException;
@@ -37,6 +38,7 @@ import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_CREATE_FILE;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_OPEN_FILE;
 
 public class HistoryFragment extends Fragment {
 
@@ -109,7 +111,7 @@ public class HistoryFragment extends Fragment {
         mLastSelectedRepo = (RepoHandler)mRepositoryListView.getItemAtPosition(info.position);
         switch (item.getItemId()) {
             case R.id.importRepo:
-                // TODO Allow importing the repositories
+                importFromSd();
                 return true;
             case R.id.exportRepo:
                 exportToSd();
@@ -147,6 +149,9 @@ public class HistoryFragment extends Fragment {
             switch (requestCode) {
                 case RESULT_CREATE_FILE:
                     doExportToSd(data.getData());
+                    break;
+                case RESULT_OPEN_FILE:
+                    doImportFromSd(data.getData());
                     break;
             }
         }
@@ -196,6 +201,34 @@ public class HistoryFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(getContext(), R.string.export_file_failed, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void importFromSd() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("application/zip");
+            startActivityForResult(intent, RESULT_OPEN_FILE);
+        } else {
+            // Not sure this will work.
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("*/*");
+            startActivityForResult(intent, RESULT_OPEN_FILE);
+        }
+    }
+
+    private void doImportFromSd(Uri uri) {
+        try {
+            ParcelFileDescriptor pfd = getContext().getContentResolver().openFileDescriptor(uri, "r");
+            FileInputStream in = new FileInputStream(pfd.getFileDescriptor());
+            mLastSelectedRepo.importZip(in);
+            in.close();
+            pfd.close();
+            Toast.makeText(getContext(), R.string.import_file_success, Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), R.string.import_file_failed, Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -10,6 +10,7 @@ import android.util.Pair;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InvalidObjectException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
@@ -202,6 +203,14 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return new File(mContext.getCacheDir(), "tmp_clone");
     }
 
+    private File getTempImportDir() {
+        return new File(mContext.getCacheDir(), "tmp_import");
+    }
+
+    private File getTempImportBackupDir() {
+        return new File(mContext.getCacheDir(), "tmp_import_backup");
+    }
+
     private static String getId(String gitUrl) {
         return Integer.toHexString(gitUrl.hashCode());
     }
@@ -275,7 +284,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             protected File doInBackground(Void... params) {
                 File dir = getTempCloneDir();
                 GitWrapper.deleteRepo(dir); // Don't care, it's temp and it can't exist on cloning
-                if (GitWrapper.cloneRepo(mSettings.getGitUrl(), getTempCloneDir(), callback))
+                if (GitWrapper.cloneRepo(mSettings.getGitUrl(), dir, callback))
                     return dir;
                 else
                     return null;
@@ -738,6 +747,45 @@ public class RepoHandler implements Comparable<RepoHandler> {
     //endregion
 
     //region Importing and exporting
+
+    public void importZip(InputStream inputStream) {
+        try {
+            // Get temporary import directory and delete any previous directory
+            File dir = getTempImportDir();
+            File backupDir = getTempImportBackupDir();
+            if (!GitWrapper.deleteRepo(dir) || !GitWrapper.deleteRepo(backupDir))
+                throw new IOException("Could not delete old temporary directories.");
+
+            // Unzip the given input stream
+            ZipUtils.unzipRecursive(inputStream, dir);
+
+            // Ensure it's a valid repository (only one parent directory, containing settings)
+            final File[] unzippedFiles = dir.listFiles();
+            if (unzippedFiles == null || unzippedFiles.length != 1)
+                throw new IOException("There should only be 1 unzipped file (the repository's root).");
+
+            final File root = unzippedFiles[0];
+            if (!RepoSettings.exists(root))
+                throw new IOException("The specified .zip file does not seem valid.");
+
+            // Nice, unzipping worked. Now try moving the current repository
+            // to yet another temporary location, because we don't want to lose
+            // it in case something goes wrong and we need to revert…
+            if (!mRoot.renameTo(backupDir))
+                throw new IOException("Could not move the current repository to its backup location.");
+
+            if (!root.renameTo(mRoot)) {
+                // Try reverting the state, hopefully no data was lost
+                String extra = backupDir.renameTo(mRoot) ? "" : " Failed to recover its previous state.";
+                throw new IOException("Could not move the temporary repository to its new location."+extra);
+            }
+
+            // Re-notify that the imported repository succeeded
+            notifyRepositoryCountChanged();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void exportZip(OutputStream output) {
         try {

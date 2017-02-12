@@ -15,6 +15,7 @@ public class Constants {
     public final static int RESULT_CREATE_FILE = 708;
     public final static int RESULT_STRING_SELECTED = 709;
     public final static int RESULT_OPEN_TREE = 710;
+    public final static int RESULT_OPEN_FILE = 711;
 
     // Online help
     public final static String ONLINE_HELP_DEFAULT_LOCALE = "en";

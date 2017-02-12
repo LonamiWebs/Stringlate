@@ -97,8 +97,8 @@ public class GitWrapper {
         if (dir.isDirectory()) {
             for (File child : dir.listFiles())
                 ok &= deleteRepo(child);
+            ok &= dir.delete();
         }
-        ok &= dir.delete();
         return ok;
     }
 

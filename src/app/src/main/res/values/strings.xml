@@ -71,6 +71,8 @@
     <string name="no_internet_connection">You are not connected to the internet.</string>
     <string name="export_file_failed">Could not export strings.xml file</string>
     <string name="export_file_success">File successfully saved to %s</string>
+    <string name="import_file_failed">Could not import the selected item</string>
+    <string name="import_file_success">Import success</string>
     <string name="update_applications">Update applications</string>
     <string name="apps_repo_not_downloaded">The applications repository has not been downloaded yet. Tap the \"%s\" menu button to download the repository index in order to explore all the available applications.</string>
     <string name="sync_failed">Failed to synchronize.</string>
