@@ -94,9 +94,11 @@ public class GitWrapper {
 
     public static boolean deleteRepo(File dir) {
         boolean ok = true;
-        if (dir.isDirectory()) {
-            for (File child : dir.listFiles())
-                ok &= deleteRepo(child);
+        if (dir.exists()) {
+            if (dir.isDirectory()) {
+                for (File child : dir.listFiles())
+                    ok &= deleteRepo(child);
+            }
             ok &= dir.delete();
         }
         return ok;
