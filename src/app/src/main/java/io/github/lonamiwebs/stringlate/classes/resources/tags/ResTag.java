@@ -2,6 +2,13 @@ package io.github.lonamiwebs.stringlate.classes.resources.tags;
 
 import android.support.annotation.NonNull;
 
+import org.xml.sax.InputSource;
+
+import java.io.StringReader;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 public abstract class ResTag implements Comparable<ResTag> {
 
     //region Members
@@ -134,16 +141,24 @@ public abstract class ResTag implements Comparable<ResTag> {
         int length = content.length();
         StringBuilder sb = new StringBuilder(length+16); // 16 seems to be the default capacity
 
-        // First count '<' and '>' on the string. If there is the
-        // same amount  of each on the string, assume it's valid HTML
-        int open = 0;
-        for (int i = 0; i < length; i++) {
-            switch (content.charAt(i)) {
-                case '<': open++; break;
-                case '>': open--; break;
+        boolean replaceLtGt = false;
+        if (content.contains("<")) {
+            // The string contains (X|HT)ML tags, ensure it's valid by parsing the content
+            // If it's not, then replace every <> with &lt; &gt; not to break the XML file
+            try {
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                factory.setValidating(false);
+                factory.setNamespaceAware(true);
+
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                // Every XML needs to have a root tag, however, this is not the case for
+                // Android strings, and so we need to wrap it around some arbitrary tags
+                // in order to check whether the inner content is right or not.
+                builder.parse(new InputSource(new StringReader("<a>"+content+"</a>")));
+            } catch (Exception ignored) {
+                replaceLtGt = true;
             }
         }
-        boolean replaceLtGt = open > 0; // Using > is actually OK (open will be negative)
 
         // Currently we handle the following characters:
         // \n, ', \, &, <, >, "
