@@ -53,8 +53,6 @@ public class ResourcesParser {
     private final static String INDEX = "index";
     private final static String MODIFIED = "modified";
 
-    private final static String REMOTE_PATH = "remote";
-
     private final static boolean DEFAULT_TRANSLATABLE = true;
     private final static boolean DEFAULT_MODIFIED = false;
     private final static int DEFAULT_INDEX = -1;
@@ -63,7 +61,7 @@ public class ResourcesParser {
 
     //region Xml -> Resources
 
-    public static HashMap<String, ResTag> parseFromXml(InputStream in)
+    static HashMap<String, ResTag> parseFromXml(InputStream in)
             throws XmlPullParserException, IOException {
 
         try {
@@ -134,7 +132,7 @@ public class ResourcesParser {
 
         parser.require(XmlPullParser.END_TAG, ns, STRING);
 
-        if (content.isEmpty())
+        if (id == null || content.isEmpty())
             return null;
         else
             return new ResString(id, content, modified);

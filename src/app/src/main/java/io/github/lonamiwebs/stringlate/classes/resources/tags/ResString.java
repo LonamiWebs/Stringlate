@@ -6,17 +6,13 @@ public class ResString extends ResTag {
 
     //region Members
 
-    private final String mId;
+    @NonNull private final String mId;
 
     //endregion
 
     //region Constructors
 
-    public ResString(String id) {
-        this(id, "", false);
-    }
-
-    public ResString(String id, String content, boolean modified) {
+    public ResString(@NonNull String id, String content, boolean modified) {
         mId = id.trim();
         mContent = content.trim();
         mModified = modified;
