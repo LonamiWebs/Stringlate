@@ -2,6 +2,8 @@ package io.github.lonamiwebs.stringlate.activities.repositories;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +26,7 @@ public class RepositoriesActivity extends AppCompatActivity {
     //region Members
 
     private RepositoriesPagerAdapter mRepositoriesPagerAdapter;
+    private BottomNavigationView mBottomNavigationView;
     private ViewPager mViewPager;
 
     //endregion
@@ -43,15 +46,13 @@ public class RepositoriesActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         mRepositoriesPagerAdapter = new RepositoriesPagerAdapter(getSupportFragmentManager(), this);
         mViewPager = (ViewPager)findViewById(R.id.container);
         mViewPager.setAdapter(mRepositoriesPagerAdapter);
+        mViewPager.addOnPageChangeListener(mOnPageChangeListener);
 
-        TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        mBottomNavigationView = (BottomNavigationView)findViewById(R.id.navigation);
+        mBottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         // Check if we opened the application because a GitHub link was clicked
         // If this is the case then we should show the "Add repository" fragment
@@ -121,6 +122,41 @@ public class RepositoriesActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    //endregion
+
+    //region Navigation
+
+    private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_history:
+                    mViewPager.setCurrentItem(0, true);
+                    return true;
+                case R.id.navigation_add_repository:
+                    mViewPager.setCurrentItem(1, true);
+                    return true;
+            }
+            return false;
+        }
+
+    };
+
+    private final ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+
+        @Override
+        public void onPageSelected(int position) {
+            mBottomNavigationView.getMenu().getItem(position).setChecked(true);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) { }
+    };
 
     //endregion
 
