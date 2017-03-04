@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import java.util.Comparator;
 import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.LocaleString;
 
 /**
  * Created by stani on 2017-03-04.
@@ -48,8 +50,7 @@ public class LocaleListBuilder {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String localeCode = locales[which].getLanguage();
-                        cb.onChoice(localeCode);
+                        cb.onChoice(LocaleString.getFullCode(locales[which]));
                     }
                 };
 
@@ -82,10 +83,21 @@ public class LocaleListBuilder {
             }
 
             TextView tvLangName = (TextView) convertView.findViewById(R.id.language_name);
+            TextView tvLangCountry = (TextView) convertView.findViewById(R.id.language_country);
             TextView tvLangCode = (TextView) convertView.findViewById(R.id.language_code);
 
-            tvLangCode.setText(locale.getLanguage());
-            tvLangName.setText(locale.getDisplayName());
+            tvLangName.setText(locale.getDisplayLanguage());
+            tvLangCode.setText(LocaleString.getFullCode(locale));
+
+            String displayCountry = locale.getDisplayCountry();
+            if (displayCountry.isEmpty()) {
+                tvLangCountry.setText(R.string.default_parenthesis);
+                tvLangCountry.setTypeface(null, Typeface.ITALIC);
+            } else {
+                tvLangCountry.setText(displayCountry);
+                tvLangCountry.setTypeface(null, Typeface.NORMAL);
+            }
+
 
             return convertView;
         }

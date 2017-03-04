@@ -62,6 +62,12 @@ public class LocaleString {
         return locale;
     }
 
+    public static String getFullCode(@NonNull Locale locale) {
+        String language = locale.getLanguage();
+        String country = locale.getCountry();
+        return country.isEmpty() ? language : language+"-r"+country;
+    }
+
     public static boolean isValid(@NonNull String locale) {
         if (locale.contains("-")) {
             for (Locale l : Locale.getAvailableLocales())

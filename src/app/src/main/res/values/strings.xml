@@ -166,4 +166,5 @@
     <string name="retry">Retry</string>
     <string name="import_repository">Import repository</string>
     <string name="export_repository">Export repository</string>
+    <string name="default_parenthesis">(default)</string>
 </resources>
