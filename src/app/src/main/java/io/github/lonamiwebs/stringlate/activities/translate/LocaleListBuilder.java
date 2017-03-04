@@ -38,6 +38,7 @@ class LocaleListBuilder {
         final Locale[] locales = Locale.getAvailableLocales();
         final LocaleArrayAdapter arrayAdapter =
                 new LocaleArrayAdapter(activity, R.layout.item_locale_list, locales);
+
         arrayAdapter.sort(new Comparator<Locale>() {
             @Override
             public int compare(final Locale o1, final Locale o2) {
@@ -59,6 +60,9 @@ class LocaleListBuilder {
                 .setTitle(R.string.choose_locale_from_list)
                 .setNegativeButton(R.string.cancel, null)
                 .setAdapter(arrayAdapter,clickListener).create();
+
+        mDialog.getListView().setFastScrollEnabled(true);
+        mDialog.getListView().setFastScrollAlwaysVisible(true);
     }
 
     public void show() {
