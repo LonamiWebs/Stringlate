@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,16 +24,16 @@ import io.github.lonamiwebs.stringlate.classes.LocaleString;
  * This class creates a simple AlertDialog with a list of locales.
  * Use the callback method to retrieve the selected locale.
  */
-public class LocaleListBuilder {
+class LocaleListBuilder {
+
+    // https://developer.android.com/training/improving-layouts/smooth-scrolling.html#ViewHolder
+    private static class ViewHolder {
+        TextView displayLang, displayCountry, langCode;
+    }
 
     private final AlertDialog mDialog;
 
-    /**
-     *
-     * @param activity
-     * @param cb - use this to retrieve the selected locale
-     */
-    public LocaleListBuilder(final Activity activity, final LocalePickCallback cb) {
+    LocaleListBuilder(final Activity activity, final LocalePickCallback cb) {
 
         final Locale[] locales = Locale.getAvailableLocales();
         final LocaleArrayAdapter arrayAdapter =
@@ -67,43 +68,47 @@ public class LocaleListBuilder {
     private class LocaleArrayAdapter extends ArrayAdapter<Locale> {
 
         final int mResource;
-        public LocaleArrayAdapter(final Context context, final int resource, final Locale[] locales) {
+
+        LocaleArrayAdapter(final Context context, final int resource, final Locale[] locales) {
             super(context, resource, locales);
             mResource = resource;
         }
 
+        @NonNull
         @Override
-        public View getView(final int position, final View view, final ViewGroup parent) {
+        public View getView(final int position, View view, @NonNull final ViewGroup parent) {
             final Locale locale = this.getItem(position);
-            final View convertView;
+
             if (view == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(mResource, parent, false);
-            } else {
-                convertView = view;
+                view = LayoutInflater.from(getContext()).inflate(mResource, parent, false);
+                final ViewHolder holder = new ViewHolder();
+                holder.displayLang = (TextView) view.findViewById(R.id.language_name);
+                holder.displayCountry = (TextView) view.findViewById(R.id.language_country);
+                holder.langCode = (TextView) view.findViewById(R.id.language_code);
+                view.setTag(holder);
             }
 
-            TextView tvLangName = (TextView) convertView.findViewById(R.id.language_name);
-            TextView tvLangCountry = (TextView) convertView.findViewById(R.id.language_country);
-            TextView tvLangCode = (TextView) convertView.findViewById(R.id.language_code);
+            if (locale != null) {
+                final ViewHolder holder = (ViewHolder)view.getTag();
 
-            tvLangName.setText(locale.getDisplayLanguage());
-            tvLangCode.setText(LocaleString.getFullCode(locale));
+                holder.displayLang.setText(locale.getDisplayLanguage());
+                holder.langCode.setText(LocaleString.getFullCode(locale));
 
-            String displayCountry = locale.getDisplayCountry();
-            if (displayCountry.isEmpty()) {
-                tvLangCountry.setText(R.string.default_parenthesis);
-                tvLangCountry.setTypeface(null, Typeface.ITALIC);
-            } else {
-                tvLangCountry.setText(displayCountry);
-                tvLangCountry.setTypeface(null, Typeface.NORMAL);
+                final String displayCountry = locale.getDisplayCountry();
+                if (displayCountry.isEmpty()) {
+                    holder.displayCountry.setText(R.string.default_parenthesis);
+                    holder.displayCountry.setTypeface(null, Typeface.ITALIC);
+                } else {
+                    holder.displayCountry.setText(displayCountry);
+                    holder.displayCountry.setTypeface(null, Typeface.NORMAL);
+                }
             }
 
-
-            return convertView;
+            return view;
         }
     }
 
-    public interface LocalePickCallback {
+    interface LocalePickCallback {
         void onChoice(String localeCode);
     }
 }
