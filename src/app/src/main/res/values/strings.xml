@@ -29,6 +29,7 @@
     <string name="add_locale_to_start">Add a new locale to get started.</string>
     <string name="enter_locale">Enter locale name</string>
     <string name="enter_locale_long">Enter the locale name for which the strings.xml file will be created (your current locale is \"%s\"):</string>
+    <string name="choose_locale_from_list">Choose locale from list</string>
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
     <string name="create_locale_error">Could not create the new locale file.</string>
