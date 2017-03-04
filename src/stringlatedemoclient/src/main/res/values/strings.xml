@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Stringlate Demo Client</string>
+    <string name="settings_translate_title">Translate with Stringlate</string>
+    <string name="message_translate_not_installed">StringLate app not found. Do you want to install it from f-droid app store?</string>
+</resources>

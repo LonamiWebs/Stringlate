@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -129,7 +128,6 @@ public class Api {
     /**
      * Local helper to create the translate intent
      */
-    @NonNull
     private static Intent createTranslateIntent(String gitUrl) {
         Intent intent = new Intent(ACTION_TRANSLATE);
         intent.setType(MIME_TYPE);
@@ -141,7 +139,6 @@ public class Api {
     /**
      * Local helper to create the install intent
      */
-    @NonNull
     private static Intent createInstallIntent() {
         // see http://stackoverflow.com/questions/6813322/install-uninstall-apks-programmatically-packagemanager-vs-intents
         // does not work on my android-4.4 phone :-(
