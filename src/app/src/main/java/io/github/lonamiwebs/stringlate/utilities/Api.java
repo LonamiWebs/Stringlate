@@ -3,6 +3,8 @@ package io.github.lonamiwebs.stringlate.utilities;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 
 // Stringlate API
 // https://github.com/LonamiWebs/Stringlate/blob/master/src/app/src/main/java/io/github/lonamiwebs/stringlate/utilities/Api.java
@@ -56,13 +58,35 @@ public class Api {
 
     // ACTION_TRANSLATE wrapper.
     //
+    // Returns:
+    //     true if Stringlate (or any other application implementing its behaviour)
+    //          is installed on the current device without actually opening it.
+    //
+    //     false if no application implementing this API is installed.
+    public boolean isInstalled(final Context context) {
+        return !context.getPackageManager()
+                .queryIntentActivities(getTranslateIntent(""), 0).isEmpty();
+    }
+
+    // ACTION_TRANSLATE wrapper.
+    //
     // Will throw ActivityNotFoundException if Stringlate is not installed on the device.
     public void translate(final Context context, final String gitUrl)
             throws ActivityNotFoundException {
-        Intent intent = new Intent(ACTION_TRANSLATE);
+        context.startActivity(getTranslateIntent(gitUrl));
+    }
+
+    //endregion
+
+    //region Private methods
+
+    // Retrieves an intent which would resolve to opening Stringlate
+    // with the specified .git URL to begin the translation process.
+    private static Intent getTranslateIntent(final String gitUrl) {
+        final Intent intent = new Intent(ACTION_TRANSLATE);
         intent.setType(MIME_TYPE);
         intent.putExtra(EXTRA_GIT_URL, gitUrl);
-        context.startActivity(intent);
+        return intent;
     }
 
     //endregion
