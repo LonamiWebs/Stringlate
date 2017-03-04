@@ -375,14 +375,34 @@ public class TranslateActivity extends AppCompatActivity {
 
     //region Adding locales menu events
 
+    private void promptAddLocale() {
+        promptAddLocale("");
+    }
+
     // Prompts the user to add a new locale. If it exists,
     // no new file is created but the entered locale is selected.
-    private void promptAddLocale() {
+    private void promptAddLocale(final String presetLocaleCode) {
+
+        final LocaleListBuilder localeList = new LocaleListBuilder(this,
+                new LocaleListBuilder.LocalePickCallback(){
+                    @Override
+                    public void onChoice(final String localeCode) {
+                        promptAddLocale(localeCode);
+                    }
+                });
+
         final EditText et = new EditText(this);
+        et.setText(presetLocaleCode);
         new AlertDialog.Builder(this)
                 .setTitle(R.string.enter_locale)
                 .setMessage(getString(R.string.enter_locale_long, Locale.getDefault().getLanguage()))
                 .setView(et)
+                .setNeutralButton(R.string.choose_locale_from_list, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        localeList.show();
+                    }
+                })
                 .setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
