@@ -27,6 +27,7 @@
     <string name="add_locale_to_start">Добавьте новую локаль для начала.</string>
     <string name="enter_locale">Введите имя локали</string>
     <string name="enter_locale_long">Введите имя локали для strings.xml. Текущая локаль \"%s\":</string>
+    <string name="choose_locale_from_list">Выбрать локаль из списка</string>
     <string name="create">Создать</string>
     <string name="cancel">Отмена</string>
     <string name="create_locale_error">Нельзя создать новый файл локали.</string>
@@ -68,6 +69,8 @@
     <string name="no_internet_connection">Нет соединения с интернетом.</string>
     <string name="export_file_failed">Нельзя экспортировать strings.xml</string>
     <string name="export_file_success">Файл сохранён в %s</string>
+    <string name="import_file_failed">Сбой импорта выбранного пункта</string>
+    <string name="import_file_success">Импорт успешен</string>
     <string name="update_applications">Обновить приложения</string>
     <string name="apps_repo_not_downloaded">Репозиторий приложений пока не скачивается. Нажмите \"%s\" кнопку меню для скачивания индекса репозитория для исследования всех доступных приложений.</string>
     <string name="sync_failed">Сбой синхронизации.</string>
@@ -151,4 +154,7 @@
     <string name="sort_alphabetically">По алфавиту</string>
     <string name="sort_string_length">Длина строки</string>
     <string name="retry">Повтор</string>
+    <string name="import_repository">Импорт репозитория</string>
+    <string name="export_repository">Экспорт репозитория</string>
+    <string name="default_parenthesis">(по умолчанию)</string>
 </resources>
