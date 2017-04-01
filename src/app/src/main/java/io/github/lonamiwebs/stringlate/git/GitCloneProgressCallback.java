@@ -19,6 +19,7 @@ public abstract class GitCloneProgressCallback
     private final static long DELAY_PER_UPDATE = 60; // 60ms
 
     private final static String RECEIVING_TITLE = "Receiving objects";
+    private final static String RESOLVING_TITLE = "Resolving deltas";
 
     protected GitCloneProgressCallback(Activity activity) {
         mActivity = activity;
@@ -26,7 +27,8 @@ public abstract class GitCloneProgressCallback
 
     @Override
     final public void beginTask(String title, int totalWork) {
-        if (title.equals(RECEIVING_TITLE)) {
+        if (title.equals(RECEIVING_TITLE) || title.equals(RESOLVING_TITLE)) {
+            mDone = 0;
             mWork = totalWork;
             mStarted = true;
         }

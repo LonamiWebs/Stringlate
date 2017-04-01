@@ -139,7 +139,7 @@
     <string name="creating_pr_long">PR wird in dem Originalrepository erstellt…</string>
     <string name="something_went_wrong">Etwas ist schiefgelaufen.</string>
     <string name="cloning_repo">Repository wird geklont…</string>
-    <string name="cloning_repo_progress">Temporäres klonen des remote Repositories</string>
+    <string name="cloning_repo_progress">Temporäres klonen des remote Repositories… %.1f%%</string>
     <string name="copying_res">Ressourcen werden kopiert…</string>
     <string name="copying_res_long">Ressourcen werden bestätigt und zu ihrer endgültigen Position kopiert…</string>
     <string name="issue_title_colon">Issue Titel:</string>
