@@ -167,7 +167,8 @@ public abstract class ResTag implements Comparable<ResTag> {
             switch (c) {
                 // These should always be escaped
                 case '\'': sb.append("\\'"); break;
-                case '\n': sb.append("\\n"); break;
+                // Keep an actual newline afterwards for more readability
+                case '\n': sb.append("\\n\n"); break;
 
                 // We can't tell whether the user intended to escape something
                 case '\\': sb.append("\\\\"); break;
