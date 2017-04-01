@@ -85,6 +85,15 @@ public class HistoryFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // Assume the count changed every time we're back on this fragment.
+        // This is because, although translating strings doesn't change the
+        // repository count, it does affect the progress bar.
+        changeListener.onRepositoryCountChanged();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         RepoHandler.removeChangeListener(changeListener);

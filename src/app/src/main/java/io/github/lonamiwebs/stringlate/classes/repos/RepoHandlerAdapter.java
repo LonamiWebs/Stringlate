@@ -1,5 +1,6 @@
 package io.github.lonamiwebs.stringlate.classes.repos;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,13 +13,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.resources.Resources;
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.MATERIAL_COLORS;
 
@@ -29,16 +34,18 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
     // https://developer.android.com/training/improving-layouts/smooth-scrolling.html#ViewHolder
     private static class ViewHolder {
         ImageView iconView;
-        TextView pathTextView, hostTextView;
+        TextView pathTextView, hostTextView, translatedProgressTextView;
+        ProgressBar translatedProgressBar;
     }
 
     public RepoHandlerAdapter(Context context, List<RepoHandler> repositories) {
         // Treat the repositories like applications
         // We can show an icon, the title, and the host as description
-        super(context, R.layout.item_application_list, repositories);
+        super(context, R.layout.item_repository_list, repositories);
         mSize = context.getResources().getDisplayMetrics().densityDpi;
     }
 
+    @SuppressLint("SetTextI18n")
     @NonNull
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         RepoHandler repo = getItem(position);
@@ -46,12 +53,18 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
         // This may be the first time we use the recycled view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
-                    .inflate(R.layout.item_application_list, parent, false);
+                    .inflate(R.layout.item_repository_list, parent, false);
 
             final ViewHolder holder = new ViewHolder();
-            holder.iconView = (ImageView)convertView.findViewById(R.id.appIcon);
-            holder.pathTextView = (TextView)convertView.findViewById(R.id.appName);
-            holder.hostTextView = (TextView)convertView.findViewById(R.id.appDescription);
+            holder.iconView = (ImageView)convertView.findViewById(R.id.repositoryIcon);
+            holder.pathTextView = (TextView)convertView.findViewById(R.id.repositoryPath);
+            holder.hostTextView = (TextView)convertView.findViewById(R.id.repositoryHost);
+            holder.translatedProgressTextView =
+                    (TextView)convertView.findViewById(R.id.translatedProgressText);
+
+            holder.translatedProgressBar =
+                    (ProgressBar)convertView.findViewById(R.id.translatedProgressBar);
+
             convertView.setTag(holder);
         }
         if (repo != null) {
@@ -64,6 +77,31 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
 
             holder.pathTextView.setText(repo.getPath());
             holder.hostTextView.setText(repo.getHost());
+
+            if (repo.getLastLocale() == null) {
+                holder.translatedProgressBar.setVisibility(View.INVISIBLE);
+                holder.translatedProgressTextView.setVisibility(View.GONE);
+            } else {
+                holder.translatedProgressBar.setVisibility(View.VISIBLE);
+                holder.translatedProgressTextView.setVisibility(View.VISIBLE);
+
+                // TODO This might become pretty expensive - beware of issues complaining!
+                int currentChars = 0;
+                int totalChars = 0;
+                int chars;
+                Resources localeResources = repo.loadResources(repo.getLastLocale());
+                for (ResTag rs : repo.loadDefaultResources()) {
+                    chars = rs.getContentLength();
+                    totalChars += chars;
+                    if (localeResources.contains(rs.getId()))
+                        currentChars += chars;
+                }
+                float percentage = (100.0f * currentChars) / totalChars;
+                holder.translatedProgressBar.setMax(totalChars);
+                holder.translatedProgressBar.setProgress(currentChars);
+                holder.translatedProgressTextView.setText(
+                        String.format(Locale.ENGLISH, "%.1f%%", percentage));
+            }
         }
         return convertView;
     }
