@@ -81,8 +81,6 @@
     <string name="search">Hledat</string>
     <string name="search_apps_ellipsis">Hledat aplikace…</string>
     <string name="icon_cache_cleared">Dočasná paměť pro ikony byla vyčištěna (%s uvolněno).</string>
-    <string name="files_modified">Některé soubory byly upraveny</string>
-    <string name="files_modified_keep_changes">Některé zdrojové soubory byly upraveny. Chcete uchovat vaše místní změny zároveň se vzdálenými úpravami, nebo smazat všechny vaše změny?</string>
     <string name="keep_changes">Uchovat změny</string>
     <string name="discard_changes">Zrušit změny</string>
     <string name="save_before_sync_required">Před synchronizací projekt nejprve uložte.</string>

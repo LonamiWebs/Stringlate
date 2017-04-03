@@ -81,8 +81,6 @@
     <string name="search">検索</string>
     <string name="search_apps_ellipsis">アプリケーションの検索…</string>
     <string name="icon_cache_cleared">アイコンキャッシュをクリアしました (%s 空き).</string>
-    <string name="files_modified">一部のファイルが更新されました</string>
-    <string name="files_modified_keep_changes">一部のリソースファイルが更新されました。 ローカルの変更をリモートの変更に合わせて保存するか、またはすべての変更を破棄しますか?</string>
     <string name="keep_changes">変更を保存</string>
     <string name="discard_changes">変更を破棄</string>
     <string name="save_before_sync_required">同期の前に保存する必要があります。</string>

@@ -81,8 +81,6 @@
     <string name="search">Buscar</string>
     <string name="search_apps_ellipsis">Buscar aplicaciones…</string>
     <string name="icon_cache_cleared">Limpiada caché de iconos (%s liberado).</string>
-    <string name="files_modified">Algunos archivos han sido modificados</string>
-    <string name="files_modified_keep_changes">Algunos archivos de recursos han sido modificados. ¿Quieres mantener tus cambios locales y añadir las modificaciones remotas o desechar todos tus cambios?</string>
     <string name="keep_changes">Mantener los cambios</string>
     <string name="discard_changes">Deshacer cambios</string>
     <string name="save_before_sync_required">Tienes que guardar antes de sincronizar.</string>

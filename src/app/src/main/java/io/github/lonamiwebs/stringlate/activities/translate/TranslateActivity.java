@@ -194,7 +194,7 @@ public class TranslateActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Synchronizing repository
             case R.id.updateStrings:
-                updateStrings();
+                askUpdateStrings();
                 return true;
 
             // Search strings
@@ -305,37 +305,35 @@ public class TranslateActivity extends AppCompatActivity {
     // Synchronize our local strings.xml files with the remote GitHub
     // repository, previously saving the strings.xml and asking whether
     // files should be overwritten after synchronizing (if any change was made)
-    private void updateStrings() {
+    private void askUpdateStrings() {
         save();
         if (mRepo.anyModified()) {
             // Do not mistake unsaved changes (modifications, .isSaved())
             // with the file being ever modified (.wasModified())
             new AlertDialog.Builder(this)
-                    .setTitle(R.string.files_modified)
-                    .setMessage(R.string.files_modified_keep_changes)
-                    .setPositiveButton(R.string.keep_changes, new DialogInterface.OnClickListener() {
+                    .setTitle(R.string.pulling_strings)
+                    .setMessage(R.string.pulling_strings_long)
+                    .setPositiveButton(R.string.pulling_strings, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            updateStrings(true);
+                            updateStrings();
                         }
                     })
-                    .setNegativeButton(R.string.discard_changes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            updateStrings(false);
-                        }
-                    })
+                    .setNegativeButton(R.string.cancel, null)
                     .show();
         } else {
             // No file has been modified, simply update the strings discarding changes
-            updateStrings(false);
+            updateStrings();
         }
     }
 
     // Synchronize our local strings.xml files with the remote GitHub repository
-    private void updateStrings(boolean keepChanges) {
+    private void updateStrings() {
         if (Utils.isNotConnected(this, true))
             return;
+
+        // TODO Make this work according to R.string.pulling_strings_long
+        throw new UnsupportedOperationException();
 
         final ProgressDialog progress = ProgressDialog.show(this,
                 getString(R.string.loading_ellipsis), null, true);
@@ -355,7 +353,7 @@ public class TranslateActivity extends AppCompatActivity {
 
                 loadResources();
             }
-        }, keepChanges);
+        });
     }
 
     //endregion

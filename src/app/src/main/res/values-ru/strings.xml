@@ -84,8 +84,6 @@
     <string name="search">Поиск</string>
     <string name="search_apps_ellipsis">Поиск приложений…</string>
     <string name="icon_cache_cleared">Кэш значков очищен (%s освобождено).</string>
-    <string name="files_modified">Некоторые файлы были изменены</string>
-    <string name="files_modified_keep_changes">Некоторые ресурсные файлы были изменены. Сохранить локальные правки или отменить изменения?</string>
     <string name="keep_changes">Сохранить изменения</string>
     <string name="discard_changes">Отменить изменения</string>
     <string name="save_before_sync_required">Сохранитесь перед синхронизацией.</string>

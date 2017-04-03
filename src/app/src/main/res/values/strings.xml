@@ -87,8 +87,8 @@
     <string name="search">Search</string>
     <string name="search_apps_ellipsis">Search applications…</string>
     <string name="icon_cache_cleared">Icon cache cleared (%s freed).</string>
-    <string name="files_modified">Some files were modified</string>
-    <string name="files_modified_keep_changes">Some resource files were modified. Do you wish to keep your local changes along with the remote modifications, or discard all your changes?</string>
+    <string name="pulling_strings">Pull new strings</string>
+    <string name="pulling_strings_long">Pulling new strings will keep your translation intact while possibly adding new untranslated strings. You should do this before uploading your translations to make sure you\'ve translated everything. Do you wish to continue?</string>
     <string name="keep_changes">Keep changes</string>
     <string name="discard_changes">Discard changes</string>
     <string name="save_before_sync_required">You need to save before synchronizing.</string>

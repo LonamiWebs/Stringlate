@@ -36,8 +36,6 @@
     <string name="export_share">分享生成的 XML 文件</string>
     <string name="extracting_index_xml">正在从 index.jar 中提取 index.xml 文件</string>
     <string name="extracting_index_xml_long">正在提取 index.xml 中所包含的应用信息</string>
-    <string name="files_modified">某些文件已被修改</string>
-    <string name="files_modified_keep_changes">某些资源文件已被修改. 您希望您的本地修改与远程修改并存还是放弃您所有的更改？</string>
     <string name="gist_description">Gist 描述 (可选)</string>
     <string name="gist_filename">Gist 文件名：</string>
     <string name="github_repo_url_hint">https://github.com/所有者名称/版本库名称</string>

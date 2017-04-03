@@ -81,8 +81,6 @@
     <string name="search">Căutare</string>
     <string name="search_apps_ellipsis">Căutare aplicații…</string>
     <string name="icon_cache_cleared">Iconițele din memorie au fost curățate (%s eliberat).</string>
-    <string name="files_modified">Există fișiere modificate</string>
-    <string name="files_modified_keep_changes">Unele fișiere ale proiectului au fost modificate. Vrei sa păstrezi schimbările locale alături de cele descărcate sau renunți la ele?</string>
     <string name="keep_changes">Păstrează schimbările</string>
     <string name="discard_changes">Anulează schimbări</string>
     <string name="save_before_sync_required">Înainte să sincronizezi trebuie să salvezi.</string>

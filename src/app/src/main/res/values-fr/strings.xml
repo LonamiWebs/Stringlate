@@ -81,8 +81,6 @@
     <string name="search">Recherche</string>
     <string name="search_apps_ellipsis">Rechercher des applications…</string>
     <string name="icon_cache_cleared">Cache d’icônes vidé (%s nettoyées)</string>
-    <string name="files_modified">Des fichiers ont été modifiés</string>
-    <string name="files_modified_keep_changes">Des fichiers ressources ont été modifiés. Voulez-vous conserver les changements locaux en plus des modifications, ou les abandonner ?</string>
     <string name="keep_changes">Conserver les changements</string>
     <string name="discard_changes">Abandonner les changements</string>
     <string name="save_before_sync_required">Vous devez sauvegarder avant de synchroniser.</string>

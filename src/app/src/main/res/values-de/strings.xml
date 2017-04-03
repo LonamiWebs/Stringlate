@@ -83,8 +83,6 @@
     <string name="search">Suche</string>
     <string name="search_apps_ellipsis">Applikationen suchen…</string>
     <string name="icon_cache_cleared">Icon Chache geleert, %s befreit.</string>
-    <string name="files_modified">Einige Dateien wurden modifiziert</string>
-    <string name="files_modified_keep_changes">Einige Quelldateien wurden verändert. Willst Du die lokalen Änderungen zusammen mit den fremden Änderungen behalten oder Deine Änderungen verwerfen?</string>
     <string name="keep_changes">Änderungen behalten</string>
     <string name="discard_changes">Änderungen verwerfen</string>
     <string name="save_before_sync_required">Sie müssen vor einer Synchronisierung erst speichern.</string>
