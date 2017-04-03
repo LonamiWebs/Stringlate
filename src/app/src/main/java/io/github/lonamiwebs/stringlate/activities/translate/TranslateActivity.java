@@ -332,9 +332,6 @@ public class TranslateActivity extends AppCompatActivity {
         if (Utils.isNotConnected(this, true))
             return;
 
-        // TODO Make this work according to R.string.pulling_strings_long
-        throw new UnsupportedOperationException();
-
         final ProgressDialog progress = ProgressDialog.show(this,
                 getString(R.string.loading_ellipsis), null, true);
 
@@ -833,11 +830,6 @@ public class TranslateActivity extends AppCompatActivity {
             mProgressTextView.setText("");
         } else {
             int stringsCount = mDefaultResources.count();
-            // The selected resources might have more strings than the default does.
-            // For example, when an application got updated and dropped some unused strings.
-            // For this reason, we need to make sure that these are on the default resources.
-            // TODO: Maybe warn the user to remove unused strings?
-
             // Keep track of the translated strings count and the characters of the
             // original strings + those same characters if a translation is available.
             // This will be used to make a weighted progress (if you translated only

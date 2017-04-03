@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -269,12 +270,12 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Downloading locale files
 
-    public void syncResources(final GitCloneProgressCallback callback, final boolean keepChanges) {
-        cloneRepository(callback, keepChanges);
+    public void syncResources(final GitCloneProgressCallback callback) {
+        cloneRepository(callback);
     }
 
     // Step 1: Temporary clone the GitHub repository
-    private void cloneRepository(final GitCloneProgressCallback callback, final boolean keepChanges) {
+    private void cloneRepository(final GitCloneProgressCallback callback) {
         callback.onProgressUpdate(
                 mContext.getString(R.string.cloning_repo),
                 mContext.getString(R.string.cloning_repo_progress, 0.0f));
@@ -297,12 +298,12 @@ public class RepoHandler implements Comparable<RepoHandler> {
                     delete(); // Need to delete the settings
                 }
                 else
-                    scanResources(clonedDir, keepChanges, callback);
+                    scanResources(clonedDir, callback);
             }
         }.execute();
     }
 
-    private void scanResources(final File clonedDir, final boolean keepChanges, final ProgressUpdateCallback callback) {
+    private void scanResources(final File clonedDir, final ProgressUpdateCallback callback) {
         callback.onProgressUpdate(
                 mContext.getString(R.string.scanning_repository),
                 mContext.getString(R.string.scanning_repository_long));
@@ -321,14 +322,14 @@ public class RepoHandler implements Comparable<RepoHandler> {
                     callback.onProgressFinished(
                             mContext.getString(R.string.no_strings_found), false);
                 } else {
-                    copyResources(clonedDir, foundResources, keepChanges, callback);
+                    copyResources(clonedDir, foundResources, callback);
                 }
             }
         }.execute();
     }
 
     private void copyResources(final File clonedDir, final ArrayList<File> foundResources,
-                               final boolean keepChanges, final ProgressUpdateCallback callback) {
+                               final ProgressUpdateCallback callback) {
         callback.onProgressUpdate(
                 mContext.getString(R.string.copying_res),
                 mContext.getString(R.string.copying_res_long));
@@ -336,7 +337,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                doCopyResources(clonedDir, foundResources, keepChanges);
+                doCopyResources(clonedDir, foundResources);
                 return null;
             }
 
@@ -348,8 +349,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         }.execute();
     }
 
-    private void doCopyResources(final File clonedDir, final ArrayList<File> foundResources,
-                                 final boolean keepChanges) {
+    private void doCopyResources(final File clonedDir, final ArrayList<File> foundResources) {
         // Delete all the previous default resources since their
         // names might have changed, been removed, or some new added.
         mSettings.clearRemotePaths();
@@ -399,20 +399,10 @@ public class RepoHandler implements Comparable<RepoHandler> {
                     // Also load the new resources (to both ensure it's OK and to copy the strings)
                     Resources newResources = Resources.fromFile(clonedFile);
 
-                    if (keepChanges) {
-                        // We want to our previous keep changes, and so we
-                        // will only add the tags which were NOT modified
-                        for (ResTag rt : newResources) {
-                            if (!oldResources.wasModified(rt.getId())) {
-                                oldResources.addTag(rt);
-                            }
-                        }
-                    } else {
-                        // We don't want to keep any change, simply merge the tags
-                        for (ResTag rt : newResources) {
+                    // Add new translated tags without overwriting existing ones
+                    for (ResTag rt : newResources)
+                        if (!oldResources.wasModified(rt.getId()))
                             oldResources.addTag(rt);
-                        }
-                    }
 
                     // Save the changes
                     oldResources.save();
@@ -432,8 +422,35 @@ public class RepoHandler implements Comparable<RepoHandler> {
             }
         }
 
+        // Clean old unused strings which now don't exist on the default resources files
+        unusedStringsCleanup();
+
         GitWrapper.deleteRepo(clonedDir); // Clean resources
         loadLocales(); // Reload the locales
+    }
+
+    private void unusedStringsCleanup() {
+        final Resources defaultResources = loadDefaultResources();
+
+        for (String locale : getLocales()) {
+            if (locale.equals(DEFAULT_LOCALE))
+                continue;
+
+            final Resources resources = loadResources(locale);
+
+            // Find those which we need to remove (we can't remove them right
+            // away unless with used an Iterator<ResTag>, but this also works)
+            final ArrayList<String> toRemove = new ArrayList<>();
+            for (ResTag rt : resources)
+                if (!defaultResources.contains(rt.getId()))
+                    toRemove.add(rt.getId());
+
+            // Do remove the unused strings and save
+            for (String remove : toRemove)
+                resources.deleteId(remove);
+
+            resources.save();
+        }
     }
 
     //endregion

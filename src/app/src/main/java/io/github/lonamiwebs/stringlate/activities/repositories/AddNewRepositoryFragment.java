@@ -76,7 +76,7 @@ public class AddNewRepositoryFragment extends Fragment {
             }
         });
 
-        // Or, if we're on the repository EditText, hide the keybaord
+        // Or, if we're on the repository EditText, hide the keyboard
         mRepositoryEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int kc, KeyEvent e) {
@@ -176,8 +176,7 @@ public class AddNewRepositoryFragment extends Fragment {
                 if (status)
                     launchTranslateActivity(repo);
             }
-        }, false);
-        // false, do not keep any previous modification (there should not be any)
+        });
     }
 
     //endregion
