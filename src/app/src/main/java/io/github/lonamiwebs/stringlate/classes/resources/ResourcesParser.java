@@ -89,23 +89,17 @@ public class ResourcesParser {
             String name = parser.getName();
             switch (name) {
                 case STRING:
-                    ResTag rs = readResourceString(parser);
-                    if (rs != null) {
-                        resources.mStrings.put(rs.getId(), rs);
-                        resources.mModified |= rs.wasModified();
-                    }
+                    ResTag rt = readResourceString(parser);
+                    if (rt != null)
+                        resources.loadTag(rt);
                     break;
                 case STRING_ARRAY:
-                    for (ResTag item : readResourceStringArray(parser)) {
-                        resources.mStrings.put(item.getId(), item);
-                        resources.mModified |= item.wasModified();
-                    }
+                    for (ResTag item : readResourceStringArray(parser))
+                        resources.loadTag(item);
                     break;
                 case PLURALS:
-                    for (ResTag item : readResourcePlurals(parser)) {
-                        resources.mStrings.put(item.getId(), item);
-                        resources.mModified |= item.wasModified();
-                    }
+                    for (ResTag item : readResourcePlurals(parser))
+                        resources.loadTag(item);
                     break;
                 default:
                     skip(parser);

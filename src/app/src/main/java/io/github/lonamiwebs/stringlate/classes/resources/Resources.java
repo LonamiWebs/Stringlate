@@ -27,12 +27,13 @@ public class Resources implements Iterable<ResTag> {
     //region Members
 
     private final File mFile; // Keep track of the original file to be able to save()
-    final HashMap<String, ResTag> mStrings;
+    private final HashMap<String, ResTag> mStrings;
+    private final HashMap<String, ResTag> mReferenceStrings; // Those starting with "@string/"
 
     private ResTag mLastTag; // The last tag returned by getTag()
 
     private boolean mSavedChanges;
-    boolean mModified;
+    private boolean mModified;
 
     @NonNull
     private String mFilter;
@@ -74,6 +75,7 @@ public class Resources implements Iterable<ResTag> {
     private Resources(File file) {
         mFile = file;
         mStrings = new HashMap<>();
+        mReferenceStrings = new HashMap<>();
         mSavedChanges = mFile != null && mFile.isFile();
         mFilter = "";
     }
@@ -197,6 +199,16 @@ public class Resources implements Iterable<ResTag> {
         // If it's null, there was no old value, so changes won't not saved
         if (mStrings.put(rt.getId(), rt) == null)
             mSavedChanges = false;
+    }
+
+    // To be used by the ResourcesParser
+    void loadTag(ResTag rt) {
+        if (rt.getContent().startsWith("@"))
+            mReferenceStrings.put(rt.getId(), rt);
+        else
+            mStrings.put(rt.getId(), rt);
+
+        mModified |= rt.wasModified();
     }
 
     //endregion
