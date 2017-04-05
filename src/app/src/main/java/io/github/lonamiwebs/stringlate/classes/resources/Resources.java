@@ -27,12 +27,12 @@ public class Resources implements Iterable<ResTag> {
     //region Members
 
     private final File mFile; // Keep track of the original file to be able to save()
-    private final HashMap<String, ResTag> mStrings;
+    final HashMap<String, ResTag> mStrings;
 
     private ResTag mLastTag; // The last tag returned by getTag()
 
     private boolean mSavedChanges;
-    private boolean mModified;
+    boolean mModified;
 
     @NonNull
     private String mFilter;
@@ -43,12 +43,14 @@ public class Resources implements Iterable<ResTag> {
 
     @NonNull
     public static Resources fromFile(File file) {
+        Resources result = new Resources(file);
+
         if (file.isFile()) {
             InputStream is = null;
             try {
                 is = new FileInputStream(file);
-                HashMap<String, ResTag> result = ResourcesParser.parseFromXml(is);
-                return new Resources(file, result);
+                // Load the resources from the XML into our resulting Resources
+                ResourcesParser.loadFromXml(is, result);
             } catch (IOException | XmlPullParserException e) {
                 e.printStackTrace();
             } finally {
@@ -58,59 +60,22 @@ public class Resources implements Iterable<ResTag> {
                 } catch (IOException ignored) { }
             }
         }
-        return new Resources(file, new HashMap<String, ResTag>());
+
+        // If loading went okay, the resources will have been loaded into the result
+        return result;
     }
 
     // Empty resources cannot be saved
     @NonNull
     public static Resources empty() {
-        return new Resources(null, new HashMap<String, ResTag>());
+        return new Resources(null);
     }
 
-    private Resources(File file, HashMap<String, ResTag> strings) {
+    private Resources(File file) {
         mFile = file;
-        mStrings = strings;
+        mStrings = new HashMap<>();
         mSavedChanges = mFile != null && mFile.isFile();
         mFilter = "";
-
-        // Backwards compatibility with version 0.9
-        // If the .modified file exists, assume all the local strings were modified
-        // This will allow old users to pull new changes without overwriting local
-        // TODO Remove this on version 1.0 (or similar)
-
-        // -- Begin of backwards-compatibility code
-        String path = mFile == null ? "" : mFile.getAbsolutePath();
-        int extensionIndex = path.lastIndexOf('.');
-        if (extensionIndex > -1)
-            path = path.substring(0, extensionIndex);
-        path += ".modified";
-        File mModifiedFile = new File(path);
-
-        if (mModifiedFile.isFile()) {
-            for (Map.Entry<String, ResTag> srt : mStrings.entrySet()) {
-                ResTag rt = srt.getValue();
-                String content = rt.getContent();
-                // Clear the content and then set the original one
-                // so 'modified' equals true
-                rt.setContent("");
-                rt.setContent(content);
-            }
-            // Set saved changes = false to force saving
-            mSavedChanges = false;
-            save();
-
-            // Delete the file, it's now useless
-            mModifiedFile.delete();
-        }
-        // -- End of backwards-compatibility code
-
-        mModified = false;
-        for (Map.Entry<String, ResTag> srt : mStrings.entrySet()) {
-            if (srt.getValue().wasModified()) {
-                mModified = true;
-                break;
-            }
-        }
     }
 
     //endregion

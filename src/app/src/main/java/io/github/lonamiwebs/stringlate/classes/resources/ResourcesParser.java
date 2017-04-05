@@ -61,7 +61,7 @@ public class ResourcesParser {
 
     //region Xml -> Resources
 
-    static HashMap<String, ResTag> parseFromXml(InputStream in)
+    static void loadFromXml(final InputStream in, final Resources resources)
             throws XmlPullParserException, IOException {
 
         try {
@@ -69,7 +69,7 @@ public class ResourcesParser {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
-            return readResources(parser);
+            readResourcesInto(parser, resources);
         } finally {
             try {
                 in.close();
@@ -77,10 +77,8 @@ public class ResourcesParser {
         }
     }
 
-    private static HashMap<String, ResTag> readResources(XmlPullParser parser)
+    private static void readResourcesInto(final XmlPullParser parser, final Resources resources)
             throws XmlPullParserException, IOException {
-
-        HashMap<String, ResTag> strings = new HashMap<>();
 
         parser.require(XmlPullParser.START_TAG, ns, RESOURCES);
 
@@ -92,24 +90,28 @@ public class ResourcesParser {
             switch (name) {
                 case STRING:
                     ResTag rs = readResourceString(parser);
-                    if (rs != null)
-                        strings.put(rs.getId(), rs);
+                    if (rs != null) {
+                        resources.mStrings.put(rs.getId(), rs);
+                        resources.mModified |= rs.wasModified();
+                    }
                     break;
                 case STRING_ARRAY:
-                    for (ResTag item : readResourceStringArray(parser))
-                        strings.put(item.getId(), item);
+                    for (ResTag item : readResourceStringArray(parser)) {
+                        resources.mStrings.put(item.getId(), item);
+                        resources.mModified |= item.wasModified();
+                    }
                     break;
                 case PLURALS:
-                    for (ResTag item : readResourcePlurals(parser))
-                        strings.put(item.getId(), item);
+                    for (ResTag item : readResourcePlurals(parser)) {
+                        resources.mStrings.put(item.getId(), item);
+                        resources.mModified |= item.wasModified();
+                    }
                     break;
                 default:
                     skip(parser);
                     break;
             }
         }
-
-        return strings;
     }
 
     // Reads a <string name="...">...</string> tag from the xml.
