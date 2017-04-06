@@ -203,7 +203,7 @@ public class Resources implements Iterable<ResTag> {
 
     // To be used by the ResourcesParser
     void loadTag(ResTag rt) {
-        if (rt.getContent().startsWith("@"))
+        if (rt.getContent().startsWith("@string/") || rt.getContent().startsWith("@android:string/"))
             mReferenceStrings.put(rt.getId(), rt);
         else
             mStrings.put(rt.getId(), rt);
