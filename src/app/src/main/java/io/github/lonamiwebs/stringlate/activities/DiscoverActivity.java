@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.HeaderViewListAdapter;
@@ -42,9 +44,11 @@ public class DiscoverActivity extends AppCompatActivity {
 
     private TextView mNoRepositoryTextView;
     private ListView mApplicationListView;
-    private Button mShowMoreButton;
 
     private ApplicationList mApplicationList;
+
+    // We don't want to infinitely call "load more" if there are no more applications loaded
+    private boolean anyAppLeft;
 
     //endregion
 
@@ -60,16 +64,6 @@ public class DiscoverActivity extends AppCompatActivity {
         mNoRepositoryTextView = (TextView)findViewById(R.id.noRepositoryTextView);
         mApplicationListView = (ListView)findViewById(R.id.applicationListView);
 
-        mShowMoreButton = new Button(this);
-        mShowMoreButton.setText(getString(R.string.show_more));
-        mShowMoreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadMore();
-            }
-        });
-        mApplicationListView.addFooterView(mShowMoreButton);
-
         mApplicationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -78,6 +72,18 @@ public class DiscoverActivity extends AppCompatActivity {
                 data.putExtra("url", app.getSourceCodeUrl());
                 setResult(RESULT_OK, data);
                 finish();
+            }
+        });
+
+        mApplicationListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) { }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                if (totalItemCount > 0 && firstVisibleItem + visibleItemCount == totalItemCount)
+                    loadMore();
             }
         });
 
@@ -189,9 +195,8 @@ public class DiscoverActivity extends AppCompatActivity {
         // Keep the reference of the new internal slice array list
         ArrayList<Application> appsSlice = mApplicationList.newSlice(filter);
 
-        // Initial bulk load (the whole list might also have
-        // been consumed, so also update the "Show more" visibility)
-        updateShowMoreVisibility(mApplicationList.increaseSlice(DEFAULT_APPS_LIMIT));
+        // Initial bulk load, this will determine whether there are more apps left or not
+        anyAppLeft = mApplicationList.increaseSlice(DEFAULT_APPS_LIMIT);
 
         if (appsSlice.isEmpty()) {
             mNoRepositoryTextView.setVisibility(VISIBLE);
@@ -206,17 +211,12 @@ public class DiscoverActivity extends AppCompatActivity {
     }
 
     private void loadMore() {
-        // We first need to cast to HeaderViewListAdapter since we're using a footer view
-        ApplicationAdapter adapter = (ApplicationAdapter)
-                ((HeaderViewListAdapter)mApplicationListView.getAdapter()).getWrappedAdapter();
+        if (!anyAppLeft)
+            return;
 
         // Increase the slice size and notify the changes
-        updateShowMoreVisibility(mApplicationList.increaseSlice(DEFAULT_APPS_LIMIT));
-        adapter.notifyDataSetChanged();
-    }
-
-    private void updateShowMoreVisibility(boolean anyAppLeft) {
-        mShowMoreButton.setVisibility(anyAppLeft ? VISIBLE : GONE);
+        anyAppLeft &= mApplicationList.increaseSlice(DEFAULT_APPS_LIMIT);
+        ((ApplicationAdapter)mApplicationListView.getAdapter()).notifyDataSetChanged();
     }
 
     //endregion
