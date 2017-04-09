@@ -78,29 +78,18 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
             holder.pathTextView.setText(repo.getPath());
             holder.hostTextView.setText(repo.getHost());
 
-            if (repo.getLastLocale() == null) {
+            RepoProgress progress = repo.loadProgress();
+            if (progress == null) {
                 holder.translatedProgressBar.setVisibility(View.INVISIBLE);
                 holder.translatedProgressTextView.setVisibility(View.GONE);
             } else {
                 holder.translatedProgressBar.setVisibility(View.VISIBLE);
                 holder.translatedProgressTextView.setVisibility(View.VISIBLE);
 
-                // TODO This might become pretty expensive - beware of issues complaining!
-                int currentChars = 0;
-                int totalChars = 0;
-                int chars;
-                Resources localeResources = repo.loadResources(repo.getLastLocale());
-                for (ResTag rs : repo.loadDefaultResources()) {
-                    chars = rs.getContentLength();
-                    totalChars += chars;
-                    if (localeResources.contains(rs.getId()))
-                        currentChars += chars;
-                }
-                float percentage = (100.0f * currentChars) / totalChars;
-                holder.translatedProgressBar.setMax(totalChars);
-                holder.translatedProgressBar.setProgress(currentChars);
+                holder.translatedProgressBar.setMax(progress.totalChars);
+                holder.translatedProgressBar.setProgress(progress.currentChars);
                 holder.translatedProgressTextView.setText(
-                        String.format(Locale.ENGLISH, "%.1f%%", percentage));
+                        String.format(Locale.ENGLISH, "%.1f%%", progress.getPercentage()));
             }
         }
         return convertView;

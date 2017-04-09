@@ -636,13 +636,12 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     // Gets the progress of the last calculated progress locale
-    public RepoProgress getProgress() {
+    public RepoProgress loadProgress() {
         try {
             return RepoProgress.fromJson(new JSONObject(Utils.readFile(mProgressFile)));
         } catch (JSONException e) {
             e.printStackTrace();
-            // TODO Or null?
-            return new RepoProgress();
+            return null;
         }
     }
 
