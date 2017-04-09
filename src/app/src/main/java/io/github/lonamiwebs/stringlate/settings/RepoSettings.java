@@ -5,15 +5,11 @@ import android.support.annotation.NonNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import io.github.lonamiwebs.stringlate.utilities.Utils;
 
 // We can't quite save the SharedPreferences in a custom path so… use JSON (easier than XML)
 public class RepoSettings {
@@ -158,48 +154,16 @@ public class RepoSettings {
     //region Load/save
 
     public void load() {
-        BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(mSettingsFile));
-            mSettings = new JSONObject(reader.readLine());
-        } catch (FileNotFoundException ignored) {
-            mSettings = new JSONObject();
-        } catch (IOException | JSONException e) {
+            mSettings = new JSONObject(Utils.readFile(mSettingsFile));
+        } catch (JSONException e) {
             e.printStackTrace();
             mSettings = new JSONObject();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
     public boolean save() {
-        BufferedWriter writer = null;
-        try {
-            if (!mSettingsFile.getParentFile().isDirectory())
-                mSettingsFile.getParentFile().mkdirs();
-
-            writer = new BufferedWriter(new FileWriter(mSettingsFile));
-            writer.write(mSettings.toString());
-            writer.flush();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        return Utils.writeFile(mSettingsFile, mSettings.toString());
     }
 
     //endregion

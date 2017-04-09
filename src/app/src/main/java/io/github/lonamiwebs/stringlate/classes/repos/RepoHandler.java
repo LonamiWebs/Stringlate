@@ -7,6 +7,9 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Pair;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +35,7 @@ import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.settings.RepoSettings;
+import io.github.lonamiwebs.stringlate.utilities.Utils;
 import io.github.lonamiwebs.stringlate.utilities.ZipUtils;
 
 // Class used to inter-operate with locally saved GitHub "repositories"
@@ -58,6 +61,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     private final RepoSettings mSettings;
 
     private final File mRoot;
+    private final File mProgressFile;
 
     private final ArrayList<String> mLocales = new ArrayList<>();
 
@@ -116,6 +120,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mSettings = new RepoSettings(mRoot);
         mSettings.setGitUrl(gitUrl);
 
+        mProgressFile = new File(mRoot, "translation_progress.json");
+
         loadLocales();
     }
 
@@ -123,6 +129,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mContext = context;
         mRoot = root;
         mSettings = new RepoSettings(mRoot);
+
+        mProgressFile = new File(mRoot, "translation_progress.json");
 
         loadLocales();
     }
@@ -614,6 +622,28 @@ public class RepoHandler implements Comparable<RepoHandler> {
     public int getCreatedIssue(String locale) {
         Integer issue = mSettings.getCreatedIssues().get(locale);
         return issue == null ? -1 : issue;
+    }
+
+    // Used to save the translation progress, calculated on the
+    // TranslateActivity, to quickly reuse it on the history screen
+    public boolean saveProgress(RepoProgress progress) {
+        try {
+            return Utils.writeFile(mProgressFile, progress.toJson().toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Gets the progress of the last calculated progress locale
+    public RepoProgress getProgress() {
+        try {
+            return RepoProgress.fromJson(new JSONObject(Utils.readFile(mProgressFile)));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            // TODO Or null?
+            return new RepoProgress();
+        }
     }
 
     //endregion

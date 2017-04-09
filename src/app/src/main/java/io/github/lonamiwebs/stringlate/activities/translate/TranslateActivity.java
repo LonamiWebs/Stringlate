@@ -47,6 +47,7 @@ import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoProgress;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
@@ -829,32 +830,33 @@ public class TranslateActivity extends AppCompatActivity {
             mProgressProgressBar.setProgress(0);
             mProgressTextView.setText("");
         } else {
-            int stringsCount = mDefaultResources.count();
             // Keep track of the translated strings count and the characters of the
             // original strings + those same characters if a translation is available.
             // This will be used to make a weighted progress (if you translated only
             // long strings, then this will be closer to 100% than if you translated small ones).
-            int translatedCount = 0;
-            int currentChars = 0;
-            int totalChars = 0;
+            RepoProgress progress = new RepoProgress();
+            progress.stringsCount = mDefaultResources.count();
+
             int chars;
             for (ResTag rs : mDefaultResources) {
                 chars = rs.getContentLength();
-                totalChars += chars;
+                progress.totalChars += chars;
                 if (mSelectedLocaleResources.contains(rs.getId())) {
-                    translatedCount++;
-                    currentChars += chars;
+                    progress.translatedCount += 1;
+                    progress.currentChars += chars;
                 }
             }
 
             // The progress bar will be using the weighted value
-            mProgressProgressBar.setMax(totalChars);
-            mProgressProgressBar.setProgress(currentChars);
-            float percentage = (100.0f * (float)currentChars) / (float)totalChars;
+            mProgressProgressBar.setMax(progress.totalChars);
+            mProgressProgressBar.setProgress(progress.currentChars);
 
             // The text view will show the string count and the weighted percentage
             mProgressTextView.setText(getString(R.string.translation_progress,
-                    translatedCount, stringsCount, percentage));
+                    progress.translatedCount, progress.stringsCount, progress.getPercentage()));
+
+            // Save the progress for the history fragment to reuse without recalculating
+            mRepo.saveProgress(progress);
         }
     }
 

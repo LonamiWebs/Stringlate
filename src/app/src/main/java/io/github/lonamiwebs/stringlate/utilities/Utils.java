@@ -7,9 +7,11 @@ import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,9 +45,10 @@ public class Utils {
 
     @NonNull
     static String readCloseStream(final InputStream stream) {
+        String line;
+        BufferedReader reader = null;
         try {
-            String line;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            reader = new BufferedReader(new InputStreamReader(stream));
 
             StringBuilder sb = new StringBuilder();
             while ((line = reader.readLine()) != null)
@@ -55,8 +58,40 @@ public class Utils {
             return sb.toString();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         return "";
+    }
+
+    public static boolean writeFile(final File file, final String content) {
+        BufferedWriter writer = null;
+        try {
+            if (!file.getParentFile().isDirectory() && !file.getParentFile().mkdirs())
+                return false;
+
+            writer = new BufferedWriter(new FileWriter(file));
+            writer.write(content);
+            writer.flush();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
