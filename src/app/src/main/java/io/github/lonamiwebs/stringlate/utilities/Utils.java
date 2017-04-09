@@ -20,6 +20,8 @@ import io.github.lonamiwebs.stringlate.R;
 
 public class Utils {
 
+    //region Network
+
     public static boolean isNotConnected(final Context ctx, boolean warn) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager)ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -31,6 +33,10 @@ public class Utils {
         }
         return notConnected;
     }
+
+    //endregion
+
+    //region Reading and writing files
 
     @NonNull
     public static String readFile(final File file) {
@@ -94,4 +100,46 @@ public class Utils {
             }
         }
     }
+
+    //endregion
+
+    //region Searching in files
+
+    public static boolean fileContains(File file, String... needles) {
+        try {
+            FileInputStream in = new FileInputStream(file);
+
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            while ((line = reader.readLine()) != null) {
+                for (String n : needles)
+                    if (line.contains(n))
+                        return true;
+            }
+
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    //endregion
+
+    //region Directories
+
+    public static boolean deleteRecursive(File dir) {
+        boolean ok = true;
+        if (dir.exists()) {
+            if (dir.isDirectory()) {
+                for (File child : dir.listFiles())
+                    ok &= deleteRecursive(child);
+            }
+            ok &= dir.delete();
+        }
+        return ok;
+    }
+
+    //endregion
 }

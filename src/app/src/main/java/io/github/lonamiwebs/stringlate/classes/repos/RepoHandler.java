@@ -203,7 +203,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     // Deletes the repository erasing its existence from Earth. Forever. (Unless added again)
     public boolean delete() {
-        boolean ok = GitWrapper.deleteRepo(mRoot);
+        boolean ok = Utils.deleteRecursive(mRoot);
         notifyRepositoryCountChanged();
         return ok;
     }
@@ -292,7 +292,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             @Override
             protected File doInBackground(Void... params) {
                 File dir = getTempCloneDir();
-                GitWrapper.deleteRepo(dir); // Don't care, it's temp and it can't exist on cloning
+                Utils.deleteRecursive(dir); // Don't care, it's temp and it can't exist on cloning
                 if (GitWrapper.cloneRepo(mSettings.getGitUrl(), dir, callback))
                     return dir;
                 else
@@ -325,7 +325,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             @Override
             protected void onPostExecute(ArrayList<File> foundResources) {
                 if (foundResources.size() == 0) {
-                    GitWrapper.deleteRepo(clonedDir); // Clean resources
+                    Utils.deleteRecursive(clonedDir); // Clean resources
                     delete(); // Need to delete the settings
                     callback.onProgressFinished(
                             mContext.getString(R.string.no_strings_found), false);
@@ -433,7 +433,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         // Clean old unused strings which now don't exist on the default resources files
         unusedStringsCleanup();
 
-        GitWrapper.deleteRepo(clonedDir); // Clean resources
+        Utils.deleteRecursive(clonedDir); // Clean resources
         loadLocales(); // Reload the locales
     }
 
@@ -799,7 +799,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             // Get temporary import directory and delete any previous directory
             File dir = getTempImportDir();
             File backupDir = getTempImportBackupDir();
-            if (!GitWrapper.deleteRepo(dir) || !GitWrapper.deleteRepo(backupDir))
+            if (!Utils.deleteRecursive(dir) || !Utils.deleteRecursive(backupDir))
                 throw new IOException("Could not delete old temporary directories.");
 
             // Unzip the given input stream

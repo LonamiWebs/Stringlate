@@ -19,6 +19,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.github.lonamiwebs.stringlate.utilities.Utils;
+
 public class GitWrapper {
 
     private static final String MASTER_BRANCH = "master";
@@ -92,18 +94,6 @@ public class GitWrapper {
         return false;
     }
 
-    public static boolean deleteRepo(File dir) {
-        boolean ok = true;
-        if (dir.exists()) {
-            if (dir.isDirectory()) {
-                for (File child : dir.listFiles())
-                    ok &= deleteRepo(child);
-            }
-            ok &= dir.delete();
-        }
-        return ok;
-    }
-
     //region Searching Android resources
 
     public static ArrayList<File> searchAndroidResources(File dir) {
@@ -120,31 +110,11 @@ public class GitWrapper {
             } else {
                 // dir is a file really
                 if (PATTERN_XML.matcher(dir.getName()).find()) {
-                    if (fileContains(dir, STR_STRING, STR_PLURALS))
+                    if (Utils.fileContains(dir, STR_STRING, STR_PLURALS))
                         result.add(dir);
                 }
             }
         }
-    }
-
-    private static boolean fileContains(File file, String... needles) {
-        try {
-            FileInputStream in = new FileInputStream(file);
-
-            String line;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            while ((line = reader.readLine()) != null) {
-                for (String n : needles)
-                    if (line.contains(n))
-                        return true;
-            }
-
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return false;
     }
 
     //endregion
