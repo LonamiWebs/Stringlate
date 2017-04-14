@@ -12,7 +12,7 @@
     <string name="update_strings">Mettre à jour le fichier strings.xml</string>
     <string name="add_locale">Ajouter une langue</string>
     <string name="loading_ellipsis">Chargement…</string>
-    <string name="no_strings_found_update">Aucun fichier strings.xml n’a été trouvé, s’il vous plaît mettez le à jour.</string>
+    <string name="no_strings_found_update">Aucun fichier strings.xml n’a été trouvé, veuillez le mettre à jour.</string>
     <string name="no_strings_found">Aucun fichier strings.xml n’a été trouvé dans ce dépôt.</string>
     <string name="scanning_repository">Scan du dépôt…</string>
     <string name="scanning_repository_long">Recherche du fichier strings.xml dans le dépôt…</string>
@@ -27,6 +27,7 @@
     <string name="add_locale_to_start">Ajouter une nouvelle langue pour commencer.</string>
     <string name="enter_locale">Entrer le nom de la langue</string>
     <string name="enter_locale_long">Entrer le nom de la langue du fichier strings.xml à créer (votre langue actuelle est « %s ») :</string>
+    <string name="choose_locale_from_list">Choisir la langue depuis la liste</string>
     <string name="create">Créer</string>
     <string name="cancel">Annuler</string>
     <string name="create_locale_error">Impossible de créer le nouveau fichier local.</string>
@@ -51,7 +52,7 @@
     <string name="discover">Découvrir des dépôts</string>
     <string name="gist_description">Description du Gist (optionnel) :</string>
     <string name="gist_filename">Nom du Gist :</string>
-    <string name="is_public_gist">C’est un Gist public.</string>
+    <string name="is_public_gist">Ceci est un Gist public.</string>
     <string name="post_gist">Publier le Gist Github</string>
     <string name="post_gist_success">Félicitations, votre Gist a bien été publié !</string>
     <string name="open">Ouvrir</string>
@@ -68,6 +69,8 @@
     <string name="no_internet_connection">Vous n’êtes pas connectés à Internet.</string>
     <string name="export_file_failed">Impossible d’exporter le fichier strings.xml</string>
     <string name="export_file_success">Fichier %s sauvegardé avec succès</string>
+    <string name="import_file_failed">Impossible d\'importer l\'élément sélectionné</string>
+    <string name="import_file_success">Import réussi</string>
     <string name="update_applications">Mettre à jour les applications</string>
     <string name="apps_repo_not_downloaded">Le dépôt d’applications n’a pas encore été téléchargé. Toucher le bouton « %s » du menu pour le télécharger et pouvoir explorer toutes les applications disponibles.</string>
     <string name="sync_failed">Erreur de synchronisation.</string>
@@ -81,6 +84,8 @@
     <string name="search">Recherche</string>
     <string name="search_apps_ellipsis">Rechercher des applications…</string>
     <string name="icon_cache_cleared">Cache d’icônes vidé (%s nettoyées)</string>
+    <string name="pulling_strings">Récupérer de nouvelles chaînes</string>
+    <string name="pulling_strings_long">Récupérer de nouvelles chaînes préservera vos traductions tout en ajoutant éventuellement de nouvelles chaînes non traduites. Vous devriez le faire avant d\'envoyer vos traductions pour vous assurer que vous avez bien tout traduit. Souhaitez vous continuer ?</string>
     <string name="keep_changes">Conserver les changements</string>
     <string name="discard_changes">Abandonner les changements</string>
     <string name="save_before_sync_required">Vous devez sauvegarder avant de synchroniser.</string>
@@ -139,7 +144,7 @@
     <string name="copying_res">Copie des ressources</string>
     <string name="copying_res_long">Validation et copie des ressources vers leur destination définitive…</string>
     <string name="issue_title_colon">Titre du rapport de bug :</string>
-    <string name="issue_title">Titre du rapport de bug </string>
+    <string name="issue_title">Titre du rapport de bug</string>
     <string name="title_empty">Le titre ne peut pas être vide.</string>
     <string name="issue_desc_x">La description du problème doit contenir « %x ».</string>
     <string name="no_strings_to_export">Il n’y a aucune chaîne à exporter.</string>
@@ -149,5 +154,7 @@
     <string name="sort_alphabetically">Alphabétiquement</string>
     <string name="sort_string_length">Longueur de la chaîne</string>
     <string name="retry">Réessayer</string>
+    <string name="import_repository">Importer le dépôt</string>
+    <string name="export_repository">Exporter le dépôt</string>
+    <string name="default_parenthesis">(par défaut)</string>
 </resources>
-
