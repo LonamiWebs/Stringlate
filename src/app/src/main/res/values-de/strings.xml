@@ -27,6 +27,7 @@
     <string name="add_locale_to_start">Fügen Sie eine neue Sprache hinzu, um anzufangen</string>
     <string name="enter_locale">Geben sie den Namen für die Sprachdatei ein</string>
     <string name="enter_locale_long">Geben Sie einen Namen ein, mit welchem die Datei strings.xml erstellt wird (derzeit ist es \"%s\"):</string>
+    <string name="choose_locale_from_list">Wähle eine Sprache von der Liste</string>
     <string name="create">Erstellen</string>
     <string name="cancel">Abbrechen</string>
     <string name="create_locale_error">Konnte die neue Sprachdatei nicht erstellen.</string>
@@ -83,6 +84,8 @@
     <string name="search">Suche</string>
     <string name="search_apps_ellipsis">Applikationen suchen…</string>
     <string name="icon_cache_cleared">Icon Chache geleert, %s befreit.</string>
+    <string name="pulling_strings">Neue Zeichenfolgen abrufen</string>
+    <string name="pulling_strings_long">Das Beziehen von neuen Zeichenfolgen behält deine Übersetzungen und fügt zusätzlich, falls möglich, weitere hinzu. Man sollte vor dem veröffentlichen die Zeichenfolgen beziehen, damit man sicher gehen kann, dass alles übersetzt wurde. Möchtest du fortfahren?</string>
     <string name="keep_changes">Änderungen behalten</string>
     <string name="discard_changes">Änderungen verwerfen</string>
     <string name="save_before_sync_required">Sie müssen vor einer Synchronisierung erst speichern.</string>
@@ -153,4 +156,5 @@
     <string name="retry">Erneut versuchen</string>
     <string name="import_repository">Repository importieren</string>
     <string name="export_repository">Repository exportieren</string>
+    <string name="default_parenthesis">(Standard)</string>
 </resources>
