@@ -27,6 +27,7 @@
     <string name="add_locale_to_start">Añade un nuevo idioma para comenzar.</string>
     <string name="enter_locale">Inserta el nombre del idioma</string>
     <string name="enter_locale_long">Inserta el nombre del idioma con el que strings.xml será creado (tu idioma actual es \"%s\")</string>
+    <string name="choose_locale_from_list">Elegir idioma de la lista</string>
     <string name="create">Crear</string>
     <string name="cancel">Cancelar</string>
     <string name="create_locale_error">No se puede crear el nuevo idioma.</string>
@@ -68,6 +69,8 @@
     <string name="no_internet_connection">No estás conectado/a a Internet.</string>
     <string name="export_file_failed">No se puede exportar el archivo strings.xml</string>
     <string name="export_file_success">Archivo guardado correctamente en %s</string>
+    <string name="import_file_failed">No se puede importar el elemento seleccionado</string>
+    <string name="import_file_success">Éxito importando</string>
     <string name="update_applications">Actualizar aplicaciones</string>
     <string name="apps_repo_not_downloaded">No has descargado el repositorio de aplicaciones todavía. Toca el botón de \"%s\" en el menú para descargar el índice del repositorio si quieres explorar todas las aplicaciones disponibles.</string>
     <string name="sync_failed">Fallo al sincronizar.</string>
@@ -81,6 +84,8 @@
     <string name="search">Buscar</string>
     <string name="search_apps_ellipsis">Buscar aplicaciones…</string>
     <string name="icon_cache_cleared">Limpiada caché de iconos (%s liberado).</string>
+    <string name="pulling_strings">Recibir nueva cadenas</string>
+    <string name="pulling_strings_long">Recibir nuevas cadenas mantendrá tu traducción intacta mientras posiblemente añada nuevas cadenas no traducidas aún. Deberías hacer eso antes de subir tus traducciones para asegurarte de haber traducido todo. ¿Deseas continuar?</string>
     <string name="keep_changes">Mantener los cambios</string>
     <string name="discard_changes">Deshacer cambios</string>
     <string name="save_before_sync_required">Tienes que guardar antes de sincronizar.</string>
@@ -135,11 +140,21 @@
     <string name="creating_pr_long">Creando una Pull Request en el repositorio original…</string>
     <string name="something_went_wrong">Algo fue mal.</string>
     <string name="cloning_repo">Clonando repositorio…</string>
+    <string name="cloning_repo_progress">Clonando temporalmente el repositorio… %.1f%%</string>
     <string name="copying_res">Copiando recursos…</string>
     <string name="copying_res_long">Validando y copiando recursos a su ubicación final…</string>
     <string name="issue_title_colon">Título de la incidencia:</string>
     <string name="issue_title">Título de la incidencia</string>
-    <string name="cloning_repo_progress">Clonando temporalmente el repositorio… %.1f%%</string>
-    <string name="issue_desc_x">La descripción debe contener \"%x\".</string>
     <string name="title_empty">El título no puede estar vacío.</string>
+    <string name="issue_desc_x">La descripción debe contener \"%x\".</string>
+    <string name="no_strings_to_export">No hay cadenas para exportar.</string>
+    <string name="filtering_strings_with">Filtrando cadenas por \"%s"</string>
+    <string name="clear_filter">Borrar filtro</string>
+    <string name="sort_by_ellipsis">Ordenar por…</string>
+    <string name="sort_alphabetically">Alfabéticamente</string>
+    <string name="sort_string_length">Longitud de cadena</string>
+    <string name="retry">Reintentar</string>
+    <string name="import_repository">Importar repositorio</string>
+    <string name="export_repository">Exportar repositorio</string>
+    <string name="default_parenthesis">(por defecto)</string>
 </resources>
