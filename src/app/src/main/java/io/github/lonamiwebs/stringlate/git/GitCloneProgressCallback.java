@@ -31,6 +31,8 @@ public abstract class GitCloneProgressCallback
             mDone = 0;
             mWork = totalWork;
             mStarted = true;
+        } else {
+            mStarted = false;
         }
     }
 
