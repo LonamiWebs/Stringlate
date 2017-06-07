@@ -687,7 +687,7 @@ public class TranslateActivity extends AppCompatActivity {
         // Set the last string that was being used
         if (mShowTranslated) {
             setStringId(lastId);
-        } else {
+        } else if (lastId != null) {
             // Not all strings are being shown, so in case we don't
             // find it under non-translatable, select the next available
             // string. If there isn't any, select previous one, or none.
