@@ -36,6 +36,29 @@ public class Utils {
 
     //endregion
 
+    //region String utilities
+
+    // https://stackoverflow.com/a/1086134
+    public static String toTitleCase(final String input) {
+        StringBuilder titleCase = new StringBuilder();
+        boolean nextTitleCase = true;
+
+        for (char c : input.toCharArray()) {
+            if (Character.isSpaceChar(c)) {
+                nextTitleCase = true;
+            } else if (nextTitleCase) {
+                c = Character.toTitleCase(c);
+                nextTitleCase = false;
+            }
+
+            titleCase.append(c);
+        }
+
+        return titleCase.toString();
+    }
+
+    //endregion
+
     //region Reading and writing files
 
     @NonNull
@@ -105,16 +128,21 @@ public class Utils {
 
     //region Searching in files
 
-    public static boolean fileContains(File file, String... needles) {
+    // Returns -1 if the file did not contain any of the needles, otherwise,
+    // the index of which needle was found in the contents of the file.
+    //
+    // Needless MUST be in lower-case.
+    public static int fileContains(File file, String... needles) {
         try {
             FileInputStream in = new FileInputStream(file);
 
+            int i;
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             while ((line = reader.readLine()) != null) {
-                for (String n : needles)
-                    if (line.contains(n))
-                        return true;
+                for (i = 0; i != needles.length; ++i)
+                    if (line.toLowerCase().contains(needles[i]))
+                        return i;
             }
 
             in.close();
@@ -122,7 +150,7 @@ public class Utils {
             e.printStackTrace();
         }
 
-        return false;
+        return -1;
     }
 
     //endregion

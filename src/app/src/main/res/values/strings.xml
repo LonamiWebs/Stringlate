@@ -168,4 +168,5 @@
     <string name="import_repository">Import repository</string>
     <string name="export_repository">Export repository</string>
     <string name="default_parenthesis">(default)</string>
+    <string name="application_may_use_translation_platform">This application might use %s to manage their translations. See the help for more information.</string>
 </resources>

@@ -430,6 +430,9 @@ public class RepoHandler implements Comparable<RepoHandler> {
             }
         }
 
+        // Check out if some common online translation services are mentioned on the README
+        mSettings.setUsedTranslationService(GitWrapper.mayUseTranslationServices(clonedDir));
+
         // Clean old unused strings which now don't exist on the default resources files
         unusedStringsCleanup();
 
@@ -603,6 +606,11 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     public File getIconFile() {
         return mSettings.getIconFile();
+    }
+
+    @NonNull
+    public String getUsedTranslationService() {
+        return mSettings.getUsedTranslationService();
     }
 
     @NonNull

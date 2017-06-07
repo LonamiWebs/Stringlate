@@ -160,5 +160,12 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/usesTranslationServiceTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:visibility="gone" />
     </LinearLayout>
 </ScrollView>

@@ -79,6 +79,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     private LinearLayout mFilterAppliedLayout;
     private TextView mFilterAppliedTextView;
+    private TextView mUsesTranslationServiceTextView;
 
     private String mSelectedLocale;
     private ResTag mSelectedResource;
@@ -126,6 +127,8 @@ public class TranslateActivity extends AppCompatActivity {
 
         mFilterAppliedLayout = (LinearLayout)findViewById(R.id.filterAppliedLayout);
         mFilterAppliedTextView = (TextView)findViewById(R.id.filterAppliedTextView);
+        mUsesTranslationServiceTextView = (TextView)
+                findViewById(R.id.usesTranslationServiceTextView);
 
         mLocaleSpinner.setOnItemSelectedListener(eOnLocaleSelected);
         mStringIdSpinner.setOnItemSelectedListener(eOnStringIdSelected);
@@ -139,6 +142,17 @@ public class TranslateActivity extends AppCompatActivity {
         // loadStringIDsSpinner is called too often at startup, use this flag to avoid it
         loaded = true;
         loadStringIDsSpinner();
+
+        // Show the notice if this repository uses (or might use) a web translation service
+        String usedService = mRepo.getUsedTranslationService();
+        if (usedService.isEmpty()) {
+            mUsesTranslationServiceTextView.setVisibility(View.GONE);
+        } else {
+            mUsesTranslationServiceTextView.setVisibility(View.VISIBLE);
+            usedService = Utils.toTitleCase(usedService);
+            mUsesTranslationServiceTextView.setText(
+                    getString(R.string.application_may_use_translation_platform, usedService));
+        }
     }
 
     private void loadResources() {

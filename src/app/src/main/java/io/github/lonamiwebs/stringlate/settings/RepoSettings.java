@@ -24,6 +24,7 @@ public class RepoSettings {
     private static final String KEY_ICON_PATH = "icon_path";
     private static final String KEY_SEARCH_FILTER = "search_filter";
     private static final String KEY_CREATED_ISSUES = "created_issues";
+    private static final String KEY_USED_TRANSLATION_SERVICE = "translation_service";
 
     private static final String DEFAULT_GIT_URL = "";
     private static final String DEFAULT_LAST_LOCALE = null;
@@ -74,6 +75,11 @@ public class RepoSettings {
 
         File result = new File(path);
         return result.isFile() ? result : null;
+    }
+
+    @NonNull
+    public String getUsedTranslationService() {
+        return mSettings.optString(KEY_USED_TRANSLATION_SERVICE, "");
     }
 
     @NonNull
@@ -129,6 +135,12 @@ public class RepoSettings {
 
     public void setIconFile(File file) {
         try { mSettings.put(KEY_ICON_PATH, file == null ? "" : file.getAbsolutePath()); }
+        catch (JSONException ignored) { }
+        save();
+    }
+
+    public void setUsedTranslationService(@NonNull final String service) {
+        try { mSettings.put(KEY_USED_TRANSLATION_SERVICE, service); }
         catch (JSONException ignored) { }
         save();
     }

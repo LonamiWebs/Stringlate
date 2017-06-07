@@ -1,6 +1,7 @@
 package io.github.lonamiwebs.stringlate.git;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.util.Pair;
 
@@ -31,8 +32,14 @@ public class GitWrapper {
     // Only the '.xml' extension is case insensitive
     // No regex is required for '<string', which includes '<string-array'
     private static final Pattern PATTERN_XML = Pattern.compile("\\.xml$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PATTERN_README =
+            Pattern.compile("(?:read|le[ea])[-_.]?me(?:\\.(?:md|rst|txt))?", Pattern.CASE_INSENSITIVE);
+
     private static final String STR_STRING = "<string";
     private static final String STR_PLURALS = "<plurals";
+    private static final String[] STR_TRANSLATION_SERVICES = {
+            "transifex", "crowdin", "weblate", "zanata", "pootle"
+    };
 
     // GitHub URLs (and GitLab) are well-known
     private static final Pattern OWNER_REPO = Pattern.compile(
@@ -110,7 +117,7 @@ public class GitWrapper {
             } else {
                 // dir is a file really
                 if (PATTERN_XML.matcher(dir.getName()).find()) {
-                    if (Utils.fileContains(dir, STR_STRING, STR_PLURALS))
+                    if (Utils.fileContains(dir, STR_STRING, STR_PLURALS) != -1)
                         result.add(dir);
                 }
             }
@@ -251,6 +258,32 @@ public class GitWrapper {
                 }
             }
         }
+    }
+
+    //endregion
+
+    //region Searching on the application's README
+
+    @NonNull
+    public static String mayUseTranslationServices(final File dir) {
+        if (!dir.getName().startsWith(".")) {
+            if (dir.isDirectory()) {
+                String found;
+                for (File child : dir.listFiles()) {
+                    found = mayUseTranslationServices(child);
+                    if (!found.isEmpty())
+                        return found;
+                }
+            } else {
+                // dir is a file really
+                if (PATTERN_README.matcher(dir.getName()).find()) {
+                    int i = Utils.fileContains(dir, STR_TRANSLATION_SERVICES);
+                    if (i != -1)
+                        return STR_TRANSLATION_SERVICES[i];
+                }
+            }
+        }
+        return "";
     }
 
     //endregion

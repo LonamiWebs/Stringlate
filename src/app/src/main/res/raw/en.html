@@ -389,6 +389,7 @@ pre code:after {
 <li><a href="#load-progress">How do I load my previous work?</a></li>
 <li><a href="#string-symbols">What does <code>%s</code> or <code>%1$d/%2$d</code> mean?</a></li>
 <li><a href="#locale-missing-strings">Why do some locales have more strings than others?</a></li>
+<li><a href="#online-services">What does "this app may use online translation services" mean?</a></li>
 <li><a href="#escape-equences">I am a dev, should I escape certain sequences?</a></li>
 <li><a href="#non-github-repos">Are projects hosted outside GitHub supported?</a></li>
 <li><a href="#chaos">I will use this app to cause chaos!</a></li>
@@ -481,6 +482,14 @@ disturb (if they are translated already, usual thing is you want to translate
 the strings left!). However, if you still want to see all the strings, for
 example, to review them looking for typos, you can open the menu and enable
 "<em>Show translated strings</em>".</p>
+
+<h2>What does "this app may use online translation services" mean? <a name="online-services"></a></h2>
+<p>This message means that the application you're trying to translate may use online services
+to manage their translations, such as Transifex, Crowdin, Weblate, Zanata, Pootle, etc. Although
+you can continue with the translation using Stringlate, you may need additional steps (such as
+exporting the result and then re-importing it on those platforms) for the developer to accept
+your translation. Most developers will accept the translation effort one way or another, yet
+it may be a better idea to make sure whether they use those translation services or not.</p>
 
 <h2>I am a dev, should I escape certain sequences? <a name="escape-equences"></a></h2>
 
