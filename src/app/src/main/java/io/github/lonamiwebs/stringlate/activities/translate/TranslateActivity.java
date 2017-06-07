@@ -734,10 +734,38 @@ public class TranslateActivity extends AppCompatActivity {
             item.setChecked(mShowIdentical);
         }
 
+        String lastId = mSelectedResource == null ? null : mSelectedResource.getId();
         loadStringIDsSpinner();
-        // TODO Smarter next-selection as done on 'toggleShowTranslated'
-        if (mStringIdSpinner.getCount() != 0)
-            mStringIdSpinner.setSelection(0);
+
+        if (!mShowIdentical) {
+            setStringId(lastId);
+        } else if (lastId != null) {
+            // Same as toggleShowTranslated but for identical strings
+            String id;
+            String selectId = null;
+            boolean isIdentical;
+            boolean selectNext = false;
+            for (ResTag rs : mDefaultResources) {
+                id = rs.getId();
+                isIdentical = mSelectedLocaleResources.getContent(id).equals(rs.getContent());
+
+                if (!isIdentical) {
+                    if (lastId.equals(id)) {
+                        selectNext = true;
+                    }
+                } else {
+                    if (lastId.equals(id) || selectNext) {
+                        selectId = id;
+                        break;
+                    } else {
+                        selectId = id;
+                    }
+                }
+            }
+            if (selectId != null) {
+                setStringId(selectId);
+            }
+        }
     }
 
     //endregion
