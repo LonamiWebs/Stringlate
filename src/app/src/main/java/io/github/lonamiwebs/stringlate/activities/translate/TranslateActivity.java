@@ -83,7 +83,9 @@ public class TranslateActivity extends AppCompatActivity {
     private String mSelectedLocale;
     private ResTag mSelectedResource;
     private boolean mShowTranslated;
+    private boolean mShowIdentical;
     private MenuItem mShowTranslatedMenuItem;
+    private MenuItem mShowIdenticalMenuItem;
 
     private Resources mDefaultResources;
     private Resources mSelectedLocaleResources;
@@ -169,7 +171,10 @@ public class TranslateActivity extends AppCompatActivity {
         menu.findItem(R.id.exportToPr).setVisible(isGitHubRepository);
 
         mShowTranslatedMenuItem = menu.findItem(R.id.showTranslatedCheckBox);
+        mShowIdenticalMenuItem = menu.findItem(R.id.showIdenticalCheckBox);
+
         mShowTranslated = mShowTranslatedMenuItem.isChecked();
+        mShowIdentical = mShowIdenticalMenuItem.isChecked();
         return true;
     }
 
@@ -260,6 +265,9 @@ public class TranslateActivity extends AppCompatActivity {
             // Toggling visibility
             case R.id.showTranslatedCheckBox:
                 toggleShowTranslated(item);
+                return true;
+            case R.id.showIdenticalCheckBox:
+                toggleShowIdentical(item);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -670,6 +678,9 @@ public class TranslateActivity extends AppCompatActivity {
         if (item != null) {
             item.setChecked(mShowTranslated);
         }
+        if (mShowIdentical)
+            return; // Only showing identical strings, we don't care more
+
         String lastId = mSelectedResource == null ? null : mSelectedResource.getId();
         loadStringIDsSpinner();
 
@@ -714,6 +725,19 @@ public class TranslateActivity extends AppCompatActivity {
                 setStringId(selectId);
             }
         }
+    }
+
+    // Toggles the "Show identical strings" checkbox and updates the spinner
+    private void toggleShowIdentical(MenuItem item) {
+        mShowIdentical= !mShowIdentical;
+        if (item != null) {
+            item.setChecked(mShowIdentical);
+        }
+
+        loadStringIDsSpinner();
+        // TODO Smarter next-selection as done on 'toggleShowTranslated'
+        if (mStringIdSpinner.getCount() != 0)
+            mStringIdSpinner.setSelection(0);
     }
 
     //endregion
@@ -907,21 +931,27 @@ public class TranslateActivity extends AppCompatActivity {
 
         ArrayList<String> spinnerArray = new ArrayList<>();
         final Iterator<ResTag> it = mDefaultResources.sortIterator(mSettings.getStringsComparator());
-        if (mShowTranslated) {
-            while (it.hasNext())
-                spinnerArray.add(it.next().getId());
-        } else {
-            // If we're not showing the strings with a translation, we also need to
-            // make sure that the currently selected locale doesn't already have them
+        if (mShowIdentical) {
+            // Only show those which translation is identical to the original text
             while (it.hasNext()) {
                 ResTag rt = it.next();
-                if (!mSelectedLocaleResources.contains(rt.getId()))
+                if (mSelectedLocaleResources.getContent(rt.getId()).equals(rt.getContent()))
                     spinnerArray.add(rt.getId());
             }
-
-            // Show a warning so the user (or developer) knows that things are working
-            if (spinnerArray.size() == 0)
-                Toast.makeText(this, R.string.no_strings_left, Toast.LENGTH_SHORT).show();
+        } else {
+            if (mShowTranslated) {
+                while (it.hasNext()) {
+                    spinnerArray.add(it.next().getId());
+                }
+            } else {
+                // If we're not showing the strings with a translation, we also need to
+                // make sure that the currently selected locale doesn't already have them
+                while (it.hasNext()) {
+                    ResTag rt = it.next();
+                    if (!mSelectedLocaleResources.contains(rt.getId()))
+                        spinnerArray.add(rt.getId());
+                }
+            }
         }
 
         ArrayAdapter<String> idAdapter = new ArrayAdapter<>(
@@ -929,6 +959,12 @@ public class TranslateActivity extends AppCompatActivity {
 
         idAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mStringIdSpinner.setAdapter(idAdapter);
+
+        // Show a warning so the user (or developer) knows that things are working
+        if (spinnerArray.size() == 0) {
+            Toast.makeText(this, R.string.no_strings_left, Toast.LENGTH_SHORT).show();
+            checkPreviousNextVisibility();
+        }
     }
 
     //endregion
@@ -1015,10 +1051,18 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     private void checkPreviousNextVisibility() {
-        int countM1 = mStringIdSpinner.getCount()-1;
-        int i = mStringIdSpinner.getSelectedItemPosition();
-        mPreviousButton.setVisibility(i == 0 ? View.INVISIBLE : View.VISIBLE);
-        mNextButton.setVisibility(i == countM1 ? View.INVISIBLE : View.VISIBLE);
+        int count = mStringIdSpinner.getCount();
+        if (count == 0) {
+            mPreviousButton.setVisibility(View.INVISIBLE);
+            mNextButton.setVisibility(View.INVISIBLE);
+            mOriginalStringEditText.setText("");
+            if (mSelectedResource == null) // Ensure it's null
+                mTranslatedStringEditText.setText("");
+        } else {
+            int i = mStringIdSpinner.getSelectedItemPosition();
+            mPreviousButton.setVisibility(i == 0 ? View.INVISIBLE : View.VISIBLE);
+            mNextButton.setVisibility(i == (count - 1) ? View.INVISIBLE : View.VISIBLE);
+        }
     }
 
     // Sadly, the spinners don't provide any method to retrieve

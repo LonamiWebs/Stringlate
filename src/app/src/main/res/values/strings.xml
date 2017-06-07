@@ -34,6 +34,7 @@
     <string name="cancel">Cancel</string>
     <string name="create_locale_error">Could not create the new locale file.</string>
     <string name="show_translated_strings">Show translated strings</string>
+    <string name="show_identical_strings_only">Show only identical strings</string>
     <string name="delete_ellipsis">Delete…</string>
     <string name="delete_string">Delete string</string>
     <string name="delete_locale">Delete locale</string>

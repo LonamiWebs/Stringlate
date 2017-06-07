@@ -96,6 +96,7 @@ public class Resources implements Iterable<ResTag> {
         return getTag(resourceId) != null;
     }
 
+    @NonNull
     public String getContent(String resourceId) {
         ResTag tag = getTag(resourceId);
         return tag == null ? "" : tag.getContent();

@@ -71,4 +71,10 @@
         android:title="@string/show_translated_strings"
         android:checkable="true"
         android:checked="false" />
+
+    <item
+        android:id="@+id/showIdenticalCheckBox"
+        android:title="@string/show_identical_strings_only"
+        android:checkable="true"
+        android:checked="false" />
 </menu>
