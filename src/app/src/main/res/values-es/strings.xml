@@ -157,4 +157,6 @@
     <string name="import_repository">Importar repositorio</string>
     <string name="export_repository">Exportar repositorio</string>
     <string name="default_parenthesis">(por defecto)</string>
+    <string name="application_may_use_translation_platform">Es posible que esta aplicación use %s para administrar sus traducciones. Mira la ayuda para más información.</string>
+    <string name="show_identical_strings_only">Mostrar solo texto idéntico al original</string>
 </resources>
