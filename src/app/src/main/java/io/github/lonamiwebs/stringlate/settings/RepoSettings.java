@@ -1,13 +1,13 @@
 package io.github.lonamiwebs.stringlate.settings;
 
-import android.support.annotation.NonNull;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Iterator;
+import android.support.annotation.NonNull;
 
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
@@ -33,7 +33,7 @@ public class RepoSettings {
 
     public RepoSettings(final File repoDir) {
         mSettingsFile = new File(repoDir, FILENAME);
-        load();
+        mSettings = load();
     }
 
     //endregion
@@ -165,13 +165,15 @@ public class RepoSettings {
 
     //region Load/save
 
-    public void load() {
+    private JSONObject load() {
         try {
-            mSettings = new JSONObject(Utils.readFile(mSettingsFile));
+            final String json = Utils.readFile(mSettingsFile);
+            if (!json.isEmpty())
+                return new JSONObject(json);
         } catch (JSONException e) {
             e.printStackTrace();
-            mSettings = new JSONObject();
         }
+        return null;
     }
 
     public boolean save() {
