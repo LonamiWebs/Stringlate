@@ -191,7 +191,7 @@ public class RepoSettings {
 
     //region Load/save
 
-    private JSONObject load() {
+    @NonNull private JSONObject load() {
         try {
             final String json = Utils.readFile(mSettingsFile);
             if (!json.isEmpty())
@@ -199,7 +199,7 @@ public class RepoSettings {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
+        return new JSONObject();
     }
 
     public boolean save() {
