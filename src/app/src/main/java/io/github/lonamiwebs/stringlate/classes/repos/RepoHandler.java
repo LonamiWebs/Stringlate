@@ -316,6 +316,9 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 mContext.getString(R.string.scanning_repository),
                 mContext.getString(R.string.scanning_repository_long));
 
+        // Save the branches of this repository
+        mSettings.setRemoteBranches(GitWrapper.getBranches(clonedDir));
+
         new AsyncTask<Void, Void, ArrayList<File>>() {
             @Override
             protected ArrayList<File> doInBackground(Void... params) {

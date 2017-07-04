@@ -1,24 +1,25 @@
 package io.github.lonamiwebs.stringlate.git;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.util.Pair;
-
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.InvalidObjectException;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
@@ -99,6 +100,26 @@ public class GitWrapper {
             }
         }
         return false;
+    }
+
+    @NonNull
+    public static ArrayList<String> getBranches(final File repo) {
+        try {
+            final List<Ref> refs = Git.open(repo)
+                    .branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call();
+
+            final ArrayList<String> result = new ArrayList<String>();
+            for (Ref ref : refs)
+                result.add(ref.getName());
+
+            return result;
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>();
     }
 
     //region Searching Android resources

@@ -1,9 +1,11 @@
 package io.github.lonamiwebs.stringlate.settings;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,6 +27,7 @@ public class RepoSettings {
     private static final String KEY_SEARCH_FILTER = "search_filter";
     private static final String KEY_CREATED_ISSUES = "created_issues";
     private static final String KEY_USED_TRANSLATION_SERVICE = "translation_service";
+    private static final String KEY_REMOTE_BRANCHES = "remote_branches";
 
     private static final String DEFAULT_GIT_URL = "";
     private static final String DEFAULT_LAST_LOCALE = null;
@@ -103,6 +106,18 @@ public class RepoSettings {
         return map;
     }
 
+    @NonNull
+    public ArrayList<String> getRemoteBranches() {
+        final ArrayList<String> result = new ArrayList<>();
+        try {
+            JSONArray branches = mSettings.getJSONArray(KEY_REMOTE_BRANCHES);
+            for (int i = 0; i < branches.length(); ++i) {
+                result.add(branches.getString(i));
+            }
+        } catch (JSONException ignored) { }
+        return result;
+    }
+
     //endregion
 
     //region Setters
@@ -156,6 +171,17 @@ public class RepoSettings {
             HashMap<String, Integer> map = getCreatedIssues();
             map.put(locale, issueNumber);
             mSettings.put(KEY_CREATED_ISSUES, new JSONObject(map));
+        }
+        catch (JSONException ignored) { }
+        save();
+    }
+
+    public void setRemoteBranches(final ArrayList<String> branches) {
+        try {
+            JSONArray array = new JSONArray();
+            for (String branch : branches)
+                array.put(branch);
+            mSettings.put(KEY_REMOTE_BRANCHES, array);
         }
         catch (JSONException ignored) { }
         save();
