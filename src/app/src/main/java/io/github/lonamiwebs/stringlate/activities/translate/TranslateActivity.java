@@ -339,26 +339,56 @@ public class TranslateActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.pulling_strings, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            updateStrings();
+                            askBranchUpdateStrings();
                         }
                     })
                     .setNegativeButton(R.string.cancel, null)
                     .show();
         } else {
             // No file has been modified, simply update the strings discarding changes
-            updateStrings();
+            askBranchUpdateStrings();
+        }
+    }
+
+    private void askBranchUpdateStrings() {
+        final ArrayList<String> branchesArray = mRepo.getRemoteBranches();
+        final CharSequence[] branches = new CharSequence[branchesArray.size()];
+        for (int i = 0; i < branches.length; ++i) {
+            branches[i] = branchesArray.get(i).contains("/") ?
+                    branchesArray.get(i).substring(branchesArray.get(i).lastIndexOf('/') + 1)
+                    :
+                    branchesArray.get(i);
+        }
+
+        if (branches.length > 1) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.select_branch)
+                    .setPositiveButton(getString(R.string.ignore), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            updateStrings("");
+                        }
+                    })
+                    .setItems(branches, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            updateStrings(branches[item].toString());
+                        }
+                    })
+                    .show();
+        } else {
+            updateStrings("");
         }
     }
 
     // Synchronize our local strings.xml files with the remote GitHub repository
-    private void updateStrings() {
+    private void updateStrings(@NonNull final String branch) {
         if (Utils.isNotConnected(this, true))
             return;
 
         final ProgressDialog progress = ProgressDialog.show(this,
                 getString(R.string.loading_ellipsis), null, true);
 
-        mRepo.syncResources(new GitCloneProgressCallback(this) {
+        mRepo.syncResources(branch, new GitCloneProgressCallback(this) {
             @Override
             public void onProgressUpdate(String title, String description) {
                 progress.setTitle(title);

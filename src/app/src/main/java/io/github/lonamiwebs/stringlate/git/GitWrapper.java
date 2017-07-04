@@ -10,11 +10,11 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -83,14 +83,26 @@ public class GitWrapper {
     }
 
     public static boolean cloneRepo(final String uri, final File cloneTo,
+                                    @NonNull final String branch,
                                     final GitCloneProgressCallback callback) {
         Git result = null;
 
         try {
-            result = Git.cloneRepository().setURI(uri).setDirectory(cloneTo)
-                    .setBranch(MASTER_BRANCH).setBare(false).setRemote(REMOTE_NAME)
-                    .setNoCheckout(false).setCloneAllBranches(false).setCloneSubmodules(false)
-                    .setProgressMonitor(callback).call();
+            final CloneCommand clone = Git.cloneRepository()
+                    .setURI(uri).setDirectory(cloneTo)
+                    .setBare(false).setRemote(REMOTE_NAME).setNoCheckout(false)
+                    .setCloneAllBranches(false).setCloneSubmodules(false)
+                    .setProgressMonitor(callback);
+
+            if (!branch.isEmpty()) {
+                if (branch.contains("/")) {
+                    clone.setBranch(branch.substring(branch.lastIndexOf('/') + 1));
+                } else {
+                    clone.setBranch(branch);
+                }
+            }
+
+            result = clone.call();
             return true;
         } catch (GitAPIException e) {
             e.printStackTrace();
@@ -138,8 +150,9 @@ public class GitWrapper {
             } else {
                 // dir is a file really
                 if (PATTERN_XML.matcher(dir.getName()).find()) {
-                    if (Utils.fileContains(dir, STR_STRING, STR_PLURALS) != -1)
+                    if (Utils.fileContains(dir, STR_STRING, STR_PLURALS) != -1) {
                         result.add(dir);
+                    }
                 }
             }
         }

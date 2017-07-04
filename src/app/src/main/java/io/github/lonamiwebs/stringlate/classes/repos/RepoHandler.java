@@ -278,12 +278,14 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Downloading locale files
 
-    public void syncResources(final GitCloneProgressCallback callback) {
-        cloneRepository(callback);
+    public void syncResources(@NonNull final String branch,
+                              final GitCloneProgressCallback callback) {
+        cloneRepository(branch, callback);
     }
 
     // Step 1: Temporary clone the GitHub repository
-    private void cloneRepository(final GitCloneProgressCallback callback) {
+    private void cloneRepository(@NonNull final String branch,
+                                 final GitCloneProgressCallback callback) {
         callback.onProgressUpdate(
                 mContext.getString(R.string.cloning_repo),
                 mContext.getString(R.string.cloning_repo_progress, 0.0f));
@@ -293,7 +295,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             protected File doInBackground(Void... params) {
                 File dir = getTempCloneDir();
                 Utils.deleteRecursive(dir); // Don't care, it's temp and it can't exist on cloning
-                if (GitWrapper.cloneRepo(mSettings.getGitUrl(), dir, callback))
+                if (GitWrapper.cloneRepo(mSettings.getGitUrl(), dir, branch, callback))
                     return dir;
                 else
                     return null;
@@ -633,6 +635,11 @@ public class RepoHandler implements Comparable<RepoHandler> {
     public int getCreatedIssue(String locale) {
         Integer issue = mSettings.getCreatedIssues().get(locale);
         return issue == null ? -1 : issue;
+    }
+
+    @NonNull
+    public ArrayList<String> getRemoteBranches() {
+        return mSettings.getRemoteBranches();
     }
 
     // Used to save the translation progress, calculated on the

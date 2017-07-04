@@ -161,7 +161,7 @@ public class AddNewRepositoryFragment extends Fragment {
             return;
 
         final ProgressDialog progress = ProgressDialog.show(getContext(), "…", "…", true);
-        repo.syncResources(new GitCloneProgressCallback(getActivity()) {
+        repo.syncResources("", new GitCloneProgressCallback(getActivity()) {
             @Override
             public void onProgressUpdate(String title, String description) {
                 progress.setTitle(title);
