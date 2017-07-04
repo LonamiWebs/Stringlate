@@ -7,8 +7,8 @@ android {
         applicationId "io.github.lonamiwebs.stringlate"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 994
-        versionName "0.9.10d"
+        versionCode 995
+        versionName "0.9.11"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
