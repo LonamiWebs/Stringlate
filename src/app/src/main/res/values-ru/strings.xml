@@ -159,4 +159,6 @@
     <string name="export_repository">Экспорт репозитория</string>
     <string name="default_parenthesis">(по умолчанию)</string>
     <string name="application_may_use_translation_platform">Это приложение может использовать %s для управления их переводами. Смотрите справку чтобы узнать больше.</string>
+    <string name="select_branch">Выберите ветку для использования</string>
+    <string name="ignore">Отключить</string>
 </resources>
