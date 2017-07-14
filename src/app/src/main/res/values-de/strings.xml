@@ -32,6 +32,7 @@
     <string name="cancel">Abbrechen</string>
     <string name="create_locale_error">Konnte die neue Sprachdatei nicht erstellen.</string>
     <string name="show_translated_strings">Übersetzte Teile anzeigen</string>
+    <string name="show_identical_strings_only">Nur gleiche Zeichenketten anzeigen</string>
     <string name="delete_ellipsis">Löschen…</string>
     <string name="delete_string">Zeichenfolge löschen</string>
     <string name="delete_locale">Sprachdatei löschen</string>
@@ -157,4 +158,7 @@
     <string name="import_repository">Repository importieren</string>
     <string name="export_repository">Repository exportieren</string>
     <string name="default_parenthesis">(Standard)</string>
+    <string name="application_may_use_translation_platform">Diese App könnte %s für die Verwaltung der Übersetzungen nutzen. Öffne die Hilfe für mehr Informationen.</string>
+    <string name="select_branch">Wähle eine Branch aus</string>
+    <string name="ignore">Ignorieren</string>
 </resources>
