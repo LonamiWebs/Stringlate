@@ -32,6 +32,7 @@
     <string name="cancel">Annuler</string>
     <string name="create_locale_error">Impossible de créer le nouveau fichier local.</string>
     <string name="show_translated_strings">Montrer les chaînes déjà traduites</string>
+    <string name="show_identical_strings_only">Ne montrer que les branches identiques</string>
     <string name="delete_ellipsis">Supprimer…</string>
     <string name="delete_string">Supprimer la chaîne</string>
     <string name="delete_locale">Supprimer la langue</string>
@@ -106,7 +107,7 @@
     <string name="search_id_content_ellipsis">Rechercher par ID ou contenu…</string>
     <string name="github_not_logged_long">Afin de fournir certaines fonctionnalités, comme les Gists non anonymes, la création de rapports de bug et de pull request, vous devez autoriser Stringlate. Cliquez sur le bouton ci-dessous pour commencer.</string>
     <string name="request_auth">Demander l’autorisation</string>
-    <string name="github_yes_logged_long">Vous êtes déjà connectés à Github. Aucun action supplémentaire n’est nécessaire. Si quelque chose ne fonctionne pas, vous pouvez toujours cliquer sur le bouton pour recommencer.</string>
+    <string name="github_yes_logged_long">Vous êtes déjà connecté à Github. Aucun action supplémentaire n’est nécessaire. Si quelque chose ne fonctionne pas, vous pouvez toujours cliquer sur le bouton pour recommencer.</string>
     <string name="login_to_github">Se connecter à Github</string>
     <string name="auth_success">Autorisation accordée</string>
     <string name="completing_auth_ellipsis">Autorisation en cours…</string>
@@ -157,4 +158,7 @@
     <string name="import_repository">Importer le dépôt</string>
     <string name="export_repository">Exporter le dépôt</string>
     <string name="default_parenthesis">(par défaut)</string>
+    <string name="application_may_use_translation_platform">Cette application semble utiliser %s pour gérer les traductions. Rapportez-vous à l\'aide pour plus d\'informations.</string>
+    <string name="select_branch">Sélectionnez la branche à utiliser</string>
+    <string name="ignore">Ignorer</string>
 </resources>
