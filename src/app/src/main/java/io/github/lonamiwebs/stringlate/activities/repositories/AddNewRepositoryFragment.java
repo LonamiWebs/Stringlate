@@ -55,9 +55,19 @@ public class AddNewRepositoryFragment extends Fragment {
         final Intent intent = getActivity().getIntent();
         final Uri data = intent.getData();
         if (data != null) {
-            String scheme = data.getScheme();
-            String fullPath = data.getEncodedSchemeSpecificPart();
-            setUrl(scheme+":"+fullPath);
+            // Try to retrieve information from the special URL, i.e.
+            // https://lonamiwebs.github.io/stringlate/translate?git=<encoded git url>
+            final String git = data.getQueryParameter("git");
+
+            if (git == null) {
+                // If no URL was found, it may just be a git repository by itself
+                String scheme = data.getScheme();
+                String fullPath = data.getEncodedSchemeSpecificPart();
+                setUrl(scheme + ":" + fullPath);
+            } else {
+                // We got the encoded git url, so set it
+                setUrl(git);
+            }
         }
         // Or we were opened from the Api
         if (intent.getAction().equals(Api.ACTION_TRANSLATE) &&

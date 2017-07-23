@@ -29,11 +29,30 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Launch Stringlate from another application -->
             <intent-filter>
                 <action android:name="io.github.lonamiwebs.stringlate.TRANSLATE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="*/*" />
             </intent-filter>
+
+            <!-- Launch Stringlate from clicking a special URL:
+                 https://lonamiwebs.github.io/stringlate/translate?git={git repo url} -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="lonamiwebs.github.io"
+                    android:pathPattern="/stringlate/translate.*"
+                    android:scheme="https" />
+
+            </intent-filter>
+
+            <!-- Launch Stringlate suggesting any GitHub repository -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
