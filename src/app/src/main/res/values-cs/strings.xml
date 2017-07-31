@@ -27,10 +27,12 @@
     <string name="add_locale_to_start">Abyste mohli začít, přidejte nový jazyk.</string>
     <string name="enter_locale">Zadejte jazyk</string>
     <string name="enter_locale_long">Zadejte označení jazyka, pro který bude vytvořen soubor strings.xml (váš aktuální jazyk je \"%s\"):</string>
+    <string name="choose_locale_from_list">Vybrat jazyk ze seznamu</string>
     <string name="create">Vytvořit</string>
     <string name="cancel">Zrušit</string>
     <string name="create_locale_error">Nelze vytvořit nový místní soubor.</string>
     <string name="show_translated_strings">Zobrazit přeložené řetězce</string>
+    <string name="show_identical_strings_only">Zobrazit pouze identické řetězce</string>
     <string name="delete_ellipsis">Odstranit…</string>
     <string name="delete_string">Smazat řetězec</string>
     <string name="delete_locale">Smazat jazyk</string>
@@ -68,6 +70,8 @@
     <string name="no_internet_connection">Nejste připojeni k internetu.</string>
     <string name="export_file_failed">Nelze exportovat soubor strings.xml</string>
     <string name="export_file_success">Soubor byl úspěšně uložen do %s</string>
+    <string name="import_file_failed">Nelze importovat vybranou položku</string>
+    <string name="import_file_success">Import proběhl úspěšně</string>
     <string name="update_applications">Aktualizovat aplikace</string>
     <string name="apps_repo_not_downloaded">Repozitáře aplikací ještě nebyly staženy. Abyste si mohli prohlédnout dostupné aplikace, ťukněte na tlačítko \"%s\" pro stažení rejstříku repozitářů.</string>
     <string name="sync_failed">Chyba při synchronizaci.</string>
@@ -81,6 +85,8 @@
     <string name="search">Hledat</string>
     <string name="search_apps_ellipsis">Hledat aplikace…</string>
     <string name="icon_cache_cleared">Dočasná paměť pro ikony byla vyčištěna (%s uvolněno).</string>
+    <string name="pulling_strings">Stáhnout nové řetězce</string>
+    <string name="pulling_strings_long">Stažení nových řetězců nepoškodí váš překlad, ale mohly by být přidány nové nepřeložené položky. Stažení byste měli provést ještě před odesláním vašeho překladu, abyste se ujistili, že je přeloženo vše. Opravdu chcete pokračovat?</string>
     <string name="keep_changes">Uchovat změny</string>
     <string name="discard_changes">Zrušit změny</string>
     <string name="save_before_sync_required">Před synchronizací projekt nejprve uložte.</string>
@@ -111,7 +117,6 @@
     <string name="create_issue">Nahlásit problém</string>
     <string name="creating_issue_ellipsis">Vytváření hlášení…</string>
     <string name="creating_issue_long_ellipsis">Pokus o vytvoření hlášení na GitHubu…</string>
-    <string name="issue_title_colon">Název problému:</string>
     <string name="issue_description">Popis problému (%x bude nahrazeno překladem):</string>
     <string name="url_copied">URL byla zkopírována do schránky</string>
     <string name="share_url">Sdílet URL</string>
@@ -124,6 +129,7 @@
     <string name="commit_message">Zpráva ke commitu.</string>
     <string name="commit_changes">Provést commit změn.</string>
     <string name="sync_required">Spusťte prosím synchronizaci a zkuste to znovu.</string>
+    <string name="login_required">Abyste mohli pokračovat, musíte se přihlásit na GitHub.</string>
     <string name="commit_msg_empty">Zpráva ke commitu nemůže být prázdná.</string>
     <string name="forking_repo">Vytváření forku repozitáře…</string>
     <string name="forking_repo_long">Vytváří se fork původního repozitáře, abyste měli právo k zápisu…</string>
@@ -134,5 +140,25 @@
     <string name="creating_pr">Vytváření pull požadavku…</string>
     <string name="creating_pr_long">Vytváří se pull požadavek v původním repozitáři…</string>
     <string name="something_went_wrong">Něco se pokazilo.</string>
+    <string name="cloning_repo">Klonování reportáže…</string>
+    <string name="cloning_repo_progress">Dočasné kopírování vzdáleného repozitáře… %.1f%%</string>
+    <string name="copying_res">Kopírování zdrojů…</string>
+    <string name="copying_res_long">Ověřování a stahování zdrojů do cílového umístění…</string>
+    <string name="issue_title_colon">Název problému:</string>
     <string name="issue_title">Název problému</string>
+    <string name="title_empty">Titulek nemůže být prázdný</string>
+    <string name="issue_desc_x">Popis problému musí obsahovat \"%x\".</string>
+    <string name="no_strings_to_export">Nejsou dostupné žádné řetězce k překladu.</string>
+    <string name="filtering_strings_with">Filtrování řetězců s \"%s"</string>
+    <string name="clear_filter">Vymazat filtr</string>
+    <string name="sort_by_ellipsis">Seřadit podle…</string>
+    <string name="sort_alphabetically">Abecedně</string>
+    <string name="sort_string_length">Délka řetězce</string>
+    <string name="retry">Opakovat</string>
+    <string name="import_repository">Importovat repozitář</string>
+    <string name="export_repository">Exportovat repozitář</string>
+    <string name="default_parenthesis">(výchozí)</string>
+    <string name="application_may_use_translation_platform">Tato aplikace můžete pro správu překladů využívat %s. Více informací naleznete v nápovědě.</string>
+    <string name="select_branch">Vyberte větev</string>
+    <string name="ignore">Ignorovat</string>
 </resources>
