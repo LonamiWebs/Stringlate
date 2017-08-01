@@ -29,8 +29,10 @@ class RepositoriesPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: return new HistoryFragment();
-            case 1: return new AddNewRepositoryFragment();
+            case 0:
+                return new HistoryFragment();
+            case 1:
+                return new AddNewRepositoryFragment();
         }
         return null;
     }
@@ -43,8 +45,10 @@ class RepositoriesPagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {
-            case 0: return mContext.getString(R.string.history);
-            case 1: return mContext.getString(R.string.add_project);
+            case 0:
+                return mContext.getString(R.string.history);
+            case 1:
+                return mContext.getString(R.string.add_project);
         }
         return null;
     }

@@ -40,11 +40,13 @@ public class AppSettings extends Settings {
 
     // Tokens seem to be saved OK as shared preferences http://stackoverflow.com/q/10161266
     // Another option, AccountManager: http://stackoverflow.com/q/14437096
-    @NonNull public String getGitHubToken() {
+    @NonNull
+    public String getGitHubToken() {
         return getSettings().getString(KEY_GITHUB_TOKEN, DEFAULT_GITHUB_TOKEN);
     }
 
-    @NonNull private String[] getGitHubScopes() {
+    @NonNull
+    private String[] getGitHubScopes() {
         return getSettings().getString(KEY_GITHUB_SCOPE, DEFAULT_GITHUB_SCOPE).split(",");
     }
 

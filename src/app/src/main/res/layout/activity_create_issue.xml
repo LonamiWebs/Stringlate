@@ -4,11 +4,11 @@
     android:id="@+id/activity_create_issue"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
     tools:context="io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity">
 
     <LinearLayout
@@ -20,31 +20,31 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/issue_title_colon"/>
+            android:text="@string/issue_title_colon" />
 
         <EditText
             android:id="@+id/issueTitleEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/issue_title"/>
+            android:hint="@string/issue_title" />
 
     </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/issue_description"/>
+        android:text="@string/issue_description" />
 
     <EditText
         android:id="@+id/issueDescriptionEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textCapSentences|textMultiLine"/>
+        android:inputType="textCapSentences|textMultiLine" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/create_issue"
-        android:onClick="onCreateIssue"/>
+        android:onClick="onCreateIssue"
+        android:text="@string/create_issue" />
 
 </LinearLayout>

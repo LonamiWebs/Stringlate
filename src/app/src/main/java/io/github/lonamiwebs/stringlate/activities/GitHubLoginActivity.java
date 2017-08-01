@@ -39,7 +39,7 @@ public class GitHubLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_github_login);
 
         mSettings = new AppSettings(this);
-        mInfoTextView = (TextView)findViewById(R.id.infoTextView);
+        mInfoTextView = (TextView) findViewById(R.id.infoTextView);
 
         // Check if the authorization succeeded
         Uri data = getIntent().getData();

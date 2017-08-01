@@ -16,9 +16,9 @@ import java.io.InvalidObjectException;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
@@ -49,8 +49,8 @@ public class CreateIssueActivity extends AppCompatActivity {
 
         mSettings = new AppSettings(this);
 
-        mIssueTitleEditText = (EditText)findViewById(R.id.issueTitleEditText);
-        mIssueDescriptionEditText = (EditText)findViewById(R.id.issueDescriptionEditText);
+        mIssueTitleEditText = (EditText) findViewById(R.id.issueTitleEditText);
+        mIssueDescriptionEditText = (EditText) findViewById(R.id.issueDescriptionEditText);
 
         // Retrieve the strings.xml content to be exported
         Intent intent = getIntent();
@@ -137,8 +137,7 @@ public class CreateIssueActivity extends AppCompatActivity {
             finish();
             CreateUrlSuccessActivity.launchIntent(
                     this, getString(R.string.create_issue_success), postedUrl);
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.create_issue_error, Toast.LENGTH_SHORT).show();
         }

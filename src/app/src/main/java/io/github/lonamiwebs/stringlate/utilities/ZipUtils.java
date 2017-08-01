@@ -29,7 +29,8 @@ public class ZipUtils {
             if (zip != null) {
                 try {
                     zip.close();
-                } catch (IOException ignored) { }
+                } catch (IOException ignored) {
+                }
             }
         }
     }
@@ -42,7 +43,7 @@ public class ZipUtils {
 
             File parent = dstFile.getParentFile();
             if (!parent.isDirectory() && !parent.mkdirs())
-                throw new IOException("Could not create root directory: "+parent.getAbsolutePath());
+                throw new IOException("Could not create root directory: " + parent.getAbsolutePath());
 
             if (!entry.isDirectory()) {
                 FileOutputStream out = null;
@@ -56,11 +57,13 @@ public class ZipUtils {
                 } finally {
                     try {
                         zip.closeEntry();
-                    } catch (IOException ignored) { }
+                    } catch (IOException ignored) {
+                    }
                     if (out != null) {
                         try {
                             out.close();
-                        } catch (IOException ignored) { }
+                        } catch (IOException ignored) {
+                        }
                     }
                 }
             }
@@ -90,7 +93,8 @@ public class ZipUtils {
                 if (in != null) {
                     try {
                         in.close();
-                    } catch (IOException ignored) { }
+                    } catch (IOException ignored) {
+                    }
                 }
             }
         }

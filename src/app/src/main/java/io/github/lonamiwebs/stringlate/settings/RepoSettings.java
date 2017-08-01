@@ -1,15 +1,15 @@
 package io.github.lonamiwebs.stringlate.settings;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import android.support.annotation.NonNull;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.support.annotation.NonNull;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
@@ -73,7 +73,8 @@ public class RepoSettings {
                     String key = keysItr.next();
                     map.put(key, json.getString(key));
                 }
-            } catch (JSONException ignored) { }
+            } catch (JSONException ignored) {
+            }
         }
         return map;
     }
@@ -112,7 +113,8 @@ public class RepoSettings {
                     String key = keysItr.next();
                     map.put(key, json.getInt(key));
                 }
-            } catch (JSONException ignored) { }
+            } catch (JSONException ignored) {
+            }
         }
         return map;
     }
@@ -125,7 +127,8 @@ public class RepoSettings {
             for (int i = 0; i < branches.length(); ++i) {
                 result.add(branches.getString(i));
             }
-        } catch (JSONException ignored) { }
+        } catch (JSONException ignored) {
+        }
         return result;
     }
 
@@ -134,26 +137,34 @@ public class RepoSettings {
     //region Setters
 
     public void setGitUrl(final String gitUrl) {
-        try { mSettings.put(KEY_GIT_URL, gitUrl); }
-        catch (JSONException ignored) { }
+        try {
+            mSettings.put(KEY_GIT_URL, gitUrl);
+        } catch (JSONException ignored) {
+        }
         save();
     }
 
     public void setProjectHomepageUrl(final String homepageUrl) {
-        try { mSettings.put(KEY_PROJECT_HOMEPAGE_URL, homepageUrl); }
-        catch (JSONException ignored) { }
+        try {
+            mSettings.put(KEY_PROJECT_HOMEPAGE_URL, homepageUrl);
+        } catch (JSONException ignored) {
+        }
         save();
     }
 
     public void setProjectName(final String projectName) {
-        try { mSettings.put(KEY_PROJECT_NAME, projectName); }
-        catch (JSONException ignored) { }
+        try {
+            mSettings.put(KEY_PROJECT_NAME, projectName);
+        } catch (JSONException ignored) {
+        }
         save();
     }
 
     public void setLastLocale(String locale) {
-        try { mSettings.put(KEY_LAST_LOCALE, locale); }
-        catch (JSONException ignored) { }
+        try {
+            mSettings.put(KEY_LAST_LOCALE, locale);
+        } catch (JSONException ignored) {
+        }
         save();
     }
 
@@ -162,8 +173,8 @@ public class RepoSettings {
             HashMap<String, String> map = getRemotePaths();
             map.put(filename, remotePath);
             mSettings.put(KEY_REMOTE_PATHS, new JSONObject(map));
+        } catch (JSONException ignored) {
         }
-        catch (JSONException ignored) { }
         save();
     }
 
@@ -172,20 +183,26 @@ public class RepoSettings {
     }
 
     public void setIconFile(File file) {
-        try { mSettings.put(KEY_ICON_PATH, file == null ? "" : file.getAbsolutePath()); }
-        catch (JSONException ignored) { }
+        try {
+            mSettings.put(KEY_ICON_PATH, file == null ? "" : file.getAbsolutePath());
+        } catch (JSONException ignored) {
+        }
         save();
     }
 
     public void setUsedTranslationService(@NonNull final String service) {
-        try { mSettings.put(KEY_USED_TRANSLATION_SERVICE, service); }
-        catch (JSONException ignored) { }
+        try {
+            mSettings.put(KEY_USED_TRANSLATION_SERVICE, service);
+        } catch (JSONException ignored) {
+        }
         save();
     }
 
     public void setStringFilter(@NonNull final String filter) {
-        try { mSettings.put(KEY_SEARCH_FILTER, filter); }
-        catch (JSONException ignored) { }
+        try {
+            mSettings.put(KEY_SEARCH_FILTER, filter);
+        } catch (JSONException ignored) {
+        }
         save();
     }
 
@@ -194,8 +211,8 @@ public class RepoSettings {
             HashMap<String, Integer> map = getCreatedIssues();
             map.put(locale, issueNumber);
             mSettings.put(KEY_CREATED_ISSUES, new JSONObject(map));
+        } catch (JSONException ignored) {
         }
-        catch (JSONException ignored) { }
         save();
     }
 
@@ -205,8 +222,8 @@ public class RepoSettings {
             for (String branch : branches)
                 array.put(branch);
             mSettings.put(KEY_REMOTE_BRANCHES, array);
+        } catch (JSONException ignored) {
         }
-        catch (JSONException ignored) { }
         save();
     }
 
@@ -214,7 +231,8 @@ public class RepoSettings {
 
     //region Load/save
 
-    @NonNull private JSONObject load() {
+    @NonNull
+    private JSONObject load() {
         try {
             final String json = Utils.readFile(mSettingsFile);
             if (!json.isEmpty())

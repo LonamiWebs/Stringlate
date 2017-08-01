@@ -9,8 +9,10 @@ public class ResStringArray {
 
     //region Members
 
-    @NonNull private final HashSet<Item> mItems;
-    @NonNull private final String mId;
+    @NonNull
+    private final HashSet<Item> mItems;
+    @NonNull
+    private final String mId;
 
     //endregion
 
@@ -65,11 +67,12 @@ public class ResStringArray {
     //region Sub classes
 
     public class Item extends ResTag {
-        @NonNull final ResStringArray mParent;
+        @NonNull
+        final ResStringArray mParent;
         final int mIndex;
 
         Item(@NonNull final ResStringArray parent,
-                    final int index, @NonNull String content, final boolean modified) {
+             final int index, @NonNull String content, final boolean modified) {
             mParent = parent;
             mIndex = index;
             mContent = content.trim();

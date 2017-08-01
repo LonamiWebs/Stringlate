@@ -18,9 +18,9 @@ import java.io.File;
 import java.util.HashMap;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
 import static android.view.View.GONE;
@@ -52,10 +52,10 @@ public class CreateGistActivity extends AppCompatActivity {
 
         mSettings = new AppSettings(this);
 
-        mDescriptionEditText = (EditText)findViewById(R.id.gistDescriptionEditText);
-        mIsPublicCheckBox = (CheckBox)findViewById(R.id.gistIsPublicCheckBox);
-        mIsAnonymousCheckBox = (CheckBox)findViewById(R.id.gistIsAnonymousCheckBox);
-        mFilenameEditText = (EditText)findViewById(R.id.gistFilenameEditText);
+        mDescriptionEditText = (EditText) findViewById(R.id.gistDescriptionEditText);
+        mIsPublicCheckBox = (CheckBox) findViewById(R.id.gistIsPublicCheckBox);
+        mIsAnonymousCheckBox = (CheckBox) findViewById(R.id.gistIsAnonymousCheckBox);
+        mFilenameEditText = (EditText) findViewById(R.id.gistFilenameEditText);
 
         // Retrieve the strings.xml content to be exported
         Intent intent = getIntent();
@@ -149,8 +149,7 @@ public class CreateGistActivity extends AppCompatActivity {
             finish();
             CreateUrlSuccessActivity.launchIntent(
                     this, getString(R.string.post_gist_success), postedUrl);
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             Toast.makeText(this, R.string.post_gist_error, Toast.LENGTH_SHORT).show();
         }
     }

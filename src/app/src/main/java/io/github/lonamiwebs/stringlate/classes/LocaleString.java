@@ -35,7 +35,7 @@ public class LocaleString {
         if (locale.contains("-")) {
             for (Locale l : Locale.getAvailableLocales())
                 if (!l.getCountry().isEmpty())
-                    if (locale.equals(l.getLanguage()+"-r"+l.getCountry()))
+                    if (locale.equals(l.getLanguage() + "-r" + l.getCountry()))
                         return l.getDisplayName();
         } else {
             for (Locale l : Locale.getAvailableLocales())
@@ -51,7 +51,7 @@ public class LocaleString {
         if (locale.contains("-")) {
             for (Locale l : Locale.getAvailableLocales())
                 if (!l.getCountry().isEmpty())
-                    if (locale.equals(l.getLanguage()+"-r"+l.getCountry()))
+                    if (locale.equals(l.getLanguage() + "-r" + l.getCountry()))
                         return l.getDisplayName(Locale.ENGLISH);
         } else {
             for (Locale l : Locale.getAvailableLocales())
@@ -65,14 +65,14 @@ public class LocaleString {
     public static String getFullCode(@NonNull Locale locale) {
         String language = locale.getLanguage();
         String country = locale.getCountry();
-        return country.isEmpty() ? language : language+"-r"+country;
+        return country.isEmpty() ? language : language + "-r" + country;
     }
 
     public static boolean isValid(@NonNull String locale) {
         if (locale.contains("-")) {
             for (Locale l : Locale.getAvailableLocales())
                 if (!l.getCountry().isEmpty())
-                    if (locale.equals(l.getLanguage()+"-r"+l.getCountry()))
+                    if (locale.equals(l.getLanguage() + "-r" + l.getCountry()))
                         return true;
         } else {
             for (Locale l : Locale.getAvailableLocales())

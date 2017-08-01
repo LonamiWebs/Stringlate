@@ -58,7 +58,8 @@ public class Resources implements Iterable<ResTag> {
                 try {
                     if (is != null)
                         is.close();
-                } catch (IOException ignored) { }
+                } catch (IOException ignored) {
+                }
             }
         }
 
@@ -115,11 +116,10 @@ public class Resources implements Iterable<ResTag> {
                 ResTag rt = srt.getValue();
 
                 if (rt instanceof ResStringArray.Item) {
-                    if (((ResStringArray.Item)rt).getParent().getId().equals(resourceId))
+                    if (((ResStringArray.Item) rt).getParent().getId().equals(resourceId))
                         return mLastTag = rt;
-                }
-                else if (rt instanceof ResPlurals.Item) {
-                    if (((ResPlurals.Item)rt).getParent().getId().equals(resourceId))
+                } else if (rt instanceof ResPlurals.Item) {
+                    if (((ResPlurals.Item) rt).getParent().getId().equals(resourceId))
                         return mLastTag = rt;
                 }
             }
@@ -161,9 +161,9 @@ public class Resources implements Iterable<ResTag> {
             // then we need to add the child to the existing parent
             boolean handled = false;
             if (original instanceof ResStringArray.Item) {
-                ResStringArray.Item ori = (ResStringArray.Item)original;
+                ResStringArray.Item ori = (ResStringArray.Item) original;
                 ResStringArray.Item existingChild =
-                        (ResStringArray.Item)getTag(ori.getParent().getId());
+                        (ResStringArray.Item) getTag(ori.getParent().getId());
 
                 if (existingChild != null) {
                     // The parent existed, so add the new string to it, and the
@@ -175,9 +175,9 @@ public class Resources implements Iterable<ResTag> {
                 } // else the parent didn't exist, so behave as the general case
 
             } else if (original instanceof ResPlurals.Item) {
-                ResPlurals.Item ori = (ResPlurals.Item)original;
+                ResPlurals.Item ori = (ResPlurals.Item) original;
                 ResPlurals.Item existingChild =
-                        (ResPlurals.Item)getTag(ori.getParent().getId());
+                        (ResPlurals.Item) getTag(ori.getParent().getId());
 
                 if (existingChild != null) {
                     // The parent existed, so add the new string to it, and the
@@ -229,7 +229,9 @@ public class Resources implements Iterable<ResTag> {
     }
 
     // Determines whether the file was ever modified or not (any of its strings were modified)
-    public boolean wasModified() { return mModified; }
+    public boolean wasModified() {
+        return mModified;
+    }
 
     // If there are unsaved changes, saves the file
     // If the file was saved successfully or there were no changes to save, returns true

@@ -4,11 +4,11 @@
     android:id="@+id/activity_translate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
     tools:context="io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity">
 
     <LinearLayout
@@ -31,25 +31,25 @@
                     android:id="@+id/filterAppliedTextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
                 <ImageButton
                     android:id="@+id/clearFilterButton"
-                    android:src="@drawable/ic_backspace_yellow_36dp"
-                    android:contentDescription="@string/clear_filter"
-                    android:background="@null"
                     android:layout_width="44dp"
                     android:layout_height="44dp"
+                    android:background="@null"
+                    android:contentDescription="@string/clear_filter"
+                    android:onClick="onClearFilterClick"
                     android:padding="4dp"
                     android:scaleType="fitCenter"
-                    android:onClick="onClearFilterClick"/>
+                    android:src="@drawable/ic_backspace_yellow_36dp" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="2dp"
-                android:background="@color/colorDivider"/>
+                android:background="@color/colorDivider" />
 
         </LinearLayout>
 
@@ -61,20 +61,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/selected_locale"/>
+                android:text="@string/selected_locale" />
 
             <Spinner
+                android:id="@+id/localeSpinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/localeSpinner"/>
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/translationLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/translationLayout"
             android:visibility="visible">
 
             <LinearLayout
@@ -85,12 +85,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/current_string_id"/>
+                    android:text="@string/current_string_id" />
 
                 <Spinner
+                    android:id="@+id/stringIdSpinner"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/stringIdSpinner"/>
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
@@ -100,22 +100,22 @@
                 android:text="@string/original_string" />
 
             <EditText
+                android:id="@+id/originalStringEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/originalStringEditText"
                 android:inputType="none"
                 android:textIsSelectable="true" />
 
             <TextView
-                android:text="@string/translated_string_colon"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@string/translated_string_colon" />
 
             <EditText
+                android:id="@+id/translatedStringEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/translated_string"
-                android:id="@+id/translatedStringEditText"
                 android:inputType="textCapSentences|textMultiLine" />
 
             <LinearLayout
@@ -124,34 +124,34 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:text="@string/previous"
+                    android:id="@+id/previousButton"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textAlignment="textStart"
                     android:layout_gravity="start"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:id="@+id/previousButton"
+                    android:layout_weight="1"
                     android:onClick="onPreviousClick"
-                    android:layout_weight="1"/>
+                    android:text="@string/previous"
+                    android:textAlignment="textStart" />
 
                 <Button
-                    android:text="@string/next"
+                    android:id="@+id/nextButton"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textAlignment="textEnd"
                     android:layout_gravity="end"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:id="@+id/nextButton"
+                    android:layout_weight="1"
                     android:onClick="onNextClick"
-                    android:layout_weight="1"/>
+                    android:text="@string/next"
+                    android:textAlignment="textEnd" />
             </LinearLayout>
 
             <ProgressBar
                 android:id="@+id/progressProgressBar"
+                style="@android:style/Widget.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:progressDrawable="@drawable/drawable_progress_bar"/>
+                android:progressDrawable="@drawable/drawable_progress_bar" />
 
             <TextView
                 android:id="@+id/progressTextView"

@@ -11,8 +11,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.activities.GitHubLoginActivity;
 import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
+import io.github.lonamiwebs.stringlate.activities.GitHubLoginActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.utilities.StringlateApi;

@@ -138,7 +138,7 @@ public class ImageLoader {
         Bitmap bitmap;
 
         if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable)drawable;
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
             if (bitmapDrawable.getBitmap() != null)
                 return bitmapDrawable.getBitmap();
         }

@@ -15,9 +15,9 @@ import java.util.ArrayList;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslation;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslationAdapter;
-import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -41,9 +41,9 @@ public class SearchStringActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_string);
 
-        mSearchEditText = (EditText)findViewById(R.id.searchEditText);
-        mResourcesListView = (ListView)findViewById(R.id.resourcesListView);
-        final ImageButton clearFilterButton = (ImageButton)findViewById(R.id.clearFilterButton);
+        mSearchEditText = (EditText) findViewById(R.id.searchEditText);
+        mResourcesListView = (ListView) findViewById(R.id.resourcesListView);
+        final ImageButton clearFilterButton = (ImageButton) findViewById(R.id.clearFilterButton);
 
         Intent intent = getIntent();
         mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
@@ -55,9 +55,12 @@ public class SearchStringActivity extends AppCompatActivity {
         refreshResourcesListView(null);
         mSearchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
             @Override
-            public void afterTextChanged(Editable editable) { }
+            public void afterTextChanged(Editable editable) {
+            }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -81,7 +84,7 @@ public class SearchStringActivity extends AppCompatActivity {
                 mRepo.setStringFilter(filter);
 
                 // Return the selected string to the parent activity
-                ResourcesTranslation rt = (ResourcesTranslation)mResourcesListView.getItemAtPosition(i);
+                ResourcesTranslation rt = (ResourcesTranslation) mResourcesListView.getItemAtPosition(i);
                 Intent data = new Intent();
                 data.putExtra("id", rt.getId());
                 data.putExtra("filter", filter);

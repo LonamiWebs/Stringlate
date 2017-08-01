@@ -17,7 +17,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -73,7 +72,8 @@ public class ResourcesParser {
         } finally {
             try {
                 in.close();
-            } catch (IOException ignored) { }
+            } catch (IOException ignored) {
+            }
         }
     }
 
@@ -277,8 +277,12 @@ public class ResourcesParser {
         int depth = 1;
         while (depth != 0) {
             switch (parser.next()) {
-                case XmlPullParser.END_TAG: depth--; break;
-                case XmlPullParser.START_TAG: depth++; break;
+                case XmlPullParser.END_TAG:
+                    depth--;
+                    break;
+                case XmlPullParser.START_TAG:
+                    depth++;
+                    break;
             }
         }
     }
@@ -291,8 +295,12 @@ public class ResourcesParser {
         int depth = 1;
         while (depth != 0) {
             switch (parser.next()) {
-                case XmlPullParser.END_TAG: --depth; break;
-                case XmlPullParser.START_TAG: ++depth; break;
+                case XmlPullParser.END_TAG:
+                    --depth;
+                    break;
+                case XmlPullParser.START_TAG:
+                    ++depth;
+                    break;
             }
         }
     }
@@ -317,17 +325,15 @@ public class ResourcesParser {
                     continue;
 
                 if (rs instanceof ResString) {
-                    parseString(serializer, (ResString)rs);
-                }
-                else if (rs instanceof ResStringArray.Item) {
-                    ResStringArray parent = ((ResStringArray.Item)rs).getParent();
+                    parseString(serializer, (ResString) rs);
+                } else if (rs instanceof ResStringArray.Item) {
+                    ResStringArray parent = ((ResStringArray.Item) rs).getParent();
                     if (!doneParents.contains(parent.getId())) {
                         doneParents.add(parent.getId());
                         parseStringArray(serializer, parent);
                     }
-                }
-                else if (rs instanceof ResPlurals.Item) {
-                    ResPlurals parent = ((ResPlurals.Item)rs).getParent();
+                } else if (rs instanceof ResPlurals.Item) {
+                    ResPlurals parent = ((ResPlurals.Item) rs).getParent();
                     if (!doneParents.contains(parent.getId())) {
                         doneParents.add(parent.getId());
                         parsePlurals(serializer, parent);
@@ -416,7 +422,7 @@ public class ResourcesParser {
                 String translatable = getAttr(mTag.group(2), TRANSLATABLE);
                 if (translatable.equals("false")) {
                     // Decrease the range by 1 not to eat up the next character (due to the i++)
-                    dirtyRanges.add(new DirtyRange(mTag.start(), mTag.end()-1));
+                    dirtyRanges.add(new DirtyRange(mTag.start(), mTag.end() - 1));
                 } else {
                     // This file contains at least one translatable string
                     haveAny = true;
@@ -469,6 +475,7 @@ public class ResourcesParser {
 
     private static class DirtyRange {
         final int start, end;
+
         DirtyRange(int s, int e) {
             start = s;
             end = e;
@@ -525,7 +532,7 @@ public class ResourcesParser {
             } else {
                 // We don't have a translation, so this tag is dirty. Decrease
                 // the range by 1 not to eat up the next character (due to the i++)
-                dirtyRanges.add(new DirtyRange(mTag.start(), mTag.end()-1));
+                dirtyRanges.add(new DirtyRange(mTag.start(), mTag.end() - 1));
             }
         }
 
@@ -577,7 +584,7 @@ public class ResourcesParser {
                             resources.getContent(id)));
                     break;
                 case STRING_ARRAY:
-                    ResStringArray array = ((ResStringArray.Item)resources.getTag(id)).getParent();
+                    ResStringArray array = ((ResStringArray.Item) resources.getTag(id)).getParent();
                     int i = 0;
                     mItem = RES_TAG_PATTERN.matcher(mTag.group(3));
                     while (mItem.find()) {
@@ -595,7 +602,7 @@ public class ResourcesParser {
                     }
                     break;
                 case PLURALS:
-                    ResPlurals plurals = ((ResPlurals.Item)resources.getTag(id)).getParent();
+                    ResPlurals plurals = ((ResPlurals.Item) resources.getTag(id)).getParent();
                     mItem = RES_TAG_PATTERN.matcher(mTag.group(3));
                     while (mItem.find()) {
                         if (mItem.group(1).equals(ITEM)) {

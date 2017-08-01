@@ -60,18 +60,18 @@ public class HistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
 
-        mRepositoryListView = (ListView)rootView.findViewById(R.id.repositoryListView);
+        mRepositoryListView = (ListView) rootView.findViewById(R.id.repositoryListView);
         mRepositoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                RepoHandler repo = (RepoHandler)adapterView.getItemAtPosition(i);
+                RepoHandler repo = (RepoHandler) adapterView.getItemAtPosition(i);
                 TranslateActivity.launch(getContext(), repo);
             }
         });
         registerForContextMenu(mRepositoryListView);
 
-        mHistoryMessageTextView = (TextView)rootView.findViewById(R.id.historyMessageTextView);
-        mRepositoriesTitle = (TextView)rootView.findViewById(R.id.repositoriesTitle);
+        mHistoryMessageTextView = (TextView) rootView.findViewById(R.id.historyMessageTextView);
+        mRepositoriesTitle = (TextView) rootView.findViewById(R.id.repositoriesTitle);
 
         changeListener.onRepositoryCountChanged();
 
@@ -115,9 +115,9 @@ public class HistoryFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info =
-                (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        mLastSelectedRepo = (RepoHandler)mRepositoryListView.getItemAtPosition(info.position);
+        mLastSelectedRepo = (RepoHandler) mRepositoryListView.getItemAtPosition(info.position);
         switch (item.getItemId()) {
             case R.id.importRepo:
                 importFromSd();
@@ -169,7 +169,7 @@ public class HistoryFragment extends Fragment {
     // Ripped off from TranslateActivity.java
     // The following 3 methods make use of mLastSelectedRepo - will fail if it is null
     private void exportToSd() {
-        String filename = mLastSelectedRepo.getName(false)+".zip";
+        String filename = mLastSelectedRepo.getName(false) + ".zip";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);

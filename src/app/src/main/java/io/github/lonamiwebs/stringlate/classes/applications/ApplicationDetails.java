@@ -26,7 +26,7 @@ public class ApplicationDetails {
     //region Initialization
 
     public ApplicationDetails() {
-        
+
     }
 
     public ApplicationDetails(String packageName, String lastUpdated,

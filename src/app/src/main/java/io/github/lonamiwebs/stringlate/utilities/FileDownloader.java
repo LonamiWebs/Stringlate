@@ -30,7 +30,7 @@ public class FileDownloader {
         OutputStream output = null;
         HttpURLConnection connection = null;
         try {
-            connection = (HttpURLConnection)url.openConnection();
+            connection = (HttpURLConnection) url.openConnection();
             connection.connect();
 
             input = connection.getInputStream();
@@ -56,7 +56,8 @@ public class FileDownloader {
                     output.close();
                 if (input != null)
                     input.close();
-            } catch (IOException ignored) { }
+            } catch (IOException ignored) {
+            }
             if (connection != null)
                 connection.disconnect();
         }

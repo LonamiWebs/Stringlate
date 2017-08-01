@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="?attr/listPreferredItemHeight"
-    android:paddingTop="8dp"
-    android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-    android:paddingStart="?attr/listPreferredItemPaddingLeft"
-    android:paddingRight="?attr/listPreferredItemPaddingRight"
+    android:baselineAligned="false"
+    android:orientation="vertical"
     android:paddingEnd="?attr/listPreferredItemPaddingRight"
-    android:baselineAligned="false">
+    android:paddingLeft="?attr/listPreferredItemPaddingLeft"
+    android:paddingRight="?attr/listPreferredItemPaddingRight"
+    android:paddingStart="?attr/listPreferredItemPaddingLeft"
+    android:paddingTop="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,9 +21,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:maxLines="1"
             android:ellipsize="end"
-            android:textStyle="bold"/>
+            android:maxLines="1"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/language_code"
@@ -36,11 +36,11 @@
 
     <TextView
         android:id="@+id/language_country"
-        android:layout_marginTop="8dp"
+        style="@style/TextAppearance.AppCompat.Small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"
+        android:layout_marginTop="8dp"
         android:ellipsize="end"
-        style="@style/TextAppearance.AppCompat.Small"/>
+        android:maxLines="1" />
 
 </LinearLayout>

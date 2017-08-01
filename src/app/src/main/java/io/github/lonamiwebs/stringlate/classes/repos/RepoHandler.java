@@ -198,7 +198,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return false;
     }
 
-    public RepoSettings getRepoSettings(){
+    public RepoSettings getRepoSettings() {
         return mSettings;
     }
 
@@ -731,7 +731,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         }
     }
 
-    public String getProjectHomepageUrl(){
+    public String getProjectHomepageUrl() {
         return mSettings.getProjectHomepageUrl();
     }
 

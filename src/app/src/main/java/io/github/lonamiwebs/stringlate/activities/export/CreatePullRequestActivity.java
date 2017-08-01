@@ -26,9 +26,9 @@ import java.util.Map;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -58,9 +58,9 @@ public class CreatePullRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_pull_request);
 
-        mInfoTextView = (TextView)findViewById(R.id.infoTextView);
-        mBranchesSpinner = (Spinner)findViewById(R.id.branchesSpinner);
-        mCommitMessageEditText = (EditText)findViewById(R.id.commitMessageEditText);
+        mInfoTextView = (TextView) findViewById(R.id.infoTextView);
+        mBranchesSpinner = (Spinner) findViewById(R.id.branchesSpinner);
+        mCommitMessageEditText = (EditText) findViewById(R.id.commitMessageEditText);
 
         mSettings = new AppSettings(this);
 
@@ -144,7 +144,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
     //region Button events
 
     public void commitChanges(View view) {
-        final String branch = (String)mBranchesSpinner.getSelectedItem();
+        final String branch = (String) mBranchesSpinner.getSelectedItem();
         if (mNeedFork == null || branch == null) {
             Toast.makeText(this, R.string.loading_ellipsis, Toast.LENGTH_SHORT).show();
             return;
@@ -230,8 +230,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                     } catch (InvalidObjectException ignored) {
                         return null;
                     }
-                }
-                else
+                } else
                     return commitResult;
             }
 
@@ -293,8 +292,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
             finish();
             CreateUrlSuccessActivity.launchIntent(
                     this, getString(R.string.done), postedUrl);
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             Toast.makeText(this, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
         }
     }

@@ -6,7 +6,8 @@ public class ResString extends ResTag {
 
     //region Members
 
-    @NonNull private final String mId;
+    @NonNull
+    private final String mId;
 
     //endregion
 

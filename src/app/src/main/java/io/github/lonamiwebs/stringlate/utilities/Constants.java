@@ -19,7 +19,7 @@ public class Constants {
 
     // Online help
     public final static String ONLINE_HELP_DEFAULT_LOCALE = "en";
-    public final static String[] ONLINE_HELP_LOCALES = { "en", "es" };
+    public final static String[] ONLINE_HELP_LOCALES = {"en", "es"};
     public final static String ONLINE_HELP_INDEX =
             "https://github.com/LonamiWebs/Stringlate/blob/master/help/index.md";
 
@@ -27,7 +27,7 @@ public class Constants {
     // Scopes joined by '%20', although result scopes are joined by ','
     public final static String GITHUB_AUTH_URL = "https://github.com/login/oauth/authorize?scope=%s&client_id=%s";
     public final static String GITHUB_COMPLETE_AUTH_URL = "https://github.com/login/oauth/access_token";
-    public final static String[] GITHUB_WANTED_SCOPES = { "public_repo", "gist" };
+    public final static String[] GITHUB_WANTED_SCOPES = {"public_repo", "gist"};
     public final static String GITHUB_CLIENT_ID = "994d17302a9e34077cd9";
     public final static String GITHUB_CLIENT_SECRET = "863d91a38332b3648cd951c0c498fd2520a8dd9d";
     // Not very secret anymore is it ^ ? Some discussion available at:
@@ -42,6 +42,6 @@ public class Constants {
 
     // F-Droid
     public final static String FDROID_REPO_URL = "https://f-droid.org/repo";
-    public final static String FDROID_INDEX_URL = FDROID_REPO_URL+"/index.jar";
+    public final static String FDROID_INDEX_URL = FDROID_REPO_URL + "/index.jar";
     public final static String FALLBACK_FDROID_ICONS_DIR = "/icons/";
 }

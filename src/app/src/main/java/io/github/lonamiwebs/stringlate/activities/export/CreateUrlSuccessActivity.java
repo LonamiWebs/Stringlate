@@ -34,8 +34,8 @@ public class CreateUrlSuccessActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         mPostedUrl = intent.getStringExtra(EXTRA_REMOTE_PATH);
-        ((EditText)findViewById(R.id.postedUrlEditText)).setText(mPostedUrl);
-        ((TextView)findViewById(R.id.postSuccessTextView)).setText(
+        ((EditText) findViewById(R.id.postedUrlEditText)).setText(mPostedUrl);
+        ((TextView) findViewById(R.id.postSuccessTextView)).setText(
                 intent.getStringExtra(EXTRA_DESCRIPTION));
     }
 
@@ -56,7 +56,7 @@ public class CreateUrlSuccessActivity extends AppCompatActivity {
     }
 
     public void onCopyUrl(final View v) {
-        ClipboardManager clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(ClipData.newPlainText("url", mPostedUrl));
         Toast.makeText(this, R.string.url_copied, Toast.LENGTH_SHORT).show();
     }

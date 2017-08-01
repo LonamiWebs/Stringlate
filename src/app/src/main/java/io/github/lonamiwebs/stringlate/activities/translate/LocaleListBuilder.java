@@ -20,7 +20,7 @@ import io.github.lonamiwebs.stringlate.classes.LocaleString;
 
 /**
  * Created by stani on 2017-03-04.
- *
+ * <p>
  * This class creates a simple AlertDialog with a list of locales.
  * Use the callback method to retrieve the selected locale.
  */
@@ -59,7 +59,7 @@ class LocaleListBuilder {
         mDialog = new AlertDialog.Builder(activity)
                 .setTitle(R.string.choose_locale_from_list)
                 .setNegativeButton(R.string.cancel, null)
-                .setAdapter(arrayAdapter,clickListener).create();
+                .setAdapter(arrayAdapter, clickListener).create();
 
         mDialog.getListView().setFastScrollEnabled(true);
         mDialog.getListView().setFastScrollAlwaysVisible(true);
@@ -93,7 +93,7 @@ class LocaleListBuilder {
             }
 
             if (locale != null) {
-                final ViewHolder holder = (ViewHolder)view.getTag();
+                final ViewHolder holder = (ViewHolder) view.getTag();
 
                 holder.displayLang.setText(locale.getDisplayLanguage());
                 holder.langCode.setText(LocaleString.getFullCode(locale));

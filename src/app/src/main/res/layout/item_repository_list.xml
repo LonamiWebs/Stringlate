@@ -1,74 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="?attr/listPreferredItemHeight"
-    android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-    android:paddingStart="?attr/listPreferredItemPaddingLeft"
-    android:paddingRight="?attr/listPreferredItemPaddingRight"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
     android:paddingEnd="?attr/listPreferredItemPaddingRight"
-    android:baselineAligned="false">
+    android:paddingLeft="?attr/listPreferredItemPaddingLeft"
+    android:paddingRight="?attr/listPreferredItemPaddingRight"
+    android:paddingStart="?attr/listPreferredItemPaddingLeft">
 
-<ImageView
-    android:id="@+id/repositoryIcon"
-    android:layout_width="48dp"
-    android:layout_height="48dp"
-    android:layout_gravity="center_vertical"
-    android:scaleType="fitCenter"
-    android:layout_marginRight="?attr/listPreferredItemPaddingRight"
-    android:layout_marginEnd="?attr/listPreferredItemPaddingRight"
-    tools:src="@drawable/app_not_found"/>
+    <ImageView
+        android:id="@+id/repositoryIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="?attr/listPreferredItemPaddingRight"
+        android:layout_marginRight="?attr/listPreferredItemPaddingRight"
+        android:scaleType="fitCenter"
+        tools:src="@drawable/app_not_found" />
     <!-- TODO ^ remove this src="..." -->
 
     <LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_vertical"
-    android:baselineAligned="false">
-
-    <TextView android:id="@+id/repositoryPath"
-        android:textSize="16sp"
-        android:maxLines="1"
-        android:ellipsize="end"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:baselineAligned="false"
+        android:orientation="vertical">
 
-        android:text="/LonamiWebs/Stringlate"/>
+        <TextView
+            android:id="@+id/repositoryPath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="/LonamiWebs/Stringlate"
+
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView android:id="@+id/repositoryHost"
-                android:textSize="14sp"
-                android:textColor="?android:attr/textColorSecondary"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:layout_weight="1"
+            <TextView
+                android:id="@+id/repositoryHost"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="github.com"
+                android:textColor="?android:attr/textColorSecondary"
 
-                android:text="github.com"/>
+                android:textSize="14sp" />
 
-            <TextView android:id="@+id/translatedProgressText"
+            <TextView
+                android:id="@+id/translatedProgressText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:text="64%"/>
+                android:text="64%" />
 
         </LinearLayout>
+
         <ProgressBar
             android:id="@+id/translatedProgressBar"
             style="@android:style/Widget.ProgressBar.Horizontal"
-            android:progressDrawable="@drawable/drawable_progress_bar"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_marginTop="4dp"
+            android:max="100"
             android:progress="64"
-            android:max="100" />
+            android:progressDrawable="@drawable/drawable_progress_bar" />
 
-</LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

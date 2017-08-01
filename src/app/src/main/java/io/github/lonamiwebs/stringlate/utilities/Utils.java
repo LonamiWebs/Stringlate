@@ -1,5 +1,12 @@
 package io.github.lonamiwebs.stringlate.utilities;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
+import android.util.Log;
+import android.widget.Toast;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,13 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.support.annotation.NonNull;
-import android.util.Log;
-import android.widget.Toast;
-
 import io.github.lonamiwebs.stringlate.R;
 
 public class Utils {
@@ -25,7 +25,7 @@ public class Utils {
 
     public static boolean isNotConnected(final Context ctx, boolean warn) {
         ConnectivityManager connectivityManager
-                = (ConnectivityManager)ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+                = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
         boolean notConnected = activeNetworkInfo == null || !activeNetworkInfo.isConnected();
@@ -67,7 +67,7 @@ public class Utils {
         try {
             return readCloseStream(new FileInputStream(file));
         } catch (FileNotFoundException e) {
-            Log.w("Utils/readFile", "File "+file+" not found.");
+            Log.w("Utils/readFile", "File " + file + " not found.");
             e.printStackTrace();
         }
 

@@ -1,5 +1,16 @@
 package io.github.lonamiwebs.stringlate.git;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.DisplayMetrics;
+import android.util.Pair;
+
+import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Ref;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,17 +20,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.eclipse.jgit.api.CloneCommand;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ListBranchCommand;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Ref;
-
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.util.DisplayMetrics;
-import android.util.Pair;
 
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
@@ -56,8 +56,7 @@ public class GitWrapper {
 
         if (url.startsWith("git://")) {
             return url;
-        }
-        else if (url.contains("github") || url.contains("gitlab")) {
+        } else if (url.contains("github") || url.contains("gitlab")) {
             // Since we know how these URLs work, match the owner and the repository name.
             // This will allow us to handle any URL on the site (even "/issues", "/wiki"…)
             Matcher m = OWNER_REPO.matcher(url);
@@ -199,7 +198,7 @@ public class GitWrapper {
             i++;
         }
         // Not found? Try going backwards (-1, we already checked wantedDensity)
-        i = wantedDensity-1;
+        i = wantedDensity - 1;
         while (i >= 0) {
             density = getDensitySuffix(i);
             for (File f : foundIcons) {
@@ -212,7 +211,7 @@ public class GitWrapper {
         // Just return a random one, this shouldn't happen
         if (i >= 0 && i < foundIcons.size()) {
             return foundIcons.get(i);
-        } else{
+        } else {
             return null;
         }
     }
@@ -220,26 +219,42 @@ public class GitWrapper {
     private final static int MAX_DENSITY_INDEX = 6;
 
     private static int getDensityIndex(final int density) {
-        switch(density) {
-            case DisplayMetrics.DENSITY_LOW: return 0;
-            case DisplayMetrics.DENSITY_MEDIUM: return 1;
-            case DisplayMetrics.DENSITY_TV: return 2;
-            case DisplayMetrics.DENSITY_HIGH: return 3;
-            case DisplayMetrics.DENSITY_XHIGH: return 4;
-            case DisplayMetrics.DENSITY_XXHIGH: return 5;
-            default: case DisplayMetrics.DENSITY_XXXHIGH: return 6;
+        switch (density) {
+            case DisplayMetrics.DENSITY_LOW:
+                return 0;
+            case DisplayMetrics.DENSITY_MEDIUM:
+                return 1;
+            case DisplayMetrics.DENSITY_TV:
+                return 2;
+            case DisplayMetrics.DENSITY_HIGH:
+                return 3;
+            case DisplayMetrics.DENSITY_XHIGH:
+                return 4;
+            case DisplayMetrics.DENSITY_XXHIGH:
+                return 5;
+            default:
+            case DisplayMetrics.DENSITY_XXXHIGH:
+                return 6;
         }
     }
 
     private static String getDensitySuffix(final int index) {
         switch (index) {
-            case 0: return "-ldpi";
-            case 1: return "-mdpi";
-            case 2: return "-tvdpi";
-            case 3: return "-hdpi";
-            case 4: return "-xhdpi";
-            case 5: return "-xxhdpi";
-            default: case 6: return "-xxxhdpi";
+            case 0:
+                return "-ldpi";
+            case 1:
+                return "-mdpi";
+            case 2:
+                return "-tvdpi";
+            case 3:
+                return "-hdpi";
+            case 4:
+                return "-xhdpi";
+            case 5:
+                return "-xxhdpi";
+            default:
+            case 6:
+                return "-xxxhdpi";
         }
     }
 
@@ -273,7 +288,8 @@ public class GitWrapper {
                                 findIcons(parent, type, name, false, foundIcons);
                             }
                         }
-                    } catch (FileNotFoundException ignored) { }
+                    } catch (FileNotFoundException ignored) {
+                    }
                 }
             }
         }

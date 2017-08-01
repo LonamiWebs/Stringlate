@@ -9,7 +9,8 @@ public class RepoProgress {
     public int currentChars;
     public int totalChars;
 
-    public RepoProgress() { }
+    public RepoProgress() {
+    }
 
     private RepoProgress(int stringsCount, int translatedCount, int currentChars, int totalChars) {
         this.stringsCount = stringsCount;
@@ -37,6 +38,6 @@ public class RepoProgress {
         if (totalChars == 0)
             return 0f;
 
-        return (100.0f * (float)currentChars) / (float)totalChars;
+        return (100.0f * (float) currentChars) / (float) totalChars;
     }
 }

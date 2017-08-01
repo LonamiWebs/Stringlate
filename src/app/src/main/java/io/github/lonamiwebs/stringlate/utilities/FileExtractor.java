@@ -13,12 +13,10 @@ public class FileExtractor {
 
     // http://stackoverflow.com/a/10997886/4759433
     public static boolean unpackZip(File zipFile, File outDir,
-                                    boolean subDirectories)
-    {
+                                    boolean subDirectories) {
         InputStream is;
         ZipInputStream zis;
-        try
-        {
+        try {
             String filename;
             is = new FileInputStream(zipFile);
             zis = new ZipInputStream(new BufferedInputStream(is));
@@ -43,7 +41,7 @@ public class FileExtractor {
             }
             zis.close();
             return true;
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return false;
         }

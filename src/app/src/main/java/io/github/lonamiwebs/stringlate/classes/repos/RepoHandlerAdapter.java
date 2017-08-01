@@ -17,16 +17,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.classes.resources.Resources;
-import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.MATERIAL_COLORS;
 

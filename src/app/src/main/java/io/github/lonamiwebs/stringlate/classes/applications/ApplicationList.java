@@ -38,7 +38,8 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
 
     // Keep track of a filtered slice, so ListViews can have a "Show more"
     private ArrayList<ApplicationDetails> mApplicationsSlice;
-    @NonNull private String mSliceFilter;
+    @NonNull
+    private String mSliceFilter;
     private int mLastSliceIndex;
 
     //endregion
@@ -233,7 +234,7 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
     }
 
     private File getIndexFile(String extension) {
-        return new File(mRoot, "index."+extension);
+        return new File(mRoot, "index." + extension);
     }
 
     @Override

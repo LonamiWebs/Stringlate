@@ -52,10 +52,12 @@ public abstract class GitCloneProgressCallback
     }
 
     @Override
-    final public void start(int totalTasks) { }
+    final public void start(int totalTasks) {
+    }
 
     @Override
-    final public void endTask() { }
+    final public void endTask() {
+    }
 
     private void updateProgress() {
         final String title = mActivity.getString(R.string.cloning_repo);

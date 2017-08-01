@@ -8,8 +8,10 @@ public class ResPlurals {
 
     //region Members
 
-    @NonNull private final HashSet<Item> mItems;
-    @NonNull private final String mId;
+    @NonNull
+    private final HashSet<Item> mItems;
+    @NonNull
+    private final String mId;
 
     //endregion
 
@@ -62,8 +64,10 @@ public class ResPlurals {
     //region Sub classes
 
     public class Item extends ResTag {
-        @NonNull final ResPlurals mParent;
-        @NonNull final String mQuantity;
+        @NonNull
+        final ResPlurals mParent;
+        @NonNull
+        final String mQuantity;
 
         Item(@NonNull final ResPlurals parent, @NonNull final String quantity,
              @NonNull final String content, final boolean modified) {

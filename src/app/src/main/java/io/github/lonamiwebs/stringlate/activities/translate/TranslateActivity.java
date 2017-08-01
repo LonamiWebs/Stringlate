@@ -114,20 +114,20 @@ public class TranslateActivity extends AppCompatActivity {
 
         mSettings = new AppSettings(this);
 
-        mOriginalStringEditText = (EditText)findViewById(R.id.originalStringEditText);
-        mTranslatedStringEditText = (EditText)findViewById(R.id.translatedStringEditText);
+        mOriginalStringEditText = (EditText) findViewById(R.id.originalStringEditText);
+        mTranslatedStringEditText = (EditText) findViewById(R.id.translatedStringEditText);
         mTranslatedStringEditText.addTextChangedListener(onTranslationChanged);
 
-        mLocaleSpinner = (Spinner)findViewById(R.id.localeSpinner);
-        mStringIdSpinner = (Spinner)findViewById(R.id.stringIdSpinner);
+        mLocaleSpinner = (Spinner) findViewById(R.id.localeSpinner);
+        mStringIdSpinner = (Spinner) findViewById(R.id.stringIdSpinner);
 
-        mPreviousButton = (Button)findViewById(R.id.previousButton);
-        mNextButton = (Button)findViewById(R.id.nextButton);
-        mProgressProgressBar = (ProgressBar)findViewById(R.id.progressProgressBar);
-        mProgressTextView = (TextView)findViewById(R.id.progressTextView);
+        mPreviousButton = (Button) findViewById(R.id.previousButton);
+        mNextButton = (Button) findViewById(R.id.nextButton);
+        mProgressProgressBar = (ProgressBar) findViewById(R.id.progressProgressBar);
+        mProgressTextView = (TextView) findViewById(R.id.progressTextView);
 
-        mFilterAppliedLayout = (LinearLayout)findViewById(R.id.filterAppliedLayout);
-        mFilterAppliedTextView = (TextView)findViewById(R.id.filterAppliedTextView);
+        mFilterAppliedLayout = (LinearLayout) findViewById(R.id.filterAppliedLayout);
+        mFilterAppliedTextView = (TextView) findViewById(R.id.filterAppliedTextView);
         mUsesTranslationServiceTextView = (TextView)
                 findViewById(R.id.usesTranslationServiceTextView);
 
@@ -202,8 +202,7 @@ public class TranslateActivity extends AppCompatActivity {
                         "setOptionalIconsVisible", Boolean.TYPE);
                 m.setAccessible(true);
                 m.invoke(menu, true);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.w("TranslateActivity", "Could not make the menu icons visible.", e);
             }
         }
@@ -264,12 +263,24 @@ public class TranslateActivity extends AppCompatActivity {
 
                 // Perform the requested export
                 switch (item.getItemId()) {
-                    case R.id.exportToSdcard: exportToSd(); break;
-                    case R.id.exportToGist: exportToGist(); break;
-                    case R.id.github_export_to_issue: exportToIssue(); break;
-                    case R.id.github_export_to_pr: exportToPullRequest(); break;
-                    case R.id.exportShare: exportToShare(); break;
-                    case R.id.exportCopy: exportToCopy(); break;
+                    case R.id.exportToSdcard:
+                        exportToSd();
+                        break;
+                    case R.id.exportToGist:
+                        exportToGist();
+                        break;
+                    case R.id.github_export_to_issue:
+                        exportToIssue();
+                        break;
+                    case R.id.github_export_to_pr:
+                        exportToPullRequest();
+                        break;
+                    case R.id.exportShare:
+                        exportToShare();
+                        break;
+                    case R.id.exportCopy:
+                        exportToCopy();
+                        break;
                 }
                 return true;
 
@@ -440,7 +451,7 @@ public class TranslateActivity extends AppCompatActivity {
     private void promptAddLocale(final String presetLocaleCode) {
 
         final LocaleListBuilder localeList = new LocaleListBuilder(this,
-                new LocaleListBuilder.LocalePickCallback(){
+                new LocaleListBuilder.LocalePickCallback() {
                     @Override
                     public void onChoice(final String localeCode) {
                         promptAddLocale(localeCode);
@@ -659,7 +670,7 @@ public class TranslateActivity extends AppCompatActivity {
         String filename = mSelectedLocaleResources.getFilename();
         String xml = mRepo.mergeDefaultTemplate(mSelectedLocale);
 
-        ClipboardManager clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(ClipData.newPlainText(filename, xml));
         Toast.makeText(this, getString(R.string.xml_copied_to_clipboard, filename),
                 Toast.LENGTH_SHORT).show();
@@ -673,7 +684,7 @@ public class TranslateActivity extends AppCompatActivity {
     private void deleteString() {
         if (!isLocaleSelected(true)) return;
 
-        mSelectedLocaleResources.deleteId((String)mStringIdSpinner.getSelectedItem());
+        mSelectedLocaleResources.deleteId((String) mStringIdSpinner.getSelectedItem());
         mTranslatedStringEditText.setText("");
     }
 
@@ -781,7 +792,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Toggles the "Show identical strings" checkbox and updates the spinner
     private void toggleShowIdentical(MenuItem item) {
-        mShowIdentical= !mShowIdentical;
+        mShowIdentical = !mShowIdentical;
         if (item != null) {
             item.setChecked(mShowIdentical);
         }
@@ -863,7 +874,8 @@ public class TranslateActivity extends AppCompatActivity {
 
     private final TextWatcher onTranslationChanged = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -874,7 +886,8 @@ public class TranslateActivity extends AppCompatActivity {
         }
 
         @Override
-        public void afterTextChanged(Editable editable) { }
+        public void afterTextChanged(Editable editable) {
+        }
     };
 
     //endregion
@@ -885,7 +898,7 @@ public class TranslateActivity extends AppCompatActivity {
             eOnLocaleSelected = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
-            final LocaleString selectedLocale = (LocaleString)parent.getItemAtPosition(i);
+            final LocaleString selectedLocale = (LocaleString) parent.getItemAtPosition(i);
             if (isLocaleSelected(false)) {
                 save();
                 setCurrentLocale(selectedLocale.getCode());
@@ -896,19 +909,22 @@ public class TranslateActivity extends AppCompatActivity {
             }
             updateProgress();
         }
+
         @Override
-        public void onNothingSelected(AdapterView<?> parent) { }
+        public void onNothingSelected(AdapterView<?> parent) {
+        }
     };
 
     private final AdapterView.OnItemSelectedListener
             eOnStringIdSelected = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
-            updateSelectedResourceId((String)parent.getItemAtPosition(i));
+            updateSelectedResourceId((String) parent.getItemAtPosition(i));
         }
 
         @Override
-        public void onNothingSelected(AdapterView<?> parent) { }
+        public void onNothingSelected(AdapterView<?> parent) {
+        }
     };
 
     //endregion
@@ -1097,7 +1113,7 @@ public class TranslateActivity extends AppCompatActivity {
         if (i > -1) {
             if (i < mStringIdSpinner.getCount()) {
                 mStringIdSpinner.setSelection(i);
-                updateSelectedResourceId((String)mStringIdSpinner.getSelectedItem());
+                updateSelectedResourceId((String) mStringIdSpinner.getSelectedItem());
             } else {
                 Toast.makeText(this, R.string.no_strings_left, Toast.LENGTH_SHORT).show();
             }
@@ -1108,7 +1124,7 @@ public class TranslateActivity extends AppCompatActivity {
         int i = getItemIndex(mStringIdSpinner, id);
         if (i > -1) {
             mStringIdSpinner.setSelection(i);
-            updateSelectedResourceId((String)mStringIdSpinner.getSelectedItem());
+            updateSelectedResourceId((String) mStringIdSpinner.getSelectedItem());
         } else if (!mShowTranslated) {
             toggleShowTranslated(mShowTranslatedMenuItem);
             setStringId(id);

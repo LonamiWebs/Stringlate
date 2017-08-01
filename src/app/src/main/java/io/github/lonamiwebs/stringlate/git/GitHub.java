@@ -26,9 +26,9 @@ public class GitHub {
 
     private static String gGetUrl(final String call, final Object... args) {
         if (args.length > 0)
-            return API_URL+String.format(call, args);
+            return API_URL + String.format(call, args);
         else
-            return API_URL+call;
+            return API_URL + call;
     }
 
     //endregion
@@ -59,9 +59,8 @@ public class GitHub {
             if (token.isEmpty())
                 return new JSONObject(WebUtils.performCall(gGetUrl("gists"), params));
             else
-                return new JSONObject(WebUtils.performCall(gGetUrl("gists?access_token="+token), params));
-        }
-        catch (JSONException e) {
+                return new JSONObject(WebUtils.performCall(gGetUrl("gists?access_token=" + token), params));
+        } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
@@ -78,8 +77,7 @@ public class GitHub {
 
             return new JSONObject(WebUtils.performCall(gGetUrl("repos/%s/issues?access_token=%s",
                     repo.toOwnerRepo(), token), params));
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
@@ -94,8 +92,7 @@ public class GitHub {
             return new JSONObject(WebUtils.performCall(gGetUrl(
                     "repos/%s/issues/%d/comments?access_token=%s",
                     repo.toOwnerRepo(), issueNumber, token), params));
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
@@ -228,7 +225,7 @@ public class GitHub {
                                                final HashMap<String, String> pathContents,
                                                final String commitMessage)
             throws JSONException, InvalidObjectException {
-        final String tokenQuery = "?access_token="+token;
+        final String tokenQuery = "?access_token=" + token;
         final String ownerRepo = repo.toOwnerRepo();
 
         // Step 1. Get a reference to HEAD (GET /repos/:owner/:repo/git/refs/:ref)
@@ -241,7 +238,7 @@ public class GitHub {
         String headCommitUrl = head.getJSONObject("object").getString("url");
         // Equivalent to getting object.sha and then formatting it
 
-        JSONObject commit = new JSONObject(WebUtils.performCall(headCommitUrl+tokenQuery, WebUtils.GET));
+        JSONObject commit = new JSONObject(WebUtils.performCall(headCommitUrl + tokenQuery, WebUtils.GET));
 
         // Step 3. Post your new file to the server (POST /repos/:owner/:repo/git/blobs)
         // https://developer.github.com/v3/git/blobs/#create-a-blob
@@ -263,7 +260,7 @@ public class GitHub {
         String treeUrl = commit.getJSONObject("tree").getString("url");
         // Equivalent to getting tree.sha and then formatting it
 
-        JSONObject baseTree = new JSONObject(WebUtils.performCall(treeUrl+tokenQuery, WebUtils.GET));
+        JSONObject baseTree = new JSONObject(WebUtils.performCall(treeUrl + tokenQuery, WebUtils.GET));
 
         // Step 5. Create a tree containing your new file
         //      5a. The easy way (POST /repos/:owner/:repo/git/trees)

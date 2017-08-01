@@ -13,7 +13,8 @@ public abstract class ResTag implements Comparable<ResTag> {
 
     //region Members
 
-    @NonNull String mContent;
+    @NonNull
+    String mContent;
 
     // "metadata" used to keep track whether a string is the original or not. This
     // will be later used when downloading remote changes, to keep local if modified.
@@ -23,17 +24,30 @@ public abstract class ResTag implements Comparable<ResTag> {
 
     //region Getters
 
-    @NonNull abstract public String getId();
+    @NonNull
+    abstract public String getId();
 
     @Override
-    public int hashCode() { return getId().hashCode(); }
+    public int hashCode() {
+        return getId().hashCode();
+    }
 
     @NonNull
-    public String getContent() { return mContent; }
-    public int getContentLength() { return mContent.length(); }
-    public boolean hasContent() { return !mContent.isEmpty(); }
+    public String getContent() {
+        return mContent;
+    }
 
-    public boolean wasModified() { return mModified; }
+    public int getContentLength() {
+        return mContent.length();
+    }
+
+    public boolean hasContent() {
+        return !mContent.isEmpty();
+    }
+
+    public boolean wasModified() {
+        return mModified;
+    }
 
     @NonNull
     public abstract ResTag clone(String newContent);
@@ -71,7 +85,7 @@ public abstract class ResTag implements Comparable<ResTag> {
     public static String desanitizeContent(String content) {
         char c;
         int length = content.length();
-        StringBuilder sb = new StringBuilder(length+16); // 16 seems to be the default capacity
+        StringBuilder sb = new StringBuilder(length + 16); // 16 seems to be the default capacity
 
         // Currently we handle the following sequences:
         // \", \', \\, \n, &lt;, &gt;, &amp;
@@ -113,9 +127,15 @@ public abstract class ResTag implements Comparable<ResTag> {
                         sb.append('&');
                     } else {
                         switch (content.substring(i, semicolon)) {
-                            case "&lt": sb.append('<'); break;
-                            case "&gt": sb.append('>'); break;
-                            case "&amp": sb.append('&'); break;
+                            case "&lt":
+                                sb.append('<');
+                                break;
+                            case "&gt":
+                                sb.append('>');
+                                break;
+                            case "&amp":
+                                sb.append('&');
+                                break;
                             default:
                                 // Keep the unescaped sequence, we'll also have trouble
                                 sb.append(content.substring(i, semicolon)).append(';');
@@ -126,10 +146,14 @@ public abstract class ResTag implements Comparable<ResTag> {
                     break;
 
                 // New lines are treated as spaces
-                case '\n': sb.append(' '); break;
+                case '\n':
+                    sb.append(' ');
+                    break;
 
                 // Normal character
-                default: sb.append(c); break;
+                default:
+                    sb.append(c);
+                    break;
             }
         }
         return sb.toString();
@@ -139,7 +163,7 @@ public abstract class ResTag implements Comparable<ResTag> {
     public static String sanitizeContent(String content) {
         char c;
         int length = content.length();
-        StringBuilder sb = new StringBuilder(length+16); // 16 seems to be the default capacity
+        StringBuilder sb = new StringBuilder(length + 16); // 16 seems to be the default capacity
 
         boolean replaceLtGt = false;
         if (content.contains("<")) {
@@ -154,7 +178,7 @@ public abstract class ResTag implements Comparable<ResTag> {
                 // Every XML needs to have a root tag, however, this is not the case for
                 // Android strings, and so we need to wrap it around some arbitrary tags
                 // in order to check whether the inner content is right or not.
-                builder.parse(new InputSource(new StringReader("<a>"+content+"</a>")));
+                builder.parse(new InputSource(new StringReader("<a>" + content + "</a>")));
             } catch (Exception ignored) {
                 replaceLtGt = true;
             }
@@ -166,17 +190,29 @@ public abstract class ResTag implements Comparable<ResTag> {
             c = content.charAt(i);
             switch (c) {
                 // These should always be escaped
-                case '\'': sb.append("\\'"); break;
+                case '\'':
+                    sb.append("\\'");
+                    break;
                 // Keep an actual newline afterwards for more readability
-                case '\n': sb.append("\\n\n"); break;
+                case '\n':
+                    sb.append("\\n\n");
+                    break;
 
                 // We can't tell whether the user intended to escape something
-                case '\\': sb.append("\\\\"); break;
-                case '&': sb.append("&amp;"); break;
+                case '\\':
+                    sb.append("\\\\");
+                    break;
+                case '&':
+                    sb.append("&amp;");
+                    break;
 
                 // We might or not need to replace <>
-                case '<': sb.append(replaceLtGt ? "&lt;" : "<"); break;
-                case '>': sb.append(replaceLtGt ? "&gt;" : ">"); break;
+                case '<':
+                    sb.append(replaceLtGt ? "&lt;" : "<");
+                    break;
+                case '>':
+                    sb.append(replaceLtGt ? "&gt;" : ">");
+                    break;
 
                 // Quotes are a bit special
                 case '"':
@@ -187,7 +223,9 @@ public abstract class ResTag implements Comparable<ResTag> {
                     break;
 
                 // Normal character
-                default: sb.append(c); break;
+                default:
+                    sb.append(c);
+                    break;
             }
         }
         return sb.toString();
