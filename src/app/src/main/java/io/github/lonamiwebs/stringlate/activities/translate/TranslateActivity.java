@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity;
@@ -237,6 +238,13 @@ public class TranslateActivity extends AppCompatActivity {
                 mSettings.setStringSortMode(AppSettings.SORT_STRING_LENGTH);
                 loadStringIDsSpinner();
                 return true;
+
+            case R.id.action_open_project_homepage: {
+                Intent browserIntent = new Intent(this, BrowserActivity.class);
+                browserIntent.putExtra(BrowserActivity.EXTRA_LOAD_URL, mRepo.getProjectHomepageUrl());
+                startActivity(browserIntent);
+                return true;
+            }
 
             // Exporting resources
             case R.id.exportToSdcard:

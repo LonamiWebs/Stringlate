@@ -18,6 +18,12 @@
         android:icon="@drawable/ic_note_add_black_24dp"
         android:title="@string/add_locale" />
 
+
+    <item
+        android:id="@+id/action_open_project_homepage"
+        android:icon="@drawable/ic_public_black_24dp"
+        android:title="@string/open_project_homepage" />
+
     <item
         android:id="@+id/sortBy"
         android:icon="@drawable/ic_sort_black_24dp"

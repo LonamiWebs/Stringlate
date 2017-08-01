@@ -79,7 +79,7 @@
         <activity
             android:name=".activities.export.CreateGistActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.OnlineHelpActivity" />
+        <activity android:name=".activities.BrowserActivity" />
         <activity android:name=".activities.translate.SearchStringActivity" />
         <activity
             android:name=".activities.GitHubLoginActivity"

@@ -17,7 +17,7 @@ import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class ApplicationAdapter extends ArrayAdapter<Application> {
+public class ApplicationAdapter extends ArrayAdapter<ApplicationDetails> {
     private final ImageLoader mImageLoader;
 
     // https://developer.android.com/training/improving-layouts/smooth-scrolling.html#ViewHolder
@@ -27,7 +27,7 @@ public class ApplicationAdapter extends ArrayAdapter<Application> {
         View installIndicator;
     }
 
-    public ApplicationAdapter(Context context, List<Application> apps,
+    public ApplicationAdapter(Context context, List<ApplicationDetails> apps,
                               boolean allowInternetDownload) {
         super(context, R.layout.item_application_list, apps);
         mImageLoader = new ImageLoader(context, allowInternetDownload);
@@ -35,7 +35,7 @@ public class ApplicationAdapter extends ArrayAdapter<Application> {
 
     @NonNull
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        Application app = getItem(position);
+        ApplicationDetails app = getItem(position);
 
         // This may be the first time we use the recycled view
         if (convertView == null) {

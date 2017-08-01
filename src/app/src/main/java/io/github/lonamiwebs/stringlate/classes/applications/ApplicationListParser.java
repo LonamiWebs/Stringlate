@@ -34,7 +34,7 @@ class ApplicationListParser {
 
     //region Xml -> ApplicationsList
 
-    static ArrayList<Application> parseFromXml(InputStream in, HashSet<String> installedPackages)
+    static ArrayList<ApplicationDetails> parseFromXml(InputStream in, HashSet<String> installedPackages)
             throws XmlPullParserException, IOException {
 
         try {
@@ -43,9 +43,9 @@ class ApplicationListParser {
             parser.setInput(in, null);
             parser.nextTag();
 
-            ArrayList<Application> apps = readFdroid(parser);
+            ArrayList<ApplicationDetails> apps = readFdroid(parser);
             // Now set which applications are installed on the device
-            for (Application app : apps) {
+            for (ApplicationDetails app : apps) {
                 if (installedPackages.contains(app.getPackageName()))
                     app.setInstalled();
             }
@@ -59,10 +59,10 @@ class ApplicationListParser {
     }
 
     // Reads the <fdroid> tag and returns a list of its <application> tags
-    private static ArrayList<Application> readFdroid(XmlPullParser parser)
+    private static ArrayList<ApplicationDetails> readFdroid(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
-        ArrayList<Application> apps = new ArrayList<>();
+        ArrayList<ApplicationDetails> apps = new ArrayList<>();
 
         parser.require(XmlPullParser.START_TAG, ns, "fdroid");
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -79,7 +79,7 @@ class ApplicationListParser {
     }
 
     // Reads a <application id="...">...</application> tag from the xml
-    private static Application readApplication(XmlPullParser parser)
+    private static ApplicationDetails readApplication(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
         String packageName, lastUpdated, name, description, iconUrl, sourceCodeUrl, webUrl;
@@ -126,7 +126,7 @@ class ApplicationListParser {
         }
         parser.require(XmlPullParser.END_TAG, ns, "application");
 
-        return new Application(packageName, lastUpdated,
+        return new ApplicationDetails(packageName, lastUpdated,
                 name, description, iconUrl, sourceCodeUrl, webUrl);
     }
 
@@ -164,7 +164,7 @@ class ApplicationListParser {
             serializer.setOutput(out, "UTF-8");
             serializer.startTag(ns, "fdroid");
 
-            for (Application app : applications) {
+            for (ApplicationDetails app : applications) {
                 serializer.startTag(ns, "application");
 
                 writeTag(serializer, ID, app.getPackageName());

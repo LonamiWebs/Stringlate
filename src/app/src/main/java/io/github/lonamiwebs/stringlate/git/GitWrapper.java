@@ -210,7 +210,11 @@ public class GitWrapper {
             i--;
         }
         // Just return a random one, this shouldn't happen
-        return foundIcons.get(i);
+        if (i >= 0 && i < foundIcons.size()) {
+            return foundIcons.get(i);
+        } else{
+            return null;
+        }
     }
 
     private final static int MAX_DENSITY_INDEX = 6;

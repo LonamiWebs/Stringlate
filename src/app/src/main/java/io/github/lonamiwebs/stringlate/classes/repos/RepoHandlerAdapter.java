@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.List;
@@ -56,26 +59,31 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
                     .inflate(R.layout.item_repository_list, parent, false);
 
             final ViewHolder holder = new ViewHolder();
-            holder.iconView = (ImageView)convertView.findViewById(R.id.repositoryIcon);
-            holder.pathTextView = (TextView)convertView.findViewById(R.id.repositoryPath);
-            holder.hostTextView = (TextView)convertView.findViewById(R.id.repositoryHost);
+            holder.iconView = (ImageView) convertView.findViewById(R.id.repositoryIcon);
+            holder.pathTextView = (TextView) convertView.findViewById(R.id.repositoryPath);
+            holder.hostTextView = (TextView) convertView.findViewById(R.id.repositoryHost);
             holder.translatedProgressTextView =
-                    (TextView)convertView.findViewById(R.id.translatedProgressText);
+                    (TextView) convertView.findViewById(R.id.translatedProgressText);
 
             holder.translatedProgressBar =
-                    (ProgressBar)convertView.findViewById(R.id.translatedProgressBar);
+                    (ProgressBar) convertView.findViewById(R.id.translatedProgressBar);
 
             convertView.setTag(holder);
         }
         if (repo != null) {
-            final ViewHolder holder = (ViewHolder)convertView.getTag();
+            final ViewHolder holder = (ViewHolder) convertView.getTag();
             File iconFile = repo.getIconFile();
             if (iconFile == null)
                 holder.iconView.setImageBitmap(getBitmap(repo.getName(false)));
             else
                 holder.iconView.setImageURI(Uri.fromFile(iconFile));
 
-            holder.pathTextView.setText(repo.getPath());
+            String topText = repo.getRepoSettings().getProjectName();
+            if (!repo.getRepoSettings().getGitUrl().equals(topText) && !TextUtils.isEmpty(topText)) {
+                holder.pathTextView.setText(topText);
+            } else {
+                holder.pathTextView.setText(repo.getPath());
+            }
             holder.hostTextView.setText(repo.getHost());
 
             RepoProgress progress = repo.loadProgress();
@@ -130,7 +138,7 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
         // Center text: http://stackoverflow.com/a/11121873/4759433
         paint.setColor(Color.WHITE);
         paint.setAntiAlias(true);
-        paint.setTextSize(mSize / (float)name.length());
+        paint.setTextSize(mSize / (float) name.length());
         paint.setTextAlign(Paint.Align.CENTER);
 
         float xPos = (canvas.getWidth() / 2f);

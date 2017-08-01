@@ -3,18 +3,17 @@ package io.github.lonamiwebs.stringlate.utilities;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 
 // Stringlate API
-// https://github.com/LonamiWebs/Stringlate/blob/master/src/app/src/main/java/io/github/lonamiwebs/stringlate/utilities/Api.java
+// https://github.com/LonamiWebs/Stringlate/blob/master/src/app/src/main/java/io/github/lonamiwebs/stringlate/utilities/StringlateApi.java
 //
 // External applications are free to copy and redistribute this
 // file on their projects in order to make a fair use of it.
 //
 // Otherwise, they are free to use this file as reference and
 // implement their own solutions.
-public class Api {
+@SuppressWarnings({"SpellCheckingInspection", "unused", "WeakerAccess"})
+public class StringlateApi {
 
     //region Available actions
 
@@ -41,6 +40,17 @@ public class Api {
     //   source code of the application that should be opened for translation.
     public static final String EXTRA_GIT_URL = "GIT_URL";
 
+
+    // EXTRA_PROJECT_NAME
+    //   Used to pass a String representing the name of the project
+    //   of the application that should be opened for translation.
+    public static final String EXTRA_PROJECT_NAME = "PROJECT_NAME";
+
+    // EXTRA_PROJECT_HOMEPAGE
+    //   Used to pass a String representing the project homepage
+    //   of the application that should be opened for translation.
+    public static final String EXTRA_PROJECT_HOMEPAGE = "PROJECT_HOMEPAGE";
+
     //endregion
 
     //region Mime type
@@ -65,7 +75,7 @@ public class Api {
     //     false if no application implementing this API is installed.
     public boolean isInstalled(final Context context) {
         return !context.getPackageManager()
-                .queryIntentActivities(getTranslateIntent(""), 0).isEmpty();
+                .queryIntentActivities(getTranslateIntent("", null, null), 0).isEmpty();
     }
 
     // ACTION_TRANSLATE wrapper.
@@ -73,7 +83,17 @@ public class Api {
     // Will throw ActivityNotFoundException if Stringlate is not installed on the device.
     public void translate(final Context context, final String gitUrl)
             throws ActivityNotFoundException {
-        context.startActivity(getTranslateIntent(gitUrl));
+        context.startActivity(getTranslateIntent(gitUrl, null, null));
+    }
+
+
+    // ACTION_TRANSLATE wrapper.
+    //
+    // Will throw ActivityNotFoundException if Stringlate is not installed on the device.
+    // Use null as parameter if parameter should not be used, gitUrl is mandatory
+    public void translate(final Context context, final String gitUrl, final String projectName, final String projectUrl)
+            throws ActivityNotFoundException {
+        context.startActivity(getTranslateIntent(gitUrl, projectName, projectUrl));
     }
 
     //endregion
@@ -82,10 +102,14 @@ public class Api {
 
     // Retrieves an intent which would resolve to opening Stringlate
     // with the specified .git URL to begin the translation process.
-    private static Intent getTranslateIntent(final String gitUrl) {
+    private static Intent getTranslateIntent(final String gitUrl, final String projectName, final String projectUrl) {
         final Intent intent = new Intent(ACTION_TRANSLATE);
         intent.setType(MIME_TYPE);
         intent.putExtra(EXTRA_GIT_URL, gitUrl);
+        if (projectName != null)
+            intent.putExtra(EXTRA_PROJECT_NAME, projectName);
+        if (projectUrl != null)
+            intent.putExtra(EXTRA_PROJECT_NAME, projectUrl);
         return intent;
     }
 

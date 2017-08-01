@@ -21,6 +21,7 @@ public class RepoSettings {
     private JSONObject mSettings;
 
     private static final String KEY_GIT_URL = "git_url";
+    private static final String KEY_PROJECT_HOMEPAGE_URL = "project_homepage_url";
     private static final String KEY_LAST_LOCALE = "last_locale";
     private static final String KEY_REMOTE_PATHS = "remote_paths";
     private static final String KEY_ICON_PATH = "icon_path";
@@ -28,9 +29,11 @@ public class RepoSettings {
     private static final String KEY_CREATED_ISSUES = "created_issues";
     private static final String KEY_USED_TRANSLATION_SERVICE = "translation_service";
     private static final String KEY_REMOTE_BRANCHES = "remote_branches";
+    private static final String KEY_PROJECT_NAME = "project_name";
 
     private static final String DEFAULT_GIT_URL = "";
-    private static final String DEFAULT_LAST_LOCALE = null;
+    public static final String DEFAULT_LAST_LOCALE = null;
+    public static final String DEFAULT_PROJECT_NAME = null;
 
     //region Constructor
 
@@ -46,6 +49,14 @@ public class RepoSettings {
     @NonNull
     public String getGitUrl() {
         return mSettings.optString(KEY_GIT_URL, DEFAULT_GIT_URL);
+    }
+
+    public String getProjectHomepageUrl() {
+        return mSettings.optString(KEY_PROJECT_HOMEPAGE_URL, getGitUrl());
+    }
+
+    public String getProjectName() {
+        return mSettings.optString(KEY_PROJECT_NAME, DEFAULT_PROJECT_NAME);
     }
 
     public String getLastLocale() {
@@ -124,6 +135,18 @@ public class RepoSettings {
 
     public void setGitUrl(final String gitUrl) {
         try { mSettings.put(KEY_GIT_URL, gitUrl); }
+        catch (JSONException ignored) { }
+        save();
+    }
+
+    public void setProjectHomepageUrl(final String homepageUrl) {
+        try { mSettings.put(KEY_PROJECT_HOMEPAGE_URL, homepageUrl); }
+        catch (JSONException ignored) { }
+        save();
+    }
+
+    public void setProjectName(final String projectName) {
+        try { mSettings.put(KEY_PROJECT_NAME, projectName); }
         catch (JSONException ignored) { }
         save();
     }

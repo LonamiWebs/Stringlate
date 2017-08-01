@@ -5,19 +5,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Application {
+public class ApplicationDetails {
 
     //region Members
     private static final SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     private Date mLastUpdated;
-    private final String mPackageName;
-    private final String mName;
-    private final String mDescription;
-    private final String mIconUrl;
-    private final String mSourceCodeUrl;
-    private final String mWebUrl;
+    private String mPackageName;
+    private String mName;
+    private String mDescription;
+    private String mIconUrl;
+    private String mSourceCodeUrl;
+    private String mWebUrl;
 
     private boolean mIsInstalled;
 
@@ -25,10 +25,14 @@ public class Application {
 
     //region Initialization
 
-    public Application(String packageName, String lastUpdated,
-                       String name, String description,
-                       String iconUrl, String sourceCodeUrl,
-                       String webUrl) {
+    public ApplicationDetails() {
+        
+    }
+
+    public ApplicationDetails(String packageName, String lastUpdated,
+                              String name, String description,
+                              String iconUrl, String sourceCodeUrl,
+                              String webUrl) {
         try {
             mLastUpdated = DATE_FORMAT.parse(lastUpdated);
         } catch (ParseException e) {
@@ -94,5 +98,32 @@ public class Application {
         mIsInstalled = true;
     }
 
+    public void setLastUpdated(Date lastUpdated) {
+        this.mLastUpdated = lastUpdated;
+    }
+
+    public void setPackageName(String packageName) {
+        this.mPackageName = packageName;
+    }
+
+    public void setName(String name) {
+        this.mName = name;
+    }
+
+    public void setDescription(String description) {
+        this.mDescription = description;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.mIconUrl = iconUrl;
+    }
+
+    public void setSourceCodeUrl(String sourceCodeUrl) {
+        this.mSourceCodeUrl = sourceCodeUrl;
+    }
+
+    public void setWebUrl(String webUrl) {
+        this.mWebUrl = webUrl;
+    }
     //endregion
 }

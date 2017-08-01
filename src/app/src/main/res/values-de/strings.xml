@@ -163,4 +163,5 @@
     <string name="application_may_use_translation_platform">Diese App könnte %s für die Verwaltung der Übersetzungen nutzen. Öffne die Hilfe für mehr Informationen.</string>
     <string name="select_branch">Wähle eine Branch aus</string>
     <string name="ignore">Ignorieren</string>
+    <string name="open_project_homepage">Projektseite öffnen</string>
 </resources>

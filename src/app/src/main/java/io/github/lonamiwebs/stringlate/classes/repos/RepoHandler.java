@@ -116,7 +116,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mContext = context;
         gitUrl = GitWrapper.getGitUri(gitUrl);
 
-        mRoot = new File(mContext.getFilesDir(), BASE_DIR+"/"+getId(gitUrl));
+        mRoot = new File(mContext.getFilesDir(), BASE_DIR + "/" + getId(gitUrl));
         mSettings = new RepoSettings(mRoot);
         mSettings.setGitUrl(gitUrl);
 
@@ -141,11 +141,11 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     // Retrieves the File object for the given locale
     private File getResourcesFile(@NonNull String locale) {
-        return new File(mRoot, locale+"/strings.xml");
+        return new File(mRoot, locale + "/strings.xml");
     }
 
     private File getDefaultResourcesFile(@NonNull String filename) {
-        return new File(mRoot, DEFAULT_LOCALE+"/"+filename);
+        return new File(mRoot, DEFAULT_LOCALE + "/" + filename);
     }
 
     // Used when cloning. An application might have multiple files with the same name
@@ -161,7 +161,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
             i = 2;
             while (result.isFile()) {
-                result = getDefaultResourcesFile(name+i+ext);
+                result = getDefaultResourcesFile(name + i + ext);
                 i++;
             }
         }
@@ -198,8 +198,14 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return false;
     }
 
+    public RepoSettings getRepoSettings(){
+        return mSettings;
+    }
+
     // Determines whether the repository is empty (has no saved locales) or not
-    public boolean isEmpty() { return mLocales.isEmpty(); }
+    public boolean isEmpty() {
+        return mLocales.isEmpty();
+    }
 
     // Deletes the repository erasing its existence from Earth. Forever. (Unless added again)
     public boolean delete() {
@@ -306,8 +312,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 if (clonedDir == null) {
                     callback.onProgressFinished(mContext.getString(R.string.invalid_repo), false);
                     delete(); // Need to delete the settings
-                }
-                else
+                } else
                     scanResources(clonedDir, callback);
             }
         }.execute();
@@ -393,7 +398,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
                     if (ResourcesParser.cleanXml(clonedFile, outputFile)) {
                         // Skip the '/' at the beginning (substring +1)
                         String remotePath = clonedFile.getAbsolutePath()
-                                .substring(clonedDir.getAbsolutePath().length()+1);
+                                .substring(clonedDir.getAbsolutePath().length() + 1);
 
                         addRemotePath(outputFile.getName(), remotePath);
                     }
@@ -534,7 +539,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
                     out.write(header.getBytes());
                     applyTemplate(template, locale, out);
                     out.write("\n".getBytes());
-                } catch (IOException ignored) { }
+                } catch (IOException ignored) {
+                }
             }
             return out.toString();
         } else {
@@ -600,10 +606,10 @@ public class RepoHandler implements Comparable<RepoHandler> {
     // and replacing the "values" by the corresponding "values-xx"
     public HashMap<File, String> getTemplateRemotePaths(String locale) {
         HashMap<File, String> result = new HashMap<>();
-        HashMap<String, String> fileRemote =  mSettings.getRemotePaths();
+        HashMap<String, String> fileRemote = mSettings.getRemotePaths();
         for (Map.Entry<String, String> fr : fileRemote.entrySet()) {
             File template = getDefaultResourcesFile(fr.getKey());
-            String remote = fr.getValue().replace("/values/", "/values-"+locale+"/");
+            String remote = fr.getValue().replace("/values/", "/values-" + locale + "/");
             result.put(template, remote);
         }
         return result;
@@ -677,7 +683,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             int end = url.endsWith(".git") ? url.lastIndexOf('.') : url.length();
             return url.substring(url.indexOf("://") + 3, end);
         } catch (StringIndexOutOfBoundsException e) {
-            Log.w("RepoHandler", "Please report that \""+url+"\" got somehow saved…");
+            Log.w("RepoHandler", "Please report that \"" + url + "\" got somehow saved…");
             return url; // We must have a really weird url. Maybe saved invalid repo somehow?
         }
     }
@@ -707,18 +713,26 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     public String getName(boolean extension) {
-        String url = mSettings.getGitUrl();
-        int slash = url.lastIndexOf('/');
-        if (slash < 0)
-            return url; // Should not happen
+        if (mSettings.getProjectName() != null) {
+            return mSettings.getProjectName();
+        } else {
+            String url = mSettings.getGitUrl();
+            int slash = url.lastIndexOf('/');
+            if (slash < 0)
+                return url; // Should not happen
 
-        url = url.substring(slash + 1);
-        if (!extension) {
-            int dot = url.lastIndexOf('.');
-            if (dot >= 0)
-                url = url.substring(0, dot);
+            url = url.substring(slash + 1);
+            if (!extension) {
+                int dot = url.lastIndexOf('.');
+                if (dot >= 0)
+                    url = url.substring(0, dot);
+            }
+            return url;
         }
-        return url;
+    }
+
+    public String getProjectHomepageUrl(){
+        return mSettings.getProjectHomepageUrl();
     }
 
     public String toOwnerRepo() throws InvalidObjectException {
@@ -843,7 +857,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             if (!root.renameTo(mRoot)) {
                 // Try reverting the state, hopefully no data was lost
                 String extra = backupDir.renameTo(mRoot) ? "" : " Failed to recover its previous state.";
-                throw new IOException("Could not move the temporary repository to its new location."+extra);
+                throw new IOException("Could not move the temporary repository to its new location." + extra);
             }
 
             // Re-notify that the imported repository succeeded

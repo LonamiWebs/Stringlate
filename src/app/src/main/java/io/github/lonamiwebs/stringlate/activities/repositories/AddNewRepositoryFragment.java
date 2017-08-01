@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +18,10 @@ import android.widget.Toast;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
+import io.github.lonamiwebs.stringlate.classes.applications.ApplicationDetails;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
-import io.github.lonamiwebs.stringlate.utilities.Api;
+import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
 import static android.app.Activity.RESULT_OK;
@@ -33,6 +35,9 @@ public class AddNewRepositoryFragment extends Fragment {
     private EditText mOwnerEditText, mRepositoryEditText;
     private EditText mUrlEditText;
 
+    // All details may not be filled out. Used as temporary data container till RepoHandler creation
+    private ApplicationDetails mProjectDetails;
+
     //endregion
 
     //region Initialization
@@ -42,10 +47,11 @@ public class AddNewRepositoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_new_repository, container, false);
 
-        mOwnerEditText = (EditText)rootView.findViewById(R.id.ownerEditText);
-        mRepositoryEditText = (EditText)rootView.findViewById(R.id.repositoryEditText);
+        mOwnerEditText = (EditText) rootView.findViewById(R.id.ownerEditText);
+        mRepositoryEditText = (EditText) rootView.findViewById(R.id.repositoryEditText);
 
-        mUrlEditText = (EditText)rootView.findViewById(R.id.urlEditText);
+        mUrlEditText = (EditText) rootView.findViewById(R.id.urlEditText);
+        mProjectDetails = new ApplicationDetails();
 
         // Set button events
         rootView.findViewById(R.id.discoverButton).setOnClickListener(onDiscoverClick);
@@ -57,22 +63,32 @@ public class AddNewRepositoryFragment extends Fragment {
         if (data != null) {
             // Try to retrieve information from the special URL, i.e.
             // https://lonamiwebs.github.io/stringlate/translate?git=<encoded git url>
-            final String git = data.getQueryParameter("git");
+            final String paramGit = data.getQueryParameter("git");
+            final String paramWeb = data.getQueryParameter("web");
+            final String paramName = data.getQueryParameter("name");
 
-            if (git == null) {
+            if (paramGit == null) {
                 // If no URL was found, it may just be a git repository by itself
                 String scheme = data.getScheme();
                 String fullPath = data.getEncodedSchemeSpecificPart();
                 setUrl(scheme + ":" + fullPath);
             } else {
                 // We got the encoded git url, so set it
-                setUrl(git);
+                setUrl(paramGit);
+            }
+            if (paramWeb != null) {
+                mProjectDetails.setWebUrl(paramWeb);
+            }
+            if (paramName != null) {
+                mProjectDetails.setName(paramName);
             }
         }
-        // Or we were opened from the Api
-        if (intent.getAction().equals(Api.ACTION_TRANSLATE) &&
-                intent.hasExtra(Api.EXTRA_GIT_URL)) {
-            setUrl(intent.getStringExtra(Api.EXTRA_GIT_URL));
+        // Or we were opened from the StringlateApi
+        if (intent.getAction().equals(StringlateApi.ACTION_TRANSLATE) &&
+                intent.hasExtra(StringlateApi.EXTRA_GIT_URL)) {
+            setUrl(intent.getStringExtra(StringlateApi.EXTRA_GIT_URL));
+            mProjectDetails.setWebUrl(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_HOMEPAGE));
+            mProjectDetails.setName(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_NAME));
         }
 
         // If the user presses enter on an EditText, select the next one
@@ -135,9 +151,17 @@ public class AddNewRepositoryFragment extends Fragment {
                         new RepoHandler(getContext(), owner, repository) :
                         new RepoHandler(getContext(), url);
 
-                if (repo.isEmpty())
+
+                // Set repo details if available
+                if (!TextUtils.isEmpty(mProjectDetails.getWebUrl())) {
+                    repo.getRepoSettings().setProjectHomepageUrl(mProjectDetails.getWebUrl());
+                }
+                if (!TextUtils.isEmpty(mProjectDetails.getName())) {
+                    repo.getRepoSettings().setProjectName(mProjectDetails.getName());
+                }
+                if (repo.isEmpty()) {
                     scanDownloadStrings(repo);
-                else
+                } else
                     launchTranslateActivity(repo);
             }
         }
@@ -153,6 +177,8 @@ public class AddNewRepositoryFragment extends Fragment {
             switch (requestCode) {
                 case RESULT_REPO_DISCOVERED:
                     setUrl(data.getStringExtra("url"));
+                    mProjectDetails.setWebUrl(data.getStringExtra("web"));
+                    mProjectDetails.setName(data.getStringExtra("name"));
                     break;
                 default:
                     super.onActivityResult(requestCode, resultCode, data);

@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/openOnline"
-        android:icon="@drawable/ic_open_in_browser_white_24dp"
+
+    <item
+        android:id="@+id/action_open_online_help"
+        android:icon="@drawable/ic_help_white_24dp"
         android:title="@string/open_online_help"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_open_in_external_browser"
+        android:icon="@drawable/ic_open_in_browser_white_24dp"
+        android:title="@string/open_in_external_browser"
+        app:showAsAction="always" />
 </menu>

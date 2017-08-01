@@ -12,10 +12,10 @@ import android.view.MenuItem;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.GitHubLoginActivity;
-import io.github.lonamiwebs.stringlate.activities.OnlineHelpActivity;
+import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.utilities.Api;
+import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_REPO_DISCOVERED;
 
@@ -45,11 +45,11 @@ public class RepositoriesActivity extends AppCompatActivity {
         }
 
         mRepositoriesPagerAdapter = new RepositoriesPagerAdapter(getSupportFragmentManager(), this);
-        mViewPager = (ViewPager)findViewById(R.id.container);
+        mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mRepositoriesPagerAdapter);
         mViewPager.addOnPageChangeListener(mOnPageChangeListener);
 
-        mBottomNavigationView = (BottomNavigationView)findViewById(R.id.navigation);
+        mBottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         // Check if we opened the application because a GitHub link was clicked
@@ -59,11 +59,11 @@ public class RepositoriesActivity extends AppCompatActivity {
         if (action.equals(Intent.ACTION_VIEW)) {
             // Opened via a GitHub.com url
             mViewPager.setCurrentItem(1, false);
-        } else if (action.equals(Api.ACTION_TRANSLATE)) {
+        } else if (action.equals(StringlateApi.ACTION_TRANSLATE)) {
 
-            // Opened via our custom Api, ensure we have the required extras
-            if (intent.hasExtra(Api.EXTRA_GIT_URL)) {
-                final String gitUrl = intent.getStringExtra(Api.EXTRA_GIT_URL);
+            // Opened via our custom StringlateApi, ensure we have the required extras
+            if (intent.hasExtra(StringlateApi.EXTRA_GIT_URL)) {
+                final String gitUrl = intent.getStringExtra(StringlateApi.EXTRA_GIT_URL);
                 RepoHandler repo = new RepoHandler(this, gitUrl);
                 if (repo.isEmpty()) {
                     // This repository is empty, clean any created
@@ -102,6 +102,7 @@ public class RepositoriesActivity extends AppCompatActivity {
         return true;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -109,7 +110,9 @@ public class RepositoriesActivity extends AppCompatActivity {
             case R.id.help:
                 // Avoid the "Remove unused resources" from removing these files…
                 if (R.raw.en != 0 && R.raw.es != 0) {
-                    startActivity(new Intent(this, OnlineHelpActivity.class));
+                    Intent intent = new Intent(this, BrowserActivity.class);
+                    intent.putExtra(BrowserActivity.EXTRA_DO_SHOW_STRINGLATE_HELP, true);
+                    startActivity(intent);
                 }
                 return true;
             // Login to GitHub
@@ -145,7 +148,8 @@ public class RepositoriesActivity extends AppCompatActivity {
 
     private final ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        }
 
         @Override
         public void onPageSelected(int position) {
@@ -153,7 +157,8 @@ public class RepositoriesActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onPageScrollStateChanged(int state) { }
+        public void onPageScrollStateChanged(int state) {
+        }
     };
 
     //endregion

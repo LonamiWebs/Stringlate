@@ -101,6 +101,7 @@
     <string name="history_no_repos_hint">New here? Head to the \"%s\" tab to get started!</string>
     <string name="history_contains_repos_hint">These are your previously synchronized repositories. Select one below or add a new one to continue.</string>
     <string name="repositories_colon">Repositories:</string>
+    <string name="projects_colon">Projects:</string>
     <string name="show_more">Show more</string>
     <string name="clear_icons_cache">Clear icons cache</string>
     <string name="help">Help</string>
@@ -174,4 +175,6 @@
     <string name="application_may_use_translation_platform">This application might use %s to manage their translations. See the help for more information.</string>
     <string name="select_branch">Select the branch to use</string>
     <string name="ignore">Ignore</string>
+    <string name="open_project_homepage">Open project homepage</string>
+    <string name="open_in_external_browser">Open in external browser</string>
 </resources>

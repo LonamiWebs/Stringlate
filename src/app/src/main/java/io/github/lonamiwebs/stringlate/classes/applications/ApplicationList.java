@@ -25,7 +25,7 @@ import io.github.lonamiwebs.stringlate.utilities.Constants;
 import io.github.lonamiwebs.stringlate.utilities.FileDownloader;
 import io.github.lonamiwebs.stringlate.utilities.FileExtractor;
 
-public class ApplicationList implements Iterable<Application> {
+public class ApplicationList implements Iterable<ApplicationDetails> {
 
     //region Members
     private final File mRoot;
@@ -33,11 +33,11 @@ public class ApplicationList implements Iterable<Application> {
 
     private static final String BASE_DIR = "index";
 
-    private ArrayList<Application> mApplications;
+    private ArrayList<ApplicationDetails> mApplications;
     private final HashSet<String> mInstalledPackages;
 
     // Keep track of a filtered slice, so ListViews can have a "Show more"
-    private ArrayList<Application> mApplicationsSlice;
+    private ArrayList<ApplicationDetails> mApplicationsSlice;
     @NonNull private String mSliceFilter;
     private int mLastSliceIndex;
 
@@ -67,7 +67,7 @@ public class ApplicationList implements Iterable<Application> {
     //region Getters
 
     // Gets a new slice with the given filter for the application name
-    public ArrayList<Application> newSlice(@NonNull String filter) {
+    public ArrayList<ApplicationDetails> newSlice(@NonNull String filter) {
         mApplicationsSlice = new ArrayList<>();
         mSliceFilter = filter.trim().toLowerCase();
         mLastSliceIndex = 0;
@@ -94,7 +94,7 @@ public class ApplicationList implements Iterable<Application> {
             end = mApplications.size();
 
             for (; mLastSliceIndex < end && count > 0; mLastSliceIndex++) {
-                Application app = mApplications.get(mLastSliceIndex);
+                ApplicationDetails app = mApplications.get(mLastSliceIndex);
                 if (app.getName().toLowerCase().contains(mSliceFilter) ||
                         app.getDescription().toLowerCase().contains(mSliceFilter)) {
                     mApplicationsSlice.add(app);
@@ -201,9 +201,9 @@ public class ApplicationList implements Iterable<Application> {
                         mInstalledPackages);
 
                 // Also sort the applications alphabetically, installed first
-                Collections.sort(mApplications, new Comparator<Application>() {
+                Collections.sort(mApplications, new Comparator<ApplicationDetails>() {
                     @Override
-                    public int compare(Application t1, Application t2) {
+                    public int compare(ApplicationDetails t1, ApplicationDetails t2) {
                         if (t1.isInstalled() == t2.isInstalled()) {
                             return t1.getName().compareToIgnoreCase(t2.getName());
                         } else {
@@ -237,7 +237,7 @@ public class ApplicationList implements Iterable<Application> {
     }
 
     @Override
-    public Iterator<Application> iterator() {
+    public Iterator<ApplicationDetails> iterator() {
         return mApplications.iterator();
     }
 }
