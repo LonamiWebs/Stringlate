@@ -1,5 +1,6 @@
 package io.github.lonamiwebs.stringlate.classes.applications;
 
+import android.content.Context;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -12,7 +13,13 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import io.github.lonamiwebs.stringlate.utilities.Constants;
+
+import static io.github.lonamiwebs.stringlate.utilities.Constants.FDROID_REPO_URL;
+
 class ApplicationListParser {
+    private static String FDROID_ICON_PATH = null;
+
     // We don't use namespaces
     private static final String ns = null;
 
@@ -21,7 +28,9 @@ class ApplicationListParser {
     private static final String NAME = "name";
     private static final String DESCRIPTION = "summary";
     private static final String ICON = "icon";
+    private static final String ICON_URL = "icon_url";
     private static final String SOURCE_URL = "source";
+    private static final String WEB = "web";
 
     //region Xml -> ApplicationsList
 
@@ -73,8 +82,10 @@ class ApplicationListParser {
     private static Application readApplication(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
-        String packageName, lastUpdated, name, description, iconName, sourceCodeUrl;
-        packageName = lastUpdated = name = description = iconName = sourceCodeUrl = "";
+        String packageName, lastUpdated, name, description, iconUrl, sourceCodeUrl, webUrl;
+        packageName = lastUpdated = name = description = iconUrl = sourceCodeUrl = webUrl = "";
+        iconUrl = "";
+        sourceCodeUrl = "";
 
         parser.require(XmlPullParser.START_TAG, ns, "application");
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -94,8 +105,16 @@ class ApplicationListParser {
                 case DESCRIPTION:
                     description = readText(parser);
                     break;
+                case WEB:
+                    webUrl = readText(parser);
+                    break;
                 case ICON:
-                    iconName = readText(parser);
+                    if (FDROID_ICON_PATH != null) {
+                        iconUrl = FDROID_ICON_PATH + readText(parser);
+                    }
+                    break;
+                case ICON_URL:
+                    iconUrl = readText(parser);
                     break;
                 case SOURCE_URL:
                     sourceCodeUrl = readText(parser);
@@ -108,7 +127,7 @@ class ApplicationListParser {
         parser.require(XmlPullParser.END_TAG, ns, "application");
 
         return new Application(packageName, lastUpdated,
-                name, description, iconName, sourceCodeUrl);
+                name, description, iconUrl, sourceCodeUrl, webUrl);
     }
 
     // Reads the text from an xml tag
@@ -152,8 +171,9 @@ class ApplicationListParser {
                 writeTag(serializer, LAST_UPDATED, app.getLastUpdatedDateString());
                 writeTag(serializer, NAME, app.getName());
                 writeTag(serializer, DESCRIPTION, app.getDescription());
-                writeTag(serializer, ICON, app.getIconName());
+                writeTag(serializer, ICON_URL, app.getIconUrl());
                 writeTag(serializer, SOURCE_URL, app.getSourceCodeUrl());
+                writeTag(serializer, WEB, app.getWebUrl());
 
                 serializer.endTag(ns, "application");
             }
@@ -174,4 +194,16 @@ class ApplicationListParser {
     }
 
     //endregion
+
+    public static void loadFDroidIconPath(Context context) {
+        final double dpi = context.getResources().getDisplayMetrics().densityDpi;
+        String iconDir = Constants.FALLBACK_FDROID_ICONS_DIR;
+        if (dpi >= 120) iconDir = "/icons-120/";
+        if (dpi >= 160) iconDir = "/icons-160/";
+        if (dpi >= 240) iconDir = "/icons-240/";
+        if (dpi >= 320) iconDir = "/icons-320/";
+        if (dpi >= 480) iconDir = "/icons-480/";
+        if (dpi >= 640) iconDir = "/icons-640/";
+        FDROID_ICON_PATH = FDROID_REPO_URL + iconDir;
+    }
 }

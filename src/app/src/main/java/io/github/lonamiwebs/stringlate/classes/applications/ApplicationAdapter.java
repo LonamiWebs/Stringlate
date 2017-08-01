@@ -52,7 +52,7 @@ public class ApplicationAdapter extends ArrayAdapter<Application> {
         if (app != null) {
             final ViewHolder holder = (ViewHolder)convertView.getTag();
             mImageLoader.loadImageAsync(holder.iconView,
-                    app.getIconUrl(getContext()), app.isInstalled() ? app.getPackageName() : null);
+                    app.getIconUrl(), app.isInstalled() ? app.getPackageName() : null);
 
             holder.appName.setText(app.getName());
             holder.appDescription.setText(app.getDescription());

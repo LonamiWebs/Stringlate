@@ -1,21 +1,13 @@
 package io.github.lonamiwebs.stringlate.classes.applications;
 
-import android.content.Context;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static io.github.lonamiwebs.stringlate.classes.applications.ApplicationList.FDROID_REPO_URL;
-
 public class Application {
 
     //region Members
-
-    private static final String FALLBACK_ICONS_DIR = "/icons/";
-    private static String mBaseIconUrl;
-
     private static final SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
@@ -23,8 +15,9 @@ public class Application {
     private final String mPackageName;
     private final String mName;
     private final String mDescription;
-    private final String mIconName;
+    private final String mIconUrl;
     private final String mSourceCodeUrl;
+    private final String mWebUrl;
 
     private boolean mIsInstalled;
 
@@ -34,7 +27,8 @@ public class Application {
 
     public Application(String packageName, String lastUpdated,
                        String name, String description,
-                       String iconName, String sourceCodeUrl) {
+                       String iconUrl, String sourceCodeUrl,
+                       String webUrl) {
         try {
             mLastUpdated = DATE_FORMAT.parse(lastUpdated);
         } catch (ParseException e) {
@@ -45,9 +39,11 @@ public class Application {
         mPackageName = packageName;
         mName = name;
         mDescription = description;
-        mIconName = iconName;
         mSourceCodeUrl = sourceCodeUrl;
+        mIconUrl = iconUrl;
+        mWebUrl = webUrl;
     }
+
 
     //endregion
 
@@ -69,12 +65,8 @@ public class Application {
         return mDescription;
     }
 
-    public String getIconName() {
-        return mIconName;
-    }
-
-    public String getIconUrl(Context context) {
-        return getFDroidIconUrl(context)+mIconName;
+    public String getIconUrl() {
+        return mIconUrl;
     }
 
     public String getSourceCodeUrl() {
@@ -83,6 +75,10 @@ public class Application {
 
     public boolean isInstalled() {
         return mIsInstalled;
+    }
+
+    public String getWebUrl() {
+        return mWebUrl;
     }
 
     @Override
@@ -99,23 +95,4 @@ public class Application {
     }
 
     //endregion
-
-    private static String getFDroidIconUrl(Context context) {
-        if (mBaseIconUrl == null)
-            mBaseIconUrl = FDROID_REPO_URL+getIconDirectory(context);
-
-        return mBaseIconUrl;
-    }
-
-    private static String getIconDirectory(Context context) {
-        final double dpi = context.getResources().getDisplayMetrics().densityDpi;
-        if (dpi >= 640) return "/icons-640/";
-        if (dpi >= 480) return "/icons-480/";
-        if (dpi >= 320) return "/icons-320/";
-        if (dpi >= 240) return "/icons-240/";
-        if (dpi >= 160) return "/icons-160/";
-        if (dpi >= 120) return "/icons-120/";
-
-        return FALLBACK_ICONS_DIR;
-    }
 }

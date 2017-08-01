@@ -21,16 +21,13 @@ import java.util.List;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.utilities.Constants;
 import io.github.lonamiwebs.stringlate.utilities.FileDownloader;
 import io.github.lonamiwebs.stringlate.utilities.FileExtractor;
 
 public class ApplicationList implements Iterable<Application> {
 
     //region Members
-
-    final static String FDROID_REPO_URL = "https://f-droid.org/repo";
-    private final static String FDROID_INDEX_URL = FDROID_REPO_URL+"/index.jar";
-
     private final File mRoot;
     private final Context mContext;
 
@@ -61,6 +58,8 @@ public class ApplicationList implements Iterable<Application> {
         for (ApplicationInfo packageInfo : packages) {
             mInstalledPackages.add(packageInfo.packageName);
         }
+
+        ApplicationListParser.loadFDroidIconPath(mContext);
     }
 
     //endregion
@@ -179,7 +178,7 @@ public class ApplicationList implements Iterable<Application> {
 
     // Step 1: Download the index.jar
     private void downloadIndexJar() {
-        FileDownloader.downloadFile(FDROID_INDEX_URL, getIndexFile("jar"));
+        FileDownloader.downloadFile(Constants.FDROID_INDEX_URL, getIndexFile("jar"));
     }
 
     // Step 2a: Extract the index.xml from the index.jar

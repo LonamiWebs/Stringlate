@@ -39,4 +39,9 @@ public class Constants {
             0xFF0288D1, 0xFF0097A7, 0xFF00796B, 0xFF388E3C, 0xFF689F38, 0xFFAFB42B,
             0xFFFBC02D, 0xFFFFA000, 0xFFF57C00, 0xFFE64A19, 0xFF5D4037, 0xFF616161
     };
+
+    // F-Droid
+    public final static String FDROID_REPO_URL = "https://f-droid.org/repo";
+    public final static String FDROID_INDEX_URL = FDROID_REPO_URL+"/index.jar";
+    public static final String FALLBACK_FDROID_ICONS_DIR = "/icons/";
 }
