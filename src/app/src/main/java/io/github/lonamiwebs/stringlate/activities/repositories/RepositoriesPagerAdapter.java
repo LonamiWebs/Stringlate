@@ -44,7 +44,7 @@ class RepositoriesPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0: return mContext.getString(R.string.history);
-            case 1: return mContext.getString(R.string.add_new_repo);
+            case 1: return mContext.getString(R.string.add_repo);
         }
         return null;
     }

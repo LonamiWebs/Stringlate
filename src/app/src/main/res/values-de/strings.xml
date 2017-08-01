@@ -92,6 +92,8 @@
     <string name="save_before_sync_required">Sie müssen vor einer Synchronisierung erst speichern.</string>
     <string name="history">Verlauf</string>
     <string name="add_new_repo">Neues Repository hinzufügen</string>
+    <string name="add_repo">Repository hinzufügen</string>
+    <string name="start_translating">Jetzt übersetzen</string>
     <string name="history_no_repos_hint">Neu hier? Wechsel zu dem \"%s\" Reiter um zu beginnen!</string>
     <string name="history_contains_repos_hint">Du hast schon Repositories synchronisiert. Suche Dir eins von unten aus oder füge ein Neues hin zu.</string>
     <string name="repositories_colon">Repositories:</string>
