@@ -97,6 +97,7 @@
     <string name="history_no_repos_hint">Neu hier? Wechsel zu dem \"%s\" Reiter um zu beginnen!</string>
     <string name="history_contains_repos_hint">Du hast schon Repositories synchronisiert. Suche Dir eins von unten aus oder füge ein Neues hin zu.</string>
     <string name="repositories_colon">Repositories:</string>
+    <string name="projects_colon">Projekte:</string>
     <string name="show_more">Mehr anzeigen</string>
     <string name="clear_icons_cache">Symbolcache leeren</string>
     <string name="help">Hilfe</string>

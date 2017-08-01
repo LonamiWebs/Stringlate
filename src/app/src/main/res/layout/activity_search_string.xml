@@ -25,7 +25,7 @@
 
         <ImageButton
             android:id="@+id/clearFilterButton"
-            android:src="@drawable/ic_search_36dp"
+            android:src="@drawable/ic_search_yellow_36dp"
             android:contentDescription="@string/clear_filter"
             android:background="@null"
             android:layout_width="44dp"

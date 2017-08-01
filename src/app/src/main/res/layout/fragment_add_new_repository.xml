@@ -67,8 +67,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableStart="@drawable/ic_explore_24dp"
-            android:drawableLeft="@drawable/ic_explore_24dp"
+            android:drawableStart="@drawable/ic_explore_yellow_24dp"
+            android:drawableLeft="@drawable/ic_explore_yellow_24dp"
             style="?buttonBarButtonStyle"
             android:text="@string/discover" />
 
@@ -77,8 +77,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableStart="@drawable/ic_action_arrow_forward"
-            android:drawableLeft="@drawable/ic_action_arrow_forward"
+            android:drawableStart="@drawable/ic_play_circle_filled_yellow_24dp"
+            android:drawableLeft="@drawable/ic_play_circle_filled_yellow_24dp"
             style="?buttonBarButtonStyle"
             android:text="@string/start_translating" />
     </LinearLayout>

@@ -109,7 +109,7 @@ public class StringlateApi {
         if (projectName != null)
             intent.putExtra(EXTRA_PROJECT_NAME, projectName);
         if (projectUrl != null)
-            intent.putExtra(EXTRA_PROJECT_NAME, projectUrl);
+            intent.putExtra(EXTRA_PROJECT_HOMEPAGE, projectUrl);
         return intent;
     }
 

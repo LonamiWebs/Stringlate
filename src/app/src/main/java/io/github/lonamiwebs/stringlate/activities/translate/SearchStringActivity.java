@@ -64,9 +64,9 @@ public class SearchStringActivity extends AppCompatActivity {
                 String search = charSequence.toString();
                 refreshResourcesListView(search);
                 if (search.isEmpty()) {
-                    clearFilterButton.setImageResource(R.drawable.ic_search_36dp);
+                    clearFilterButton.setImageResource(R.drawable.ic_search_yellow_36dp);
                 } else {
-                    clearFilterButton.setImageResource(R.drawable.ic_backspace_36dp);
+                    clearFilterButton.setImageResource(R.drawable.ic_backspace_yellow_36dp);
                 }
             }
         });
