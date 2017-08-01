@@ -5,9 +5,10 @@
     <string name="next">Next</string>
     <string name="current_string_id">Current string ID:</string>
     <string name="selected_locale">Selected locale:</string>
-    <string name="welcome">Welcome to Stringlate! Enter a project name and its owner or paste the repository\'s GitHub URL below to continue.</string>
+    <string name="welcome">Welcome to Stringlate! Enter a GitHub project name and its owner or paste the repository\'s Git URL below to continue.</string>
     <string name="owner_hint">owner</string>
     <string name="slash" translatable="false">/</string>
+    <string name="github" translatable="false">GitHub</string>
     <string name="repository_hint">repository</string>
     <string name="or">or</string>
     <string name="github_repo_url_hint">https://github.com/owner/repository</string>
@@ -47,12 +48,12 @@
     <string name="export_ellipsis">Export…</string>
     <string name="export_sd_card">Export to SD card</string>
     <string name="export_gist">Export to GitHub Gist</string>
-    <string name="export_pr">Export to Pull Request</string>
+    <string name="export_pr">Create GitHub Pull Request</string>
     <string name="export_share">Share generated xml</string>
     <string name="save_resources_question">Save resources?</string>
     <string name="save_resources_question_long">The resources for the current locale have been modified, but the changes weren\'t saved. Do you want to save them now?</string>
     <string name="delete_no_locale_bad_joke">You first need to have a locale before you can remove its existence from this planet ;-)</string>
-    <string name="discover">Discover repositories</string>
+    <string name="discover">Discover projects</string>
     <string name="gist_description">Gist description (optional):</string>
     <string name="default_gist_share_description" translatable="false">strings.xml translation shared with Stringlate</string>
     <string name="gist_filename">Gist filename:</string>
@@ -95,7 +96,7 @@
     <string name="save_before_sync_required">You need to save before synchronizing.</string>
     <string name="history">History</string>
     <string name="add_new_repo">Add new repository</string>
-    <string name="add_repo">Add repository</string>
+    <string name="add_project">Add project</string>
     <string name="start_translating">Start translating</string>
     <string name="history_no_repos_hint">New here? Head to the \"%s\" tab to get started!</string>
     <string name="history_contains_repos_hint">These are your previously synchronized repositories. Select one below or add a new one to continue.</string>

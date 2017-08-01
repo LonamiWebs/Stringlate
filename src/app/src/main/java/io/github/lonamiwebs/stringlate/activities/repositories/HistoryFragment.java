@@ -254,7 +254,7 @@ public class HistoryFragment extends Fragment {
             if (repositories.isEmpty()) {
                 mRepositoriesTitle.setVisibility(GONE);
                 mHistoryMessageTextView.setText(getString(
-                        R.string.history_no_repos_hint, getString(R.string.add_repo)));
+                        R.string.history_no_repos_hint, getString(R.string.add_project)));
                 mRepositoryListView.setAdapter(null);
             } else {
                 mRepositoriesTitle.setVisibility(VISIBLE);

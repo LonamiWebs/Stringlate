@@ -18,19 +18,19 @@ import io.github.lonamiwebs.stringlate.utilities.Constants;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.FDROID_REPO_URL;
 
 class ApplicationListParser {
-    private static String FDROID_ICON_PATH = null;
-
-    // We don't use namespaces
-    private static final String ns = null;
-
+    // parser ids
     private static final String ID = "id";
     private static final String LAST_UPDATED = "lastupdated";
     private static final String NAME = "name";
     private static final String DESCRIPTION = "summary";
     private static final String ICON = "icon";
-    private static final String ICON_URL = "icon_url";
+    private static final String ICON_URL = "sl_iconurl";
     private static final String SOURCE_URL = "source";
     private static final String WEB = "web";
+
+    // We don't use namespaces
+    private static final String ns = null;
+    private static String fdroidIconPath = null;
 
     //region Xml -> ApplicationsList
 
@@ -109,8 +109,8 @@ class ApplicationListParser {
                     webUrl = readText(parser);
                     break;
                 case ICON:
-                    if (FDROID_ICON_PATH != null) {
-                        iconUrl = FDROID_ICON_PATH + readText(parser);
+                    if (fdroidIconPath != null) {
+                        iconUrl = fdroidIconPath + readText(parser);
                     }
                     break;
                 case ICON_URL:
@@ -204,6 +204,6 @@ class ApplicationListParser {
         if (dpi >= 320) iconDir = "/icons-320/";
         if (dpi >= 480) iconDir = "/icons-480/";
         if (dpi >= 640) iconDir = "/icons-640/";
-        FDROID_ICON_PATH = FDROID_REPO_URL + iconDir;
+        fdroidIconPath = FDROID_REPO_URL + iconDir;
     }
 }

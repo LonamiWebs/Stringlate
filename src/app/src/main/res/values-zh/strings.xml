@@ -93,7 +93,7 @@
     <string name="translation_progress">已翻译 %1$d/%2$d 个字符串 (%3$.1f%%)</string>
     <string name="update_applications">更新应用程序</string>
     <string name="update_strings">更新 strings.xml</string>
-    <string name="welcome">欢迎使用 Stringlate ! 请输入项目名称及其所有者或将其Github版本库地址粘贴至下方以继续</string>
+    <string name="welcome">欢迎使用 Stringlate ! 请输入项目名称及其所有者或将其Git版本库地址粘贴至下方以继续</string>
     <string name="xml_copied_to_clipboard">已将 “%s” 的内容复制到您的剪贴板</string>
     <string name="allow_download_icons">允许下载图标</string>
     <string name="do_not_save">放弃修改</string>

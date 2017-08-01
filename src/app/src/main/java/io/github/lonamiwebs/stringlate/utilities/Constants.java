@@ -43,5 +43,5 @@ public class Constants {
     // F-Droid
     public final static String FDROID_REPO_URL = "https://f-droid.org/repo";
     public final static String FDROID_INDEX_URL = FDROID_REPO_URL+"/index.jar";
-    public static final String FALLBACK_FDROID_ICONS_DIR = "/icons/";
+    public final static String FALLBACK_FDROID_ICONS_DIR = "/icons/";
 }

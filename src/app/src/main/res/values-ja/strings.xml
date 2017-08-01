@@ -4,7 +4,7 @@
     <string name="next">次へ</string>
     <string name="current_string_id">現在の string ID:</string>
     <string name="selected_locale">選択したロケール:</string>
-    <string name="welcome">Stringlate へようこそ! プロジェクト名と所有者を入力するか、リポジトリの GitHub URL を下に張り付けて、続行します。</string>
+    <string name="welcome">Stringlate へようこそ! プロジェクト名と所有者を入力するか、リポジトリの Git URL を下に張り付けて、続行します。</string>
     <string name="owner_hint">所有者</string>
     <string name="repository_hint">リポジトリ</string>
     <string name="or">または</string>

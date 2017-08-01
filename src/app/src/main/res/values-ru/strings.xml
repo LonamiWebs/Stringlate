@@ -4,7 +4,7 @@
     <string name="next">След.</string>
     <string name="current_string_id">Текущий ID строки:</string>
     <string name="selected_locale">Выбранная локаль:</string>
-    <string name="welcome">Добро пожаловать в Stringlate! Введите владельца и имя проекта или вставьте GitHub URL репозитория для продолжения.</string>
+    <string name="welcome">Добро пожаловать в Stringlate! Введите владельца и имя проекта или вставьте Git URL репозитория для продолжения.</string>
     <string name="owner_hint">владелец</string>
     <string name="repository_hint">репозиторий</string>
     <string name="or">или</string>

@@ -4,7 +4,7 @@
     <string name="next">Další</string>
     <string name="current_string_id">Stávající ID řetězce:</string>
     <string name="selected_locale">Vybraný jazyk:</string>
-    <string name="welcome">Vítá vás Stringlate! Pro pokračování zadejte název projektu a jeho vlastníka, nebo vložte URL repozitáře z GitHubu.</string>
+    <string name="welcome">Vítá vás Stringlate! Pro pokračování zadejte název projektu a jeho vlastníka, nebo vložte URL repozitáře z Git.</string>
     <string name="owner_hint">vlastník</string>
     <string name="repository_hint">repozitář</string>
     <string name="or">nebo</string>

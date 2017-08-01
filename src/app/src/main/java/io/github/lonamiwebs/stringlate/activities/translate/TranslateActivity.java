@@ -181,8 +181,8 @@ public class TranslateActivity extends AppCompatActivity {
 
         // Only GitHub repositories are valid ones when exporting to issue or pull request
         boolean isGitHubRepository = mRepo.isGitHubRepository();
-        menu.findItem(R.id.exportToIssue).setVisible(isGitHubRepository);
-        menu.findItem(R.id.exportToPr).setVisible(isGitHubRepository);
+        menu.findItem(R.id.github_export_to_issue).setVisible(isGitHubRepository);
+        menu.findItem(R.id.github_export_to_pr).setVisible(isGitHubRepository);
 
         mShowTranslatedMenuItem = menu.findItem(R.id.showTranslatedCheckBox);
         mShowIdenticalMenuItem = menu.findItem(R.id.showIdenticalCheckBox);
@@ -241,8 +241,8 @@ public class TranslateActivity extends AppCompatActivity {
             // Exporting resources
             case R.id.exportToSdcard:
             case R.id.exportToGist:
-            case R.id.exportToIssue:
-            case R.id.exportToPr:
+            case R.id.github_export_to_issue:
+            case R.id.github_export_to_pr:
             case R.id.exportShare:
             case R.id.exportCopy:
                 // Since all the exports check these conditions, check them here only
@@ -258,8 +258,8 @@ public class TranslateActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.exportToSdcard: exportToSd(); break;
                     case R.id.exportToGist: exportToGist(); break;
-                    case R.id.exportToIssue: exportToIssue(); break;
-                    case R.id.exportToPr: exportToPullRequest(); break;
+                    case R.id.github_export_to_issue: exportToIssue(); break;
+                    case R.id.github_export_to_pr: exportToPullRequest(); break;
                     case R.id.exportShare: exportToShare(); break;
                     case R.id.exportCopy: exportToCopy(); break;
                 }

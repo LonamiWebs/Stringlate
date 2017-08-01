@@ -4,7 +4,7 @@
     <string name="next">Următoarea</string>
     <string name="current_string_id">ID frază curentă:</string>
     <string name="selected_locale">Selectează limbă:</string>
-    <string name="welcome">Bine ați venit la Stringlate! Introdu mai jos numele autorului și al proiectului sau o adresă GitHub pentru a continua.</string>
+    <string name="welcome">Bine ați venit la Stringlate! Introdu mai jos numele autorului și al proiectului sau o adresă Git pentru a continua.</string>
     <string name="owner_hint">autor</string>
     <string name="repository_hint">proiect</string>
     <string name="or">sau</string>

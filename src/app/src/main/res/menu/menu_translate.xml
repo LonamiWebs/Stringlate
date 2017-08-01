@@ -2,79 +2,100 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/searchStrings"
+    <item
+        android:id="@+id/searchStrings"
         android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/search"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
-    <item android:id="@+id/updateStrings"
-        android:title="@string/update_strings"
-        android:icon="@drawable/ic_sync_black_24dp"/>
+    <item
+        android:id="@+id/updateStrings"
+        android:icon="@drawable/ic_sync_black_24dp"
+        android:title="@string/update_strings" />
 
-    <item android:id="@+id/addLocale"
-        android:title="@string/add_locale"
-        android:icon="@drawable/ic_note_add_black_24dp"/>
+    <item
+        android:id="@+id/addLocale"
+        android:icon="@drawable/ic_note_add_black_24dp"
+        android:title="@string/add_locale" />
 
-    <item android:id="@+id/sortBy"
-        android:title="@string/sort_by_ellipsis"
-        android:icon="@drawable/ic_sort_black_24dp">
+    <item
+        android:id="@+id/sortBy"
+        android:icon="@drawable/ic_sort_black_24dp"
+        android:title="@string/sort_by_ellipsis">
         <menu>
-            <item android:id="@+id/sortAlphabetically"
+            <item
+                android:id="@+id/sortAlphabetically"
                 android:title="@string/sort_alphabetically" />
 
-            <item android:id="@+id/sortLength"
+            <item
+                android:id="@+id/sortLength"
                 android:title="@string/sort_string_length" />
         </menu>
     </item>
 
-    <item android:id="@+id/export"
-        android:title="@string/export_ellipsis"
-        android:icon="@drawable/ic_share_black_24dp">
+    <item
+        android:id="@+id/export"
+        android:icon="@drawable/ic_share_black_24dp"
+        android:title="@string/export_ellipsis">
         <menu>
-            <item android:id="@+id/exportToSdcard"
+            <item
+                android:id="@+id/exportToSdcard"
                 android:title="@string/export_sd_card" />
-
-            <item android:id="@+id/exportToGist"
-                android:title="@string/export_gist" />
-
-            <item android:id="@+id/exportToIssue"
-                android:title="@string/export_issue" />
-
-            <item android:id="@+id/exportToPr"
-                android:title="@string/export_pr" />
-
-            <item android:id="@+id/exportShare"
+            <item
+                android:id="@+id/exportShare"
                 android:title="@string/export_share" />
 
-            <item android:id="@+id/exportCopy"
+            <item
+                android:id="@+id/exportCopy"
                 android:title="@string/copy_to_clipboard" />
+            <item
+                android:id="@+id/export_github_menu"
+                android:title="@string/github">
+                <menu>
+                    <item
+                        android:id="@+id/exportToGist"
+                        android:title="@string/export_gist" />
+
+                    <item
+                        android:id="@+id/github_export_to_issue"
+                        android:title="@string/export_issue" />
+
+                    <item
+                        android:id="@+id/github_export_to_pr"
+                        android:title="@string/export_pr" />
+                </menu>
+            </item>
         </menu>
     </item>
 
-    <item android:id="@+id/delete"
-        android:title="@string/delete_ellipsis"
-        android:icon="@drawable/ic_delete_black_24dp">
+    <item
+        android:id="@+id/delete"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:title="@string/delete_ellipsis">
         <menu>
-            <item android:id="@+id/deleteString"
+            <item
+                android:id="@+id/deleteString"
                 android:title="@string/delete_string" />
 
-            <item android:id="@+id/deleteLocale"
+            <item
+                android:id="@+id/deleteLocale"
                 android:title="@string/delete_locale" />
 
-            <item android:id="@+id/deleteRepo"
+            <item
+                android:id="@+id/deleteRepo"
                 android:title="@string/delete_repository" />
         </menu>
     </item>
 
     <item
         android:id="@+id/showTranslatedCheckBox"
-        android:title="@string/show_translated_strings"
         android:checkable="true"
-        android:checked="false" />
+        android:checked="false"
+        android:title="@string/show_translated_strings" />
 
     <item
         android:id="@+id/showIdenticalCheckBox"
-        android:title="@string/show_identical_strings_only"
         android:checkable="true"
-        android:checked="false" />
+        android:checked="false"
+        android:title="@string/show_identical_strings_only" />
 </menu>
