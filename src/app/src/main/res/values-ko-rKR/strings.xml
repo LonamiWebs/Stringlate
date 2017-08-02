@@ -92,7 +92,7 @@
     <string name="save_before_sync_required">동기화하시기 전에 저장하셔야 합니다.</string>
     <string name="history">기록</string>
     <string name="add_new_repo">새 저장소 추가하기</string>
-    <string name="history_no_repos_hint">처음이세요? \"s\" 탭으로 가보세요!</string>
+    <string name="history_no_repos_hint">처음이세요? \"%s\" 탭으로 가보세요!</string>
     <string name="history_contains_repos_hint">기존에 동기화된 저장소들입니다. 아래에서 하나를 택하거나 새롭게 추가하세요.</string>
     <string name="repositories_colon">저장소들:</string>
     <string name="show_more">더 보기</string>
