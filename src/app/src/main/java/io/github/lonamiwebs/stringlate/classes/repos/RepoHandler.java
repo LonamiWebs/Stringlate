@@ -712,7 +712,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return url;
     }
 
-    public String getName(boolean extension) {
+    public String getName() {
         if (mSettings.getProjectName() != null) {
             return mSettings.getProjectName();
         } else {
@@ -722,11 +722,9 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 return url; // Should not happen
 
             url = url.substring(slash + 1);
-            if (!extension) {
-                int dot = url.lastIndexOf('.');
-                if (dot >= 0)
-                    url = url.substring(0, dot);
-            }
+            int dot = url.lastIndexOf('.');
+            if (dot >= 0)
+                url = url.substring(0, dot);
             return url;
         }
     }

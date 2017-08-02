@@ -135,7 +135,7 @@ public class TranslateActivity extends AppCompatActivity {
         mStringIdSpinner.setOnItemSelectedListener(eOnStringIdSelected);
 
         mRepo = RepoHandler.fromBundle(this, getIntent().getBundleExtra(EXTRA_REPO));
-        setTitle(mRepo.getName(false));
+        setTitle(mRepo.getName());
 
         loadResources();
         onFilterUpdated(mRepo.getStringFilter());

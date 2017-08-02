@@ -169,7 +169,7 @@ public class HistoryFragment extends Fragment {
     // Ripped off from TranslateActivity.java
     // The following 3 methods make use of mLastSelectedRepo - will fail if it is null
     private void exportToSd() {
-        String filename = mLastSelectedRepo.getName(false) + ".zip";
+        String filename = mLastSelectedRepo.getName() + ".zip";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);

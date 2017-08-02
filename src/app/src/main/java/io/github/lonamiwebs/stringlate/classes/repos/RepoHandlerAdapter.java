@@ -70,7 +70,7 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
             final ViewHolder holder = (ViewHolder) convertView.getTag();
             File iconFile = repo.getIconFile();
             if (iconFile == null)
-                holder.iconView.setImageBitmap(getBitmap(repo.getName(false)));
+                holder.iconView.setImageBitmap(getBitmap(repo.getName()));
             else
                 holder.iconView.setImageURI(Uri.fromFile(iconFile));
 
