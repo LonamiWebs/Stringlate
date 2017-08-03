@@ -1,6 +1,8 @@
 # Stringlate
 *Help translating FOSS applications.*
 
+[![Translate - with Stringlate](https://img.shields.io/badge/stringlate-translate-green.svg)](https://lonamiwebs.github.io/stringlate/translate?git=https%3A%2F%2Fgithub.com%2FLonamiWebs%2Fstringlate.git&name=Stringlate&web=https%3A%2F%2Fgithub.com%2FLonamiWebs%2FStringlate)
+
 [<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="60">](https://f-droid.org/app/io.github.lonamiwebs.stringlate)
 
 ## Description

@@ -51,19 +51,6 @@
                     android:scheme="https" />
 
             </intent-filter>
-
-            <!-- Launch Stringlate suggesting any GitHub repository -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="github.com"
-                    android:pathPattern="/.*/.*"
-                    android:scheme="https" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activities.DiscoverActivity"
