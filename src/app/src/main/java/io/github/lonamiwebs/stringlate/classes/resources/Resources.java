@@ -218,6 +218,8 @@ public class Resources implements Iterable<ResTag> {
 
     public void deleteId(String resourceId) {
         mStrings.remove(resourceId);
+        if (mLastTag != null && mLastTag.getId().equals(resourceId))
+            mLastTag = null;
     }
 
     //endregion
