@@ -21,8 +21,8 @@ android {
         minSdkVersion version_sdk.minSdk
         targetSdkVersion version_sdk.targetSdk
 
-        versionCode 997
-        versionName "0.9.13-dev"
+        versionCode 998
+        versionName "0.9.13"
         applicationId "io.github.lonamiwebs.stringlate"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
