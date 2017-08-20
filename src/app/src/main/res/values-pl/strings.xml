@@ -1,6 +1,6 @@
 <resources>
-    <string name="original_string">Oryginalny ciąg:</string>
-    <string name="translated_string_colon">Przetłumaczony ciąg:</string>
+    <string name="original_string">Oryginalny tekst:</string>
+    <string name="translated_string_colon">Przetłumaczony tekst:</string>
     <string name="next">Następny</string>
     <string name="current_string_id">Aktualne ID ciągu:</string>
     <string name="selected_locale">Wybrany język:</string>
@@ -18,9 +18,9 @@
     <string name="scanning_repository_long">Szukam plików strings.xml w repozytorium…</string>
     <string name="repo_or_url_required">Podaj właściciela projektu i nazwę lub adres URL</string>
     <string name="invalid_repo">Repozytorium nie wygląda na prawidłowe.</string>
-    <string name="translated_string">Przetłumaczony ciąg</string>
+    <string name="translated_string">Przetłumaczony tekst</string>
     <string name="previous">Poprzedni</string>
-    <string name="no_strings_left">Nie zostały żadne ciągi.</string>
+    <string name="no_strings_left">Brak tekstów do przetłumaczenia.</string>
     <string name="save">Zapisz</string>
     <string name="save_error">Nie udało się zapisać zmian.</string>
     <string name="save_success">Plik strings.xml zapisany pomyślnie.</string>
@@ -31,7 +31,7 @@
     <string name="create">Utwórz</string>
     <string name="cancel">Anuluj</string>
     <string name="create_locale_error">Nie można utworzyć nowego lokalnego pliku.</string>
-    <string name="show_translated_strings">Pokaż przetłumaczone ciągi</string>
+    <string name="show_translated_strings">Pokaż przetłumaczone teksty</string>
     <string name="show_identical_strings_only">Pokaż tylko identyczne ciągi</string>
     <string name="delete_ellipsis">Usuń…</string>
     <string name="delete_string">Usuń ciąg</string>
@@ -39,13 +39,13 @@
     <string name="delete_repository">Usuń repozytorium</string>
     <string name="no_locale_selected">Nie masz zaznaczonego języka.</string>
     <string name="sure_question">Jesteś pewny?</string>
-    <string name="delete_locale_confirm_long">Naprawdę chcesz usunąć język \"%s\"? Wszystkie jego ciągi przepadną.</string>
+    <string name="delete_locale_confirm_long">Naprawdę chcesz usunąć język \"%s\"? Wszystkie jego tłumaczenia przepadną.</string>
     <string name="delete_repository_confirm_long">Naprawdę chcesz usunąć repozytorium \"%s\"? Lokalny klon będzie usunięty z pamięci telefonu, ale będzie można go dodać z powrotem.</string>
     <string name="invalid_locale">Nie wydaje mi się żeby ten język był prawidłowy.</string>
     <string name="export_ellipsis">Eksportuj….</string>
     <string name="export_sd_card">Eksportuj do karty SD</string>
     <string name="export_gist">Eksportuj na GitHub Gist</string>
-    <string name="export_pr">Utwórz</string>
+    <string name="export_pr">Utwórz pull request</string>
     <string name="export_share">Udostępnij wygenerowany XML</string>
     <string name="save_resources_question">Zapisać zasoby?</string>
     <string name="save_resources_question_long">Zasoby dla aktualnego języka zostały zmodyfikowane, ale zmiany nie zostały zapisane. Zapisać je teraz?</string>
@@ -85,8 +85,8 @@
     <string name="search">Szukaj</string>
     <string name="search_apps_ellipsis">Szukaj aplikacji…</string>
     <string name="icon_cache_cleared">Pamięć podręczna ikon wyczyszczona (uwolniono %s)</string>
-    <string name="pulling_strings">Pobierz nowe ciągi</string>
-    <string name="pulling_strings_long">Pobranie nowych ciągów zostawi twoje tłumaczenie przy okazji dodając nowe, nieprzetłumaczone ciągi. Powinieneś zrobić to przed przesłaniem twojego tłumaczenia żeby upewnić się, że wszystko przetłumaczyłeś. Chcesz kontynuować?</string>
+    <string name="pulling_strings">Pobierz nowe teksty</string>
+    <string name="pulling_strings_long">Pobranie nowych tekstów zostawi twoje tłumaczenie przy okazji dodając nowe, nieprzetłumaczone ciągi. Powinieneś zrobić to przed przesłaniem twojego tłumaczenia żeby upewnić się, że wszystko przetłumaczyłeś. Chcesz kontynuować?</string>
     <string name="keep_changes">Zachowaj zmiany</string>
     <string name="discard_changes">Odrzuć zmiany</string>
     <string name="save_before_sync_required">Musisz zapisać przed synchronizacją.</string>
@@ -102,7 +102,7 @@
     <string name="clear_icons_cache">Wyczyść zapisane ikony</string>
     <string name="help">Pomoc</string>
     <string name="open_online_help">Otwórz pomoc online</string>
-    <string name="translation_progress">%1$d/%2$d ciągów przetłumaczone (%3$.1f%%).</string>
+    <string name="translation_progress">%1$d/%2$d tekstów przetłumaczone (%3$.1f%%).</string>
     <string name="allow_download_icons">Pozwól na pobieranie ikon</string>
     <string name="do_not_save">Nie zapisuj</string>
     <string name="save_count">Zapisz (%d)</string>
@@ -116,7 +116,7 @@
     <string name="completing_auth_ellipsis">Finalizuję autoryzację…</string>
     <string name="is_anonymous_gist">To anonimowy Gist</string>
     <string name="gist_login_needed">Musisz autoryzować Stringlate na GitHubie aby publikować nieanonimowe gisty.</string>
-    <string name="export_issue">Eksportuj do problemu GitHuba</string>
+    <string name="export_issue">Eksportuj do GitHuba</string>
     <string name="create_issue">Utwórz problem</string>
     <string name="creating_issue_ellipsis">Tworzę problem…</string>
     <string name="creating_issue_long_ellipsis">Próbuje utworzyć problem na GitHubie…</string>
@@ -125,12 +125,12 @@
     <string name="share_url">Udostępnij URL</string>
     <string name="create_issue_success">Twój problem został utworzony, brawo!</string>
     <string name="create_issue_error">Ten problem nie może być utworzony.</string>
-    <string name="can_push_no_pr">Wygląda na to, że masz prawa zapisu do tego repozytorium. Pull request nie będzie wysłany.</string>
+    <string name="can_push_no_pr">Wygląda na to, że musisz mieć prawa zapisu do tego repozytorium. Pull request nie będzie wysłany.</string>
     <string name="cannot_push_will_pr">Wygląda na to, że nie masz praw zapisu do tego repozytorium. Stringlate zapisze je na twoim koncie, zatwierdzi tłumaczenie i utworzy pull request.</string>
     <string name="create_pr">Utwórz pull request</string>
     <string name="selected_branch_colon">Wybrana gałąź:</string>
     <string name="commit_message">Wiadomość zatwierdzenia</string>
-    <string name="commit_changes">Zatwierdź zmiany.</string>
+    <string name="commit_changes">Zatwierdź zmiany</string>
     <string name="sync_required">Proszę zsynchronizuj i spróbuj ponownie.</string>
     <string name="login_required">Musisz być zalogowany na GitHubie.</string>
     <string name="commit_msg_empty">Wiadomość zatwierdzenia nie może być pusta.</string>
@@ -151,7 +151,7 @@
     <string name="issue_title">Tytuł problemu</string>
     <string name="title_empty">Tytuł nie może być pusty.</string>
     <string name="issue_desc_x">Opis problemu musi zawierać \"%x\".</string>
-    <string name="no_strings_to_export">Nie ma ciągów do eksportowania.</string>
+    <string name="no_strings_to_export">Nie ma tłumaczeń do eksportowania.</string>
     <string name="filtering_strings_with">Filtruję ciągi z \"%s"</string>
     <string name="clear_filter">Wyczyść filtr</string>
     <string name="sort_by_ellipsis">Sortuj…</string>
