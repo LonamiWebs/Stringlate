@@ -73,11 +73,7 @@ public class PeekTranslationsActivity extends AppCompatActivity {
             }
         }
 
-        if (translations.isEmpty()) {
-            // TODO Show "no other locales have this translation"
-        } else {
-            mTranslationsListView.setAdapter(new TranslationPeekAdapter(this, translations));
-        }
+        mTranslationsListView.setAdapter(new TranslationPeekAdapter(this, translations));
     }
 
     //endregion
