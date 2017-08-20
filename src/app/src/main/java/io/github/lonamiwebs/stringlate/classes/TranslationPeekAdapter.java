@@ -16,7 +16,7 @@ public class TranslationPeekAdapter extends ArrayAdapter<TranslationPeekAdapter.
 
     // https://developer.android.com/training/improving-layouts/smooth-scrolling.html#ViewHolder
     private static class ViewHolder {
-        TextView locale, content;
+        TextView languageName, languageCode, translationContent;
     }
 
     public static class Item {
@@ -42,14 +42,16 @@ public class TranslationPeekAdapter extends ArrayAdapter<TranslationPeekAdapter.
                     .inflate(R.layout.item_translation_peek_list, parent, false);
 
             final ViewHolder holder = new ViewHolder();
-            holder.locale = (TextView) convertView.findViewById(R.id.localeTextView);
-            holder.content = (TextView) convertView.findViewById(R.id.translationContentTextView);
+            holder.languageName = (TextView) convertView.findViewById(R.id.language_name);
+            holder.languageCode = (TextView) convertView.findViewById(R.id.language_code);
+            holder.translationContent = (TextView) convertView.findViewById(R.id.translation_content);
             convertView.setTag(holder);
         }
         if (rt != null) {
             final ViewHolder holder = (ViewHolder) convertView.getTag();
-            holder.locale.setText(rt.locale);
-            holder.content.setText(rt.content);
+            holder.languageName.setText(LocaleString.getDisplay(rt.locale));
+            holder.languageCode.setText(rt.locale);
+            holder.translationContent.setText(rt.content);
         }
         return convertView;
     }
