@@ -3,6 +3,7 @@ package io.github.lonamiwebs.stringlate.utilities;
 public class Constants {
     public final static String EXTRA_REPO = "io.github.lonamiwebs.stringlate.REPO";
     public final static String EXTRA_LOCALE = "io.github.lonamiwebs.stringlate.LOCALE";
+    public final static String EXTRA_ID = "io.github.lonamiwebs.stringlate.ID";
 
     public final static String EXTRA_REMOTE_PATH = "io.github.lonamiwebs.stringlate.REMOTE_PATH";
     public final static String EXTRA_DESCRIPTION = "io.github.lonamiwebs.stringlate.DESCRIPTION";

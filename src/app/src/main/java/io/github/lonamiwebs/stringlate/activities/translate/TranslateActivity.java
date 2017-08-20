@@ -56,6 +56,7 @@ import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_ID;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_CREATE_FILE;
@@ -220,12 +221,12 @@ public class TranslateActivity extends AppCompatActivity {
 
             // Search strings
             case R.id.searchStrings:
-                launchActivityWithRepoAndLocale(SearchStringActivity.class);
+                launchStringSearchActivity();
                 return true;
 
             // Peek translations
             case R.id.peekTranslations:
-                launchActivityWithRepoAndLocale(PeekTranslationsActivity.class);
+                launchPeekTranslationsActivity();
                 return true;
 
             // Adding locales
@@ -433,14 +434,24 @@ public class TranslateActivity extends AppCompatActivity {
 
     //endregion
 
-    //region Small helper method to launch activities
+    //region Searching for strings and peeking translations
 
-    private void launchActivityWithRepoAndLocale(Class<?> cls) {
+    private void launchStringSearchActivity() {
         if (isLocaleSelected(true)) {
-            Intent intent = new Intent(this, cls);
+            Intent intent = new Intent(this, SearchStringActivity.class);
             intent.putExtra(EXTRA_REPO, mRepo.toBundle());
             intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
             startActivityForResult(intent, RESULT_STRING_SELECTED);
+        }
+    }
+
+    private void launchPeekTranslationsActivity() {
+        if (isLocaleSelected(true) && mSelectedResource != null) {
+            Intent intent = new Intent(this, PeekTranslationsActivity.class);
+            intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+            intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
+            intent.putExtra(EXTRA_ID, mSelectedResource.getId());
+            startActivity(intent);
         }
     }
 
