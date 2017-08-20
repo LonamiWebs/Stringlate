@@ -11,22 +11,30 @@ import android.widget.TextView;
 import java.util.List;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 
-public class TranslationPeekAdapter extends ArrayAdapter<ResTag> {
+public class TranslationPeekAdapter extends ArrayAdapter<TranslationPeekAdapter.Item> {
 
     // https://developer.android.com/training/improving-layouts/smooth-scrolling.html#ViewHolder
     private static class ViewHolder {
         TextView locale, content;
     }
 
-    public TranslationPeekAdapter(Context context, List<ResTag> translations) {
+    public static class Item {
+        public final String locale, content;
+
+        public Item(final String locale, final String content) {
+            this.locale = locale;
+            this.content = content;
+        }
+    }
+
+    public TranslationPeekAdapter(Context context, List<Item> translations) {
         super(context, R.layout.item_translation_peek_list, translations);
     }
 
     @NonNull
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        ResTag rt = getItem(position);
+        Item rt = getItem(position);
 
         // This may be the first time we use the recycled view
         if (convertView == null) {
@@ -40,8 +48,8 @@ public class TranslationPeekAdapter extends ArrayAdapter<ResTag> {
         }
         if (rt != null) {
             final ViewHolder holder = (ViewHolder) convertView.getTag();
-            holder.locale.setText(rt.getId());
-            holder.content.setText(rt.getContent());
+            holder.locale.setText(rt.locale);
+            holder.content.setText(rt.content);
         }
         return convertView;
     }

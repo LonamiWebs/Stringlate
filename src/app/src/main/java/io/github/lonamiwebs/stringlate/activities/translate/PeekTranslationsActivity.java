@@ -14,7 +14,9 @@ import io.github.lonamiwebs.stringlate.classes.TranslationPeekAdapter;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslation;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslationAdapter;
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_ID;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
 
@@ -24,6 +26,7 @@ public class PeekTranslationsActivity extends AppCompatActivity {
 
     private RepoHandler mRepo;
     private String mLocale;
+    private String mResourceId;
 
     private ListView mTranslationsListView;
 
@@ -41,6 +44,7 @@ public class PeekTranslationsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
+        mResourceId = intent.getStringExtra(EXTRA_ID);
 
         setTitle(String.format("%s/%s", mRepo.getName(), getString(R.string.peek_translations)));
 
@@ -58,6 +62,22 @@ public class PeekTranslationsActivity extends AppCompatActivity {
     //region ListView refreshing
 
     private void refreshTranslationsListView() {
+        final ArrayList<TranslationPeekAdapter.Item> translations = new ArrayList<>();
+        for (String locale : mRepo.getLocales()) {
+            if (locale.equals(mLocale))
+                continue;
+
+            final String content = mRepo.loadResources(locale).getContent(mResourceId);
+            if (!content.isEmpty()) {
+                translations.add(new TranslationPeekAdapter.Item(locale, content));
+            }
+        }
+
+        if (translations.isEmpty()) {
+            // TODO Show "no other locales have this translation"
+        } else {
+            mTranslationsListView.setAdapter(new TranslationPeekAdapter(this, translations));
+        }
     }
 
     //endregion
