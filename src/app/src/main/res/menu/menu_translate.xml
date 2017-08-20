@@ -9,6 +9,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/peekTranslations"
+        android:icon="@drawable/ic_eye_white_24px"
+        android:title="@string/peek_translations"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/updateStrings"
         android:icon="@drawable/ic_sync_black_24dp"
         android:title="@string/update_strings" />

@@ -47,6 +47,7 @@ import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
+import io.github.lonamiwebs.stringlate.classes.TranslationPeekAdapter;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoProgress;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
@@ -219,7 +220,12 @@ public class TranslateActivity extends AppCompatActivity {
 
             // Search strings
             case R.id.searchStrings:
-                launchStringSearchActivity();
+                launchActivityWithRepoAndLocale(SearchStringActivity.class);
+                return true;
+
+            // Peek translations
+            case R.id.peekTranslations:
+                launchActivityWithRepoAndLocale(PeekTranslationsActivity.class);
                 return true;
 
             // Adding locales
@@ -427,11 +433,11 @@ public class TranslateActivity extends AppCompatActivity {
 
     //endregion
 
-    //region Searching for strings
+    //region Small helper method to launch activities
 
-    private void launchStringSearchActivity() {
+    private void launchActivityWithRepoAndLocale(Class<?> cls) {
         if (isLocaleSelected(true)) {
-            Intent intent = new Intent(this, SearchStringActivity.class);
+            Intent intent = new Intent(this, cls);
             intent.putExtra(EXTRA_REPO, mRepo.toBundle());
             intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
             startActivityForResult(intent, RESULT_STRING_SELECTED);

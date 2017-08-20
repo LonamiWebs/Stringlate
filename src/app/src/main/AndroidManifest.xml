@@ -91,5 +91,6 @@
             android:label="@string/create_pr"
             android:screenOrientation="portrait"/>
         <activity android:name=".activities.export.CreateUrlSuccessActivity" />
+        <activity android:name=".activities.translate.PeekTranslationsActivity" />
     </application>
 </manifest>

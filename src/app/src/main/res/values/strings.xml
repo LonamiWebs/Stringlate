@@ -177,4 +177,5 @@
     <string name="ignore">Ignore</string>
     <string name="open_project_homepage">Open project homepage</string>
     <string name="open_in_external_browser">Open in external browser</string>
+    <string name="peek_translations">Peek translations</string>
 </resources>
