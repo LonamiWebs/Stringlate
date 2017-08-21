@@ -37,7 +37,6 @@ public class SourceSettings {
     @NonNull
     public String getName() { return mSettings.optString(KEY_NAME, DEFAULT_NAME); }
 
-    @NonNull
     public Object get(final String name) {
         return mSettings.opt(name);
     }
@@ -47,7 +46,10 @@ public class SourceSettings {
     public <T> ArrayList<T> getArray(final String name) {
         final ArrayList<T> result = new ArrayList<>();
         try {
-            JSONArray array = mSettings.getJSONArray(name);
+            JSONArray array = mSettings.optJSONArray(name);
+            if (array == null)
+                return result;
+
             for (int i = 0; i < array.length(); ++i) {
                 try {
                     result.add((T) array.get(i));

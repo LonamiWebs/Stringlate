@@ -147,14 +147,14 @@ public class TranslateActivity extends AppCompatActivity {
         loadStringIDsSpinner();
 
         // Show the notice if this repository uses (or might use) a web translation service
-        String usedService = mRepo.getUsedTranslationService();
-        if (usedService.isEmpty()) {
+        if (!mRepo.getSourceName().equals("git") || mRepo.getUsedTranslationService().isEmpty()) {
             mUsesTranslationServiceTextView.setVisibility(View.GONE);
         } else {
             mUsesTranslationServiceTextView.setVisibility(View.VISIBLE);
-            usedService = Utils.toTitleCase(usedService);
-            mUsesTranslationServiceTextView.setText(
-                    getString(R.string.application_may_use_translation_platform, usedService));
+            mUsesTranslationServiceTextView.setText(getString(
+                    R.string.application_may_use_translation_platform,
+                    Utils.toTitleCase(mRepo.getUsedTranslationService())
+            ));
         }
     }
 

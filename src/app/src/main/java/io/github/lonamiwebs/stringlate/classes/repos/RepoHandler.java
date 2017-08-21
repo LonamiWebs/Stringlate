@@ -483,6 +483,11 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Settings
 
+    @NonNull
+    public String getSourceName() {
+        return mSourceSettings.getName();
+    }
+
     public String getLastLocale() {
         return mSettings.getLastLocale();
     }
@@ -530,9 +535,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     @NonNull
     public String getUsedTranslationService() {
-        // TODO Do not return null
-        return null;
-        //return mSettings.getUsedTranslationService();
+        final String result = (String)mSourceSettings.get("translation_service");
+        return result == null ? "" : result;
     }
 
     @NonNull
@@ -556,9 +560,11 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     @NonNull
     public ArrayList<String> getRemoteBranches() {
-        // TODO Do not return null
-        return null;
-        //return mSettings.getRemoteBranches();
+        if (getSourceName().equals("git")) {
+            return mSourceSettings.getArray("remote_branches");
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     // Used to save the translation progress, calculated on the
