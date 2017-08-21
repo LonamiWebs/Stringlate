@@ -2,10 +2,12 @@ package io.github.lonamiwebs.stringlate.settings;
 
 import android.support.annotation.NonNull;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -39,17 +41,37 @@ public class RepoSettings {
 
     //endregion
 
+    // TODO Remove by version 1.0 or so
+    public void checkUpgradeSettingsToSpecific(final SourceSettings sourceSettings) {
+        if (mSettings.has("git_url")) {
+            // Name change: "git_url" -> "source"
+            setSource(mSettings.optString("git_url", ""));
+
+            // Location change: RepoSettings -> git-specific SourceSettings (all if upgrading)
+            sourceSettings.set("translation_service", mSettings.optString("translation_service"));
+            try {
+                final ArrayList<String> branchesArray = new ArrayList<>();
+                JSONArray branches = mSettings.optJSONArray("remote_branches");
+                if (branches != null) {
+                    for (int i = 0; i < branches.length(); ++i) {
+                        branchesArray.add(branches.getString(i));
+                    }
+                    sourceSettings.setArray("remote_branches", branchesArray);
+                }
+            } catch (JSONException ignored) {
+            }
+
+            mSettings.remove("git_url");
+            mSettings.remove("translation_service");
+            mSettings.remove("remote_branches");
+            save();
+        }
+    }
+
     //region Getters
 
     @NonNull
     public String getSource() {
-        if (mSettings.has("git_url")) {
-            // TODO Source used to always be "git_url", remove after some versions?
-            setSource(mSettings.optString("git_url", ""));
-            mSettings.remove("git_url");
-            save();
-        }
-
         return mSettings.optString(KEY_SOURCE, "");
     }
 

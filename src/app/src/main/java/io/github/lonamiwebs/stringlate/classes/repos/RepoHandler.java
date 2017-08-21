@@ -97,6 +97,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mSettings.setSource(source);
 
         mSourceSettings = new SourceSettings(mRoot);
+        mSettings.checkUpgradeSettingsToSpecific(mSourceSettings);
         mProgressFile = new File(mRoot, "translation_progress.json");
 
         loadLocales();
@@ -107,6 +108,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mRoot = root;
         mSettings = new RepoSettings(mRoot);
         mSourceSettings = new SourceSettings(mRoot);
+        mSettings.checkUpgradeSettingsToSpecific(mSourceSettings);
 
         mProgressFile = new File(mRoot, "translation_progress.json");
 
@@ -685,7 +687,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Backwards-compatible code
 
-    // TODO As usual, remove this code by version 1.0 or so
     public static boolean checkUpgradeRepositories(Context context) {
         // The regex used to match for 'strings-locale.xml' files
         Pattern localesPattern = Pattern.compile("strings(?:-([\\w-]+))?\\.xml");
