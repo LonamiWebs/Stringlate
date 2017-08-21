@@ -14,7 +14,7 @@ public abstract class ResTag implements Comparable<ResTag> {
     //region Members
 
     @NonNull
-    String mContent;
+    String mContent = "";
 
     // "metadata" used to keep track whether a string is the original or not. This
     // will be later used when downloading remote changes, to keep local if modified.

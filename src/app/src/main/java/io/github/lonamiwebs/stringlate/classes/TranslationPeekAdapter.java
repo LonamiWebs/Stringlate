@@ -42,9 +42,9 @@ public class TranslationPeekAdapter extends ArrayAdapter<TranslationPeekAdapter.
                     .inflate(R.layout.item_translation_peek_list, parent, false);
 
             final ViewHolder holder = new ViewHolder();
-            holder.languageName = (TextView) convertView.findViewById(R.id.language_name);
-            holder.languageCode = (TextView) convertView.findViewById(R.id.language_code);
-            holder.translationContent = (TextView) convertView.findViewById(R.id.translation_content);
+            holder.languageName = convertView.findViewById(R.id.language_name);
+            holder.languageCode = convertView.findViewById(R.id.language_code);
+            holder.translationContent = convertView.findViewById(R.id.translation_content);
             convertView.setTag(holder);
         }
         if (rt != null) {

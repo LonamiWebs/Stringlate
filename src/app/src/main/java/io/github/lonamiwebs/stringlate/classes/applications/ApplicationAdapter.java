@@ -43,9 +43,9 @@ public class ApplicationAdapter extends ArrayAdapter<ApplicationDetails> {
                     .inflate(R.layout.item_application_list, parent, false);
 
             final ViewHolder holder = new ViewHolder();
-            holder.iconView = (ImageView) convertView.findViewById(R.id.appIcon);
-            holder.appName = (TextView) convertView.findViewById(R.id.appName);
-            holder.appDescription = (TextView) convertView.findViewById(R.id.appDescription);
+            holder.iconView = convertView.findViewById(R.id.appIcon);
+            holder.appName = convertView.findViewById(R.id.appName);
+            holder.appDescription = convertView.findViewById(R.id.appDescription);
             holder.installIndicator = convertView.findViewById(R.id.installIndicatorView);
             convertView.setTag(holder);
         }

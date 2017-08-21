@@ -119,14 +119,12 @@ public class GitWrapper {
             final List<Ref> refs = Git.open(repo)
                     .branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call();
 
-            final ArrayList<String> result = new ArrayList<String>();
+            final ArrayList<String> result = new ArrayList<>();
             for (Ref ref : refs)
                 result.add(ref.getName());
 
             return result;
-        } catch (GitAPIException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (GitAPIException | IOException e) {
             e.printStackTrace();
         }
 

@@ -49,8 +49,8 @@ public class CreateIssueActivity extends AppCompatActivity {
 
         mSettings = new AppSettings(this);
 
-        mIssueTitleEditText = (EditText) findViewById(R.id.issueTitleEditText);
-        mIssueDescriptionEditText = (EditText) findViewById(R.id.issueDescriptionEditText);
+        mIssueTitleEditText = findViewById(R.id.issueTitleEditText);
+        mIssueDescriptionEditText = findViewById(R.id.issueDescriptionEditText);
 
         // Retrieve the strings.xml content to be exported
         Intent intent = getIntent();

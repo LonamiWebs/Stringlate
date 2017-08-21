@@ -52,10 +52,10 @@ public class CreateGistActivity extends AppCompatActivity {
 
         mSettings = new AppSettings(this);
 
-        mDescriptionEditText = (EditText) findViewById(R.id.gistDescriptionEditText);
-        mIsPublicCheckBox = (CheckBox) findViewById(R.id.gistIsPublicCheckBox);
-        mIsAnonymousCheckBox = (CheckBox) findViewById(R.id.gistIsAnonymousCheckBox);
-        mFilenameEditText = (EditText) findViewById(R.id.gistFilenameEditText);
+        mDescriptionEditText = findViewById(R.id.gistDescriptionEditText);
+        mIsPublicCheckBox = findViewById(R.id.gistIsPublicCheckBox);
+        mIsAnonymousCheckBox = findViewById(R.id.gistIsAnonymousCheckBox);
+        mFilenameEditText = findViewById(R.id.gistFilenameEditText);
 
         // Retrieve the strings.xml content to be exported
         Intent intent = getIntent();

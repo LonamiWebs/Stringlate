@@ -58,8 +58,8 @@ public class DiscoverActivity extends AppCompatActivity {
 
         mSettings = new AppSettings(this);
 
-        mNoRepositoryTextView = (TextView) findViewById(R.id.noRepositoryTextView);
-        mApplicationListView = (ListView) findViewById(R.id.applicationListView);
+        mNoRepositoryTextView = findViewById(R.id.noRepositoryTextView);
+        mApplicationListView = findViewById(R.id.applicationListView);
 
         mApplicationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -32,7 +32,7 @@ public class BrowserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_online_help);
-        webview = (WebView) findViewById(R.id.webview);
+        webview = findViewById(R.id.webview);
 
         WebSettings webSettings = webview.getSettings();
         webSettings.setAllowFileAccess(false);

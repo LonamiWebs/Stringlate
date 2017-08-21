@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,14 +54,14 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
                     .inflate(R.layout.item_repository_list, parent, false);
 
             final ViewHolder holder = new ViewHolder();
-            holder.iconView = (ImageView) convertView.findViewById(R.id.repositoryIcon);
-            holder.pathTextView = (TextView) convertView.findViewById(R.id.repositoryPath);
-            holder.hostTextView = (TextView) convertView.findViewById(R.id.repositoryHost);
+            holder.iconView = convertView.findViewById(R.id.repositoryIcon);
+            holder.pathTextView = convertView.findViewById(R.id.repositoryPath);
+            holder.hostTextView = convertView.findViewById(R.id.repositoryHost);
             holder.translatedProgressTextView =
-                    (TextView) convertView.findViewById(R.id.translatedProgressText);
+                    convertView.findViewById(R.id.translatedProgressText);
 
             holder.translatedProgressBar =
-                    (ProgressBar) convertView.findViewById(R.id.translatedProgressBar);
+                    convertView.findViewById(R.id.translatedProgressBar);
 
             convertView.setTag(holder);
         }

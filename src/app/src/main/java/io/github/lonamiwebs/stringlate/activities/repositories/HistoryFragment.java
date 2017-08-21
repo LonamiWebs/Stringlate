@@ -60,7 +60,7 @@ public class HistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
 
-        mRepositoryListView = (ListView) rootView.findViewById(R.id.repositoryListView);
+        mRepositoryListView = rootView.findViewById(R.id.repositoryListView);
         mRepositoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -70,8 +70,8 @@ public class HistoryFragment extends Fragment {
         });
         registerForContextMenu(mRepositoryListView);
 
-        mHistoryMessageTextView = (TextView) rootView.findViewById(R.id.historyMessageTextView);
-        mRepositoriesTitle = (TextView) rootView.findViewById(R.id.repositoriesTitle);
+        mHistoryMessageTextView = rootView.findViewById(R.id.historyMessageTextView);
+        mRepositoriesTitle = rootView.findViewById(R.id.repositoriesTitle);
 
         changeListener.onRepositoryCountChanged();
 

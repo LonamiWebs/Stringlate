@@ -59,9 +59,9 @@ public class CreatePullRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_pull_request);
 
-        mInfoTextView = (TextView) findViewById(R.id.infoTextView);
-        mBranchesSpinner = (Spinner) findViewById(R.id.branchesSpinner);
-        mCommitMessageEditText = (EditText) findViewById(R.id.commitMessageEditText);
+        mInfoTextView = findViewById(R.id.infoTextView);
+        mBranchesSpinner = findViewById(R.id.branchesSpinner);
+        mCommitMessageEditText = findViewById(R.id.commitMessageEditText);
 
         mSettings = new AppSettings(this);
 

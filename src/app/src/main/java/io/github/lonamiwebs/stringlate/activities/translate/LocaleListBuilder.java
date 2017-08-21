@@ -86,9 +86,9 @@ class LocaleListBuilder {
             if (view == null) {
                 view = LayoutInflater.from(getContext()).inflate(mResource, parent, false);
                 final ViewHolder holder = new ViewHolder();
-                holder.displayLang = (TextView) view.findViewById(R.id.language_name);
-                holder.displayCountry = (TextView) view.findViewById(R.id.language_country);
-                holder.langCode = (TextView) view.findViewById(R.id.language_code);
+                holder.displayLang = view.findViewById(R.id.language_name);
+                holder.displayCountry = view.findViewById(R.id.language_country);
+                holder.langCode = view.findViewById(R.id.language_code);
                 view.setTag(holder);
             }
 

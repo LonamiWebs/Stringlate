@@ -116,22 +116,21 @@ public class TranslateActivity extends AppCompatActivity {
 
         mSettings = new AppSettings(this);
 
-        mOriginalStringEditText = (EditText) findViewById(R.id.originalStringEditText);
-        mTranslatedStringEditText = (EditText) findViewById(R.id.translatedStringEditText);
+        mOriginalStringEditText = findViewById(R.id.originalStringEditText);
+        mTranslatedStringEditText = findViewById(R.id.translatedStringEditText);
         mTranslatedStringEditText.addTextChangedListener(onTranslationChanged);
 
-        mLocaleSpinner = (Spinner) findViewById(R.id.localeSpinner);
-        mStringIdSpinner = (Spinner) findViewById(R.id.stringIdSpinner);
+        mLocaleSpinner = findViewById(R.id.localeSpinner);
+        mStringIdSpinner = findViewById(R.id.stringIdSpinner);
 
-        mPreviousButton = (Button) findViewById(R.id.previousButton);
-        mNextButton = (Button) findViewById(R.id.nextButton);
-        mProgressProgressBar = (ProgressBar) findViewById(R.id.progressProgressBar);
-        mProgressTextView = (TextView) findViewById(R.id.progressTextView);
+        mPreviousButton = findViewById(R.id.previousButton);
+        mNextButton = findViewById(R.id.nextButton);
+        mProgressProgressBar = findViewById(R.id.progressProgressBar);
+        mProgressTextView = findViewById(R.id.progressTextView);
 
-        mFilterAppliedLayout = (LinearLayout) findViewById(R.id.filterAppliedLayout);
-        mFilterAppliedTextView = (TextView) findViewById(R.id.filterAppliedTextView);
-        mUsesTranslationServiceTextView = (TextView)
-                findViewById(R.id.usesTranslationServiceTextView);
+        mFilterAppliedLayout = findViewById(R.id.filterAppliedLayout);
+        mFilterAppliedTextView = findViewById(R.id.filterAppliedTextView);
+        mUsesTranslationServiceTextView = findViewById(R.id.usesTranslationServiceTextView);
 
         mLocaleSpinner.setOnItemSelectedListener(eOnLocaleSelected);
         mStringIdSpinner.setOnItemSelectedListener(eOnStringIdSelected);

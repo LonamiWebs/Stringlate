@@ -36,7 +36,7 @@ public class PeekTranslationsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_peek_translations);
 
-        mTranslationsListView = (ListView) findViewById(R.id.translationsListView);
+        mTranslationsListView = findViewById(R.id.translationsListView);
 
         Intent intent = getIntent();
         mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));

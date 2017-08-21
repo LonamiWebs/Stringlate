@@ -41,9 +41,9 @@ public class SearchStringActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_string);
 
-        mSearchEditText = (EditText) findViewById(R.id.searchEditText);
-        mResourcesListView = (ListView) findViewById(R.id.resourcesListView);
-        final ImageButton clearFilterButton = (ImageButton) findViewById(R.id.clearFilterButton);
+        mSearchEditText = findViewById(R.id.searchEditText);
+        mResourcesListView = findViewById(R.id.resourcesListView);
+        final ImageButton clearFilterButton = findViewById(R.id.clearFilterButton);
 
         Intent intent = getIntent();
         mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));

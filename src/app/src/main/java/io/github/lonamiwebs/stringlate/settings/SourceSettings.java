@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,10 +49,10 @@ public class AddNewRepositoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_new_repository, container, false);
 
-        mOwnerEditText = (EditText) rootView.findViewById(R.id.ownerEditText);
-        mRepositoryEditText = (EditText) rootView.findViewById(R.id.repositoryEditText);
+        mOwnerEditText = rootView.findViewById(R.id.ownerEditText);
+        mRepositoryEditText = rootView.findViewById(R.id.repositoryEditText);
 
-        mUrlEditText = (EditText) rootView.findViewById(R.id.urlEditText);
+        mUrlEditText = rootView.findViewById(R.id.urlEditText);
         mProjectDetails = new ApplicationDetails();
 
         // Set button events

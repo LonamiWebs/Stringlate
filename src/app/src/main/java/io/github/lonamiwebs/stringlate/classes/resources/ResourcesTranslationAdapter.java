@@ -35,9 +35,9 @@ public class ResourcesTranslationAdapter extends ArrayAdapter<ResourcesTranslati
                     .inflate(R.layout.item_resource_list, parent, false);
 
             final ViewHolder holder = new ViewHolder();
-            holder.stringId = (TextView) convertView.findViewById(R.id.stringIdTextView);
-            holder.originalValue = (TextView) convertView.findViewById(R.id.originalValueTextView);
-            holder.translatedValue = (TextView) convertView.findViewById(R.id.translatedValueTextView);
+            holder.stringId = convertView.findViewById(R.id.stringIdTextView);
+            holder.originalValue = convertView.findViewById(R.id.originalValueTextView);
+            holder.translatedValue = convertView.findViewById(R.id.translatedValueTextView);
             convertView.setTag(holder);
         }
         if (rt != null) {
