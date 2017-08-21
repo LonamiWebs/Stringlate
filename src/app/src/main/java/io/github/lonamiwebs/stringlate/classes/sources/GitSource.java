@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -103,17 +104,31 @@ public class GitSource implements StringsSource {
     public List<String> getLocales() {
         final ArrayList<String> result = new ArrayList<>(mLocaleFiles.size());
         for (String locale : mLocaleFiles.keySet())
-            result.add(locale);
+            if (locale != null)
+                result.add(locale);
         return result;
     }
 
     @NonNull
     @Override
-    public Resources getResources(final String locale) {
+    public Resources getResources(@NonNull final String locale) {
         final Resources result = Resources.empty();
         for (File file : mLocaleFiles.get(locale)) {
             for (ResTag rt : Resources.fromFile(file))
                 result.addTag(rt);
+        }
+        return result;
+    }
+
+    @NonNull
+    @Override
+    public Map<String, Resources> getDefaultResources() {
+        HashMap<String, Resources> result = new HashMap<>();
+        for (File file : mLocaleFiles.get(null)) {
+            final String remotePath =
+                    file.getAbsolutePath().substring(mTmpCloneDir.getAbsolutePath().length() + 1);
+
+            result.put(remotePath, Resources.fromFile(file));
         }
         return result;
     }

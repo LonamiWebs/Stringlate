@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
@@ -20,10 +21,13 @@ public interface StringsSource {
     @NonNull
     List<String> getLocales();
 
-    // Returns all the available resources for the specified locale.
-    // The locale will be null if the default locale is desired.
+    // Returns all the available, non-default resources for the specified locale.
     @NonNull
-    Resources getResources(final String locale);
+    Resources getResources(final @NonNull String locale);
+
+    // Returns pairs of (default resource name, resources)
+    @NonNull
+    Map<String, Resources> getDefaultResources();
 
     // May return a File pointing to an existing icon for this source, or null
     File getIcon();

@@ -145,20 +145,15 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return new File(mRoot, DEFAULT_LOCALE + "/" + filename);
     }
 
-    // Used when cloning. An application might have multiple files with the same name
-    // but under different directories (i.e., F-Droid has two "strings.xml" files).
-    // If this is the case, append an index (i.e., "strings.xml" -> "strings2.xml")
-    private File getUniqueDefaultResourcesFile(@NonNull String filename) {
-        File result = getDefaultResourcesFile(filename);
+    // An application may want to split their translations into several files. We
+    // can just save them as strings.xml, strings2.xml, strings3.xml... and save
+    // a map somewhere else to store "strings%d.xml -> original-path.xml".
+    private File getUniqueDefaultResourcesFile() {
+        File result = getDefaultResourcesFile("strings.xml");
         if (result.isFile()) {
-            // We assume it contains .xml
-            int i = filename.lastIndexOf('.');
-            String name = filename.substring(0, i);
-            String ext = filename.substring(i);
-
-            i = 2;
+            int i = 2;
             while (result.isFile()) {
-                result = getDefaultResourcesFile(name + i + ext);
+                result = getDefaultResourcesFile("strings" + i + ".xml");
                 i++;
             }
         }
@@ -312,21 +307,20 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
         // TODO Generalize a bit more, probably keep per-source settings?
         final GitSource gitSource = source instanceof GitSource ? (GitSource)source : null;
-        if (gitSource != null) {
-            mSettings.clearRemotePaths();
-        }
 
         // Delete all the previous default resources since their
         // names might have changed, been removed, or some new added.
+        mSettings.clearRemotePaths();
         for (File f : getDefaultResourcesFiles())
             f.delete();
 
         for (String locale : source.getLocales()) {
+            if (locale == null)
+                continue; // Should not happen
+
             // Load in memory the old saved resources. We need to work
             // on this file because we're going to be merging changes.
-            // TODO important: this will lose the information available on the git repository,
-            // where does each file live? We can't create pull requests properly!
-            Resources resources = locale == null ? loadResources(DEFAULT_LOCALE) : loadResources(locale);
+            Resources resources = loadResources(locale);
 
             // Add new translated tags without overwriting existing ones
             for (ResTag rt : source.getResources(locale))
@@ -335,6 +329,20 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
             // Save the changes
             resources.save();
+        }
+
+        // Default resources are treated specially, since their name matters. The name for
+        // non-default resources doesn't because it can be inferred from defaults' (for now).
+        for (Map.Entry<String, Resources> nameResources : source.getDefaultResources().entrySet()) {
+            final String originalName = nameResources.getKey();
+            final File resourceFile = getUniqueDefaultResourcesFile();
+
+            final Resources resources = Resources.fromFile(resourceFile);
+            for (ResTag rt : nameResources.getValue()) // Copy the resources to the new local file
+                resources.addTag(rt);
+
+            resources.save();
+            addRemotePath(resourceFile.getName(), originalName); // Save the map unique -> original
         }
 
         // Check out if we have any icon for this repository
