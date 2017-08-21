@@ -68,7 +68,6 @@ public class Utils {
             return readCloseStream(new FileInputStream(file));
         } catch (FileNotFoundException e) {
             Log.w("Utils/readFile", "File " + file + " not found.");
-            e.printStackTrace();
         }
 
         return "";

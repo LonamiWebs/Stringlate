@@ -27,8 +27,6 @@ public class RepoSettings {
     private static final String KEY_ICON_PATH = "icon_path";
     private static final String KEY_SEARCH_FILTER = "search_filter";
     private static final String KEY_CREATED_ISSUES = "created_issues";
-    private static final String KEY_USED_TRANSLATION_SERVICE = "translation_service";
-    private static final String KEY_REMOTE_BRANCHES = "remote_branches";
     private static final String KEY_PROJECT_NAME = "project_name";
 
     private static final String DEFAULT_GIT_URL = "";
@@ -93,11 +91,6 @@ public class RepoSettings {
     }
 
     @NonNull
-    public String getUsedTranslationService() {
-        return mSettings.optString(KEY_USED_TRANSLATION_SERVICE, "");
-    }
-
-    @NonNull
     public String getStringFilter() {
         return mSettings.optString(KEY_SEARCH_FILTER, "");
     }
@@ -117,19 +110,6 @@ public class RepoSettings {
             }
         }
         return map;
-    }
-
-    @NonNull
-    public ArrayList<String> getRemoteBranches() {
-        final ArrayList<String> result = new ArrayList<>();
-        try {
-            JSONArray branches = mSettings.getJSONArray(KEY_REMOTE_BRANCHES);
-            for (int i = 0; i < branches.length(); ++i) {
-                result.add(branches.getString(i));
-            }
-        } catch (JSONException ignored) {
-        }
-        return result;
     }
 
     //endregion
@@ -190,14 +170,6 @@ public class RepoSettings {
         save();
     }
 
-    public void setUsedTranslationService(@NonNull final String service) {
-        try {
-            mSettings.put(KEY_USED_TRANSLATION_SERVICE, service);
-        } catch (JSONException ignored) {
-        }
-        save();
-    }
-
     public void setStringFilter(@NonNull final String filter) {
         try {
             mSettings.put(KEY_SEARCH_FILTER, filter);
@@ -211,17 +183,6 @@ public class RepoSettings {
             HashMap<String, Integer> map = getCreatedIssues();
             map.put(locale, issueNumber);
             mSettings.put(KEY_CREATED_ISSUES, new JSONObject(map));
-        } catch (JSONException ignored) {
-        }
-        save();
-    }
-
-    public void setRemoteBranches(final ArrayList<String> branches) {
-        try {
-            JSONArray array = new JSONArray();
-            for (String branch : branches)
-                array.put(branch);
-            mSettings.put(KEY_REMOTE_BRANCHES, array);
         } catch (JSONException ignored) {
         }
         save();

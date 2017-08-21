@@ -18,6 +18,7 @@ import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 import io.github.lonamiwebs.stringlate.settings.RepoSettings;
+import io.github.lonamiwebs.stringlate.settings.SourceSettings;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
 public class GitSource implements StringsSource {
@@ -36,6 +37,10 @@ public class GitSource implements StringsSource {
     private static final Pattern DO_NOT_TRANSLATE = Pattern.compile(
             "(?:do?[ _-]*no?t?|[u|i]n)[ _-]*trans(?:lat(?:e|able))?");
 
+
+    // SourceSettings-specific
+    private static final String KEY_REMOTE_BRANCHES = "remote_branches";
+
     public GitSource(final String gitUrl, final String branch) {
         mGitUrl = gitUrl;
         mBranch = branch;
@@ -43,7 +48,7 @@ public class GitSource implements StringsSource {
     }
 
     @Override
-    public boolean setup(final Context context, final GitCloneProgressCallback callback) {
+    public boolean setup(final Context context, final SourceSettings settings, final GitCloneProgressCallback callback) {
         // 1. Prepare to clone the repository
         callback.onProgressUpdate(
                 context.getString(R.string.cloning_repo),
@@ -72,6 +77,9 @@ public class GitSource implements StringsSource {
             return false;
         }
 
+        // Save the branches of this repository
+        settings.setArray("remote_branches", GitWrapper.getBranches(mTmpCloneDir));
+
         iconFile = GitWrapper.findProperIcon(mTmpCloneDir, context);
 
         // Iterate over all the found resources to sort them by locale
@@ -96,7 +104,15 @@ public class GitSource implements StringsSource {
             }
         }
 
+        settings.set("translation_service", GitWrapper.mayUseTranslationServices(mTmpCloneDir));
+
         return true;
+    }
+
+    @NonNull
+    @Override
+    public String getName() {
+        return "git";
     }
 
     @NonNull
@@ -139,11 +155,6 @@ public class GitSource implements StringsSource {
     }
 
     public void updateGitSpecificSettings(final RepoSettings settings) {
-        // Save the branches of this repository
-        settings.setRemoteBranches(GitWrapper.getBranches(mTmpCloneDir));
-
-        // Check out if some common online translation services are mentioned on the README
-        settings.setUsedTranslationService(GitWrapper.mayUseTranslationServices(mTmpCloneDir));
     }
 
     @Override

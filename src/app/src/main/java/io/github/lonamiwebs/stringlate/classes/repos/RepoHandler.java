@@ -36,39 +36,23 @@ import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 import io.github.lonamiwebs.stringlate.settings.RepoSettings;
+import io.github.lonamiwebs.stringlate.settings.SourceSettings;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 import io.github.lonamiwebs.stringlate.utilities.ZipUtils;
 
-// Class used to inter-operate with locally saved GitHub "repositories"
-// What is stored are simply the strings.xml file under a tree directory structure:
-/*
-.
-└── git_url_hash
-    ├── default
-    │   ├── arrays.xml
-    │   └── strings.xml
-    ├── es
-    │   ├── arrays.xml
-    │   └── strings.xml
-    ├── …
-    │   └── …
-    └── info.json
-* */
+// Represents a locally saved string repository, which can be synchronized from any StringsSource
 public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Members
 
     private final Context mContext;
     private final RepoSettings mSettings;
+    private final SourceSettings mSourceSettings;
 
     private final File mRoot;
     private final File mProgressFile;
 
     private final ArrayList<String> mLocales = new ArrayList<>();
-
-    // Match locale from "values-(…)/strings.xml"
-    private final Pattern mValuesLocalePattern =
-            Pattern.compile("values(?:-([\\w-]+))?/.+?\\.xml");
 
     private static final String BASE_DIR = "repos";
     public static final String DEFAULT_LOCALE = "default";
@@ -116,6 +100,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mRoot = new File(mContext.getFilesDir(), BASE_DIR + "/" + getId(gitUrl));
         mSettings = new RepoSettings(mRoot);
         mSettings.setGitUrl(gitUrl);
+        mSourceSettings = new SourceSettings(mRoot);
 
         mProgressFile = new File(mRoot, "translation_progress.json");
 
@@ -126,6 +111,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mContext = context;
         mRoot = root;
         mSettings = new RepoSettings(mRoot);
+        mSourceSettings = new SourceSettings(mRoot);
 
         mProgressFile = new File(mRoot, "translation_progress.json");
 
@@ -279,10 +265,17 @@ public class RepoHandler implements Comparable<RepoHandler> {
     public void syncResources(final StringsSource source,
                               final GitCloneProgressCallback callback) {
 
+        if (!mSourceSettings.getName().equals(source.getName())) {
+            // if (!sourceName.isEmpty()) { ... }
+            // TODO Warn the user they're using a different source for the strings?
+
+            mSourceSettings.reset(source.getName());
+        }
+
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... voids) {
-                return source.setup(mContext, callback);
+                return source.setup(mContext, mSourceSettings, callback);
             }
 
             @Override
@@ -543,7 +536,9 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     @NonNull
     public String getUsedTranslationService() {
-        return mSettings.getUsedTranslationService();
+        // TODO Do not return null
+        return null;
+        //return mSettings.getUsedTranslationService();
     }
 
     @NonNull
@@ -567,7 +562,9 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     @NonNull
     public ArrayList<String> getRemoteBranches() {
-        return mSettings.getRemoteBranches();
+        // TODO Do not return null
+        return null;
+        //return mSettings.getRemoteBranches();
     }
 
     // Used to save the translation progress, calculated on the

@@ -9,13 +9,20 @@ import java.util.Map;
 
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
+import io.github.lonamiwebs.stringlate.settings.SourceSettings;
 
 public interface StringsSource {
 
     // Sources may need to prepare some files first, e.g. strings from git repositories
     // need to pull the repository itself in order to get access to the files.
     // TODO It shouldn't be a "git" callback
-    boolean setup(final Context context, final GitCloneProgressCallback callback);
+    boolean setup(final Context context,
+                  final SourceSettings settings,
+                  final GitCloneProgressCallback callback);
+
+    // The name for a certain StringsSource, e.g. "git"
+    @NonNull
+    String getName();
 
     // Should retrieve a list of all locales available for this source
     @NonNull
