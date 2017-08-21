@@ -31,9 +31,10 @@ import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
+import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 import io.github.lonamiwebs.stringlate.settings.RepoSettings;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 import io.github.lonamiwebs.stringlate.utilities.ZipUtils;
@@ -71,10 +72,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     private static final String BASE_DIR = "repos";
     public static final String DEFAULT_LOCALE = "default";
-
-    // Match "dontranslate.xml", "do-not-translate.xml", "donottranslate.xml" and such
-    private static final Pattern DO_NOT_TRANSLATE = Pattern.compile(
-            "(?:do?[ _-]*no?t?|[u|i]n)[ _-]*trans(?:lat(?:e|able))?");
 
     //endregion
 
@@ -284,170 +281,87 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Downloading locale files
 
-    public void syncResources(@NonNull final String branch,
+    public void syncResources(final StringsSource source,
                               final GitCloneProgressCallback callback) {
-        cloneRepository(branch, callback);
-    }
 
-    // Step 1: Temporary clone the GitHub repository
-    private void cloneRepository(@NonNull final String branch,
-                                 final GitCloneProgressCallback callback) {
-        callback.onProgressUpdate(
-                mContext.getString(R.string.cloning_repo),
-                mContext.getString(R.string.cloning_repo_progress, 0.0f));
-
-        new AsyncTask<Void, Void, File>() {
+        new AsyncTask<Void, Void, Boolean>() {
             @Override
-            protected File doInBackground(Void... params) {
-                File dir = getTempCloneDir();
-                Utils.deleteRecursive(dir); // Don't care, it's temp and it can't exist on cloning
-                if (GitWrapper.cloneRepo(mSettings.getGitUrl(), dir, branch, callback))
-                    return dir;
-                else
-                    return null;
+            protected Boolean doInBackground(Void... voids) {
+                return source.setup(mContext, callback);
             }
 
             @Override
-            protected void onPostExecute(File clonedDir) {
-                if (clonedDir == null) {
-                    callback.onProgressFinished(mContext.getString(R.string.invalid_repo), false);
-                    delete(); // Need to delete the settings
-                } else
-                    scanResources(clonedDir, callback);
-            }
-        }.execute();
-    }
-
-    private void scanResources(final File clonedDir, final ProgressUpdateCallback callback) {
-        callback.onProgressUpdate(
-                mContext.getString(R.string.scanning_repository),
-                mContext.getString(R.string.scanning_repository_long));
-
-        // Save the branches of this repository
-        mSettings.setRemoteBranches(GitWrapper.getBranches(clonedDir));
-
-        new AsyncTask<Void, Void, ArrayList<File>>() {
-            @Override
-            protected ArrayList<File> doInBackground(Void... params) {
-                return GitWrapper.searchAndroidResources(clonedDir);
-            }
-
-            @Override
-            protected void onPostExecute(ArrayList<File> foundResources) {
-                if (foundResources.size() == 0) {
-                    Utils.deleteRecursive(clonedDir); // Clean resources
-                    delete(); // Need to delete the settings
-                    callback.onProgressFinished(
-                            mContext.getString(R.string.no_strings_found), false);
+            protected void onPostExecute(Boolean okay) {
+                if (okay) {
+                    finishSyncResources(source, callback);
                 } else {
-                    copyResources(clonedDir, foundResources, callback);
+                    delete(); // Delete settings
+                    source.dispose();
                 }
             }
         }.execute();
     }
 
-    private void copyResources(final File clonedDir, final ArrayList<File> foundResources,
-                               final ProgressUpdateCallback callback) {
+    private void finishSyncResources(final StringsSource source,
+                                     final GitCloneProgressCallback callback) {
+
         callback.onProgressUpdate(
                 mContext.getString(R.string.copying_res),
-                mContext.getString(R.string.copying_res_long));
+                mContext.getString(R.string.copying_res_long)
+        );
 
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                doCopyResources(clonedDir, foundResources);
-                return null;
-            }
+        // TODO Generalize a bit more, probably keep per-source settings?
+        final GitSource gitSource = source instanceof GitSource ? (GitSource)source : null;
+        if (gitSource != null) {
+            mSettings.clearRemotePaths();
+        }
 
-            @Override
-            protected void onPostExecute(Void ignore) {
-                notifyRepositoryCountChanged();
-                callback.onProgressFinished(null, true);
-            }
-        }.execute();
-    }
-
-    private void doCopyResources(final File clonedDir, final ArrayList<File> foundResources) {
         // Delete all the previous default resources since their
         // names might have changed, been removed, or some new added.
-        mSettings.clearRemotePaths();
         for (File f : getDefaultResourcesFiles())
             f.delete();
 
-        // Iterate over all the found resources
-        for (File clonedFile : foundResources) {
-            Matcher m = mValuesLocalePattern.matcher(clonedFile.getAbsolutePath());
+        for (String locale : source.getLocales()) {
+            // Load in memory the old saved resources. We need to work
+            // on this file because we're going to be merging changes.
+            // TODO important: this will lose the information available on the git repository,
+            // where does each file live? We can't create pull requests properly!
+            Resources resources = locale == null ? loadResources(DEFAULT_LOCALE) : loadResources(locale);
 
-            // Ensure that we can tell the locale from the path (otherwise it's invalid)
-            if (m.find()) {
+            // Add new translated tags without overwriting existing ones
+            for (ResTag rt : source.getResources(locale))
+                if (!resources.wasModified(rt.getId()))
+                    resources.addTag(rt);
 
-                // Determine the locale, and the final output file (we may have changes there)
-                File outputFile;
-                if (m.group(1) == null) {
-                    // If this is the default locale, save its remote path
-                    // and clean it by removing all the translatable="false" tags
-                    //
-                    // However, if the file name is something like "do not translate", skip it
-                    Matcher untranslatable = DO_NOT_TRANSLATE.matcher(clonedFile.getName());
-                    if (untranslatable.find())
-                        continue;
-
-                    // If cleaning the file success, then it contained translatable strings
-                    // This will clean the untranslatable strings while saving the clean file
-                    outputFile = getUniqueDefaultResourcesFile(clonedFile.getName());
-                    if (ResourcesParser.cleanXml(clonedFile, outputFile)) {
-                        // Skip the '/' at the beginning (substring +1)
-                        String remotePath = clonedFile.getAbsolutePath()
-                                .substring(clonedDir.getAbsolutePath().length() + 1);
-
-                        addRemotePath(outputFile.getName(), remotePath);
-                    }
-                } else {
-                    // Get the file corresponding to this locale (group(1))
-                    outputFile = getResourcesFile(m.group(1));
-
-                    // Load in memory the old saved resources. We need to work
-                    // on this file because we're going to be merging changes
-                    // in order to handle multiple cloned resource files
-
-                    // TODO Optimize to pack strings corresponding to the same locale and
-                    // process it all at once, thus avoiding loading oldResources all the time
-                    Resources oldResources = Resources.fromFile(outputFile);
-
-                    // Also load the new resources (to both ensure it's OK and to copy the strings)
-                    Resources newResources = Resources.fromFile(clonedFile);
-
-                    // Add new translated tags without overwriting existing ones
-                    for (ResTag rt : newResources)
-                        if (!oldResources.wasModified(rt.getId()))
-                            oldResources.addTag(rt);
-
-                    // Save the changes
-                    oldResources.save();
-                }
-            }
+            // Save the changes
+            resources.save();
         }
 
         // Check out if we have any icon for this repository
-        File icon = GitWrapper.findProperIcon(clonedDir, mContext);
+        File icon = source.getIcon();
         if (icon != null) {
             // We have an icon to show, copy it to our repository root
             // and save it's path (we must keep track of the used extension)
             File newIcon = new File(mRoot, icon.getName());
             if (!newIcon.isFile() || newIcon.delete()) {
-                if (icon.renameTo(newIcon))
+                if (icon.renameTo(newIcon)) // TODO Do NOT rename the icon, rather copy it
                     mSettings.setIconFile(newIcon);
             }
         }
 
-        // Check out if some common online translation services are mentioned on the README
-        mSettings.setUsedTranslationService(GitWrapper.mayUseTranslationServices(clonedDir));
+        if (gitSource != null) {
+            // TODO This is very git specific
+            gitSource.updateGitSpecificSettings(mSettings);
+        }
 
         // Clean old unused strings which now don't exist on the default resources files
         unusedStringsCleanup();
 
-        Utils.deleteRecursive(clonedDir); // Clean resources
+        source.dispose(); // Clean resources
         loadLocales(); // Reload the locales
+
+        callback.onProgressFinished(null, true);
+        notifyRepositoryCountChanged();
     }
 
     private void unusedStringsCleanup() {
@@ -686,6 +600,10 @@ public class RepoHandler implements Comparable<RepoHandler> {
             Log.w("RepoHandler", "Please report that \"" + url + "\" got somehow saved…");
             return url; // We must have a really weird url. Maybe saved invalid repo somehow?
         }
+    }
+
+    public String getGitUrl() {
+        return mSettings.getGitUrl();
     }
 
     public String getHost() {

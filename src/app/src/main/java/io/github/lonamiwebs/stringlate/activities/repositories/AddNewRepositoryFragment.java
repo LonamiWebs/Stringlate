@@ -21,6 +21,7 @@ import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.classes.applications.ApplicationDetails;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
@@ -200,11 +201,18 @@ public class AddNewRepositoryFragment extends Fragment {
             return;
 
         final ProgressDialog progress = ProgressDialog.show(getContext(), "…", "…", true);
-        repo.syncResources("", new GitCloneProgressCallback(getActivity()) {
+        // TODO Don't assume GitSource
+        repo.syncResources(new GitSource(repo.getGitUrl(), ""), new GitCloneProgressCallback(getActivity()) {
             @Override
-            public void onProgressUpdate(String title, String description) {
-                progress.setTitle(title);
-                progress.setMessage(description);
+            public void onProgressUpdate(final String title, final String description) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // TODO Important: Do not create a runnable for every progress update
+                        progress.setTitle(title);
+                        progress.setMessage(description);
+                    }
+                });
             }
 
             @Override

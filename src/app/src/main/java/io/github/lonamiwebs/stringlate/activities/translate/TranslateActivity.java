@@ -47,11 +47,11 @@ import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
-import io.github.lonamiwebs.stringlate.classes.TranslationPeekAdapter;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoProgress;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
+import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
@@ -414,11 +414,18 @@ public class TranslateActivity extends AppCompatActivity {
         final ProgressDialog progress = ProgressDialog.show(this,
                 getString(R.string.loading_ellipsis), null, true);
 
-        mRepo.syncResources(branch, new GitCloneProgressCallback(this) {
+        // TODO Don't assume GitSource
+        mRepo.syncResources(new GitSource(mRepo.getGitUrl(), branch), new GitCloneProgressCallback(this) {
             @Override
-            public void onProgressUpdate(String title, String description) {
-                progress.setTitle(title);
-                progress.setMessage(description);
+            public void onProgressUpdate(final String title, final String description) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // TODO Important: Do not create a runnable for every progress update
+                        progress.setTitle(title);
+                        progress.setMessage(description);
+                    }
+                });
             }
 
             @Override
