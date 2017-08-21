@@ -23,6 +23,7 @@ import io.github.lonamiwebs.stringlate.classes.applications.ApplicationDetails;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
+import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
@@ -152,21 +153,23 @@ public class AddNewRepositoryFragment extends Fragment {
             } else {
                 // Determine whether we already have this repo or if it's a new one
                 RepoHandler repo = url.isEmpty() ?
-                        new RepoHandler(getContext(), owner, repository) :
-                        new RepoHandler(getContext(), url);
+                        new RepoHandler(getContext(), GitWrapper.buildGitHubUrl(owner, repository)) :
+                        new RepoHandler(getContext(), GitWrapper.getGitUri(url));
 
-
-                // Set repo details if available
+                /* TODO Set repo details if available
                 if (!TextUtils.isEmpty(mProjectDetails.getWebUrl())) {
                     repo.getRepoSettings().setProjectHomepageUrl(mProjectDetails.getWebUrl());
                 }
                 if (!TextUtils.isEmpty(mProjectDetails.getName())) {
                     repo.getRepoSettings().setProjectName(mProjectDetails.getName());
                 }
+                */
+
                 if (repo.isEmpty()) {
                     scanDownloadStrings(repo);
-                } else
+                } else {
                     launchTranslateActivity(repo);
+                }
             }
         }
     };
@@ -202,7 +205,7 @@ public class AddNewRepositoryFragment extends Fragment {
 
         final ProgressDialog progress = ProgressDialog.show(getContext(), "…", "…", true);
         // TODO Don't assume GitSource
-        repo.syncResources(new GitSource(repo.getGitUrl(), ""), new GitCloneProgressCallback(getActivity()) {
+        repo.syncResources(new GitSource(repo.getSource(), ""), new GitCloneProgressCallback(getActivity()) {
             @Override
             public void onProgressUpdate(final String title, final String description) {
                 getActivity().runOnUiThread(new Runnable() {

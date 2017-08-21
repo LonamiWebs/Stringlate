@@ -38,9 +38,6 @@ public class GitSource implements StringsSource {
             "(?:do?[ _-]*no?t?|[u|i]n)[ _-]*trans(?:lat(?:e|able))?");
 
 
-    // SourceSettings-specific
-    private static final String KEY_REMOTE_BRANCHES = "remote_branches";
-
     public GitSource(final String gitUrl, final String branch) {
         mGitUrl = gitUrl;
         mBranch = branch;
@@ -55,6 +52,7 @@ public class GitSource implements StringsSource {
                 context.getString(R.string.cloning_repo_progress, 0.0f)
         );
 
+        settings.set("git_url", mGitUrl);
         mTmpCloneDir = new File(context.getCacheDir(), "tmp_clone");
         Utils.deleteRecursive(mTmpCloneDir); // Don't care, it's temp and it can't exist on cloning
 

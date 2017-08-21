@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.TranslationPeekAdapter;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslation;
-import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslationAdapter;
-import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_ID;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
@@ -46,7 +43,7 @@ public class PeekTranslationsActivity extends AppCompatActivity {
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
         mResourceId = intent.getStringExtra(EXTRA_ID);
 
-        setTitle(String.format("%s/%s", mRepo.getName(), getString(R.string.peek_translations)));
+        setTitle(String.format("%s/%s", mRepo.getProjectName(), getString(R.string.peek_translations)));
 
         refreshTranslationsListView();
         mTranslationsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -49,7 +49,7 @@ public class SearchStringActivity extends AppCompatActivity {
         mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
 
-        setTitle(String.format("%s/%s (%s)", mRepo.getName(),
+        setTitle(String.format("%s/%s (%s)", mRepo.getProjectName(),
                 LocaleString.getDisplay(mLocale), mLocale));
 
         refreshResourcesListView(null);

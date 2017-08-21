@@ -86,22 +86,17 @@ public class RepoHandler implements Comparable<RepoHandler> {
     //region Constructors
 
     public static RepoHandler fromBundle(Context context, Bundle bundle) {
-        return new RepoHandler(context, bundle.getString("giturl"));
+        return new RepoHandler(context, bundle.getString("source"));
     }
 
-    public RepoHandler(Context context, String owner, String repository) {
-        this(context, GitWrapper.buildGitHubUrl(owner, repository));
-    }
-
-    public RepoHandler(Context context, String gitUrl) {
+    public RepoHandler(Context context, final String source) {
         mContext = context;
-        gitUrl = GitWrapper.getGitUri(gitUrl);
 
-        mRoot = new File(mContext.getFilesDir(), BASE_DIR + "/" + getId(gitUrl));
+        mRoot = new File(mContext.getFilesDir(), BASE_DIR + "/" + getId(source));
         mSettings = new RepoSettings(mRoot);
-        mSettings.setGitUrl(gitUrl);
-        mSourceSettings = new SourceSettings(mRoot);
+        mSettings.setSource(source);
 
+        mSourceSettings = new SourceSettings(mRoot);
         mProgressFile = new File(mRoot, "translation_progress.json");
 
         loadLocales();
@@ -174,10 +169,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
             if (Resources.fromFile(getResourcesFile(locale)).wasModified())
                 return true;
         return false;
-    }
-
-    public RepoSettings getRepoSettings() {
-        return mSettings;
     }
 
     // Determines whether the repository is empty (has no saved locales) or not
@@ -501,8 +492,11 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     public boolean isGitHubRepository() {
+        if (!mSourceSettings.getName().equals("git"))
+            return false;
+
         try {
-            GitWrapper.getGitHubOwnerRepo(mSettings.getGitUrl());
+            GitWrapper.getGitHubOwnerRepo(mSettings.getSource());
             return true;
         } catch (InvalidObjectException ignored) {
             return false;
@@ -596,8 +590,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     @Override
     public String toString() {
-        // https:// part is a bit redundant, also omit the `.git` part
-        String url = mSettings.getGitUrl();
+        // https:// part is a bit redundant, also omit the `.git` part if it exists
+        String url = mSettings.getSource();
         try {
             int end = url.endsWith(".git") ? url.lastIndexOf('.') : url.length();
             return url.substring(url.indexOf("://") + 3, end);
@@ -607,12 +601,12 @@ public class RepoHandler implements Comparable<RepoHandler> {
         }
     }
 
-    public String getGitUrl() {
-        return mSettings.getGitUrl();
+    public String getSource() {
+        return mSettings.getSource();
     }
 
     public String getHost() {
-        String url = mSettings.getGitUrl();
+        String url = mSettings.getSource();
         try {
             return new URL(url).getHost();
         } catch (MalformedURLException e) {
@@ -623,7 +617,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     public String getPath() {
-        String url = mSettings.getGitUrl();
+        String url = mSettings.getSource();
         try {
             String path = new URL(url).getPath();
             int end = path.endsWith(".git") ? path.lastIndexOf('.') : path.length();
@@ -635,21 +629,26 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return url;
     }
 
-    public String getName() {
-        if (mSettings.getProjectName() != null) {
-            return mSettings.getProjectName();
-        } else {
-            String url = mSettings.getGitUrl();
-            int slash = url.lastIndexOf('/');
-            if (slash < 0)
-                return url; // Should not happen
-
-            url = url.substring(slash + 1);
-            int dot = url.lastIndexOf('.');
-            if (dot >= 0)
-                url = url.substring(0, dot);
-            return url;
+    public String getProjectName() {
+        String name = mSettings.getProjectName();
+        if (name.isEmpty()) {
+            name = nameFromSource(mSettings.getSource());
+            mSettings.setProjectName(name);
         }
+
+        return name;
+    }
+
+    private static String nameFromSource(String source) {
+        int slash = source.lastIndexOf('/');
+        if (slash < 0)
+            return source; // Should not happen
+
+        source = source.substring(slash + 1);
+        int dot = source.lastIndexOf('.');
+        if (dot >= 0)
+            source = source.substring(0, dot);
+        return source;
     }
 
     public String getProjectHomepageUrl() {
@@ -657,13 +656,13 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     public String toOwnerRepo() throws InvalidObjectException {
-        Pair<String, String> pair = GitWrapper.getGitHubOwnerRepo(mSettings.getGitUrl());
+        Pair<String, String> pair = GitWrapper.getGitHubOwnerRepo(mSettings.getSource());
         return String.format("%s/%s", pair.first, pair.second);
     }
 
     public Bundle toBundle() {
         Bundle result = new Bundle();
-        result.putString("giturl", mSettings.getGitUrl());
+        result.putString("source", mSettings.getSource());
         return result;
     }
 
@@ -707,7 +706,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 // We now have a valid old repository.
                 // The first step is to create a new instance so the settings get created
                 RepoHandler repo = new RepoHandler(context,
-                        owner.getName(), repository.getName());
+                        GitWrapper.buildGitHubUrl(owner.getName(), repository.getName()));
 
                 // The second step is to scan the files under 'repository'
                 // These will be named 'strings-locale.xml'

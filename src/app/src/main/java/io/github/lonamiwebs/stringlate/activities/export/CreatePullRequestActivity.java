@@ -28,6 +28,7 @@ import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.git.GitHub;
+import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
@@ -177,7 +178,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
 
                         String owner = fork.getJSONObject("owner").getString("login");
                         String repoName = fork.getString("name");
-                        repo = new RepoHandler(ctx, owner, repoName);
+                        repo = new RepoHandler(ctx, GitWrapper.buildGitHubUrl(owner, repoName));
                     } catch (JSONException | InvalidObjectException e) {
                         e.printStackTrace();
                         publishProgress(new PUData(getString(R.string.fork_failed)));

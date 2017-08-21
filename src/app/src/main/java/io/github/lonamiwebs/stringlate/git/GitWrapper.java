@@ -47,7 +47,7 @@ public class GitWrapper {
             "(?:https?://|git@)(git(?:hub|lab).com)[/:]([\\w-]+)/([\\w-]+)(?:/.*|\\.git)?");
 
     public static String buildGitHubUrl(String owner, String repository) {
-        return String.format(BASE_GITHUB_URL, owner, repository);
+        return getGitUri(String.format(BASE_GITHUB_URL, owner, repository));
     }
 
     // Attempts to convert a normal url to a git valid one

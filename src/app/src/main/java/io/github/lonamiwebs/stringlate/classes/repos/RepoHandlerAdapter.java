@@ -70,16 +70,11 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
             final ViewHolder holder = (ViewHolder) convertView.getTag();
             File iconFile = repo.getIconFile();
             if (iconFile == null)
-                holder.iconView.setImageBitmap(getBitmap(repo.getName()));
+                holder.iconView.setImageBitmap(getBitmap(repo.getProjectName()));
             else
                 holder.iconView.setImageURI(Uri.fromFile(iconFile));
 
-            String topText = repo.getRepoSettings().getProjectName();
-            if (!repo.getRepoSettings().getGitUrl().equals(topText) && !TextUtils.isEmpty(topText)) {
-                holder.pathTextView.setText(topText);
-            } else {
-                holder.pathTextView.setText(repo.getPath());
-            }
+            holder.pathTextView.setText(repo.getProjectName());
             holder.hostTextView.setText(repo.getHost());
 
             RepoProgress progress = repo.loadProgress();

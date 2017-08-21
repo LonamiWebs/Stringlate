@@ -20,7 +20,7 @@ public class RepoSettings {
     private final File mSettingsFile;
     private JSONObject mSettings;
 
-    private static final String KEY_GIT_URL = "git_url";
+    private static final String KEY_SOURCE = "source";
     private static final String KEY_PROJECT_HOMEPAGE_URL = "project_homepage_url";
     private static final String KEY_LAST_LOCALE = "last_locale";
     private static final String KEY_REMOTE_PATHS = "remote_paths";
@@ -29,9 +29,8 @@ public class RepoSettings {
     private static final String KEY_CREATED_ISSUES = "created_issues";
     private static final String KEY_PROJECT_NAME = "project_name";
 
-    private static final String DEFAULT_GIT_URL = "";
-    public static final String DEFAULT_LAST_LOCALE = null;
-    public static final String DEFAULT_PROJECT_NAME = null;
+    private static final String DEFAULT_LAST_LOCALE = "";
+    private static final String DEFAULT_PROJECT_NAME = "";
 
     //region Constructor
 
@@ -45,14 +44,22 @@ public class RepoSettings {
     //region Getters
 
     @NonNull
-    public String getGitUrl() {
-        return mSettings.optString(KEY_GIT_URL, DEFAULT_GIT_URL);
+    public String getSource() {
+        if (mSettings.has("git_url")) {
+            // TODO Source used to always be "git_url", remove after some versions?
+            setSource(mSettings.optString("git_url", ""));
+            mSettings.remove("git_url");
+            save();
+        }
+
+        return mSettings.optString(KEY_SOURCE, "");
     }
 
     public String getProjectHomepageUrl() {
-        return mSettings.optString(KEY_PROJECT_HOMEPAGE_URL, getGitUrl());
+        return mSettings.optString(KEY_PROJECT_HOMEPAGE_URL, getSource());
     }
 
+    @NonNull
     public String getProjectName() {
         return mSettings.optString(KEY_PROJECT_NAME, DEFAULT_PROJECT_NAME);
     }
@@ -116,9 +123,9 @@ public class RepoSettings {
 
     //region Setters
 
-    public void setGitUrl(final String gitUrl) {
+    public void setSource(final String source) {
         try {
-            mSettings.put(KEY_GIT_URL, gitUrl);
+            mSettings.put(KEY_SOURCE, source);
         } catch (JSONException ignored) {
         }
         save();

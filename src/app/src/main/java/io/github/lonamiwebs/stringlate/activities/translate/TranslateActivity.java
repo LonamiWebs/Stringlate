@@ -137,7 +137,7 @@ public class TranslateActivity extends AppCompatActivity {
         mStringIdSpinner.setOnItemSelectedListener(eOnStringIdSelected);
 
         mRepo = RepoHandler.fromBundle(this, getIntent().getBundleExtra(EXTRA_REPO));
-        setTitle(mRepo.getName());
+        setTitle(mRepo.getProjectName());
 
         loadResources();
         onFilterUpdated(mRepo.getStringFilter());
@@ -415,7 +415,7 @@ public class TranslateActivity extends AppCompatActivity {
                 getString(R.string.loading_ellipsis), null, true);
 
         // TODO Don't assume GitSource
-        mRepo.syncResources(new GitSource(mRepo.getGitUrl(), branch), new GitCloneProgressCallback(this) {
+        mRepo.syncResources(new GitSource(mRepo.getSource(), branch), new GitCloneProgressCallback(this) {
             @Override
             public void onProgressUpdate(final String title, final String description) {
                 runOnUiThread(new Runnable() {
