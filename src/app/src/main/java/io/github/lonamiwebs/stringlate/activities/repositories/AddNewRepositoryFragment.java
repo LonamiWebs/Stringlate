@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -155,14 +156,12 @@ public class AddNewRepositoryFragment extends Fragment {
                         new RepoHandler(getContext(), GitWrapper.buildGitHubUrl(owner, repository)) :
                         new RepoHandler(getContext(), GitWrapper.getGitUri(url));
 
-                /* TODO Set repo details if available
                 if (!TextUtils.isEmpty(mProjectDetails.getWebUrl())) {
-                    repo.getRepoSettings().setProjectHomepageUrl(mProjectDetails.getWebUrl());
+                    repo.settings.setProjectHomepageUrl(mProjectDetails.getWebUrl());
                 }
                 if (!TextUtils.isEmpty(mProjectDetails.getName())) {
-                    repo.getRepoSettings().setProjectName(mProjectDetails.getName());
+                    repo.settings.setProjectName(mProjectDetails.getName());
                 }
-                */
 
                 if (repo.isEmpty()) {
                     scanDownloadStrings(repo);
@@ -204,7 +203,7 @@ public class AddNewRepositoryFragment extends Fragment {
 
         final ProgressDialog progress = ProgressDialog.show(getContext(), "…", "…", true);
         // TODO Don't assume GitSource
-        repo.syncResources(new GitSource(repo.getSource(), ""), new GitCloneProgressCallback(getActivity()) {
+        repo.syncResources(new GitSource(repo.settings.getSource(), ""), new GitCloneProgressCallback(getActivity()) {
             @Override
             public void onProgressUpdate(final String title, final String description) {
                 getActivity().runOnUiThread(new Runnable() {

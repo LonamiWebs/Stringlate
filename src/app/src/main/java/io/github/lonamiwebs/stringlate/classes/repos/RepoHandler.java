@@ -46,7 +46,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     //region Members
 
     private final Context mContext;
-    private final RepoSettings mSettings;
+    public final RepoSettings settings; // Public to avoid a lot of wrapper methods
     private final SourceSettings mSourceSettings;
 
     private final File mRoot;
@@ -93,11 +93,11 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mContext = context;
 
         mRoot = new File(mContext.getFilesDir(), BASE_DIR + "/" + getId(source));
-        mSettings = new RepoSettings(mRoot);
-        mSettings.setSource(source);
+        settings = new RepoSettings(mRoot);
+        settings.setSource(source);
 
         mSourceSettings = new SourceSettings(mRoot);
-        mSettings.checkUpgradeSettingsToSpecific(mSourceSettings);
+        settings.checkUpgradeSettingsToSpecific(mSourceSettings);
         mProgressFile = new File(mRoot, "translation_progress.json");
 
         loadLocales();
@@ -106,9 +106,9 @@ public class RepoHandler implements Comparable<RepoHandler> {
     private RepoHandler(Context context, File root) {
         mContext = context;
         mRoot = root;
-        mSettings = new RepoSettings(mRoot);
+        settings = new RepoSettings(mRoot);
         mSourceSettings = new SourceSettings(mRoot);
-        mSettings.checkUpgradeSettingsToSpecific(mSourceSettings);
+        settings.checkUpgradeSettingsToSpecific(mSourceSettings);
 
         mProgressFile = new File(mRoot, "translation_progress.json");
 
@@ -296,7 +296,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
         // Delete all the previous default resources since their
         // names might have changed, been removed, or some new added.
-        mSettings.clearRemotePaths();
+        settings.clearRemotePaths();
         for (File f : getDefaultResourcesFiles())
             f.delete();
 
@@ -328,7 +328,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 resources.addTag(rt);
 
             resources.save();
-            addRemotePath(resourceFile.getName(), originalName); // Save the map unique -> original
+            settings.addRemotePath(resourceFile.getName(), originalName); // Save the map unique -> original
         }
 
         // Check out if we have any icon for this repository
@@ -339,13 +339,13 @@ public class RepoHandler implements Comparable<RepoHandler> {
             File newIcon = new File(mRoot, icon.getName());
             if (!newIcon.isFile() || newIcon.delete()) {
                 if (icon.renameTo(newIcon)) // TODO Do NOT rename the icon, rather copy it
-                    mSettings.setIconFile(newIcon);
+                    settings.setIconFile(newIcon);
             }
         }
 
         if (gitSource != null) {
             // TODO This is very git specific
-            gitSource.updateGitSpecificSettings(mSettings);
+            gitSource.updateGitSpecificSettings(settings);
         }
 
         // Clean old unused strings which now don't exist on the default resources files
@@ -490,39 +490,28 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return mSourceSettings.getName();
     }
 
-    public String getLastLocale() {
-        return mSettings.getLastLocale();
-    }
-
-    public void setLastLocale(String locale) {
-        mSettings.setLastLocale(locale);
-    }
-
     public boolean isGitHubRepository() {
         if (!mSourceSettings.getName().equals("git"))
             return false;
 
         try {
-            GitWrapper.getGitHubOwnerRepo(mSettings.getSource());
+            GitWrapper.getGitHubOwnerRepo(settings.getSource());
             return true;
         } catch (InvalidObjectException ignored) {
             return false;
         }
     }
 
-    private void addRemotePath(String filename, String remotePath) {
-        mSettings.addRemotePath(filename, remotePath);
-    }
-
     public boolean hasRemoteUrls() {
-        return getDefaultResourcesFiles().length == mSettings.getRemotePaths().size();
+        return mSourceSettings.getName().equals("git") &&
+                getDefaultResourcesFiles().length == settings.getRemotePaths().size();
     }
 
     // Return a map consisting of (default local resources/templates, remote path)
     // and replacing the "values" by the corresponding "values-xx"
     public HashMap<File, String> getTemplateRemotePaths(String locale) {
         HashMap<File, String> result = new HashMap<>();
-        HashMap<String, String> fileRemote = mSettings.getRemotePaths();
+        HashMap<String, String> fileRemote = settings.getRemotePaths();
         for (Map.Entry<String, String> fr : fileRemote.entrySet()) {
             File template = getDefaultResourcesFile(fr.getKey());
             String remote = fr.getValue().replace("/values/", "/values-" + locale + "/");
@@ -531,33 +520,10 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return result;
     }
 
-    public File getIconFile() {
-        return mSettings.getIconFile();
-    }
-
     @NonNull
     public String getUsedTranslationService() {
         final String result = (String)mSourceSettings.get("translation_service");
         return result == null ? "" : result;
-    }
-
-    @NonNull
-    public String getStringFilter() {
-        return mSettings.getStringFilter();
-    }
-
-    public void setStringFilter(@NonNull final String filter) {
-        mSettings.setStringFilter(filter);
-    }
-
-    public void addCreatedIssue(String locale, int issueNumber) {
-        mSettings.addCreatedIssue(locale, issueNumber);
-    }
-
-    // -1 if not found
-    public int getCreatedIssue(String locale) {
-        Integer issue = mSettings.getCreatedIssues().get(locale);
-        return issue == null ? -1 : issue;
     }
 
     @NonNull
@@ -599,7 +565,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     @Override
     public String toString() {
         // https:// part is a bit redundant, also omit the `.git` part if it exists
-        String url = mSettings.getSource();
+        String url = settings.getSource();
         try {
             int end = url.endsWith(".git") ? url.lastIndexOf('.') : url.length();
             return url.substring(url.indexOf("://") + 3, end);
@@ -609,12 +575,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
         }
     }
 
-    public String getSource() {
-        return mSettings.getSource();
-    }
-
     public String getHost() {
-        String url = mSettings.getSource();
+        String url = settings.getSource();
         try {
             return new URL(url).getHost();
         } catch (MalformedURLException e) {
@@ -625,7 +587,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     public String getPath() {
-        String url = mSettings.getSource();
+        String url = settings.getSource();
         try {
             String path = new URL(url).getPath();
             int end = path.endsWith(".git") ? path.lastIndexOf('.') : path.length();
@@ -638,10 +600,10 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     public String getProjectName() {
-        String name = mSettings.getProjectName();
+        String name = settings.getProjectName();
         if (name.isEmpty()) {
-            name = nameFromSource(mSettings.getSource());
-            mSettings.setProjectName(name);
+            name = nameFromSource(settings.getSource());
+            settings.setProjectName(name);
         }
 
         return name;
@@ -659,18 +621,14 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return source;
     }
 
-    public String getProjectHomepageUrl() {
-        return mSettings.getProjectHomepageUrl();
-    }
-
     public String toOwnerRepo() throws InvalidObjectException {
-        Pair<String, String> pair = GitWrapper.getGitHubOwnerRepo(mSettings.getSource());
+        Pair<String, String> pair = GitWrapper.getGitHubOwnerRepo(settings.getSource());
         return String.format("%s/%s", pair.first, pair.second);
     }
 
     public Bundle toBundle() {
         Bundle result = new Bundle();
-        result.putString("source", mSettings.getSource());
+        result.putString("source", settings.getSource());
         return result;
     }
 

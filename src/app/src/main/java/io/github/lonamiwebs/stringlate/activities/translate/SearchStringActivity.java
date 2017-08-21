@@ -81,7 +81,7 @@ public class SearchStringActivity extends AppCompatActivity {
                 // with the intent because the json is not reloaded from the
                 // file when we're asked for the updated string (on Translate)
                 final String filter = mSearchEditText.getText().toString();
-                mRepo.setStringFilter(filter);
+                mRepo.settings.setStringFilter(filter);
 
                 // Return the selected string to the parent activity
                 ResourcesTranslation rt = (ResourcesTranslation) mResourcesListView.getItemAtPosition(i);
@@ -93,7 +93,7 @@ public class SearchStringActivity extends AppCompatActivity {
             }
         });
 
-        mSearchEditText.setText(mRepo.getStringFilter());
+        mSearchEditText.setText(mRepo.settings.getStringFilter());
     }
 
     //endregion

@@ -139,7 +139,7 @@ public class TranslateActivity extends AppCompatActivity {
         setTitle(mRepo.getProjectName());
 
         loadResources();
-        onFilterUpdated(mRepo.getStringFilter());
+        onFilterUpdated(mRepo.settings.getStringFilter());
 
         // loadStringIDsSpinner is called too often at startup, use this flag to avoid it
         loaded = true;
@@ -161,7 +161,7 @@ public class TranslateActivity extends AppCompatActivity {
         if (mRepo.hasDefaultLocale()) {
             mDefaultResources = mRepo.loadDefaultResources();
             // TODO Better way to handle the filters? But mRepo might need it unfiltered internally
-            mDefaultResources.setFilter(mRepo.getStringFilter());
+            mDefaultResources.setFilter(mRepo.settings.getStringFilter());
 
             loadLocalesSpinner();
             checkTranslationVisibility();
@@ -246,7 +246,9 @@ public class TranslateActivity extends AppCompatActivity {
 
             case R.id.action_open_project_homepage: {
                 Intent browserIntent = new Intent(this, BrowserActivity.class);
-                browserIntent.putExtra(BrowserActivity.EXTRA_LOAD_URL, mRepo.getProjectHomepageUrl());
+                browserIntent.putExtra(
+                        BrowserActivity.EXTRA_LOAD_URL, mRepo.settings.getProjectHomepageUrl()
+                );
                 startActivity(browserIntent);
                 return true;
             }
@@ -414,7 +416,7 @@ public class TranslateActivity extends AppCompatActivity {
                 getString(R.string.loading_ellipsis), null, true);
 
         // TODO Don't assume GitSource
-        mRepo.syncResources(new GitSource(mRepo.getSource(), branch), new GitCloneProgressCallback(this) {
+        mRepo.syncResources(new GitSource(mRepo.settings.getSource(), branch), new GitCloneProgressCallback(this) {
             @Override
             public void onProgressUpdate(final String title, final String description) {
                 runOnUiThread(new Runnable() {
@@ -1006,7 +1008,7 @@ public class TranslateActivity extends AppCompatActivity {
     private void onFilterUpdated(@NonNull final String filter) {
         // Update the filter, it might have been changed from the Search activity
         // and JSON doesn't load the changes from the file but rather keeps a copy
-        mRepo.setStringFilter(filter);
+        mRepo.settings.setStringFilter(filter);
 
         if (mDefaultResources != null)
             mDefaultResources.setFilter(filter);
@@ -1042,7 +1044,7 @@ public class TranslateActivity extends AppCompatActivity {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mLocaleSpinner.setAdapter(adapter);
-        setCurrentLocale(mRepo.getLastLocale());
+        setCurrentLocale(mRepo.settings.getLastLocale());
     }
 
     private void loadStringIDsSpinner() {
@@ -1098,13 +1100,13 @@ public class TranslateActivity extends AppCompatActivity {
 
         // Update the selected locale
         mSelectedLocale = locale;
-        mRepo.setLastLocale(locale);
+        mRepo.settings.setLastLocale(locale);
 
         if (locale != null) {
             int i = getItemIndex(mLocaleSpinner, LocaleString.getDisplay(locale));
             mLocaleSpinner.setSelection(i);
             mSelectedLocaleResources = mRepo.loadResources(locale);
-            mSelectedLocaleResources.setFilter(mRepo.getStringFilter());
+            mSelectedLocaleResources.setFilter(mRepo.settings.getStringFilter());
         } else {
             mSelectedLocaleResources = null;
         }

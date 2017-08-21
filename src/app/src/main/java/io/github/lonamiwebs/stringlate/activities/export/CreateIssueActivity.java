@@ -56,7 +56,9 @@ public class CreateIssueActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
-        mExistingIssueNumber = mRepo.getCreatedIssue(mLocale);
+
+        Integer issue = mRepo.settings.getCreatedIssues().get(mLocale);
+        mExistingIssueNumber = issue == null ? -1 : issue;
 
         String display = LocaleString.getEnglishDisplay(mLocale);
         if (mExistingIssueNumber == -1) {
@@ -131,7 +133,7 @@ public class CreateIssueActivity extends AppCompatActivity {
             String postedUrl = jsonObject.getString("html_url");
             if (mExistingIssueNumber == -1) {
                 mExistingIssueNumber = jsonObject.getInt("number");
-                mRepo.addCreatedIssue(mLocale, mExistingIssueNumber);
+                mRepo.settings.addCreatedIssue(mLocale, mExistingIssueNumber);
             }
 
             finish();
