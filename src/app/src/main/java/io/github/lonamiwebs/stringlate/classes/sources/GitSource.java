@@ -16,6 +16,7 @@ import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
+import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 import io.github.lonamiwebs.stringlate.settings.RepoSettings;
 import io.github.lonamiwebs.stringlate.settings.SourceSettings;
@@ -45,7 +46,7 @@ public class GitSource implements StringsSource {
     }
 
     @Override
-    public boolean setup(final Context context, final SourceSettings settings, final GitCloneProgressCallback callback) {
+    public boolean setup(final Context context, final SourceSettings settings, final ProgressUpdateCallback callback) {
         // 1. Prepare to clone the repository
         callback.onProgressUpdate(
                 context.getString(R.string.cloning_repo),
@@ -57,7 +58,9 @@ public class GitSource implements StringsSource {
         Utils.deleteRecursive(mTmpCloneDir); // Don't care, it's temp and it can't exist on cloning
 
         // 2. Clone the repository itself
-        if (!GitWrapper.cloneRepo(mGitUrl, mTmpCloneDir, mBranch, callback)) {
+        if (!GitWrapper.cloneRepo(
+                mGitUrl, mTmpCloneDir, mBranch,
+                new GitCloneProgressCallback(context, callback))) {
             callback.onProgressFinished(context.getString(R.string.invalid_repo), false);
             return false;
         }

@@ -1,7 +1,6 @@
 package io.github.lonamiwebs.stringlate.classes.repos;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -32,8 +31,8 @@ import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
-import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
+import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 import io.github.lonamiwebs.stringlate.settings.RepoSettings;
 import io.github.lonamiwebs.stringlate.settings.SourceSettings;
@@ -76,7 +75,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         mChangeListeners.remove(listener);
     }
 
-    private static void notifyRepositoryCountChanged() {
+    static void notifyRepositoryCountChanged() {
         for (ChangeListener listener : mChangeListeners)
             listener.onRepositoryCountChanged();
     }
@@ -255,36 +254,20 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Downloading locale files
 
+    // Should be called from a background thread
     public void syncResources(final StringsSource source,
-                              final GitCloneProgressCallback callback) {
+                              final ProgressUpdateCallback callback) {
 
         if (!mSourceSettings.getName().equals(source.getName())) {
             // if (!sourceName.isEmpty()) { ... }
             // TODO Warn the user they're using a different source for the strings?
-
             mSourceSettings.reset(source.getName());
         }
 
-        new AsyncTask<Void, Void, Boolean>() {
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                return source.setup(mContext, mSourceSettings, callback);
-            }
-
-            @Override
-            protected void onPostExecute(Boolean okay) {
-                if (okay) {
-                    finishSyncResources(source, callback);
-                } else {
-                    delete(); // Delete settings
-                    source.dispose();
-                }
-            }
-        }.execute();
-    }
-
-    private void finishSyncResources(final StringsSource source,
-                                     final GitCloneProgressCallback callback) {
+        if (!source.setup(mContext, mSourceSettings, callback)) {
+            source.dispose();
+            delete(); // Delete settings
+        }
 
         callback.onProgressUpdate(
                 mContext.getString(R.string.copying_res),
@@ -355,7 +338,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
         loadLocales(); // Reload the locales
 
         callback.onProgressFinished(null, true);
-        notifyRepositoryCountChanged();
     }
 
     private void unusedStringsCleanup() {

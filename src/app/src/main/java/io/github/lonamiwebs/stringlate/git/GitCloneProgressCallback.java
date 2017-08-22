@@ -1,28 +1,29 @@
 package io.github.lonamiwebs.stringlate.git;
 
-import android.app.Activity;
+import android.content.Context;
 
 import org.eclipse.jgit.lib.ProgressMonitor;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 
-public abstract class GitCloneProgressCallback
-        implements ProgressUpdateCallback, ProgressMonitor {
+public class GitCloneProgressCallback implements ProgressMonitor {
 
-    private Activity mActivity;
+    private final Context mContext;
+    private final ProgressUpdateCallback mCallback;
     private int mDone, mWork;
     private boolean mStarted;
 
     private long mLastMs;
 
-    private final static long DELAY_PER_UPDATE = 60; // 60ms
+    private final static long DELAY_PER_UPDATE = 30; // 30ms
 
     private final static String RECEIVING_TITLE = "Receiving objects";
     private final static String RESOLVING_TITLE = "Resolving deltas";
 
-    protected GitCloneProgressCallback(Activity activity) {
-        mActivity = activity;
+    public GitCloneProgressCallback(final Context context, final ProgressUpdateCallback callback) {
+        mContext = context;
+        mCallback = callback;
     }
 
     @Override
@@ -47,7 +48,11 @@ public abstract class GitCloneProgressCallback
         long time = System.currentTimeMillis();
         if (time - mLastMs >= DELAY_PER_UPDATE) {
             mLastMs = time;
-            updateProgress();
+            mCallback.onProgressUpdate(
+                    mContext.getString(R.string.cloning_repo),
+                    mContext.getString(
+                            R.string.cloning_repo_progress, 100f * mDone / mWork)
+            );
         }
     }
 
@@ -57,20 +62,6 @@ public abstract class GitCloneProgressCallback
 
     @Override
     final public void endTask() {
-    }
-
-    private void updateProgress() {
-        final String title = mActivity.getString(R.string.cloning_repo);
-        final String content = mActivity.getString(
-                R.string.cloning_repo_progress, 100f * mDone / mWork);
-
-        // TODO This probably can be improved. Some handler to post the result?
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                onProgressUpdate(title, content);
-            }
-        });
     }
 
     @Override

@@ -1,6 +1,5 @@
 package io.github.lonamiwebs.stringlate.activities.repositories;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -21,8 +20,8 @@ import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.classes.applications.ApplicationDetails;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
-import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
@@ -201,30 +200,8 @@ public class AddNewRepositoryFragment extends Fragment {
         if (Utils.isNotConnected(getContext(), true))
             return;
 
-        final ProgressDialog progress = ProgressDialog.show(getContext(), "…", "…", true);
-        // TODO Don't assume GitSource
-        repo.syncResources(new GitSource(repo.settings.getSource(), ""), new GitCloneProgressCallback(getActivity()) {
-            @Override
-            public void onProgressUpdate(final String title, final String description) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // TODO Important: Do not create a runnable for every progress update
-                        progress.setTitle(title);
-                        progress.setMessage(description);
-                    }
-                });
-            }
-
-            @Override
-            public void onProgressFinished(String description, boolean status) {
-                progress.dismiss();
-                if (description != null)
-                    Toast.makeText(getContext(), description, Toast.LENGTH_SHORT).show();
-                if (status)
-                    launchTranslateActivity(repo);
-            }
-        });
+        new RepoSyncTask(repo, new GitSource(repo.settings.getSource(), ""), getContext()).execute();
+        // TODO Launch the translate activity? Makesless
     }
 
     //endregion

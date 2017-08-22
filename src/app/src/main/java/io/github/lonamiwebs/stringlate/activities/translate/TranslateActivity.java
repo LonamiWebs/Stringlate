@@ -1,6 +1,5 @@
 package io.github.lonamiwebs.stringlate.activities.translate;
 
-import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -49,6 +48,7 @@ import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivi
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoProgress;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
@@ -412,32 +412,9 @@ public class TranslateActivity extends AppCompatActivity {
         if (Utils.isNotConnected(this, true))
             return;
 
-        final ProgressDialog progress = ProgressDialog.show(this,
-                getString(R.string.loading_ellipsis), null, true);
-
         // TODO Don't assume GitSource
-        mRepo.syncResources(new GitSource(mRepo.settings.getSource(), branch), new GitCloneProgressCallback(this) {
-            @Override
-            public void onProgressUpdate(final String title, final String description) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // TODO Important: Do not create a runnable for every progress update
-                        progress.setTitle(title);
-                        progress.setMessage(description);
-                    }
-                });
-            }
-
-            @Override
-            public void onProgressFinished(String description, boolean status) {
-                progress.dismiss();
-                if (description != null)
-                    Toast.makeText(getApplicationContext(), description, Toast.LENGTH_SHORT).show();
-
-                loadResources();
-            }
-        });
+        new RepoSyncTask(mRepo, new GitSource(mRepo.settings.getSource(), branch), this).execute();
+        // TODO loadResources() once the task is done
     }
 
     //endregion

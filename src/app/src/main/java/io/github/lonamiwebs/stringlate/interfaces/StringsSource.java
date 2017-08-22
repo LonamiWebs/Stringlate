@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.PropertyResourceBundle;
 
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
@@ -15,10 +16,9 @@ public interface StringsSource {
 
     // Sources may need to prepare some files first, e.g. strings from git repositories
     // need to pull the repository itself in order to get access to the files.
-    // TODO It shouldn't be a "git" callback
     boolean setup(final Context context,
                   final SourceSettings settings,
-                  final GitCloneProgressCallback callback);
+                  final ProgressUpdateCallback callback);
 
     // The name for a certain StringsSource, e.g. "git"
     @NonNull
