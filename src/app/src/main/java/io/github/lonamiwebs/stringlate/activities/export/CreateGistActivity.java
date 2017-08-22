@@ -1,8 +1,6 @@
 package io.github.lonamiwebs.stringlate.activities.export;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -17,6 +15,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.HashMap;
 
+import io.github.lonamiwebs.stringlate.utilities.NotificationRunner;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.git.GitHub;
@@ -115,43 +114,38 @@ public class CreateGistActivity extends AppCompatActivity {
         if (Utils.isNotConnected(this, true))
             return;
 
-        final ProgressDialog progress = ProgressDialog.show(this,
-                getString(R.string.posting_gist_ellipsis),
-                getString(R.string.posting_gist_ellipsis_long), true);
-
         final String description = mDescriptionEditText.getText().toString().trim();
         final boolean isPublic = mIsPublicCheckBox.isChecked();
         final boolean isAnonymous = mIsAnonymousCheckBox.isChecked() ||
                 !mSettings.hasGitHubAuthorization();
 
         final String token = isAnonymous ? "" : mSettings.getGitHubToken();
-        new AsyncTask<Void, Void, JSONObject>() {
+
+        new NotificationRunner(this) {
             @Override
-            protected JSONObject doInBackground(Void... params) {
-                return GitHub.gCreateGist(description, isPublic, fileContents, token);
+            protected Boolean doInBackground(Void... params) {
+                try {
+                    JSONObject result = GitHub.gCreateGist(description, isPublic, fileContents, token);
+                    if (result == null)
+                        throw new JSONException("Null JSON");
+
+                    final String postedUrl = result.getString("html_url");
+                    setSuccess(
+                            mContext.getString(R.string.post_gist_success),
+                            postedUrl,
+                            CreateUrlSuccessActivity.createIntent(
+                                    mContext, getString(R.string.post_gist_success), postedUrl)
+                    );
+                    return true;
+                } catch (JSONException ignored) {
+                    return false;
+                }
             }
+        }.setRunning(getString(R.string.posting_gist_ellipsis), getString(R.string.posting_gist_ellipsis_long))
+                .setFailure(getString(R.string.post_gist_error))
+                .execute();
 
-            @Override
-            protected void onPostExecute(JSONObject result) {
-                progress.dismiss();
-                onGistPosted(result);
-            }
-        }.execute();
-    }
-
-    //endregion
-
-    //region Check posted Gist
-
-    private void onGistPosted(JSONObject jsonObject) {
-        try {
-            String postedUrl = jsonObject.getString("html_url");
-            finish();
-            CreateUrlSuccessActivity.launchIntent(
-                    this, getString(R.string.post_gist_success), postedUrl);
-        } catch (JSONException e) {
-            Toast.makeText(this, R.string.post_gist_error, Toast.LENGTH_SHORT).show();
-        }
+        finish();
     }
 
     //endregion

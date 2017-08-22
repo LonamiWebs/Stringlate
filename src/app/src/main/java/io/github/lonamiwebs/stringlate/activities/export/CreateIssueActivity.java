@@ -1,19 +1,16 @@
 package io.github.lonamiwebs.stringlate.activities.export;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InvalidObjectException;
 
+import io.github.lonamiwebs.stringlate.utilities.NotificationRunner;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
@@ -94,56 +91,55 @@ public class CreateIssueActivity extends AppCompatActivity {
         if (Utils.isNotConnected(this, true))
             return;
 
-        final ProgressDialog progress = ProgressDialog.show(this,
-                getString(R.string.creating_issue_ellipsis),
-                getString(R.string.creating_issue_long_ellipsis), true);
-
-        new AsyncTask<String, Void, JSONObject>() {
+        final String issueTitle = title;
+        final String issueDesc = description;
+        new NotificationRunner(this) {
             @Override
-            protected JSONObject doInBackground(String... desc) {
+            protected Boolean doInBackground(Void... params) {
                 try {
-                    if (mExistingIssueNumber == -1)
-                        return GitHub.gCreateIssue(mRepo, desc[0],
-                                desc[1], mSettings.getGitHubToken());
-                    else
-                        return GitHub.gCommentIssue(mRepo, mExistingIssueNumber,
-                                desc[1], mSettings.getGitHubToken());
+                    final JSONObject result;
+                    if (mExistingIssueNumber == -1) {
+                        result = GitHub.gCreateIssue(
+                                mRepo, issueTitle, issueDesc, mSettings.getGitHubToken()
+                        );
+                    } else {
+                        result = GitHub.gCommentIssue(
+                                mRepo, mExistingIssueNumber, issueDesc, mSettings.getGitHubToken()
+                        );
+                    }
+
+                    if (result == null)
+                        throw new InvalidObjectException("Invalid GitHub repository.");
+
+                    String postedUrl = result.optString("html_url", "");
+                    if (postedUrl.isEmpty())
+                        throw new InvalidObjectException("Invalid GitHub repository.");
+
+                    if (mExistingIssueNumber == -1) {
+                        mExistingIssueNumber = result.optInt("number");
+                        mRepo.settings.addCreatedIssue(mLocale, mExistingIssueNumber);
+                    }
+
+                    setSuccess(
+                            getString(R.string.create_issue_success),
+                            postedUrl,
+                            CreateUrlSuccessActivity.createIntent(
+                                    mContext, getString(R.string.create_issue_success), postedUrl)
+                    );
+                    return true;
+
                 } catch (InvalidObjectException ignored) {
                     // This wasn't a GitHub repository. How did we get here?
-                    return null;
+                    return false;
                 }
             }
+        }.setRunning(getString(R.string.creating_issue_ellipsis), getString(R.string.creating_issue_long_ellipsis))
+                .setFailure(getString(R.string.create_issue_error))
+                .execute();
 
-            @Override
-            protected void onPostExecute(JSONObject result) {
-                progress.dismiss();
-                onIssueCreated(result);
-            }
-        }.execute(title, description);
+        finish();
     }
 
     //endregion
 
-    //region Check posted issue
-
-    private void onIssueCreated(JSONObject jsonObject) {
-        try {
-            if (jsonObject == null) throw new JSONException("Invalid GitHub repository.");
-
-            String postedUrl = jsonObject.getString("html_url");
-            if (mExistingIssueNumber == -1) {
-                mExistingIssueNumber = jsonObject.getInt("number");
-                mRepo.settings.addCreatedIssue(mLocale, mExistingIssueNumber);
-            }
-
-            finish();
-            CreateUrlSuccessActivity.launchIntent(
-                    this, getString(R.string.create_issue_success), postedUrl);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Toast.makeText(this, R.string.create_issue_error, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    //endregion
 }

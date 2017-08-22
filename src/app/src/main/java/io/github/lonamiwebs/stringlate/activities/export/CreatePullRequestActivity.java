@@ -1,7 +1,5 @@
 package io.github.lonamiwebs.stringlate.activities.export;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.lonamiwebs.stringlate.utilities.NotificationRunner;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
@@ -157,19 +156,16 @@ public class CreatePullRequestActivity extends AppCompatActivity {
             return;
         }
 
-        // There must be a non-empty title if we want it to be set later
-        final ProgressDialog progress = ProgressDialog.show(this, "…", "…", true);
-
         final String token = mSettings.getGitHubToken();
-        final Context ctx = this;
-        new AsyncTask<Void, PUData, JSONObject>() {
+
+        new NotificationRunner(this) {
             @Override
-            protected JSONObject doInBackground(Void... params) {
+            protected Boolean doInBackground(Void... params) {
+
                 JSONObject commitResult;
                 RepoHandler repo;
                 if (mNeedFork) {
-                    publishProgress(new PUData(getString(R.string.forking_repo),
-                            getString(R.string.forking_repo_long)));
+                    updateProgress(getString(R.string.forking_repo), getString(R.string.forking_repo_long));
 
                     // Fork the repository
                     try {
@@ -178,11 +174,11 @@ public class CreatePullRequestActivity extends AppCompatActivity {
 
                         String owner = fork.getJSONObject("owner").getString("login");
                         String repoName = fork.getString("name");
-                        repo = new RepoHandler(ctx, GitWrapper.buildGitHubUrl(owner, repoName));
+                        repo = new RepoHandler(mContext, GitWrapper.buildGitHubUrl(owner, repoName));
                     } catch (JSONException | InvalidObjectException e) {
                         e.printStackTrace();
-                        publishProgress(new PUData(getString(R.string.fork_failed)));
-                        return null;
+                        setFailure(getString(R.string.fork_failed));
+                        return false;
                     }
                 } else {
                     repo = mRepo;
@@ -190,8 +186,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
 
                 // Commit the file
                 try {
-                    publishProgress(new PUData(getString(R.string.creating_commit),
-                            getString(R.string.creating_commit_long)));
+                    updateProgress(getString(R.string.creating_commit), getString(R.string.creating_commit_long));
 
                     final HashMap<String, String> remoteContents = new HashMap<>();
                     for (Map.Entry<File, String> templateRemote :
@@ -202,19 +197,19 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                             remoteContents.put(templateRemote.getValue(), content);
                         }
                     }
-                    commitResult = GitHub.gCreateCommitFile(token, repo,
-                            branch, remoteContents, commitMessage);
+                    commitResult = GitHub.gCreateCommitFile(
+                            token, repo, branch, remoteContents, commitMessage
+                    );
 
                 } catch (JSONException | InvalidObjectException e) {
-                    publishProgress(new PUData(getString(R.string.commit_failed)));
+                    setFailure(getString(R.string.commit_failed));
                     e.printStackTrace();
-                    return null;
+                    return false;
                 }
 
                 if (mNeedFork) {
                     // Create pull request
-                    publishProgress(new PUData(getString(R.string.creating_pr),
-                            getString(R.string.creating_pr_long)));
+                    updateProgress(getString(R.string.creating_pr), getString(R.string.creating_pr_long));
 
                     String title, body;
                     int newLineIndex = commitMessage.indexOf('\n');
@@ -226,76 +221,38 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                         body = "";
                     }
                     try {
-                        return GitHub.gCreatePullRequest(token, mRepo, title,
-                                mUsername + ":" + branch, branch, body);
+                        commitResult = GitHub.gCreatePullRequest(
+                                token, mRepo, title, mUsername + ":" + branch, branch, body
+                        );
                     } catch (InvalidObjectException ignored) {
-                        return null;
+                        return false;
                     }
-                } else
-                    return commitResult;
-            }
+                }
 
-            @Override
-            protected void onProgressUpdate(PUData... values) {
-                PUData data = values[0];
-                if (data.done) {
-                    progress.dismiss();
-                    Toast.makeText(ctx, data.title, Toast.LENGTH_SHORT).show();
-                } else {
-                    progress.setTitle(data.title);
-                    progress.setMessage(data.message);
+                // Now we finally have our commitResult ready
+                if (commitResult == null)
+                    return false;
+
+                try {
+                    String postedUrl = mNeedFork ? commitResult.getString("html_url")
+                            : String.format("https://github.com%s/commit/%s",
+                            mRepo.getPath(), commitResult.getJSONObject("object").getString("sha"));
+
+                    setSuccess(
+                            getString(R.string.done),
+                            postedUrl,
+                            CreateUrlSuccessActivity.createIntent(
+                                    mContext, getString(R.string.done), postedUrl)
+                    );
+                    return true;
+                } catch (JSONException e) {
+                    return false;
                 }
             }
+        }.setFailure(getString(R.string.something_went_wrong))
+                .execute();
 
-            @Override
-            protected void onPostExecute(JSONObject result) {
-                progress.dismiss();
-                onPRCreated(result);
-            }
-        }.execute();
-    }
-
-    //endregion
-
-    //region Sub classes
-
-    // TODO Find a better way to handle async tasks and ProgressUpdateCallback
-    class PUData {
-        final String title;
-        final String message;
-        final boolean done;
-
-        PUData(String title, String message) {
-            this.title = title;
-            this.message = message;
-            this.done = false;
-        }
-
-        PUData(String doneTitle) {
-            this.title = doneTitle;
-            this.message = null;
-            this.done = true;
-        }
-    }
-
-    //endregion
-
-    //region Check created PR
-
-    private void onPRCreated(JSONObject result) {
-        try {
-            if (result == null) throw new JSONException("Null result");
-
-            String postedUrl = mNeedFork ? result.getString("html_url")
-                    : String.format("https://github.com%s/commit/%s",
-                    mRepo.getPath(), result.getJSONObject("object").getString("sha"));
-
-            finish();
-            CreateUrlSuccessActivity.launchIntent(
-                    this, getString(R.string.done), postedUrl);
-        } catch (JSONException e) {
-            Toast.makeText(this, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
-        }
+        finish();
     }
 
     //endregion

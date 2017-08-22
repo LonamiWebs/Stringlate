@@ -39,11 +39,10 @@ public class CreateUrlSuccessActivity extends AppCompatActivity {
                 intent.getStringExtra(EXTRA_DESCRIPTION));
     }
 
-    public static void launchIntent(Context ctx, String description, String postedUrl) {
-        Intent intent = new Intent(ctx, CreateUrlSuccessActivity.class);
-        intent.putExtra(EXTRA_DESCRIPTION, description);
-        intent.putExtra(EXTRA_REMOTE_PATH, postedUrl);
-        ctx.startActivity(intent);
+    public static Intent createIntent(final Context ctx, final String description, final String postedUrl) {
+        return new Intent(ctx, CreateUrlSuccessActivity.class)
+                .putExtra(EXTRA_DESCRIPTION, description)
+                .putExtra(EXTRA_REMOTE_PATH, postedUrl);
     }
 
     //endregion
