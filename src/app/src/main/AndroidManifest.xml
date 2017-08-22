@@ -53,8 +53,7 @@
         </activity>
         <activity
             android:name=".activities.DiscoverActivity"
-            android:label="@string/discover"
-            android:screenOrientation="portrait">
+            android:label="@string/discover">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -62,8 +61,7 @@
         <activity
             android:name=".activities.translate.TranslateActivity" />
         <activity
-            android:name=".activities.export.CreateGistActivity"
-            android:screenOrientation="portrait" />
+            android:name=".activities.export.CreateGistActivity" />
         <activity android:name=".activities.BrowserActivity" />
         <activity android:name=".activities.translate.SearchStringActivity" />
         <activity
@@ -82,12 +80,10 @@
         </activity>
         <activity
             android:name=".activities.export.CreateIssueActivity"
-            android:label="@string/create_issue"
-            android:screenOrientation="portrait"/>
+            android:label="@string/create_issue" />
         <activity
             android:name=".activities.export.CreatePullRequestActivity"
-            android:label="@string/create_pr"
-            android:screenOrientation="portrait"/>
+            android:label="@string/create_pr" />
         <activity android:name=".activities.export.CreateUrlSuccessActivity" />
         <activity android:name=".activities.translate.PeekTranslationsActivity" />
     </application>

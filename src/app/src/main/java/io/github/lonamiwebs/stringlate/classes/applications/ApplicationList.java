@@ -110,89 +110,43 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
 
     //endregion
 
-    public void syncRepo(final ProgressUpdateCallback callback) {
-        final AsyncTask<Void, Void, Void> step3 = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                callback.onProgressUpdate(mContext.getString(R.string.loading_index_xml),
-                        mContext.getString(R.string.loading_index_xml_long));
-            }
+    public boolean syncRepo(final ProgressUpdateCallback callback) {
+        // Step 1: Download the index.jar
+        callback.onProgressUpdate(mContext.getString(R.string.downloading_index_jar),
+                mContext.getString(R.string.downloading_index_jar_long));
 
-            @Override
-            protected Void doInBackground(Void... voids) {
-                loadIndexXml(); // Loses not-required information
-                saveIndexXml(); // Thus minimizes the file
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                callback.onProgressFinished(mContext.getString(R.string.done), true);
-            }
-        };
-        final AsyncTask<Void, Void, Void> step2 = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                callback.onProgressUpdate(mContext.getString(R.string.extracting_index_xml),
-                        mContext.getString(R.string.extracting_index_xml_long));
-            }
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-                extractIndexXml();
-                deleteIndexJar();
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                step3.execute();
-            }
-        };
-        final AsyncTask<Void, Void, Void> step1 = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                callback.onProgressUpdate(mContext.getString(R.string.downloading_index_jar),
-                        mContext.getString(R.string.downloading_index_jar_long));
-            }
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-                downloadIndexJar();
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                step2.execute();
-            }
-        };
-
-        step1.execute();
-    }
-
-    // Step 1: Download the index.jar
-    private void downloadIndexJar() {
         FileDownloader.downloadFile(Constants.FDROID_INDEX_URL, getIndexFile("jar"));
-    }
 
-    // Step 2a: Extract the index.xml from the index.jar
-    private void extractIndexXml() {
+        // Step 2: Extract the index.xml from the index.jar, then delete the index.jar
+        callback.onProgressUpdate(mContext.getString(R.string.extracting_index_xml),
+                mContext.getString(R.string.extracting_index_xml_long));
+
         FileExtractor.unpackZip(getIndexFile("jar"), mRoot, false);
+        if (!getIndexFile("jar").delete())
+            return false;
+
+        // Step 3, load the xml and lose non-required information, then save it minimized
+        callback.onProgressUpdate(mContext.getString(R.string.loading_index_xml),
+                mContext.getString(R.string.loading_index_xml_long));
+
+        if (!loadIndexXml())
+            return false;
+
+        try {
+            // Save index.xml
+            ApplicationListParser.parseToXml(
+                    this, new FileOutputStream(getIndexFile("xml"))
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        // Done
+        callback.onProgressFinished(mContext.getString(R.string.done), true);
+        return true;
     }
 
-    // Step 2b: Delete index.jar
-    private boolean deleteIndexJar() {
-        return getIndexFile("jar").delete();
-    }
-
-    // Step 3a: Load the ApplicationList from the index.xml
     public boolean loadIndexXml() {
         try {
             File file = getIndexFile("xml");
@@ -221,16 +175,6 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
             e.printStackTrace();
         }
         return false;
-    }
-
-    // Step 3b: Save a (minimized) version of the index.xml
-    private void saveIndexXml() {
-        try {
-            ApplicationListParser.parseToXml(this,
-                    new FileOutputStream(getIndexFile("xml")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private File getIndexFile(String extension) {

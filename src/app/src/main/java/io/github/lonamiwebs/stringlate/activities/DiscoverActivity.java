@@ -1,9 +1,9 @@
 package io.github.lonamiwebs.stringlate.activities;
 
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -164,26 +164,52 @@ public class DiscoverActivity extends AppCompatActivity {
     //region Update index
 
     private void updateApplicationsIndex() {
-        // There must be a non-empty title if we want it to be set later
-        final ProgressDialog progress = ProgressDialog.show(this, "…", "…", true);
-
-        mApplicationList.syncRepo(new ProgressUpdateCallback() {
+        // TODO We need to avoid calling this twice.
+        // If the async task already exists, don't create another.
+        // For some reason rotating the screen will *not* dismiss the async task, but attempting
+        // to report any progress to the main UI activity will fail to do so.
+        new AsyncTask<Void, String, Boolean>() {
             @Override
-            public void onProgressUpdate(String title, String description) {
-                progress.setTitle(title);
-                progress.setMessage(description);
+            protected void onPreExecute() {
+                mNoRepositoryTextView.setText("");
+                mNoRepositoryTextView.setVisibility(VISIBLE);
+                mApplicationListView.setVisibility(GONE);
             }
 
             @Override
-            public void onProgressFinished(String description, boolean status) {
-                progress.dismiss();
-                if (status) {
-                    refreshListView("");
-                } else
-                    Toast.makeText(getApplicationContext(),
-                            R.string.sync_failed, Toast.LENGTH_SHORT).show();
+            protected Boolean doInBackground(Void... params) {
+                return mApplicationList.syncRepo(new ProgressUpdateCallback() {
+                    @Override
+                    public void onProgressUpdate(String title, String description) {
+                        publishProgress(title, description);
+                    }
+
+                    @Override
+                    public void onProgressFinished(String description, boolean status) {
+                        // TODO I probably could rework everything to get rid of this method,
+                        // since now I create the AsyncTask OUTSIDE the syncing methods (as it
+                        // should have always been done).
+                    }
+                });
             }
-        });
+
+            @Override
+            protected void onProgressUpdate(String... values) {
+                // Description\n\nText
+                mNoRepositoryTextView.setText(values[0] + "\n\n" + values[1]);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean okay) {
+                if (!okay) {
+                    // Set back the "repo not synced" text
+                    mNoRepositoryTextView.setText(getString(
+                            R.string.apps_repo_not_downloaded, getString(R.string.update_applications)));
+                }
+
+                refreshListView("");
+            }
+        }.execute();
     }
 
     //endregion
