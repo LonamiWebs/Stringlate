@@ -255,8 +255,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
     //region Downloading locale files
 
     // Should be called from a background thread
-    public void syncResources(final StringsSource source,
-                              final ProgressUpdateCallback callback) {
+    public boolean syncResources(final StringsSource source,
+                                 final ProgressUpdateCallback callback) {
 
         if (!mSourceSettings.getName().equals(source.getName())) {
             // if (!sourceName.isEmpty()) { ... }
@@ -281,7 +281,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
         // names might have changed, been removed, or some new added.
         settings.clearRemotePaths();
         for (File f : getDefaultResourcesFiles())
-            f.delete();
+            if (!f.delete())
+                return false;
 
         for (String locale : source.getLocales()) {
             if (locale == null)
@@ -337,7 +338,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         source.dispose(); // Clean resources
         loadLocales(); // Reload the locales
 
-        callback.onProgressFinished(null, true);
+        return true;
     }
 
     private void unusedStringsCleanup() {

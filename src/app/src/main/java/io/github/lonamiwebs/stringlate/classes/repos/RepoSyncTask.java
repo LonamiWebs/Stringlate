@@ -47,23 +47,17 @@ public class RepoSyncTask extends AsyncTask<Void, RepoSyncTask.UpdateProgress, B
 
     @Override
     protected Boolean doInBackground(Void[] voids) {
-        mRepo.syncResources(mSource, new ProgressUpdateCallback() {
+        return mRepo.syncResources(mSource, new ProgressUpdateCallback() {
             @Override
             public void onProgressUpdate(String title, String description) {
                 publishProgress(new UpdateProgress(title, description));
             }
 
             @Override
-            public void onProgressFinished(String description, boolean status) {
-                // TODO Sync resources should just return true or false
-                if (description != null) {
-                    Toast.makeText(mContext, description, Toast.LENGTH_SHORT).show();
-                }
-                mFinishStatus = status;
+            public void showMessage(String message) {
+                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
             }
         });
-
-        return mFinishStatus;
     }
 
     @Override

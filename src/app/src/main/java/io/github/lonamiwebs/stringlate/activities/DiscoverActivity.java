@@ -185,11 +185,7 @@ public class DiscoverActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onProgressFinished(String description, boolean status) {
-                        // TODO I probably could rework everything to get rid of this method,
-                        // since now I create the AsyncTask OUTSIDE the syncing methods (as it
-                        // should have always been done).
-                    }
+                    public void showMessage(String message) { /* No toast is shown here */ }
                 });
             }
 

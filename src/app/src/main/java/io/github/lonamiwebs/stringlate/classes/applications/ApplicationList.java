@@ -143,7 +143,6 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
         }
 
         // Done
-        callback.onProgressFinished(mContext.getString(R.string.done), true);
         return true;
     }
 

@@ -61,7 +61,7 @@ public class GitSource implements StringsSource {
         if (!GitWrapper.cloneRepo(
                 mGitUrl, mTmpCloneDir, mBranch,
                 new GitCloneProgressCallback(context, callback))) {
-            callback.onProgressFinished(context.getString(R.string.invalid_repo), false);
+            callback.showMessage(context.getString(R.string.invalid_repo));
             return false;
         }
 
@@ -74,7 +74,7 @@ public class GitSource implements StringsSource {
         final ArrayList<File> resourceFiles = GitWrapper.searchAndroidResources(mTmpCloneDir);
 
         if (resourceFiles.isEmpty()) {
-            callback.onProgressFinished(context.getString(R.string.no_strings_found), false);
+            callback.showMessage(context.getString(R.string.no_strings_found));
             return false;
         }
 
