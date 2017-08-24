@@ -6,10 +6,8 @@ import android.support.annotation.NonNull;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.PropertyResourceBundle;
 
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
-import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.settings.SourceSettings;
 
 public interface StringsSource {
@@ -35,6 +33,12 @@ public interface StringsSource {
     // Returns pairs of (default resource name, resources)
     @NonNull
     Map<String, Resources> getDefaultResources();
+
+    // Some developers have a well-defined XML structure already made,
+    // for instance for GitSources where the XML itself is known, for
+    // their strings.xml files. If this is the case this method should
+    // return said XML, otherwise, it can return null.
+    String getDefaultResourceXml(final String name);
 
     // May return a File pointing to an existing icon for this source, or null
     File getIcon();

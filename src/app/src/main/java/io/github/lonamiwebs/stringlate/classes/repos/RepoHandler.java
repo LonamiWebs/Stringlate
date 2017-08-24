@@ -304,15 +304,33 @@ public class RepoHandler implements Comparable<RepoHandler> {
         // Default resources are treated specially, since their name matters. The name for
         // non-default resources doesn't because it can be inferred from defaults' (for now).
         for (Map.Entry<String, Resources> nameResources : source.getDefaultResources().entrySet()) {
+            boolean okay;
             final String originalName = nameResources.getKey();
             final File resourceFile = getUniqueDefaultResourcesFile();
 
-            final Resources resources = Resources.fromFile(resourceFile);
-            for (ResTag rt : nameResources.getValue()) // Copy the resources to the new local file
-                resources.addTag(rt);
+            final String xml = source.getDefaultResourceXml(originalName);
+            if (xml == null) {
+                // We don't know how the original XML looked like, that's okay
+                final Resources resources = Resources.fromFile(resourceFile);
+                for (ResTag rt : nameResources.getValue()) // Copy the resources to the new local file
+                    resources.addTag(rt);
 
-            resources.save();
-            settings.addRemotePath(resourceFile.getName(), originalName); // Save the map unique -> original
+                okay = resources.save();
+            } else {
+                // We have the original XML available, so clean it up and preserve its structure
+                okay = ResourcesParser.cleanXml(xml, resourceFile);
+            }
+
+            if (okay) {
+                // Save the map unique -> original since this is a valid file
+                settings.addRemotePath(resourceFile.getName(), originalName);
+            } else {
+                // Something went wrong, either saving, cleaning the XML, or it has no strings
+                // Clean up the file we may have made, if it exists, or give up if it fails
+                if (resourceFile.isFile())
+                    if (!resourceFile.delete())
+                        return false;
+            }
         }
 
         // Check out if we have any icon for this repository
@@ -325,11 +343,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 if (icon.renameTo(newIcon)) // TODO Do NOT rename the icon, rather copy it
                     settings.setIconFile(newIcon);
             }
-        }
-
-        if (gitSource != null) {
-            // TODO This is very git specific
-            gitSource.updateGitSpecificSettings(settings);
         }
 
         // Clean old unused strings which now don't exist on the default resources files

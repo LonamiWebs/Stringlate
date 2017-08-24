@@ -18,7 +18,6 @@ import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
-import io.github.lonamiwebs.stringlate.settings.RepoSettings;
 import io.github.lonamiwebs.stringlate.settings.SourceSettings;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
@@ -142,12 +141,19 @@ public class GitSource implements StringsSource {
     public Map<String, Resources> getDefaultResources() {
         HashMap<String, Resources> result = new HashMap<>();
         for (File file : mLocaleFiles.get(null)) {
-            final String remotePath =
-                    file.getAbsolutePath().substring(mTmpCloneDir.getAbsolutePath().length() + 1);
-
-            result.put(remotePath, Resources.fromFile(file));
+            result.put(getDefaultResourceName(file), Resources.fromFile(file));
         }
         return result;
+    }
+
+    @Override
+    public String getDefaultResourceXml(String name) {
+        for (File file : mLocaleFiles.get(null)) {
+            if (getDefaultResourceName(file).equals(name)) {
+                return Utils.readFile(file);
+            }
+        }
+        return null;
     }
 
     @Override
@@ -155,7 +161,9 @@ public class GitSource implements StringsSource {
         return iconFile;
     }
 
-    public void updateGitSpecificSettings(final RepoSettings settings) {
+    @NonNull
+    private String getDefaultResourceName(final File file) {
+        return file.getAbsolutePath().substring(mTmpCloneDir.getAbsolutePath().length() + 1);
     }
 
     @Override

@@ -409,9 +409,12 @@ public class ResourcesParser {
             //                 tagName    translatable    =     "false"
             Pattern.compile("<([\\w-]+).*?translatable\\s*=\\s*\"false\".*?>");
 
-    public static boolean cleanXml(File inFile, File outFile) {
+    public static boolean cleanXml(final File inFile, final File outFile) {
+        return cleanXml(Utils.readFile(inFile), outFile);
+    }
+
+    public static boolean cleanXml(final String xml, final File outFile) {
         try {
-            String xml = Utils.readFile(inFile);
             boolean haveAny = false;
 
             // 1. Find dirty tags (those which are untranslatable)
