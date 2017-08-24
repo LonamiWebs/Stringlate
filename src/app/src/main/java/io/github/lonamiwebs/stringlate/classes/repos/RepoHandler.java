@@ -274,9 +274,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 mContext.getString(R.string.copying_res_long)
         );
 
-        // TODO Generalize a bit more, probably keep per-source settings?
-        final GitSource gitSource = source instanceof GitSource ? (GitSource)source : null;
-
         // Delete all the previous default resources since their
         // names might have changed, been removed, or some new added.
         settings.clearRemotePaths();
@@ -303,17 +300,16 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
         // Default resources are treated specially, since their name matters. The name for
         // non-default resources doesn't because it can be inferred from defaults' (for now).
-        for (Map.Entry<String, Resources> nameResources : source.getDefaultResources().entrySet()) {
+        for (String originalName : source.getDefaultResources()) {
             boolean okay;
-            final String originalName = nameResources.getKey();
             final File resourceFile = getUniqueDefaultResourcesFile();
 
             final String xml = source.getDefaultResourceXml(originalName);
             if (xml == null) {
                 // We don't know how the original XML looked like, that's okay
                 final Resources resources = Resources.fromFile(resourceFile);
-                for (ResTag rt : nameResources.getValue()) // Copy the resources to the new local file
-                    resources.addTag(rt);
+                for (ResTag rt : source.getDefaultResource(originalName))
+                    resources.addTag(rt); // Copy the resources to the new local file
 
                 okay = resources.save();
             } else {

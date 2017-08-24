@@ -138,22 +138,31 @@ public class GitSource implements StringsSource {
 
     @NonNull
     @Override
-    public Map<String, Resources> getDefaultResources() {
-        HashMap<String, Resources> result = new HashMap<>();
-        for (File file : mLocaleFiles.get(null)) {
-            result.put(getDefaultResourceName(file), Resources.fromFile(file));
-        }
+    public List<String> getDefaultResources() {
+        final ArrayList<String> result = new ArrayList<>(mLocaleFiles.get(null).size());
+        for (File file : mLocaleFiles.get(null))
+            result.add(getDefaultResourceName(file));
+
         return result;
+    }
+
+    @NonNull
+    @Override
+    public Resources getDefaultResource(String name) {
+        for (File file : mLocaleFiles.get(null))
+            if (getDefaultResourceName(file).equals(name))
+                return Resources.fromFile(file);
+
+        throw new IllegalArgumentException("No default resources were found with that name");
     }
 
     @Override
     public String getDefaultResourceXml(String name) {
-        for (File file : mLocaleFiles.get(null)) {
-            if (getDefaultResourceName(file).equals(name)) {
+        for (File file : mLocaleFiles.get(null))
+            if (getDefaultResourceName(file).equals(name))
                 return Utils.readFile(file);
-            }
-        }
-        return null;
+
+        throw new IllegalArgumentException("No XML was found with that name");
     }
 
     @Override

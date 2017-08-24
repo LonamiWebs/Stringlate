@@ -30,9 +30,13 @@ public interface StringsSource {
     @NonNull
     Resources getResources(final @NonNull String locale);
 
-    // Returns pairs of (default resource name, resources)
+    // Returns all the names for available default resources (since these are named)
     @NonNull
-    Map<String, Resources> getDefaultResources();
+    List<String> getDefaultResources();
+
+    // Given the name of a default resource, loads and returns its contents
+    @NonNull
+    Resources getDefaultResource(final String name);
 
     // Some developers have a well-defined XML structure already made,
     // for instance for GitSources where the XML itself is known, for
