@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
+import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
@@ -55,30 +56,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     private static final String BASE_DIR = "repos";
     public static final String DEFAULT_LOCALE = "default";
-
-    //endregion
-
-    //region Interfaces and events
-
-    public interface ChangeListener {
-        // Called when a repository is either added or removed
-        void onRepositoryCountChanged();
-    }
-
-    private final static ArrayList<ChangeListener> mChangeListeners = new ArrayList<>();
-
-    public static void addChangeListener(ChangeListener listener) {
-        mChangeListeners.add(listener);
-    }
-
-    public static void removeChangeListener(ChangeListener listener) {
-        mChangeListeners.remove(listener);
-    }
-
-    static void notifyRepositoryCountChanged() {
-        for (ChangeListener listener : mChangeListeners)
-            listener.onRepositoryCountChanged();
-    }
 
     //endregion
 
@@ -180,12 +157,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
     // Deletes the repository erasing its existence from Earth. Forever. (Unless added again)
     public boolean delete() {
         boolean ok = Utils.deleteRecursive(mRoot);
-        notifyRepositoryCountChanged();
+        Messenger.notifyRepoCountChange();
         return ok;
-    }
-
-    private File getTempCloneDir() {
-        return new File(mContext.getCacheDir(), "tmp_clone");
     }
 
     private File getTempImportDir() {
@@ -738,7 +711,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             }
 
             // Re-notify that the imported repository succeeded
-            notifyRepositoryCountChanged();
+            Messenger.notifyRepoCountChange();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -31,6 +31,7 @@ import java.util.Collections;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
+import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerAdapter;
 
@@ -73,15 +74,13 @@ public class HistoryFragment extends Fragment {
         mHistoryMessageTextView = rootView.findViewById(R.id.historyMessageTextView);
         mRepositoriesTitle = rootView.findViewById(R.id.repositoriesTitle);
 
-        changeListener.onRepositoryCountChanged();
-
         return rootView;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        RepoHandler.addChangeListener(changeListener);
+        Messenger.onRepoChange.add(changeListener);
     }
 
     @Override
@@ -90,13 +89,13 @@ public class HistoryFragment extends Fragment {
         // Assume the count changed every time we're back on this fragment.
         // This is because, although translating strings doesn't change the
         // repository count, it does affect the progress bar.
-        changeListener.onRepositoryCountChanged();
+        changeListener.onCountChanged();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RepoHandler.removeChangeListener(changeListener);
+        Messenger.onRepoChange.remove(changeListener);
     }
 
     //endregion
@@ -245,9 +244,9 @@ public class HistoryFragment extends Fragment {
 
     //region Listeners
 
-    private final RepoHandler.ChangeListener changeListener = new RepoHandler.ChangeListener() {
+    private final Messenger.OnRepoChange changeListener = new Messenger.OnRepoChange() {
         @Override
-        public void onRepositoryCountChanged() {
+        public void onCountChanged() {
             ArrayList<RepoHandler> repositories = RepoHandler.listRepositories(getContext());
             Collections.sort(repositories);
 

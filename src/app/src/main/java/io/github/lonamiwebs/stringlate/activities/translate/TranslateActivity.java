@@ -372,7 +372,7 @@ public class TranslateActivity extends AppCompatActivity {
                     .setNegativeButton(R.string.cancel, null)
                     .show();
         } else {
-            // No file has been modified, simply update the strings discarding changes
+            // No file has been modified, simply onCountChanged the strings discarding changes
             askBranchUpdateStrings();
         }
     }

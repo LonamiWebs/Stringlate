@@ -7,6 +7,7 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 
@@ -71,11 +72,8 @@ public class RepoSyncTask extends AsyncTask<Void, RepoSyncTask.UpdateProgress, B
     @Override
     protected void onPostExecute(Boolean okay) {
         mNotificationManager.cancel(NOTIFICATION_ID);
-
-        if (okay) {
-            // TODO Should this be put somewhere else?
-            RepoHandler.notifyRepositoryCountChanged();
-        }
+        if (okay)
+            Messenger.notifyRepoCountChange();
     }
 
     public void execute() {
