@@ -215,7 +215,9 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                     int newLineIndex = commitMessage.indexOf('\n');
                     if (newLineIndex > -1) {
                         title = commitMessage.substring(0, newLineIndex);
-                        body = commitMessage.substring(newLineIndex).trim();
+                        body = commitMessage.substring(newLineIndex).trim().replace(
+                                "Stringlate", "[Stringlate](https://lonamiwebs.github.io/stringlate/)"
+                        );
                     } else {
                         title = commitMessage;
                         body = "";
