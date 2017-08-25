@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
@@ -44,12 +45,9 @@ public class GitSource implements StringsSource {
     }
 
     @Override
-    public boolean setup(final Context context, final SourceSettings settings, final ProgressUpdateCallback callback) {
-        // 1. Prepare to clone the repository
-        callback.onProgressUpdate(
-                context.getString(R.string.cloning_repo),
-                context.getString(R.string.cloning_repo_progress, 0.0f)
-        );
+    public boolean setup(final Context context, final SourceSettings settings,
+                         final Messenger.OnRepoSyncProgress callback) {
+        callback.onUpdate(1, 0f);
 
         settings.set("git_url", mGitUrl);
         mTmpCloneDir = new File(context.getCacheDir(), "tmp_clone");
@@ -59,15 +57,10 @@ public class GitSource implements StringsSource {
         if (!GitWrapper.cloneRepo(
                 mGitUrl, mTmpCloneDir, mBranch,
                 new GitCloneProgressCallback(context, callback))) {
-            callback.showMessage(context.getString(R.string.invalid_repo));
+            // TODO These messages are still useful, show them somehow?
+            //callback.showMessage(context.getString(R.string.invalid_repo));
             return false;
         }
-
-        // 3. Scan resources
-        callback.onProgressUpdate(
-                context.getString(R.string.scanning_repository),
-                context.getString(R.string.scanning_repository_long)
-        );
 
         // Cache all the repository resources here for faster look-up on upcoming methods
         final GitWrapper.RepositoryResources repoResources =
@@ -75,7 +68,7 @@ public class GitSource implements StringsSource {
 
         final ArrayList<File> resourceFiles = GitWrapper.searchAndroidResources(repoResources);
         if (resourceFiles.isEmpty()) {
-            callback.showMessage(context.getString(R.string.no_strings_found));
+            //callback.showMessage(context.getString(R.string.no_strings_found));
             return false;
         }
 

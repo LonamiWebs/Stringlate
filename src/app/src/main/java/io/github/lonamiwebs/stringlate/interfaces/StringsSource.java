@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.settings.SourceSettings;
 
@@ -16,7 +17,7 @@ public interface StringsSource {
     // need to pull the repository itself in order to get access to the files.
     boolean setup(final Context context,
                   final SourceSettings settings,
-                  final ProgressUpdateCallback callback);
+                  final Messenger.OnRepoSyncProgress callback);
 
     // The name for a certain StringsSource, e.g. "git"
     @NonNull

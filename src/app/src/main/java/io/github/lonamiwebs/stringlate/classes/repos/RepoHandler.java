@@ -33,6 +33,7 @@ import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 import io.github.lonamiwebs.stringlate.settings.RepoSettings;
@@ -229,7 +230,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     // Should be called from a background thread
     public boolean syncResources(final StringsSource source,
-                                 final ProgressUpdateCallback callback) {
+                                 final Messenger.OnRepoSyncProgress callback) {
 
         if (!mSourceSettings.getName().equals(source.getName())) {
             // if (!sourceName.isEmpty()) { ... }
@@ -242,10 +243,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             delete(); // Delete settings
         }
 
-        callback.onProgressUpdate(
-                mContext.getString(R.string.copying_res),
-                mContext.getString(R.string.copying_res_long)
-        );
+        callback.onUpdate(2, (0f / 3f));
 
         // Delete all the previous default resources since their
         // names might have changed, been removed, or some new added.
@@ -270,6 +268,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
             // Save the changes
             resources.save();
         }
+
+        callback.onUpdate(2, (1f / 3f));
 
         // Default resources are treated specially, since their name matters. The name for
         // non-default resources doesn't because it can be inferred from defaults' (for now).
@@ -302,6 +302,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
             }
         }
 
+        callback.onUpdate(2, (2f / 3f));
+
         // Check out if we have any icon for this repository
         File icon = source.getIcon();
         if (icon != null) {
@@ -319,6 +321,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
         source.dispose(); // Clean resources
         loadLocales(); // Reload the locales
+
+        callback.onUpdate(2, (3f / 3f));
 
         return true;
     }
