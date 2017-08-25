@@ -184,9 +184,22 @@ public class GitWrapper {
     private static final String MANIFEST = "AndroidManifest.xml";
 
     public static File findProperIcon(final RepositoryResources resources, final Context ctx) {
-        ArrayList<File> foundIcons =  findIconFromManifest(resources);
+        ArrayList<File> foundIcons;
+        // First try to find the most common icon name: /mipmap(.*)/ic_launcher.png
+        foundIcons = findIcons(resources, "/mipmap", "ic_launcher.png");
+        if (foundIcons.isEmpty()) {
+            // No luck, maybe ic_launcher-web.png?
+            foundIcons = findIcons(resources, "", "ic_launcher-web.png");
+            if (foundIcons.isEmpty()) {
+                // Try looking for the right name in the AndroidManifest.xml
+                foundIcons = findIconFromManifest(resources);
+            }
+        }
         if (foundIcons.isEmpty())
-            return null;
+            return null; // No icon at all
+
+        if (foundIcons.size() == 1)
+            return foundIcons.get(0); // No choice, don't bother with density checks
 
         String density;
         int wantedDensity = getDensityIndex(ctx.getResources().getDisplayMetrics().densityDpi);
