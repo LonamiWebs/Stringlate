@@ -70,8 +70,11 @@ public class GitSource implements StringsSource {
                 context.getString(R.string.scanning_repository_long)
         );
 
-        final ArrayList<File> resourceFiles = GitWrapper.searchAndroidResources(mTmpCloneDir);
+        // Cache all the repository resources here for faster look-up on upcoming methods
+        final GitWrapper.RepositoryResources repoResources =
+                GitWrapper.findUsefulResources(mTmpCloneDir);
 
+        final ArrayList<File> resourceFiles = GitWrapper.searchAndroidResources(repoResources);
         if (resourceFiles.isEmpty()) {
             callback.showMessage(context.getString(R.string.no_strings_found));
             return false;
@@ -80,7 +83,7 @@ public class GitSource implements StringsSource {
         // Save the branches of this repository
         settings.setArray("remote_branches", GitWrapper.getBranches(mTmpCloneDir));
 
-        iconFile = GitWrapper.findProperIcon(mTmpCloneDir, context);
+        iconFile = GitWrapper.findProperIcon(repoResources, context);
 
         // Iterate over all the found resources to sort them by locale
         for (File resourceFile : resourceFiles) {
@@ -104,7 +107,7 @@ public class GitSource implements StringsSource {
             }
         }
 
-        settings.set("translation_service", GitWrapper.mayUseTranslationServices(mTmpCloneDir));
+        settings.set("translation_service", GitWrapper.mayUseTranslationServices(repoResources));
 
         return true;
     }
