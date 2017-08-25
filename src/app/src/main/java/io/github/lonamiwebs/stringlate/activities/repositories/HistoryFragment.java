@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,8 +50,14 @@ public class HistoryFragment extends Fragment {
     private TextView mHistoryMessageTextView;
     private TextView mRepositoriesTitle;
 
+    private LinearLayout mSyncingReposLinearLayout;
+    private ListView mSyncingReposListView;
+
     // Not the best solution. How else could extra data by passed to activity results?
     private RepoHandler mLastSelectedRepo;
+
+    private final ArrayList<RepoHandler> mSyncingRepositories = new ArrayList<>();
+    private final ArrayList<Float> mSyncingRepositoriesProgress = new ArrayList<>();
 
     //endregion
 
@@ -74,6 +81,9 @@ public class HistoryFragment extends Fragment {
         mHistoryMessageTextView = rootView.findViewById(R.id.historyMessageTextView);
         mRepositoriesTitle = rootView.findViewById(R.id.repositoriesTitle);
 
+        mSyncingReposLinearLayout = rootView.findViewById(R.id.syncingReposLinearLayout);
+        mSyncingReposListView = rootView.findViewById(R.id.syncingReposListView);
+
         return rootView;
     }
 
@@ -81,6 +91,7 @@ public class HistoryFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Messenger.onRepoChange.add(changeListener);
+        Messenger.onRepoSync.add(syncingListener);
     }
 
     @Override
@@ -96,6 +107,7 @@ public class HistoryFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         Messenger.onRepoChange.remove(changeListener);
+        Messenger.onRepoSync.remove(syncingListener);
     }
 
     //endregion
@@ -260,6 +272,48 @@ public class HistoryFragment extends Fragment {
                 mHistoryMessageTextView.setText(R.string.history_contains_repos_hint);
                 mRepositoryListView.setAdapter(
                         new RepoHandlerAdapter(getContext(), repositories));
+            }
+        }
+    };
+
+    private final Messenger.OnRepoSync syncingListener = new Messenger.OnRepoSync() {
+        @Override
+        public void onUpdate(RepoHandler which, float progress) {
+            // TODO This is not very efficient when multiple repositories could be being
+            // added simultaneously
+            if (progress == 1) {
+                // Remove the repository from pending, since it's complete
+                for (int i = mSyncingRepositories.size(); i-- != 0;) {
+                    if (mSyncingRepositories.get(i) == which) {
+                        mSyncingRepositories.remove(i);
+                        mSyncingRepositoriesProgress.remove(i);
+                        break;
+                    }
+                }
+            } else {
+                if (mSyncingRepositories.contains(which)) {
+                    for (int i = mSyncingRepositories.size(); i-- != 0;) {
+                        if (mSyncingRepositories.get(i) == which) {
+                            // Update the progress
+                            mSyncingRepositoriesProgress.set(i, progress);
+                            break;
+                        }
+                    }
+                } else {
+                    // Add the new repository
+                    mSyncingRepositories.add(which);
+                    mSyncingRepositoriesProgress.add(progress);
+                }
+            }
+
+            if (mSyncingRepositories.isEmpty()) {
+                mSyncingReposLinearLayout.setVisibility(GONE);
+            } else {
+                mSyncingReposLinearLayout.setVisibility(VISIBLE);
+                // TODO Is there a way to update the adapter without creating a new one?
+                mSyncingReposListView.setAdapter(new RepoHandlerAdapter(
+                        getContext(), mSyncingRepositories, mSyncingRepositoriesProgress
+                ));
             }
         }
     };

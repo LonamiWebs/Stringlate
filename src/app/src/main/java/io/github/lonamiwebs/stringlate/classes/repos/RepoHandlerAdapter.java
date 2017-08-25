@@ -28,6 +28,7 @@ import static io.github.lonamiwebs.stringlate.utilities.Constants.MATERIAL_COLOR
 public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
 
     private final int mSize; // Used to generate the image
+    private final List<Float> mCustomProgress; // Override the progress shown
 
     // https://developer.android.com/training/improving-layouts/smooth-scrolling.html#ViewHolder
     private static class ViewHolder {
@@ -36,11 +37,17 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
         ProgressBar translatedProgressBar;
     }
 
-    public RepoHandlerAdapter(Context context, List<RepoHandler> repositories) {
-        // Treat the repositories like applications
-        // We can show an icon, the title, and the host as description
+    public RepoHandlerAdapter(final Context context, final List<RepoHandler> repositories) {
         super(context, R.layout.item_repository_list, repositories);
         mSize = context.getResources().getDisplayMetrics().densityDpi;
+        mCustomProgress = null;
+    }
+
+    public RepoHandlerAdapter(final Context context, final List<RepoHandler> repositories,
+                              final List<Float> customProgress) {
+        super(context, R.layout.item_repository_list, repositories);
+        mSize = context.getResources().getDisplayMetrics().densityDpi;
+        mCustomProgress = customProgress;
     }
 
     @SuppressLint("SetTextI18n")
@@ -76,18 +83,26 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
             holder.pathTextView.setText(repo.getProjectName());
             holder.hostTextView.setText(repo.getHost());
 
-            RepoProgress progress = repo.loadProgress();
-            if (progress == null) {
+            Float progressPercent;
+            if (mCustomProgress == null) {
+                RepoProgress progress = repo.loadProgress();
+                progressPercent = progress == null ? null : progress.getPercentage();
+            } else {
+                progressPercent = mCustomProgress.get(position) * 100f;
+            }
+
+            if (progressPercent == null) {
                 holder.translatedProgressBar.setVisibility(View.INVISIBLE);
                 holder.translatedProgressTextView.setVisibility(View.GONE);
             } else {
                 holder.translatedProgressBar.setVisibility(View.VISIBLE);
                 holder.translatedProgressTextView.setVisibility(View.VISIBLE);
 
-                holder.translatedProgressBar.setMax(progress.totalChars);
-                holder.translatedProgressBar.setProgress(progress.currentChars);
+                // Just some very large number since the progressbar doesn't support floats
+                holder.translatedProgressBar.setMax(1000000);
+                holder.translatedProgressBar.setProgress((int)(progressPercent * 10000f));
                 holder.translatedProgressTextView.setText(
-                        String.format(Locale.ENGLISH, "%.1f%%", progress.getPercentage()));
+                        String.format(Locale.ENGLISH, "%.1f%%", progressPercent));
             }
         }
         return convertView;
