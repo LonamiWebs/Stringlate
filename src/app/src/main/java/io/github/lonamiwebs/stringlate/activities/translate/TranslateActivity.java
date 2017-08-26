@@ -46,6 +46,7 @@ import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
+import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoProgress;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
@@ -154,6 +155,13 @@ public class TranslateActivity extends AppCompatActivity {
                     Utils.toTitleCase(mRepo.getUsedTranslationService())
             ));
         }
+        Messenger.onRepoSync.add(syncingListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Messenger.onRepoSync.remove(syncingListener);
     }
 
     private void loadResources() {
@@ -413,7 +421,6 @@ public class TranslateActivity extends AppCompatActivity {
 
         // TODO Don't assume GitSource
         new RepoSyncTask(mRepo, new GitSource(mRepo.settings.getSource(), branch)).start();
-        // TODO loadResources() once the task is done
     }
 
     //endregion
@@ -1094,6 +1101,23 @@ public class TranslateActivity extends AppCompatActivity {
         // There might be no strings, in which case we need to hide some buttons
         checkPreviousNextVisibility();
     }
+
+    //endregion
+
+    //region Callbacks
+
+    private final Messenger.OnRepoSync syncingListener = new Messenger.OnRepoSync() {
+        @Override
+        public void onUpdate(RepoHandler which, float progress) { }
+
+        @Override
+        public void onFinish(RepoHandler which, boolean okay) {
+            if (which.equals(mRepo) && okay) {
+                // TODO Don't be so rude, save what the user has done
+                loadResources();
+            }
+        }
+    };
 
     //endregion
 
