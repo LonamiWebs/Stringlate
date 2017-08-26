@@ -27,8 +27,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InvalidObjectException;
-import java.util.ArrayList;
-import java.util.Collections;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
@@ -53,12 +51,10 @@ public class HistoryFragment extends Fragment {
 
     private LinearLayout mSyncingReposLinearLayout;
     private RecyclerView mSyncingReposListView;
+    private RepoHandlerAdapter mSyncingReposAdapter;
 
     // Not the best solution. How else could extra data by passed to activity results?
     private RepoHandler mLastSelectedRepo;
-
-    private final ArrayList<RepoHandler> mSyncingRepositories = new ArrayList<>();
-    private final ArrayList<Float> mSyncingRepositoriesProgress = new ArrayList<>();
 
     //endregion
 
@@ -70,6 +66,10 @@ public class HistoryFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
 
         mRepositoryListView = rootView.findViewById(R.id.repositoryListView);
+        mRepositoryAdapter = new RepoHandlerAdapter(getContext());
+
+        mRepositoryListView.setAdapter(mRepositoryAdapter);
+
         // Gain a little performance boost since we know items won't change their size
         mRepositoryListView.setHasFixedSize(true);
         mRepositoryListView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -80,8 +80,20 @@ public class HistoryFragment extends Fragment {
 
         mSyncingReposLinearLayout = rootView.findViewById(R.id.syncingReposLinearLayout);
         mSyncingReposListView = rootView.findViewById(R.id.syncingReposListView);
+        mSyncingReposAdapter = new RepoHandlerAdapter(getContext());
 
+        mSyncingReposListView.setAdapter(mSyncingReposAdapter);
         mSyncingReposListView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Load the initial list of repositories
+        if (mRepositoryAdapter.notifyDataSetChanged(RepoHandler.listRepositories(getContext()))) {
+            mRepositoriesTitle.setVisibility(VISIBLE);
+            mHistoryMessageTextView.setText(R.string.history_contains_repos_hint);
+        } else {
+            mRepositoriesTitle.setVisibility(GONE);
+            mHistoryMessageTextView.setText(getString(
+                    R.string.history_no_repos_hint, getString(R.string.add_project)));
+        }
 
         return rootView;
     }
@@ -89,6 +101,8 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Add listeners for new repositories
+        // TODO Should this be on onCreateView? There may be a very unlikely race condition
         Messenger.onRepoChange.add(changeListener);
         Messenger.onRepoSync.add(syncingListener);
     }
@@ -96,10 +110,10 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Assume the count changed every time we're back on this fragment.
+        // Assume the items changed every time we're back on this fragment.
         // This is because, although translating strings doesn't change the
-        // repository count, it does affect the progress bar.
-        changeListener.onCountChanged();
+        // repositories available count, it does affect the progress bar.
+        mRepositoryAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -260,24 +274,18 @@ public class HistoryFragment extends Fragment {
 
     private final Messenger.OnRepoChange changeListener = new Messenger.OnRepoChange() {
         @Override
-        public void onCountChanged() {
-            ArrayList<RepoHandler> repositories = RepoHandler.listRepositories(getContext());
-            Collections.sort(repositories);
+        public void onRepoAdded(final RepoHandler which) {
+            mRepositoryAdapter.notifyItemAdded(which);
+            mRepositoriesTitle.setVisibility(VISIBLE);
+            mHistoryMessageTextView.setText(R.string.history_contains_repos_hint);
+        }
 
-            if (repositories.isEmpty()) {
+        @Override
+        public void onRepoRemoved(RepoHandler which) {
+            if (!mRepositoryAdapter.notifyItemRemoved(which)) {
                 mRepositoriesTitle.setVisibility(GONE);
                 mHistoryMessageTextView.setText(getString(
                         R.string.history_no_repos_hint, getString(R.string.add_project)));
-                mRepositoryListView.setAdapter(null);
-            } else {
-                mRepositoriesTitle.setVisibility(VISIBLE);
-                mHistoryMessageTextView.setText(R.string.history_contains_repos_hint);
-                mRepositoryListView.setAdapter(
-                        new RepoHandlerAdapter(getContext(), repositories));
-
-                // TODO Don't recreate it every time, that's the whole point of RecyclerView!
-                mRepositoryAdapter = new RepoHandlerAdapter(getContext(), repositories);
-                mRepositoryListView.setAdapter(mRepositoryAdapter);
             }
         }
     };
@@ -285,42 +293,10 @@ public class HistoryFragment extends Fragment {
     private final Messenger.OnRepoSync syncingListener = new Messenger.OnRepoSync() {
         @Override
         public void onUpdate(RepoHandler which, float progress) {
-            // TODO This is not very efficient when multiple repositories could be being
-            // added simultaneously
-            if (progress == 1) {
-                // Remove the repository from pending, since it's complete
-                for (int i = mSyncingRepositories.size(); i-- != 0;) {
-                    if (mSyncingRepositories.get(i) == which) {
-                        mSyncingRepositories.remove(i);
-                        mSyncingRepositoriesProgress.remove(i);
-                        break;
-                    }
-                }
-            } else {
-                if (mSyncingRepositories.contains(which)) {
-                    for (int i = mSyncingRepositories.size(); i-- != 0;) {
-                        if (mSyncingRepositories.get(i) == which) {
-                            // Update the progress
-                            mSyncingRepositoriesProgress.set(i, progress);
-                            break;
-                        }
-                    }
-                } else {
-                    // Add the new repository
-                    mSyncingRepositories.add(which);
-                    mSyncingRepositoriesProgress.add(progress);
-                }
-            }
-
-            if (mSyncingRepositories.isEmpty()) {
-                mSyncingReposLinearLayout.setVisibility(GONE);
-            } else {
+            if (mSyncingReposAdapter.notifyItemProgressChanged(which, progress))
                 mSyncingReposLinearLayout.setVisibility(VISIBLE);
-                // TODO Is there a way to update the adapter without creating a new one?
-                mSyncingReposListView.setAdapter(new RepoHandlerAdapter(
-                        getContext(), mSyncingRepositories, mSyncingRepositoriesProgress
-                ));
-            }
+            else
+                mSyncingReposLinearLayout.setVisibility(GONE);
         }
     };
 

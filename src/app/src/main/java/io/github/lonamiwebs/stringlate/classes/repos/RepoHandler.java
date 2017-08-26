@@ -158,7 +158,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     // Deletes the repository erasing its existence from Earth. Forever. (Unless added again)
     public boolean delete() {
         boolean ok = Utils.deleteRecursive(mRoot);
-        Messenger.notifyRepoCountChange();
+        Messenger.notifyRepoRemoved(this);
         return ok;
     }
 
@@ -714,8 +714,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 throw new IOException("Could not move the temporary repository to its new location." + extra);
             }
 
-            // Re-notify that the imported repository succeeded
-            Messenger.notifyRepoCountChange();
+            // TODO Re-notify that the imported repository succeeded?
         } catch (IOException e) {
             e.printStackTrace();
         }

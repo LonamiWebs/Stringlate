@@ -34,10 +34,10 @@ public class RepoProgress {
                 json.optInt("currentChars"), json.optInt("totalChars"));
     }
 
-    public float getPercentage() {
+    public float getProgress() {
         if (totalChars == 0)
             return 0f;
 
-        return (100.0f * (float) currentChars) / (float) totalChars;
+        return (float) currentChars / (float) totalChars;
     }
 }

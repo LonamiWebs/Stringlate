@@ -16,7 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.File;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Random;
 
@@ -27,10 +28,13 @@ import static io.github.lonamiwebs.stringlate.utilities.Constants.MATERIAL_COLOR
 
 public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.ViewHolder> {
 
-    private final int mSize; // Used to generate the image
+    private final int mSize; // Used to generate default images
     private final Context mContext;
-    private final List<RepoHandler> mRepositories;
-    private final List<Float> mCustomProgress; // Override the progress shown
+
+    // TODO Use a better approach than using two separate lists
+    // Cannot use HashMap<RepoHandler, Float> since the repositories have an order
+    private final ArrayList<RepoHandler> mRepositories = new ArrayList<>();
+    private final ArrayList<Float> mCustomProgress = new ArrayList<>();
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final LinearLayout root;
@@ -52,6 +56,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
         void update(RepoHandler repo, int bitmapDpiSize) {
             File iconFile = repo.settings.getIconFile();
             if (iconFile == null)
+                // TODO Don't reload the bitmap unless the project name has changed?
                 iconView.setImageBitmap(getBitmap(repo.getProjectName(), bitmapDpiSize));
             else
                 iconView.setImageURI(Uri.fromFile(iconFile));
@@ -70,27 +75,17 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
 
                 // Just some very large number since the progressbar doesn't support floats
                 translatedProgressBar.setMax(1000000);
-                translatedProgressBar.setProgress((int)(progress * 10000f));
+                translatedProgressBar.setProgress((int)(progress * 1000000));
                 translatedProgressTextView.setText(
-                        String.format(Locale.ENGLISH, "%.1f%%", progress)
+                        String.format(Locale.ENGLISH, "%.1f%%", 100f * progress)
                 );
             }
         }
     }
 
-    public RepoHandlerAdapter(final Context context, final List<RepoHandler> repositories) {
+    public RepoHandlerAdapter(final Context context) {
         mSize = context.getResources().getDisplayMetrics().densityDpi;
         mContext = context;
-        mRepositories = repositories;
-        mCustomProgress = null;
-    }
-
-    public RepoHandlerAdapter(final Context context, final List<RepoHandler> repositories,
-                              final List<Float> customProgress) {
-        mSize = context.getResources().getDisplayMetrics().densityDpi;
-        mContext = context;
-        mRepositories = repositories;
-        mCustomProgress = customProgress;
     }
 
     @Override
@@ -105,13 +100,15 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     @Override
     public void onBindViewHolder(final ViewHolder repoHandler, int i) {
         repoHandler.update(mRepositories.get(i), mSize);
-        // TODO With RecyclerView, I can use a HashMap<RepoHandler, Float> for the progress
-        if (mCustomProgress == null) {
-            RepoProgress progress = mRepositories.get(i).loadProgress();
-            repoHandler.updateProgress(progress == null ? null : progress.getPercentage());
-        } else {
-            repoHandler.updateProgress(mCustomProgress.get(i) * 100f);
+
+        // Determine the right progress to be used
+        Float progress = mCustomProgress.get(i);
+        if (progress == null) {
+            final RepoProgress repoProgress = mRepositories.get(i).loadProgress();
+            progress = repoProgress == null ? null : repoProgress.getProgress();
         }
+        if (progress != null)
+            repoHandler.updateProgress(progress);
 
         repoHandler.root.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +125,66 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     @Override
     public int getItemCount() {
         return mRepositories.size();
+    }
+
+    // Returns true if there are items left, or false otherwise
+    public boolean notifyDataSetChanged(final ArrayList<RepoHandler> repositories) {
+        mRepositories.clear();
+        mCustomProgress.clear();
+        for (RepoHandler repo : repositories) {
+            mRepositories.add(repo);
+            mCustomProgress.add(null);
+        }
+        Collections.sort(mRepositories);
+        notifyDataSetChanged();
+        return !mRepositories.isEmpty();
+    }
+
+    public void notifyItemAdded(final RepoHandler which) {
+        // Latest one, add it to the top (as in "newest")
+        mRepositories.add(0, which);
+        mCustomProgress.add(0, null);
+        notifyDataSetChanged();
+    }
+
+    // Returns true if there are items left, or false otherwise
+    public boolean notifyItemRemoved(final RepoHandler which) {
+        for (int i = mRepositories.size(); i-- != 0;) {
+            if (mRepositories.get(i) == which) {
+                mRepositories.remove(i);
+                mCustomProgress.remove(i);
+                notifyItemRemoved(i);
+                break;
+            }
+        }
+
+        return !mRepositories.isEmpty();
+    }
+
+    // Note that when the progress reaches 1f, the item  will be removed
+    // Returns true if there are items left, or false otherwise
+    public boolean notifyItemProgressChanged(final RepoHandler which, float progress) {
+        if (progress == 1f) {
+            // Remove this repository
+            return notifyItemRemoved(which);
+        } else {
+            if (mRepositories.contains(which)) {
+                // Update the progress of an existing repository
+                for (int i = mRepositories.size(); i-- != 0;) {
+                    if (mRepositories.get(i) == which) {
+                        mCustomProgress.set(i, progress);
+                        notifyItemChanged(i);
+                        break;
+                    }
+                }
+            } else {
+                // Latest one, add it to the top (as in "newest")
+                mRepositories.add(0, which);
+                mCustomProgress.add(0, progress);
+                notifyItemInserted(0);
+            }
+            return true;
+        }
     }
 
     private static Bitmap getBitmap(String name, int size) {

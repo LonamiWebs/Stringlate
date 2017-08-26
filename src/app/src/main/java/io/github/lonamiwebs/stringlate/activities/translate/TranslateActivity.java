@@ -52,7 +52,6 @@ import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
-import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
@@ -975,7 +974,8 @@ public class TranslateActivity extends AppCompatActivity {
 
             // The text view will show the string count and the weighted percentage
             mProgressTextView.setText(getString(R.string.translation_progress,
-                    progress.translatedCount, progress.stringsCount, progress.getPercentage()));
+                    progress.translatedCount, progress.stringsCount, 100f * progress.getProgress()
+            ));
 
             // Save the progress for the history fragment to reuse without recalculating
             mRepo.saveProgress(progress);

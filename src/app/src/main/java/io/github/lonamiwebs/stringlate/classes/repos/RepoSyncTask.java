@@ -49,7 +49,9 @@ public class RepoSyncTask extends AsyncTask<Void, Object, Boolean> {
     @Override
     protected void onPostExecute(Boolean okay) {
         if (okay)
-            Messenger.notifyRepoCountChange();
+            Messenger.notifyRepoAdded(mRepo);
+        else
+            mRepo.delete();
     }
 
     public void execute() {

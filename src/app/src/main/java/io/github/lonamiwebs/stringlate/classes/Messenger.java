@@ -20,7 +20,8 @@ public class Messenger {
     }
 
     public interface OnRepoChange {
-        void onCountChanged();
+        void onRepoAdded(RepoHandler which);
+        void onRepoRemoved(RepoHandler which);
     }
 
     public final static ArrayList<OnRepoSync> onRepoSync = new ArrayList<>();
@@ -31,8 +32,13 @@ public class Messenger {
             x.onUpdate(which, progress);
     }
 
-    public static void notifyRepoCountChange() {
+    public static void notifyRepoAdded(final RepoHandler which) {
         for (OnRepoChange x : onRepoChange)
-            x.onCountChanged();
+            x.onRepoAdded(which);
+    }
+
+    public static void notifyRepoRemoved(final RepoHandler which) {
+        for (OnRepoChange x : onRepoChange)
+            x.onRepoRemoved(which);
     }
 }
