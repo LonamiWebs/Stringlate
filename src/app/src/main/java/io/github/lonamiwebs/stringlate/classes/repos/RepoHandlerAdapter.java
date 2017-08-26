@@ -1,18 +1,17 @@
 package io.github.lonamiwebs.stringlate.classes.repos;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -22,95 +21,118 @@ import java.util.Locale;
 import java.util.Random;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.MATERIAL_COLORS;
 
-public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
+public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.ViewHolder> {
 
     private final int mSize; // Used to generate the image
+    private final Context mContext;
+    private final List<RepoHandler> mRepositories;
     private final List<Float> mCustomProgress; // Override the progress shown
 
-    // https://developer.android.com/training/improving-layouts/smooth-scrolling.html#ViewHolder
-    private static class ViewHolder {
-        ImageView iconView;
-        TextView pathTextView, hostTextView, translatedProgressTextView;
-        ProgressBar translatedProgressBar;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        final LinearLayout root;
+        final ImageView iconView;
+        final TextView pathTextView, hostTextView, translatedProgressTextView;
+        final ProgressBar translatedProgressBar;
+
+        ViewHolder(final LinearLayout root) {
+            super(root);
+            this.root = root;
+
+            iconView = root.findViewById(R.id.repositoryIcon);
+            pathTextView = root.findViewById(R.id.repositoryPath);
+            hostTextView = root.findViewById(R.id.repositoryHost);
+            translatedProgressTextView = root.findViewById(R.id.translatedProgressText);
+            translatedProgressBar = root.findViewById(R.id.translatedProgressBar);
+        }
+
+        void update(RepoHandler repo, int bitmapDpiSize) {
+            File iconFile = repo.settings.getIconFile();
+            if (iconFile == null)
+                iconView.setImageBitmap(getBitmap(repo.getProjectName(), bitmapDpiSize));
+            else
+                iconView.setImageURI(Uri.fromFile(iconFile));
+
+            pathTextView.setText(repo.getProjectName());
+            hostTextView.setText(repo.getHost());
+        }
+
+        void updateProgress(Float progress) {
+            if (progress == null) {
+                translatedProgressBar.setVisibility(View.INVISIBLE);
+                translatedProgressTextView.setVisibility(View.GONE);
+            } else {
+                translatedProgressBar.setVisibility(View.VISIBLE);
+                translatedProgressTextView.setVisibility(View.VISIBLE);
+
+                // Just some very large number since the progressbar doesn't support floats
+                translatedProgressBar.setMax(1000000);
+                translatedProgressBar.setProgress((int)(progress * 10000f));
+                translatedProgressTextView.setText(
+                        String.format(Locale.ENGLISH, "%.1f%%", progress)
+                );
+            }
+        }
     }
 
     public RepoHandlerAdapter(final Context context, final List<RepoHandler> repositories) {
-        super(context, R.layout.item_repository_list, repositories);
         mSize = context.getResources().getDisplayMetrics().densityDpi;
+        mContext = context;
+        mRepositories = repositories;
         mCustomProgress = null;
     }
 
     public RepoHandlerAdapter(final Context context, final List<RepoHandler> repositories,
                               final List<Float> customProgress) {
-        super(context, R.layout.item_repository_list, repositories);
         mSize = context.getResources().getDisplayMetrics().densityDpi;
+        mContext = context;
+        mRepositories = repositories;
         mCustomProgress = customProgress;
     }
 
-    @SuppressLint("SetTextI18n")
-    @NonNull
-    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        RepoHandler repo = getItem(position);
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int i) {
+        LinearLayout root = (LinearLayout) LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_repository_list, parent, false);
 
-        // This may be the first time we use the recycled view
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext())
-                    .inflate(R.layout.item_repository_list, parent, false);
-
-            final ViewHolder holder = new ViewHolder();
-            holder.iconView = convertView.findViewById(R.id.repositoryIcon);
-            holder.pathTextView = convertView.findViewById(R.id.repositoryPath);
-            holder.hostTextView = convertView.findViewById(R.id.repositoryHost);
-            holder.translatedProgressTextView =
-                    convertView.findViewById(R.id.translatedProgressText);
-
-            holder.translatedProgressBar =
-                    convertView.findViewById(R.id.translatedProgressBar);
-
-            convertView.setTag(holder);
-        }
-        if (repo != null) {
-            final ViewHolder holder = (ViewHolder) convertView.getTag();
-            File iconFile = repo.settings.getIconFile();
-            if (iconFile == null)
-                holder.iconView.setImageBitmap(getBitmap(repo.getProjectName()));
-            else
-                holder.iconView.setImageURI(Uri.fromFile(iconFile));
-
-            holder.pathTextView.setText(repo.getProjectName());
-            holder.hostTextView.setText(repo.getHost());
-
-            Float progressPercent;
-            if (mCustomProgress == null) {
-                RepoProgress progress = repo.loadProgress();
-                progressPercent = progress == null ? null : progress.getPercentage();
-            } else {
-                progressPercent = mCustomProgress.get(position) * 100f;
-            }
-
-            if (progressPercent == null) {
-                holder.translatedProgressBar.setVisibility(View.INVISIBLE);
-                holder.translatedProgressTextView.setVisibility(View.GONE);
-            } else {
-                holder.translatedProgressBar.setVisibility(View.VISIBLE);
-                holder.translatedProgressTextView.setVisibility(View.VISIBLE);
-
-                // Just some very large number since the progressbar doesn't support floats
-                holder.translatedProgressBar.setMax(1000000);
-                holder.translatedProgressBar.setProgress((int)(progressPercent * 10000f));
-                holder.translatedProgressTextView.setText(
-                        String.format(Locale.ENGLISH, "%.1f%%", progressPercent));
-            }
-        }
-        return convertView;
+        // TODO Set the view's size, margins, paddings and layout parameters, I gotta?
+        return new ViewHolder(root);
     }
 
-    private Bitmap getBitmap(String name) {
+    @Override
+    public void onBindViewHolder(final ViewHolder repoHandler, int i) {
+        repoHandler.update(mRepositories.get(i), mSize);
+        // TODO With RecyclerView, I can use a HashMap<RepoHandler, Float> for the progress
+        if (mCustomProgress == null) {
+            RepoProgress progress = mRepositories.get(i).loadProgress();
+            repoHandler.updateProgress(progress == null ? null : progress.getPercentage());
+        } else {
+            repoHandler.updateProgress(mCustomProgress.get(i) * 100f);
+        }
+
+        repoHandler.root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TranslateActivity.launch(mContext, mRepositories.get(
+                        repoHandler.getAdapterPosition())
+                );
+            }
+        });
+
+        // TODO Context menu on long click
+    }
+
+    @Override
+    public int getItemCount() {
+        return mRepositories.size();
+    }
+
+    private static Bitmap getBitmap(String name, int size) {
         Random random = new Random(name.hashCode());
-        Bitmap bitmap = Bitmap.createBitmap(mSize, mSize, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
 
         // Let the name be the first and last capital letters
         Character first = null;
@@ -143,7 +165,7 @@ public class RepoHandlerAdapter extends ArrayAdapter<RepoHandler> {
         // Center text: http://stackoverflow.com/a/11121873/4759433
         paint.setColor(Color.WHITE);
         paint.setAntiAlias(true);
-        paint.setTextSize(mSize / (float) name.length());
+        paint.setTextSize(size / (float) name.length());
         paint.setTextAlign(Paint.Align.CENTER);
 
         float xPos = (canvas.getWidth() / 2f);

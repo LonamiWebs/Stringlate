@@ -21,8 +21,9 @@
         android:text="@string/projects_colon"
         android:textAppearance="?android:textAppearanceMedium" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/repositoryListView"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -40,7 +41,7 @@
             android:text="@string/syncing_now"
             android:textAppearance="?android:textAppearanceMedium" />
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/syncingReposListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

@@ -10,15 +10,15 @@ import android.os.ParcelFileDescriptor;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerAdapter;
@@ -46,12 +45,14 @@ public class HistoryFragment extends Fragment {
 
     //region Members
 
-    private ListView mRepositoryListView;
+    private RecyclerView mRepositoryListView;
+    private RepoHandlerAdapter mRepositoryAdapter;
+
     private TextView mHistoryMessageTextView;
     private TextView mRepositoriesTitle;
 
     private LinearLayout mSyncingReposLinearLayout;
-    private ListView mSyncingReposListView;
+    private RecyclerView mSyncingReposListView;
 
     // Not the best solution. How else could extra data by passed to activity results?
     private RepoHandler mLastSelectedRepo;
@@ -69,13 +70,9 @@ public class HistoryFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
 
         mRepositoryListView = rootView.findViewById(R.id.repositoryListView);
-        mRepositoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                RepoHandler repo = (RepoHandler) adapterView.getItemAtPosition(i);
-                TranslateActivity.launch(getContext(), repo);
-            }
-        });
+        // Gain a little performance boost since we know items won't change their size
+        mRepositoryListView.setHasFixedSize(true);
+        mRepositoryListView.setLayoutManager(new LinearLayoutManager(getContext()));
         registerForContextMenu(mRepositoryListView);
 
         mHistoryMessageTextView = rootView.findViewById(R.id.historyMessageTextView);
@@ -83,6 +80,8 @@ public class HistoryFragment extends Fragment {
 
         mSyncingReposLinearLayout = rootView.findViewById(R.id.syncingReposLinearLayout);
         mSyncingReposListView = rootView.findViewById(R.id.syncingReposListView);
+
+        mSyncingReposListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return rootView;
     }
@@ -125,6 +124,7 @@ public class HistoryFragment extends Fragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        /*
         AdapterView.AdapterContextMenuInfo info =
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
@@ -142,6 +142,8 @@ public class HistoryFragment extends Fragment {
             default:
                 return super.onContextItemSelected(item);
         }
+        */
+        return false;
     }
 
     private void promptDeleteRepo(final RepoHandler repo) {
@@ -272,6 +274,10 @@ public class HistoryFragment extends Fragment {
                 mHistoryMessageTextView.setText(R.string.history_contains_repos_hint);
                 mRepositoryListView.setAdapter(
                         new RepoHandlerAdapter(getContext(), repositories));
+
+                // TODO Don't recreate it every time, that's the whole point of RecyclerView!
+                mRepositoryAdapter = new RepoHandlerAdapter(getContext(), repositories);
+                mRepositoryListView.setAdapter(mRepositoryAdapter);
             }
         }
     };
