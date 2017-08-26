@@ -242,7 +242,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
         if (!source.setup(mContext, mSourceSettings, tmpWorkDir, callback)) {
             source.dispose();
-            delete(); // Delete settings
+            return false;
         }
 
         callback.onUpdate(2, (0f / 3f));
@@ -250,9 +250,12 @@ public class RepoHandler implements Comparable<RepoHandler> {
         // Delete all the previous default resources since their
         // names might have changed, been removed, or some new added.
         settings.clearRemotePaths();
-        for (File f : getDefaultResourcesFiles())
-            if (!f.delete())
+        for (File f : getDefaultResourcesFiles()) {
+            if (!f.delete()) {
+                source.dispose();
                 return false;
+            }
+        }
 
         for (String locale : source.getLocales()) {
             if (locale == null)
@@ -298,9 +301,12 @@ public class RepoHandler implements Comparable<RepoHandler> {
             } else {
                 // Something went wrong, either saving, cleaning the XML, or it has no strings
                 // Clean up the file we may have made, if it exists, or give up if it fails
-                if (resourceFile.isFile())
-                    if (!resourceFile.delete())
+                if (resourceFile.isFile()) {
+                    if (!resourceFile.delete()) {
+                        source.dispose();
                         return false;
+                    }
+                }
             }
         }
 
