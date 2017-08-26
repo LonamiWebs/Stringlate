@@ -194,45 +194,42 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
         return !mRepositories.isEmpty();
     }
 
-    // Note that when the progress reaches 1f, the item  will be removed
-    // Returns true if there are items left, or false otherwise
-    public boolean notifySyncingProgressChanged(final RepoHandler which, float progress) {
-        if (progress == 1f) {
-            // Remove this repository
-            for (int i = mSyncingRepositories.size(); i-- != 0;) {
-                if (mSyncingRepositories.get(i).first.equals(which)) {
-                    mSyncingRepositories.remove(i);
-                    notifyItemRemoved(mRepositories.size() + 1 + i);
-                    break;
-                }
-            }
-            if (mSyncingRepositories.isEmpty()) {
-                // Also notify that the separator has been removed
-                notifyItemRemoved(mRepositories.size());
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            boolean updated = false;
-            // Update the progress of an existing repository, if any
-            for (int i = mSyncingRepositories.size(); i-- != 0;) {
-                if (mSyncingRepositories.get(i).first.equals(which)) {
-                    mSyncingRepositories.set(i, new Pair<>(
-                            mSyncingRepositories.get(i).first, progress
-                    ));
-                    notifyItemChanged(mRepositories.size() + 1 + i);
-                    updated = true;
-                    break;
-                }
-            }
-            if (!updated) {
-                // Latest one, add it to the top (as in "newest")
-                mSyncingRepositories.add(0, new Pair<>(
-                        which, progress
+    public void notifySyncingProgressChanged(final RepoHandler which, float progress) {
+        boolean updated = false;
+        // Update the progress of an existing repository, if any
+        for (int i = mSyncingRepositories.size(); i-- != 0;) {
+            if (mSyncingRepositories.get(i).first.equals(which)) {
+                mSyncingRepositories.set(i, new Pair<>(
+                        mSyncingRepositories.get(i).first, progress
                 ));
-                notifyDataSetChanged();
+                notifyItemChanged(mRepositories.size() + 1 + i);
+                updated = true;
+                break;
             }
+        }
+        if (!updated) {
+            // Latest one, add it to the top (as in "newest")
+            mSyncingRepositories.add(0, new Pair<>(
+                    which, progress
+            ));
+            notifyDataSetChanged();
+        }
+    }
+
+    // Returns true if there are items left, or false otherwise
+    public boolean notifySyncingRepoFinished(final RepoHandler which) {
+        for (int i = mSyncingRepositories.size(); i-- != 0;) {
+            if (mSyncingRepositories.get(i).first.equals(which)) {
+                mSyncingRepositories.remove(i);
+                notifyItemRemoved(mRepositories.size() + 1 + i);
+                break;
+            }
+        }
+        if (mSyncingRepositories.isEmpty()) {
+            // Also notify that the separator has been removed
+            notifyItemRemoved(mRepositories.size());
+            return false;
+        } else {
             return true;
         }
     }

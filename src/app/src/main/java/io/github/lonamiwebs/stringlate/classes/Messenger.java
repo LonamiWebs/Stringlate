@@ -17,6 +17,7 @@ public class Messenger {
     // This interface is meant to be used as the progress of the task running RepoHandler.sync
     public interface OnRepoSync {
         void onUpdate(RepoHandler which, float progress);
+        void onFinish(RepoHandler which, boolean okay);
     }
 
     public interface OnRepoChange {
@@ -30,6 +31,11 @@ public class Messenger {
     public static void notifyRepoSync(final RepoHandler which, final float progress) {
         for (OnRepoSync x : onRepoSync)
             x.onUpdate(which, progress);
+    }
+
+    public static void notifyRepoSyncFinished(final RepoHandler which, final boolean okay) {
+        for (OnRepoSync x : onRepoSync)
+            x.onFinish(which, okay);
     }
 
     public static void notifyRepoAdded(final RepoHandler which) {

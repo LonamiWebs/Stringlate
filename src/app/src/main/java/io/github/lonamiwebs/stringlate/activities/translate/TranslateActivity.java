@@ -412,7 +412,7 @@ public class TranslateActivity extends AppCompatActivity {
             return;
 
         // TODO Don't assume GitSource
-        new RepoSyncTask(mRepo, new GitSource(mRepo.settings.getSource(), branch), this).start();
+        new RepoSyncTask(mRepo, new GitSource(mRepo.settings.getSource(), branch)).start();
         // TODO loadResources() once the task is done
     }
 

@@ -200,7 +200,7 @@ public class AddNewRepositoryFragment extends Fragment {
         if (Utils.isNotConnected(getContext(), true))
             return;
 
-        new RepoSyncTask(repo, new GitSource(repo.settings.getSource(), ""), getContext()).start();
+        new RepoSyncTask(repo, new GitSource(repo.settings.getSource(), "")).start();
         // TODO Launch the translate activity? Makesless
     }
 

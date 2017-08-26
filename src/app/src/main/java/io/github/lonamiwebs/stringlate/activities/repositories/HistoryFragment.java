@@ -280,6 +280,11 @@ public class HistoryFragment extends Fragment {
         public void onUpdate(RepoHandler which, float progress) {
             mRepositoryAdapter.notifySyncingProgressChanged(which, progress);
         }
+
+        @Override
+        public void onFinish(RepoHandler which, boolean okay) {
+            mRepositoryAdapter.notifySyncingRepoFinished(which);
+        }
     };
 
     //endregion

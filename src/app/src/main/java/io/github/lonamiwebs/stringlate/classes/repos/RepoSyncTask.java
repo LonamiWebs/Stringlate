@@ -4,19 +4,18 @@ import android.content.Context;
 import android.os.Handler;
 
 import io.github.lonamiwebs.stringlate.classes.Messenger;
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 
 public class RepoSyncTask extends Thread {
 
     private final RepoHandler mRepo;
     private final StringsSource mSource;
-    private final Context mContext;
     private final Handler mHandler;
 
-    public RepoSyncTask(final RepoHandler repo, final StringsSource source, final Context context) {
+    public RepoSyncTask(final RepoHandler repo, final StringsSource source) {
         mRepo = repo;
         mSource = source;
-        mContext = context;
         mHandler = new Handler();
     }
 
@@ -37,10 +36,7 @@ public class RepoSyncTask extends Thread {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (okay)
-                    Messenger.notifyRepoAdded(mRepo);
-                else
-                    mRepo.delete();
+                Messenger.notifyRepoSyncFinished(mRepo, okay);
             }
         });
     }
