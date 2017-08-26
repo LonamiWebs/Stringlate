@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,6 +56,9 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     private static final String BASE_DIR = "repos";
     public static final String DEFAULT_LOCALE = "default";
+
+    private final static ReentrantLock syncingLock = new ReentrantLock();
+    private final static HashSet<File> rootsInSync = new HashSet<>();
 
     //endregion
 
@@ -225,9 +230,32 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Downloading locale files
 
-    // Should be called from a background thread
     public boolean syncResources(final StringsSource source,
                                  final Messenger.OnRepoSyncProgress callback) {
+
+        syncingLock.lock();
+        if (rootsInSync.contains(mRoot)) {
+            syncingLock.unlock();
+            return false; // Already syncing, this won't sync
+        } else {
+            rootsInSync.add(mRoot);
+            syncingLock.unlock();
+        }
+
+        try {
+            return doSyncResources(source, callback);
+        } finally {
+            syncingLock.lock();
+            rootsInSync.remove(mRoot);
+            syncingLock.unlock();
+            source.dispose();
+        }
+    }
+
+
+    // Should be called from a background thread
+    private boolean doSyncResources(final StringsSource source,
+                                    final Messenger.OnRepoSyncProgress callback) {
 
         if (!mSourceSettings.getName().equals(source.getName())) {
             // if (!sourceName.isEmpty()) { ... }
