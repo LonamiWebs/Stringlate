@@ -46,7 +46,6 @@ import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
-import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoProgress;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
@@ -103,9 +102,13 @@ public class TranslateActivity extends AppCompatActivity {
     //region Initialization
 
     public static void launch(final Context ctx, final RepoHandler repo) {
-        Intent intent = new Intent(ctx, TranslateActivity.class);
-        intent.putExtra(EXTRA_REPO, repo.toBundle());
-        ctx.startActivity(intent);
+        if (repo.isSyncing()) {
+            Toast.makeText(ctx, R.string.wait_until_sync, Toast.LENGTH_LONG).show();
+        } else {
+            Intent intent = new Intent(ctx, TranslateActivity.class);
+            intent.putExtra(EXTRA_REPO, repo.toBundle());
+            ctx.startActivity(intent);
+        }
     }
 
     @Override
@@ -155,13 +158,11 @@ public class TranslateActivity extends AppCompatActivity {
                     Utils.toTitleCase(mRepo.getUsedTranslationService())
             ));
         }
-        Messenger.onRepoSync.add(syncingListener);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Messenger.onRepoSync.remove(syncingListener);
     }
 
     private void loadResources() {
@@ -418,6 +419,19 @@ public class TranslateActivity extends AppCompatActivity {
     private void updateStrings(@NonNull final String branch) {
         if (Utils.isNotConnected(this, true))
             return;
+
+        // Don't let the users stay while we're synchronizing resources.
+        //
+        // With some work, we could actually keep track of both the resources the user
+        // was using before the synchronization started, and what strings were being shown
+        // (important when already-translated strings are hidden). Problems arise when
+        // the user may leave the screen, since the user state would have to be saved to
+        // permanent storage. Not only this, after synchronization finished, the old
+        // resources would have to merge the new synchronized strings with what the user had.
+        //
+        // In summary, just kick the user.
+        save();
+        finish();
 
         // TODO Don't assume GitSource
         new RepoSyncTask(mRepo, new GitSource(mRepo.settings.getSource(), branch)).start();
@@ -1101,23 +1115,6 @@ public class TranslateActivity extends AppCompatActivity {
         // There might be no strings, in which case we need to hide some buttons
         checkPreviousNextVisibility();
     }
-
-    //endregion
-
-    //region Callbacks
-
-    private final Messenger.OnRepoSync syncingListener = new Messenger.OnRepoSync() {
-        @Override
-        public void onUpdate(RepoHandler which, float progress) { }
-
-        @Override
-        public void onFinish(RepoHandler which, boolean okay) {
-            if (which.equals(mRepo) && okay) {
-                // TODO Don't be so rude, save what the user has done
-                loadResources();
-            }
-        }
-    };
 
     //endregion
 

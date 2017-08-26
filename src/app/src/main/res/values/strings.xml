@@ -178,5 +178,6 @@
     <string name="open_project_homepage">Open project homepage</string>
     <string name="open_in_external_browser">Open in external browser</string>
     <string name="peek_translations">Peek translations</string>
-    <string name="syncing_now">Synchronizing now:</string>
+    <string name="syncing_now">Synchronizing:</string>
+    <string name="wait_until_sync">Please wait until the repository has been synchronized.</string>
 </resources>

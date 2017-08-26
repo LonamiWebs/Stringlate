@@ -230,6 +230,13 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Downloading locale files
 
+    public boolean isSyncing() {
+        syncingLock.lock();
+        final boolean isSyncing = rootsInSync.contains(mRoot);
+        syncingLock.unlock();
+        return isSyncing;
+    }
+
     public boolean syncResources(final StringsSource source,
                                  final Messenger.OnRepoSyncProgress callback) {
 
