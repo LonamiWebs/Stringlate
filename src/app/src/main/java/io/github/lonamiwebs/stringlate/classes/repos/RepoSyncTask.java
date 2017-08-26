@@ -1,37 +1,52 @@
 package io.github.lonamiwebs.stringlate.classes.repos;
 
 import android.content.Context;
-import android.os.AsyncTask;
+import android.os.Handler;
 
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 
-public class RepoSyncTask extends AsyncTask<Void, Object, Boolean> {
+public class RepoSyncTask extends Thread {
 
     private final RepoHandler mRepo;
     private final StringsSource mSource;
     private final Context mContext;
+    private final Handler mHandler;
 
     public RepoSyncTask(final RepoHandler repo, final StringsSource source, final Context context) {
         mRepo = repo;
         mSource = source;
         mContext = context;
+        mHandler = new Handler();
     }
 
     @Override
-    protected Boolean doInBackground(Void[] voids) {
-        return mRepo.syncResources(mSource, new Messenger.OnRepoSyncProgress() {
+    public void run() {
+        final boolean okay = mRepo.syncResources(mSource, new Messenger.OnRepoSyncProgress() {
             @Override
-            public void onUpdate(int stage, float progress) {
-                publishProgress(stage, progress);
+            public void onUpdate(final int stage, final float progress) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        onProgressUpdate(stage, progress);
+                    }
+                });
+            }
+        });
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (okay)
+                    Messenger.notifyRepoAdded(mRepo);
+                else
+                    mRepo.delete();
             }
         });
     }
 
-    @Override
-    protected void onProgressUpdate(Object... values) {
-        final int stage = (int)values[0];
-        float progress = clamp((float)values[1], 0f, 1f);
+    private void onProgressUpdate(final int stage, float progress) {
+        progress = clamp(progress, 0f, 1f);
 
         // Give stage one 75% of the weight
         if (stage == 1)
@@ -44,17 +59,5 @@ public class RepoSyncTask extends AsyncTask<Void, Object, Boolean> {
 
     private static float clamp(float x, float min, float max) {
         return x < min ? min : (x > max ? max : x);
-    }
-
-    @Override
-    protected void onPostExecute(Boolean okay) {
-        if (okay)
-            Messenger.notifyRepoAdded(mRepo);
-        else
-            mRepo.delete();
-    }
-
-    public void execute() {
-        super.execute();
     }
 }
