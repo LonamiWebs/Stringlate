@@ -55,11 +55,19 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
 
         void update(RepoHandler repo, int bitmapDpiSize) {
             File iconFile = repo.settings.getIconFile();
-            if (iconFile == null)
-                // TODO Don't reload the bitmap unless the project name has changed?
-                iconView.setImageBitmap(getBitmap(repo.getProjectName(), bitmapDpiSize));
-            else
-                iconView.setImageURI(Uri.fromFile(iconFile));
+            if (iconFile == null) {
+                final String name = repo.getProjectName();
+                if (!name.equals(iconView.getTag())) {
+                    iconView.setImageBitmap(getBitmap(name, bitmapDpiSize));
+                    iconView.setTag(name);
+                }
+            }
+            else {
+                if (!iconFile.equals(iconView.getTag())) {
+                    iconView.setImageURI(Uri.fromFile(iconFile));
+                    iconView.setTag(iconFile);
+                }
+            }
 
             pathTextView.setText(repo.getProjectName());
             hostTextView.setText(repo.getHost());
