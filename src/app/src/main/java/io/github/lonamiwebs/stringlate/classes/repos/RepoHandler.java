@@ -31,10 +31,7 @@ import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
-import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 import io.github.lonamiwebs.stringlate.settings.RepoSettings;
 import io.github.lonamiwebs.stringlate.settings.SourceSettings;
@@ -238,7 +235,12 @@ public class RepoHandler implements Comparable<RepoHandler> {
             mSourceSettings.reset(source.getName());
         }
 
-        if (!source.setup(mContext, mSourceSettings, callback)) {
+        final File tmpWorkDir = new File(mContext.getCacheDir(), "tmp_sync_" + mRoot.getName());
+        if (tmpWorkDir.isDirectory())
+            if (!Utils.deleteRecursive(tmpWorkDir))
+                return false;
+
+        if (!source.setup(mContext, mSourceSettings, tmpWorkDir, callback)) {
             source.dispose();
             delete(); // Delete settings
         }

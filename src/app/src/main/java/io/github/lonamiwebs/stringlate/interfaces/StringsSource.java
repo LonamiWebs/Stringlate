@@ -17,6 +17,7 @@ public interface StringsSource {
     // need to pull the repository itself in order to get access to the files.
     boolean setup(final Context context,
                   final SourceSettings settings,
+                  final File workDir,
                   final Messenger.OnRepoSyncProgress callback);
 
     // The name for a certain StringsSource, e.g. "git"

@@ -10,20 +10,18 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 import io.github.lonamiwebs.stringlate.settings.SourceSettings;
 import io.github.lonamiwebs.stringlate.utilities.Utils;
 
 public class GitSource implements StringsSource {
 
-    private File mTmpCloneDir;
+    private File mWorkDir;
     private final String mGitUrl, mBranch;
     private final HashMap<String, ArrayList<File>> mLocaleFiles;
 
@@ -45,17 +43,16 @@ public class GitSource implements StringsSource {
     }
 
     @Override
-    public boolean setup(final Context context, final SourceSettings settings,
+    public boolean setup(final Context context, final SourceSettings settings, final File workDir,
                          final Messenger.OnRepoSyncProgress callback) {
         callback.onUpdate(1, 0f);
 
         settings.set("git_url", mGitUrl);
-        mTmpCloneDir = new File(context.getCacheDir(), "tmp_clone");
-        Utils.deleteRecursive(mTmpCloneDir); // Don't care, it's temp and it can't exist on cloning
+        mWorkDir = workDir;
 
         // 2. Clone the repository itself
         if (!GitWrapper.cloneRepo(
-                mGitUrl, mTmpCloneDir, mBranch,
+                mGitUrl, mWorkDir, mBranch,
                 new GitCloneProgressCallback(context, callback))) {
             // TODO These messages are still useful, show them somehow?
             //callback.showMessage(context.getString(R.string.invalid_repo));
@@ -64,7 +61,7 @@ public class GitSource implements StringsSource {
 
         // Cache all the repository resources here for faster look-up on upcoming methods
         final GitWrapper.RepositoryResources repoResources =
-                GitWrapper.findUsefulResources(mTmpCloneDir);
+                GitWrapper.findUsefulResources(mWorkDir);
 
         final ArrayList<File> resourceFiles = GitWrapper.searchAndroidResources(repoResources);
         if (resourceFiles.isEmpty()) {
@@ -73,7 +70,7 @@ public class GitSource implements StringsSource {
         }
 
         // Save the branches of this repository
-        settings.setArray("remote_branches", GitWrapper.getBranches(mTmpCloneDir));
+        settings.setArray("remote_branches", GitWrapper.getBranches(mWorkDir));
 
         iconFile = GitWrapper.findProperIcon(repoResources, context);
 
@@ -167,12 +164,12 @@ public class GitSource implements StringsSource {
 
     @NonNull
     private String getDefaultResourceName(final File file) {
-        return file.getAbsolutePath().substring(mTmpCloneDir.getAbsolutePath().length() + 1);
+        return file.getAbsolutePath().substring(mWorkDir.getAbsolutePath().length() + 1);
     }
 
     @Override
     public void dispose() {
-        Utils.deleteRecursive(mTmpCloneDir);
+        Utils.deleteRecursive(mWorkDir);
         mLocaleFiles.clear();
         iconFile = null;
     }
