@@ -172,6 +172,10 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     }
 
     public void notifyRepoAdded(final RepoHandler which) {
+        // If it was added already it, remove it, since we're moving it to the top
+        if (mRepositories.contains(which))
+            notifyRepoRemoved(which);
+
         // Latest one, add it to the top (as in "newest")
         mRepositories.add(0, which);
         notifyDataSetChanged();
@@ -180,7 +184,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     // Returns true if there are items left, or false otherwise
     public boolean notifyRepoRemoved(final RepoHandler which) {
         for (int i = mRepositories.size(); i-- != 0;) {
-            if (mRepositories.get(i) == which) {
+            if (mRepositories.get(i).equals(which)) {
                 mRepositories.remove(i);
                 notifyItemRemoved(i);
                 break;
@@ -196,7 +200,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
         if (progress == 1f) {
             // Remove this repository
             for (int i = mSyncingRepositories.size(); i-- != 0;) {
-                if (mSyncingRepositories.get(i).first == which) {
+                if (mSyncingRepositories.get(i).first.equals(which)) {
                     mSyncingRepositories.remove(i);
                     notifyItemRemoved(mRepositories.size() + 1 + i);
                     break;
@@ -213,7 +217,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
             boolean updated = false;
             // Update the progress of an existing repository, if any
             for (int i = mSyncingRepositories.size(); i-- != 0;) {
-                if (mSyncingRepositories.get(i).first == which) {
+                if (mSyncingRepositories.get(i).first.equals(which)) {
                     mSyncingRepositories.set(i, new Pair<>(
                             mSyncingRepositories.get(i).first, progress
                     ));

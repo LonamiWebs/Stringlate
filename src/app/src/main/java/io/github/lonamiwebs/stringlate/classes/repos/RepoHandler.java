@@ -610,6 +610,12 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return toString().compareTo(o.toString());
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj ||
+                (obj instanceof RepoHandler && mRoot.equals(((RepoHandler) obj).mRoot));
+    }
+
     //endregion
 
     //region Backwards-compatible code
@@ -714,7 +720,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 throw new IOException("Could not move the temporary repository to its new location." + extra);
             }
 
-            // TODO Re-notify that the imported repository succeeded?
+            Messenger.notifyRepoAdded(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
