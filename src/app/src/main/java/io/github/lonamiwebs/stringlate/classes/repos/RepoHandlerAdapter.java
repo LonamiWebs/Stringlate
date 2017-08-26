@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +32,13 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     private final int mSize; // Used to generate default images
     private final Context mContext;
 
-    // TODO Use a better approach than using two separate lists
-    // Cannot use HashMap<RepoHandler, Float> since the repositories have an order
+    // We actually have two RecyclerViews in one with a custom separator.
+    // Simply, if we have any repositories synchronizing, we'll add an extra item which
+    // will behave as a separator, and this separator (which will always be on
+    // position mRepositories.size()) will also be gone when no repositories are
+    // being synchronized.
     private final ArrayList<RepoHandler> mRepositories = new ArrayList<>();
-    private final ArrayList<Float> mCustomProgress = new ArrayList<>();
+    private final ArrayList<Pair<RepoHandler, Float>> mSyncingRepositories = new ArrayList<>();
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final LinearLayout root;
@@ -106,61 +110,67 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder repoHandler, int i) {
-        repoHandler.update(mRepositories.get(i), mSize);
+    public void onBindViewHolder(final ViewHolder view, int i) {
+        if (i < mRepositories.size()) {
+            final RepoProgress progress = mRepositories.get(i).loadProgress();
+            view.update(mRepositories.get(i), mSize);
+            view.updateProgress(progress == null ? null : progress.getProgress());
 
-        // Determine the right progress to be used
-        Float progress = mCustomProgress.get(i);
-        if (progress == null) {
-            final RepoProgress repoProgress = mRepositories.get(i).loadProgress();
-            progress = repoProgress == null ? null : repoProgress.getProgress();
+            view.root.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TranslateActivity.launch(mContext, mRepositories.get(
+                            view.getAdapterPosition())
+                    );
+                }
+            });
+
+            // TODO Context menu on long click
+        } else if (i == mRepositories.size()) {
+            // Separator view on the edge case
+            view.pathTextView.setText(R.string.syncing_now);
+            view.iconView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_sync_black_24dp));
+            view.translatedProgressBar.setVisibility(View.INVISIBLE);
+            view.translatedProgressTextView.setVisibility(View.GONE);
+        } else {
+            i -= mRepositories.size() + 1;
+            final Pair<RepoHandler, Float> repo = mSyncingRepositories.get(i);
+            view.update(repo.first, mSize);
+            view.updateProgress(repo.second);
         }
-        if (progress != null)
-            repoHandler.updateProgress(progress);
-
-        repoHandler.root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TranslateActivity.launch(mContext, mRepositories.get(
-                        repoHandler.getAdapterPosition())
-                );
-            }
-        });
-
-        // TODO Context menu on long click
     }
 
     @Override
     public int getItemCount() {
-        return mRepositories.size();
+        if (mSyncingRepositories.isEmpty())
+            return mRepositories.size();
+        else
+            // +1 for the separator view on the edge case
+            return mRepositories.size() + 1 + mSyncingRepositories.size();
     }
 
     // Returns true if there are items left, or false otherwise
     public boolean notifyDataSetChanged(final ArrayList<RepoHandler> repositories) {
         mRepositories.clear();
-        mCustomProgress.clear();
-        for (RepoHandler repo : repositories) {
+        for (RepoHandler repo : repositories)
             mRepositories.add(repo);
-            mCustomProgress.add(null);
-        }
+
         Collections.sort(mRepositories);
         notifyDataSetChanged();
         return !mRepositories.isEmpty();
     }
 
-    public void notifyItemAdded(final RepoHandler which) {
+    public void notifyRepoAdded(final RepoHandler which) {
         // Latest one, add it to the top (as in "newest")
         mRepositories.add(0, which);
-        mCustomProgress.add(0, null);
         notifyDataSetChanged();
     }
 
     // Returns true if there are items left, or false otherwise
-    public boolean notifyItemRemoved(final RepoHandler which) {
+    public boolean notifyRepoRemoved(final RepoHandler which) {
         for (int i = mRepositories.size(); i-- != 0;) {
             if (mRepositories.get(i) == which) {
                 mRepositories.remove(i);
-                mCustomProgress.remove(i);
                 notifyItemRemoved(i);
                 break;
             }
@@ -171,25 +181,42 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
 
     // Note that when the progress reaches 1f, the item  will be removed
     // Returns true if there are items left, or false otherwise
-    public boolean notifyItemProgressChanged(final RepoHandler which, float progress) {
+    public boolean notifySyncingProgressChanged(final RepoHandler which, float progress) {
         if (progress == 1f) {
             // Remove this repository
-            return notifyItemRemoved(which);
-        } else {
-            if (mRepositories.contains(which)) {
-                // Update the progress of an existing repository
-                for (int i = mRepositories.size(); i-- != 0;) {
-                    if (mRepositories.get(i) == which) {
-                        mCustomProgress.set(i, progress);
-                        notifyItemChanged(i);
-                        break;
-                    }
+            for (int i = mSyncingRepositories.size(); i-- != 0;) {
+                if (mSyncingRepositories.get(i).first == which) {
+                    mSyncingRepositories.remove(i);
+                    notifyItemRemoved(mRepositories.size() + 1 + i);
+                    break;
                 }
+            }
+            if (mSyncingRepositories.isEmpty()) {
+                // Also notify that the separator has been removed
+                notifyItemRemoved(mRepositories.size());
+                return false;
             } else {
+                return true;
+            }
+        } else {
+            boolean updated = false;
+            // Update the progress of an existing repository, if any
+            for (int i = mSyncingRepositories.size(); i-- != 0;) {
+                if (mSyncingRepositories.get(i).first == which) {
+                    mSyncingRepositories.set(i, new Pair<>(
+                            mSyncingRepositories.get(i).first, progress
+                    ));
+                    notifyItemChanged(mRepositories.size() + 1 + i);
+                    updated = true;
+                    break;
+                }
+            }
+            if (!updated) {
                 // Latest one, add it to the top (as in "newest")
-                mRepositories.add(0, which);
-                mCustomProgress.add(0, progress);
-                notifyItemInserted(0);
+                mSyncingRepositories.add(0, new Pair<>(
+                        which, progress
+                ));
+                notifyDataSetChanged();
             }
             return true;
         }

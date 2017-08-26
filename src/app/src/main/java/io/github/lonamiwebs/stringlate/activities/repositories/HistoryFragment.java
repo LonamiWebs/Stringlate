@@ -49,10 +49,6 @@ public class HistoryFragment extends Fragment {
     private TextView mHistoryMessageTextView;
     private TextView mRepositoriesTitle;
 
-    private LinearLayout mSyncingReposLinearLayout;
-    private RecyclerView mSyncingReposListView;
-    private RepoHandlerAdapter mSyncingReposAdapter;
-
     // Not the best solution. How else could extra data by passed to activity results?
     private RepoHandler mLastSelectedRepo;
 
@@ -77,13 +73,6 @@ public class HistoryFragment extends Fragment {
 
         mHistoryMessageTextView = rootView.findViewById(R.id.historyMessageTextView);
         mRepositoriesTitle = rootView.findViewById(R.id.repositoriesTitle);
-
-        mSyncingReposLinearLayout = rootView.findViewById(R.id.syncingReposLinearLayout);
-        mSyncingReposListView = rootView.findViewById(R.id.syncingReposListView);
-        mSyncingReposAdapter = new RepoHandlerAdapter(getContext());
-
-        mSyncingReposListView.setAdapter(mSyncingReposAdapter);
-        mSyncingReposListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Load the initial list of repositories
         if (mRepositoryAdapter.notifyDataSetChanged(RepoHandler.listRepositories(getContext()))) {
@@ -275,14 +264,14 @@ public class HistoryFragment extends Fragment {
     private final Messenger.OnRepoChange changeListener = new Messenger.OnRepoChange() {
         @Override
         public void onRepoAdded(final RepoHandler which) {
-            mRepositoryAdapter.notifyItemAdded(which);
+            mRepositoryAdapter.notifyRepoAdded(which);
             mRepositoriesTitle.setVisibility(VISIBLE);
             mHistoryMessageTextView.setText(R.string.history_contains_repos_hint);
         }
 
         @Override
         public void onRepoRemoved(RepoHandler which) {
-            if (!mRepositoryAdapter.notifyItemRemoved(which)) {
+            if (!mRepositoryAdapter.notifyRepoRemoved(which)) {
                 mRepositoriesTitle.setVisibility(GONE);
                 mHistoryMessageTextView.setText(getString(
                         R.string.history_no_repos_hint, getString(R.string.add_project)));
@@ -293,10 +282,7 @@ public class HistoryFragment extends Fragment {
     private final Messenger.OnRepoSync syncingListener = new Messenger.OnRepoSync() {
         @Override
         public void onUpdate(RepoHandler which, float progress) {
-            if (mSyncingReposAdapter.notifyItemProgressChanged(which, progress))
-                mSyncingReposLinearLayout.setVisibility(VISIBLE);
-            else
-                mSyncingReposLinearLayout.setVisibility(GONE);
+            mRepositoryAdapter.notifySyncingProgressChanged(which, progress);
         }
     };
 
