@@ -41,23 +41,27 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     private final ArrayList<Pair<RepoHandler, Float>> mSyncingRepositories = new ArrayList<>();
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final LinearLayout root;
+        final LinearLayout root, repositoryLayout;
         final ImageView iconView;
-        final TextView pathTextView, hostTextView, translatedProgressTextView;
+        final TextView pathTextView, hostTextView, translatedProgressTextView, separatorTextView;
         final ProgressBar translatedProgressBar;
 
         ViewHolder(final LinearLayout root) {
             super(root);
             this.root = root;
 
+            repositoryLayout = root.findViewById(R.id.repositoryLayout);
             iconView = root.findViewById(R.id.repositoryIcon);
             pathTextView = root.findViewById(R.id.repositoryPath);
             hostTextView = root.findViewById(R.id.repositoryHost);
             translatedProgressTextView = root.findViewById(R.id.translatedProgressText);
             translatedProgressBar = root.findViewById(R.id.translatedProgressBar);
+
+            separatorTextView = root.findViewById(R.id.separatorTextView);
         }
 
         void update(RepoHandler repo, int bitmapDpiSize) {
+            setIsSeparator(false);
             File iconFile = repo.settings.getIconFile();
             if (iconFile == null) {
                 final String name = repo.getProjectName();
@@ -91,6 +95,16 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
                 translatedProgressTextView.setText(
                         String.format(Locale.ENGLISH, "%.1f%%", 100f * progress)
                 );
+            }
+        }
+
+        void setIsSeparator(final boolean isSeparator) {
+            if (isSeparator) {
+                repositoryLayout.setVisibility(View.GONE);
+                separatorTextView.setVisibility(View.VISIBLE);
+            } else {
+                repositoryLayout.setVisibility(View.VISIBLE);
+                separatorTextView.setVisibility(View.GONE);
             }
         }
     }
@@ -128,10 +142,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
             // TODO Context menu on long click
         } else if (i == mRepositories.size()) {
             // Separator view on the edge case
-            view.pathTextView.setText(R.string.syncing_now);
-            view.iconView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_sync_black_24dp));
-            view.translatedProgressBar.setVisibility(View.INVISIBLE);
-            view.translatedProgressTextView.setVisibility(View.GONE);
+            view.setIsSeparator(true);
         } else {
             i -= mRepositories.size() + 1;
             final Pair<RepoHandler, Float> repo = mSyncingRepositories.get(i);

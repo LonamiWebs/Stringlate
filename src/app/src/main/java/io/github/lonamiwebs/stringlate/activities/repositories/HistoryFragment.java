@@ -18,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,9 +64,6 @@ public class HistoryFragment extends Fragment {
         mRepositoryAdapter = new RepoHandlerAdapter(getContext());
 
         mRepositoryListView.setAdapter(mRepositoryAdapter);
-
-        // Gain a little performance boost since we know items won't change their size
-        mRepositoryListView.setHasFixedSize(true);
         mRepositoryListView.setLayoutManager(new LinearLayoutManager(getContext()));
         registerForContextMenu(mRepositoryListView);
 
