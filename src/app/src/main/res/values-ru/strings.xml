@@ -92,9 +92,12 @@
     <string name="save_before_sync_required">Сохранитесь перед синхронизацией.</string>
     <string name="history">История</string>
     <string name="add_new_repo">Добавить новый репозиторий</string>
+    <string name="add_project">Добавить проект</string>
+    <string name="start_translating">Начать перевод</string>
     <string name="history_no_repos_hint">Новичок? Вперёд на вкладку \"%s\" для старта!</string>
     <string name="history_contains_repos_hint">Это предыдущие синхронизированные репозитории. Выберите или добавьте один для продолжения.</string>
     <string name="repositories_colon">Репозитории:</string>
+    <string name="projects_colon">Проекты:</string>
     <string name="show_more">Больше</string>
     <string name="clear_icons_cache">Очистить кэш значков</string>
     <string name="help">Помощь</string>
@@ -161,4 +164,9 @@
     <string name="application_may_use_translation_platform">Это приложение может использовать %s для управления их переводами. Смотрите справку чтобы узнать больше.</string>
     <string name="select_branch">Выберите ветку для использования</string>
     <string name="ignore">Отключить</string>
+    <string name="open_project_homepage">Открыть домашнюю страницу проекта</string>
+    <string name="open_in_external_browser">Открыть во внешнем браузере</string>
+    <string name="peek_translations">Получить переводы</string>
+    <string name="syncing_now">Синхронизация:</string>
+    <string name="wait_until_sync">Подождите, пока репозиторий синхронизируется.</string>
 </resources>
