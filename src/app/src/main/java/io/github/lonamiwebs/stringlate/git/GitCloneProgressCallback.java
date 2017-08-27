@@ -17,7 +17,7 @@ public class GitCloneProgressCallback implements ProgressMonitor {
 
     private long mLastMs;
 
-    private final static long DELAY_PER_UPDATE = 30; // 30ms
+    private final static long DELAY_PER_UPDATE = 75;
 
     private final static String RECEIVING_TITLE = "Receiving objects";
     private final static String RESOLVING_TITLE = "Resolving deltas";
