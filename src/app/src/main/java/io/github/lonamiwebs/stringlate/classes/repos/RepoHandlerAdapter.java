@@ -115,12 +115,9 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int i) {
-        LinearLayout root = (LinearLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_repository_list, parent, false);
-
-        // TODO Set the view's size, margins, paddings and layout parameters, I gotta?
-        return new ViewHolder(root);
+    public ViewHolder onCreateViewHolder(final ViewGroup parent, final int i) {
+        return new ViewHolder((LinearLayout) LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_repository_list, parent, false));
     }
 
     @Override

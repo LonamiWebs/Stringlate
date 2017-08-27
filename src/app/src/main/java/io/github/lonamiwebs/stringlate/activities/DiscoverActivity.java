@@ -6,32 +6,25 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.applications.ApplicationAdapter;
-import io.github.lonamiwebs.stringlate.classes.applications.ApplicationDetails;
-import io.github.lonamiwebs.stringlate.classes.applications.ApplicationList;
 import io.github.lonamiwebs.stringlate.classes.applications.ApplicationsSyncTask;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.FileCache;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-
-import static io.github.lonamiwebs.stringlate.utilities.Constants.DEFAULT_APPS_LIMIT;
 
 public class DiscoverActivity extends AppCompatActivity {
 
@@ -42,12 +35,8 @@ public class DiscoverActivity extends AppCompatActivity {
     private LinearLayout mSyncingLayout;
     private ProgressBar mSyncingProgressBar;
     private TextView mNoRepositoryTextView;
-    private ListView mApplicationListView;
-
-    private ApplicationList mApplicationList;
-
-    // We don't want to infinitely call "load more" if there are no more applications loaded
-    private boolean anyAppLeft;
+    private RecyclerView mApplicationListView;
+    private ApplicationAdapter mApplicationAdapter;
 
     //endregion
 
@@ -65,42 +54,37 @@ public class DiscoverActivity extends AppCompatActivity {
         mNoRepositoryTextView = findViewById(R.id.noRepositoryTextView);
         mApplicationListView = findViewById(R.id.applicationListView);
 
-        mApplicationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // TODO Don't hardcode "allow internet download = false"; use settings
+        mApplicationAdapter = new ApplicationAdapter(this, false);
+        mApplicationListView.setAdapter(mApplicationAdapter);
+        mApplicationListView.setLayoutManager(new LinearLayoutManager(this));
+
+        mApplicationAdapter.onItemClick = new ApplicationAdapter.OnItemClick() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ApplicationDetails app = (ApplicationDetails) mApplicationListView.getItemAtPosition(i);
-                Intent data = new Intent();
-                data.putExtra("url", app.getSourceCodeUrl());
-                data.putExtra("web", app.getWebUrl());
-                data.putExtra("name", app.getName());
+            public void onClick(final Intent data) {
                 setResult(RESULT_OK, data);
                 finish();
             }
-        });
+        };
 
-        mApplicationListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        mApplicationListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-            }
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy <= 0) {
+                    final LinearLayoutManager manager = (LinearLayoutManager)
+                            mApplicationListView.getLayoutManager();
 
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-                if (totalItemCount > 0 && firstVisibleItem + visibleItemCount == totalItemCount)
-                    loadMore();
+                    if (manager.findFirstVisibleItemPosition() + manager.getChildCount() ==
+                            manager.getItemCount()) {
+                        mApplicationAdapter.loadMore();
+                    }
+                }
             }
         });
 
         mNoRepositoryTextView.setText(getString(
                 R.string.apps_repo_not_downloaded, getString(R.string.update_applications)));
-
-        mApplicationList = new ApplicationList(this);
-        if (mApplicationList.loadIndexXml()) {
-            checkViewsVisibility(true);
-            refreshListView("");
-        } else {
-            checkViewsVisibility(false);
-        }
+        checkViewsVisibility(mApplicationAdapter.getItemCount() != 0);
 
         Messenger.onApplicationsSync.add(applicationsSync);
     }
@@ -148,7 +132,7 @@ public class DiscoverActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Synchronizing repository
             case R.id.updateApplications:
-                updateApplicationsIndex();
+                mApplicationAdapter.beginSyncApplications();
                 return true;
             // Toggle downloading icons ability
             case R.id.allowDownloadIcons:
@@ -176,10 +160,6 @@ public class DiscoverActivity extends AppCompatActivity {
     //region ApplicationDetails list view
 
     //region Update index
-
-    private void updateApplicationsIndex() {
-        ApplicationsSyncTask.startSync(mApplicationList);
-    }
 
     private final Messenger.OnApplicationsSync applicationsSync = new Messenger.OnApplicationsSync() {
         @Override
@@ -214,27 +194,8 @@ public class DiscoverActivity extends AppCompatActivity {
     //region Update list view
 
     private void refreshListView(@NonNull String filter) {
-        // Keep the reference of the new internal slice array list
-        ArrayList<ApplicationDetails> appsSlice = mApplicationList.newSlice(filter);
-
-        // Initial bulk load, this will determine whether there are more apps left or not
-        anyAppLeft = mApplicationList.increaseSlice(DEFAULT_APPS_LIMIT);
-
-        checkViewsVisibility(!appsSlice.isEmpty());
-        if (appsSlice.isEmpty())
-            mApplicationListView.setAdapter(null);
-        else
-            mApplicationListView.setAdapter(new ApplicationAdapter(
-                    this, appsSlice, mSettings.isDownloadIconsAllowed()));
-    }
-
-    private void loadMore() {
-        if (!anyAppLeft)
-            return;
-
-        // Increase the slice size and notify the changes
-        anyAppLeft &= mApplicationList.increaseSlice(DEFAULT_APPS_LIMIT);
-        ((ApplicationAdapter) mApplicationListView.getAdapter()).notifyDataSetChanged();
+        mApplicationAdapter.setNewFilter(filter);
+        checkViewsVisibility(mApplicationAdapter.getItemCount() != 0);
     }
 
     //endregion

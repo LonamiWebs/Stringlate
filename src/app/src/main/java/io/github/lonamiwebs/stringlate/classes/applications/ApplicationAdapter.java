@@ -1,65 +1,113 @@
 package io.github.lonamiwebs.stringlate.classes.applications;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import android.content.Intent;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.DEFAULT_APPS_LIMIT;
 
-public class ApplicationAdapter extends ArrayAdapter<ApplicationDetails> {
+public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.ViewHolder> {
     private final ImageLoader mImageLoader;
+    private final ApplicationList mApplicationList;
+    private ArrayList<ApplicationDetails> appsSlice;
 
-    // https://developer.android.com/training/improving-layouts/smooth-scrolling.html#ViewHolder
-    private static class ViewHolder {
-        ImageView iconView;
-        TextView appName, appDescription;
-        View installIndicator;
+    public interface OnItemClick {
+        void onClick(Intent data);
+    }
+    public OnItemClick onItemClick;
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        final LinearLayout root;
+        final ImageView iconView;
+        final TextView appName, appDescription;
+        final View installIndicator;
+
+        ViewHolder(final LinearLayout root) {
+            super(root);
+            this.root = root;
+            iconView = root.findViewById(R.id.appIcon);
+            appName = root.findViewById(R.id.appName);
+            appDescription = root.findViewById(R.id.appDescription);
+            installIndicator = root.findViewById(R.id.installIndicatorView);
+        }
+
+        void update(final ApplicationDetails app) {
+            appName.setText(app.getName());
+            appDescription.setText(app.getDescription());
+            installIndicator.setVisibility(app.isInstalled() ? VISIBLE : GONE);
+            mImageLoader.loadImageAsync(iconView,
+                    app.getIconUrl(), app.isInstalled() ? app.getPackageName() : null
+            );
+        }
     }
 
-    public ApplicationAdapter(Context context, List<ApplicationDetails> apps,
-                              boolean allowInternetDownload) {
-        super(context, R.layout.item_application_list, apps);
+    public ApplicationAdapter(final Context context,
+                              final boolean allowInternetDownload) {
         mImageLoader = new ImageLoader(context, allowInternetDownload);
+        mApplicationList = new ApplicationList(context);
+        if (mApplicationList.loadIndexXml())
+            setNewFilter("");
+        else
+            appsSlice = new ArrayList<>();
     }
 
-    @NonNull
-    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        ApplicationDetails app = getItem(position);
+    public void beginSyncApplications() {
+        ApplicationsSyncTask.startSync(mApplicationList);
+    }
 
-        // This may be the first time we use the recycled view
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext())
-                    .inflate(R.layout.item_application_list, parent, false);
+    // Returns true if loadMore() can be called
+    public boolean setNewFilter(final String filter) {
+        appsSlice = mApplicationList.newSlice("");
+        return loadMore();
+    }
 
-            final ViewHolder holder = new ViewHolder();
-            holder.iconView = convertView.findViewById(R.id.appIcon);
-            holder.appName = convertView.findViewById(R.id.appName);
-            holder.appDescription = convertView.findViewById(R.id.appDescription);
-            holder.installIndicator = convertView.findViewById(R.id.installIndicatorView);
-            convertView.setTag(holder);
-        }
-        if (app != null) {
-            final ViewHolder holder = (ViewHolder) convertView.getTag();
-            mImageLoader.loadImageAsync(holder.iconView,
-                    app.getIconUrl(), app.isInstalled() ? app.getPackageName() : null);
+    // Returns true if loadMore() can be called
+    public boolean loadMore() {
+        final boolean canLoadMore = mApplicationList.increaseSlice(DEFAULT_APPS_LIMIT);
+        notifyDataSetChanged();
+        return canLoadMore;
+    }
 
-            holder.appName.setText(app.getName());
-            holder.appDescription.setText(app.getDescription());
-            int visibility = app.isInstalled() ? VISIBLE : GONE;
-            holder.installIndicator.setVisibility(visibility);
-        }
+    @Override
+    public ViewHolder onCreateViewHolder(final ViewGroup parent, final int i) {
+        return new ViewHolder((LinearLayout) LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_application_list, parent, false));
+    }
 
-        return convertView;
+    @Override
+    public void onBindViewHolder(final ViewHolder view, final int i) {
+        view.update(appsSlice.get(i));
+        view.root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClick != null) {
+                    final ApplicationDetails app = appsSlice.get(view.getAdapterPosition());
+
+                    Intent data = new Intent();
+                    data.putExtra("url", app.getSourceCodeUrl());
+                    data.putExtra("web", app.getWebUrl());
+                    data.putExtra("name", app.getName());
+                    onItemClick.onClick(data);
+                }
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return appsSlice.size();
     }
 }

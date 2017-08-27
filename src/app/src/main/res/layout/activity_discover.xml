@@ -50,11 +50,11 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/applicationListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fastScrollEnabled="true">
+        android:layout_height="match_parent">
+    <!-- TODO android:fastScrollEnabled="true" -->
 
-    </ListView>
+    </android.support.v7.widget.RecyclerView>
 </LinearLayout>
