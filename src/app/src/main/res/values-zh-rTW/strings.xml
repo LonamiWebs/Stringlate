@@ -86,7 +86,7 @@
     <string name="show_more">顯示更多</string>
     <string name="show_translated_strings">顯示已翻譯過字串</string>
     <string name="sure_question">您確定嗎？</string>
-    <string name="sync_failed">同步失敗。</string>
+    <string name="sync_failed">同步失敗 %s。</string>
     <string name="translated_string">被翻譯的字串</string>
     <string name="translated_string_colon">被翻譯的字串：</string>
     <string name="translation_progress">%1$d/%2$d 個字串已翻譯 (%3$.1f%%)。</string>

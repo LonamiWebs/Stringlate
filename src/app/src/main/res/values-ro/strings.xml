@@ -70,7 +70,7 @@
     <string name="export_file_success">Fișierul salvat cu succes ca %s</string>
     <string name="update_applications">Aplicații actualizate</string>
     <string name="apps_repo_not_downloaded">Sursele proiectului nu au fost descărcate încă. Atingeți butonul \"%s\" din meniu pentru a descărca indexul proiectelor și a putea explora toate aplicatiile disponibile.</string>
-    <string name="sync_failed">Sincronizare eșuată.</string>
+    <string name="sync_failed">Sincronizare eșuată: %s</string>
     <string name="downloading_index_jar">Se descarcă index.jar…</string>
     <string name="downloading_index_jar_long">Fișierul index.jar ce conține lista de aplicații se descarcă…</string>
     <string name="extracting_index_xml">Se extrage index.xml din index.jar…</string>

@@ -74,7 +74,7 @@
     <string name="import_file_success">Успешный импорт</string>
     <string name="update_applications">Обновить приложения</string>
     <string name="apps_repo_not_downloaded">Репозиторий приложений пока не скачивается. Нажмите \"%s\" кнопку меню для скачивания индекса репозитория для просмотра всех доступных приложений.</string>
-    <string name="sync_failed">Сбой синхронизации.</string>
+    <string name="sync_failed">Сбой синхронизации: %s.</string>
     <string name="downloading_index_jar">Скачивание index.jar…</string>
     <string name="downloading_index_jar_long">Загружается index.jar, содержащий список приложений</string>
     <string name="extracting_index_xml">Извлечение index.xml из index.jar…</string>

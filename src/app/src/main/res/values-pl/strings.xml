@@ -74,7 +74,7 @@
     <string name="import_file_success">Importowanie zakończone sukcesem</string>
     <string name="update_applications">Aktualizuj aplikacje</string>
     <string name="apps_repo_not_downloaded">Repozytorium aplikacji nie zostało jeszcze pobrane. Kliknij przycisk menu \"%s\" aby rozpocząć pobieranie repozytorium w celu odkrycia wszystkich dostępnych aplikacji.</string>
-    <string name="sync_failed">Nie udało się zsynchronizować.</string>
+    <string name="sync_failed">Nie udało się zsynchronizować: %s.</string>
     <string name="downloading_index_jar">Pobieram index.jar…</string>
     <string name="downloading_index_jar_long">Plik index.jar zawierający listę aplikacji jest właśnie pobierany…</string>
     <string name="extracting_index_xml">Wyciągam index.xml z index.jar…</string>

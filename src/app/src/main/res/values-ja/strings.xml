@@ -70,7 +70,7 @@
     <string name="export_file_success">ファイルを %s に保存しました</string>
     <string name="update_applications">アプリケーションの更新</string>
     <string name="apps_repo_not_downloaded">アプリケーションのリポジトリはまだダウンロードされていません。 すべての利用可能なアプリケーションを探索するため、\"%s\" メニューボタンを押して、リポジトリの索引をダウンロードしてください。</string>
-    <string name="sync_failed">同期に失敗しました。</string>
+    <string name="sync_failed">同期に失敗しました。 %s</string>
     <string name="downloading_index_jar">index.jar のダウンロード中…</string>
     <string name="downloading_index_jar_long">アプリケーションのリストを含む index.jar をダウンロード中…</string>
     <string name="extracting_index_xml">index.xml を index.jar から抽出中…</string>

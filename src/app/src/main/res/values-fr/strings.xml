@@ -74,7 +74,7 @@
     <string name="import_file_success">Import réussi</string>
     <string name="update_applications">Mettre à jour les applications</string>
     <string name="apps_repo_not_downloaded">Le dépôt d’applications n’a pas encore été téléchargé. Toucher le bouton « %s » du menu pour le télécharger et pouvoir explorer toutes les applications disponibles.</string>
-    <string name="sync_failed">Erreur de synchronisation.</string>
+    <string name="sync_failed">Erreur de synchronisation: %s.</string>
     <string name="downloading_index_jar">Téléchargement de index.jar…</string>
     <string name="downloading_index_jar_long">Le fichier index.jar contenant la liste d’applications est en cours de téléchargement…</string>
     <string name="extracting_index_xml">Extraction du fichier index.xml du index.jar en cours…</string>

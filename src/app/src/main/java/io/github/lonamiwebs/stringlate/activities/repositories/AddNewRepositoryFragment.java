@@ -200,7 +200,9 @@ public class AddNewRepositoryFragment extends Fragment {
         if (Utils.isNotConnected(getContext(), true))
             return;
 
-        new RepoSyncTask(repo, new GitSource(repo.settings.getSource(), "")).start();
+        new RepoSyncTask(getContext(), repo,
+                new GitSource(repo.settings.getSource(), ""), true).start();
+
         if (getActivity() instanceof RepositoriesActivity) {
             // Take the user to the repositories history if the parent activity matches
             ((RepositoriesActivity)getActivity()).goToHistory();

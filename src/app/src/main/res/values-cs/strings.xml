@@ -74,7 +74,7 @@
     <string name="import_file_success">Import proběhl úspěšně</string>
     <string name="update_applications">Aktualizovat aplikace</string>
     <string name="apps_repo_not_downloaded">Repozitáře aplikací ještě nebyly staženy. Abyste si mohli prohlédnout dostupné aplikace, ťukněte na tlačítko \"%s\" pro stažení rejstříku repozitářů.</string>
-    <string name="sync_failed">Chyba při synchronizaci.</string>
+    <string name="sync_failed">Chyba při synchronizaci %s.</string>
     <string name="downloading_index_jar">Stahování souboru index.jar…</string>
     <string name="downloading_index_jar_long">Stahuje se index.jar obsahující seznam aplikací…</string>
     <string name="extracting_index_xml">Extrahování index.xml z index.jar…</string>

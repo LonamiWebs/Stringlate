@@ -74,7 +74,7 @@
     <string name="import_file_success">불러오기 성공</string>
     <string name="update_applications">어플리케이션들 업데이트</string>
     <string name="apps_repo_not_downloaded">이 어플리케이션의 저장소는 아직 다운로드되지 않았습니다. 사용 가능한 모든 어플리케이션을 탐색하시려면 \"%s\" 메뉴 버튼을 눌러 저장소 인덱스를 다운로드 해 주세요.</string>
-    <string name="sync_failed">동기화 실패</string>
+    <string name="sync_failed">동기화 실패: %s</string>
     <string name="downloading_index_jar">index.jar 내려받는 중…</string>
     <string name="downloading_index_jar_long">어플리케이션 목록을 포함한 index.jar 내려받는 중…</string>
     <string name="extracting_index_xml">index.jar에서 index.xml 추출하는 중…</string>

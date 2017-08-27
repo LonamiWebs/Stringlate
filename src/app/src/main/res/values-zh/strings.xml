@@ -86,7 +86,7 @@
     <string name="share">分享</string>
     <string name="show_more">显示更多</string>
     <string name="show_translated_strings">显示已翻译过的字符串</string>
-    <string name="sync_failed">同步失败.</string>
+    <string name="sync_failed">同步失败 %s.</string>
     <string name="sure_question">您确定吗？</string>
     <string name="translated_string">翻译后的字符串</string>
     <string name="translated_string_colon">翻译后的字符串:</string>

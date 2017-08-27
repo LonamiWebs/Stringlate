@@ -74,7 +74,7 @@
     <string name="import_file_success">Import erfolgreich</string>
     <string name="update_applications">Applikationen updaten</string>
     <string name="apps_repo_not_downloaded">Die Liste der Programme wurde noch nicht runter geladen. Tippe den \"%s\" Menü Button um eine Programmliste herunter zu laden und die Liste aller Programme zu durchforsten.</string>
-    <string name="sync_failed">Sunchronisation fehlgeschlagen.</string>
+    <string name="sync_failed">Synchronisation von %s fehlgeschlagen.</string>
     <string name="downloading_index_jar">Lade index.jar herunter…</string>
     <string name="downloading_index_jar_long">index.jar, welches alle Applikationen beinhaltet, wird heruntergeladen…</string>
     <string name="extracting_index_xml">index.xml wird aus index.jat extrahiert…</string>

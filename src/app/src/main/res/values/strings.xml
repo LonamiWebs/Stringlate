@@ -78,7 +78,7 @@
     <string name="import_file_success">Import success</string>
     <string name="update_applications">Update applications</string>
     <string name="apps_repo_not_downloaded">The applications repository has not been downloaded yet. Tap the \"%s\" menu button to download the repository index in order to explore all the available applications.</string>
-    <string name="sync_failed">Failed to synchronize.</string>
+    <string name="sync_failed">Failed to synchronize %s.</string>
     <string name="downloading_index_jar">Downloading index.jar…</string>
     <string name="downloading_index_jar_long">The index.jar containing the applications list is being downloaded…</string>
     <string name="extracting_index_xml">Extracting index.xml from index.jar…</string>
@@ -180,4 +180,6 @@
     <string name="peek_translations">Peek translations</string>
     <string name="syncing_now">Synchronizing:</string>
     <string name="wait_until_sync">Please wait until the repository has been synchronized.</string>
+    <string name="invalid_project">%s  input repository doesn\'t seem valid.</string>
+    <string name="project_no_strings">The input repository doesn\'t seem valid.</string>
 </resources>
