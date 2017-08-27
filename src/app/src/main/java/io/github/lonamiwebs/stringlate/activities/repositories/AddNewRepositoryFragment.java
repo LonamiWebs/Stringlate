@@ -201,7 +201,10 @@ public class AddNewRepositoryFragment extends Fragment {
             return;
 
         new RepoSyncTask(repo, new GitSource(repo.settings.getSource(), "")).start();
-        // TODO Launch the translate activity? Makesless
+        if (getActivity() instanceof RepositoriesActivity) {
+            // Take the user to the repositories history if the parent activity matches
+            ((RepositoriesActivity)getActivity()).goToHistory();
+        }
     }
 
     //endregion

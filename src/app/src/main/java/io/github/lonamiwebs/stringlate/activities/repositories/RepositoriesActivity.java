@@ -128,6 +128,10 @@ public class RepositoriesActivity extends AppCompatActivity {
 
     //region Navigation
 
+    public void goToHistory() {
+        mViewPager.setCurrentItem(0, true);
+    }
+
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
