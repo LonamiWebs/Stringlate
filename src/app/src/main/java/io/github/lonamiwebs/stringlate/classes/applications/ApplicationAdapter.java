@@ -70,7 +70,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
 
     // Returns true if loadMore() can be called
     public boolean setNewFilter(final String filter) {
-        appsSlice = mApplicationList.newSlice("");
+        appsSlice = mApplicationList.newSlice(filter);
         return loadMore();
     }
 
@@ -79,6 +79,11 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         final boolean canLoadMore = mApplicationList.increaseSlice(DEFAULT_APPS_LIMIT);
         notifyDataSetChanged();
         return canLoadMore;
+    }
+
+    public void setAllowInternetDownload(final boolean allow) {
+        mImageLoader.mAllowInternetDownload = allow;
+        notifyDataSetChanged();
     }
 
     @Override

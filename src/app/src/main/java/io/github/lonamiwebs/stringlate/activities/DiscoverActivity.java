@@ -54,8 +54,7 @@ public class DiscoverActivity extends AppCompatActivity {
         mNoRepositoryTextView = findViewById(R.id.noRepositoryTextView);
         mApplicationListView = findViewById(R.id.applicationListView);
 
-        // TODO Don't hardcode "allow internet download = false"; use settings
-        mApplicationAdapter = new ApplicationAdapter(this, false);
+        mApplicationAdapter = new ApplicationAdapter(this, mSettings.isDownloadIconsAllowed());
         mApplicationListView.setAdapter(mApplicationAdapter);
         mApplicationListView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -139,7 +138,7 @@ public class DiscoverActivity extends AppCompatActivity {
                 boolean allow = !item.isChecked();
                 item.setChecked(allow);
                 mSettings.setDownloadIconsAllowed(allow);
-                refreshListView("");
+                mApplicationAdapter.setAllowInternetDownload(allow);
                 return true;
             // Clearing the icons cache
             case R.id.clearIconsCache:

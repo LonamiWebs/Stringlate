@@ -44,7 +44,7 @@ public class ImageLoader {
     private final ExecutorService mExecutorService;
     private final Handler mHandler;
 
-    private final boolean mAllowInternetDownload;
+    public boolean mAllowInternetDownload;
 
     //endregion
 
