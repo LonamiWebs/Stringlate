@@ -57,8 +57,8 @@ public class ApplicationsSyncTask extends Thread {
     }
 
     private void onProgressUpdate(final int stage, float progress) {
-        // Just four stages, with no progress known, linear interpolate
-        ApplicationsSyncTask.progress = (stage - 1f) / 3f;
+        // Four stages, simply to a linear interpolation
+        ApplicationsSyncTask.progress = (stage - 1f) / 3f + progress * 0.25f;
         Messenger.notifyApplicationSync(ApplicationsSyncTask.progress);
     }
 }

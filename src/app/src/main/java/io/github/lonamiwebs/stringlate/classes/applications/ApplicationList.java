@@ -3,7 +3,6 @@ package io.github.lonamiwebs.stringlate.classes.applications;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -19,9 +18,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.utilities.Constants;
 import io.github.lonamiwebs.stringlate.utilities.FileDownloader;
 import io.github.lonamiwebs.stringlate.utilities.FileExtractor;
@@ -114,7 +112,12 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
     public boolean syncRepo(final Messenger.OnSyncProgress callback) {
         // Step 1: Download the index.jar
         callback.onUpdate(1, 0f);
-        FileDownloader.downloadFile(Constants.FDROID_INDEX_URL, getIndexFile("jar"));
+        FileDownloader.downloadFile(Constants.FDROID_INDEX_URL, getIndexFile("jar"), new Callback<Float>() {
+            @Override
+            public void onCallback(Float progress) {
+                callback.onUpdate(1, progress);
+            }
+        });
 
         // Step 2: Extract the index.xml from the index.jar, then delete the index.jar
         callback.onUpdate(2, 0f);
