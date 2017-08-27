@@ -35,6 +35,8 @@ public class RepoSyncTask extends Thread {
             @Override
             public void run() {
                 Messenger.notifyRepoSyncFinished(mRepo, okay);
+                if (okay)
+                    Messenger.notifyRepoAdded(mRepo);
             }
         });
     }
