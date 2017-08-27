@@ -1,10 +1,8 @@
 package io.github.lonamiwebs.stringlate.classes.repos;
 
-import android.content.Context;
 import android.os.Handler;
 
 import io.github.lonamiwebs.stringlate.classes.Messenger;
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 
 public class RepoSyncTask extends Thread {
@@ -21,7 +19,7 @@ public class RepoSyncTask extends Thread {
 
     @Override
     public void run() {
-        final boolean okay = mRepo.syncResources(mSource, new Messenger.OnRepoSyncProgress() {
+        final boolean okay = mRepo.syncResources(mSource, new Messenger.OnSyncProgress() {
             @Override
             public void onUpdate(final int stage, final float progress) {
                 mHandler.post(new Runnable() {

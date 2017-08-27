@@ -9,8 +9,9 @@ import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 // repository changes, the count of available repositories changes.
 public class Messenger {
 
-    // This interface is meant to be used by the RepoHandler and StringSource to report progress
-    public interface OnRepoSyncProgress {
+    // This interface is not meant to be used by the Messenger itself but rather
+    // wrappers around background threads and handlers to talk to the Messenger.
+    public interface OnSyncProgress {
         void onUpdate(int stage, float progress);
     }
 
@@ -25,8 +26,14 @@ public class Messenger {
         void onRepoRemoved(RepoHandler which);
     }
 
+    public interface OnApplicationsSync {
+        void onUpdate(float progress);
+        void onFinish(boolean okay);
+    }
+
     public final static ArrayList<OnRepoSync> onRepoSync = new ArrayList<>();
     public final static ArrayList<OnRepoChange> onRepoChange = new ArrayList<>();
+    public final static ArrayList<OnApplicationsSync> onApplicationsSync = new ArrayList<>();
 
     public static void notifyRepoSync(final RepoHandler which, final float progress) {
         for (OnRepoSync x : onRepoSync)
@@ -46,5 +53,15 @@ public class Messenger {
     public static void notifyRepoRemoved(final RepoHandler which) {
         for (OnRepoChange x : onRepoChange)
             x.onRepoRemoved(which);
+    }
+
+    public static void notifyApplicationSync(final float progress) {
+        for (OnApplicationsSync x : onApplicationsSync)
+            x.onUpdate(progress);
+    }
+
+    public static void notifyApplicationSyncFinished(final boolean okay) {
+        for (OnApplicationsSync x : onApplicationsSync)
+            x.onFinish(okay);
     }
 }

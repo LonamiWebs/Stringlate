@@ -238,7 +238,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     public boolean syncResources(final StringsSource source,
-                                 final Messenger.OnRepoSyncProgress callback) {
+                                 final Messenger.OnSyncProgress callback) {
 
         syncingLock.lock();
         if (rootsInSync.contains(mRoot)) {
@@ -262,7 +262,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     // Should be called from a background thread
     private boolean doSyncResources(final StringsSource source,
-                                    final Messenger.OnRepoSyncProgress callback) {
+                                    final Messenger.OnSyncProgress callback) {
 
         if (!mSourceSettings.getName().equals(source.getName())) {
             // if (!sourceName.isEmpty()) { ... }

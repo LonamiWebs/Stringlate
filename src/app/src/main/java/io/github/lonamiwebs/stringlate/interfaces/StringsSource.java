@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
@@ -18,7 +17,7 @@ public interface StringsSource {
     boolean setup(final Context context,
                   final SourceSettings settings,
                   final File workDir,
-                  final Messenger.OnRepoSyncProgress callback);
+                  final Messenger.OnSyncProgress callback);
 
     // The name for a certain StringsSource, e.g. "git"
     @NonNull

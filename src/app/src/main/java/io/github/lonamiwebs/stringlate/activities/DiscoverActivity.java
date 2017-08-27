@@ -3,7 +3,6 @@ package io.github.lonamiwebs.stringlate.activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -14,23 +13,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.applications.ApplicationAdapter;
 import io.github.lonamiwebs.stringlate.classes.applications.ApplicationDetails;
 import io.github.lonamiwebs.stringlate.classes.applications.ApplicationList;
+import io.github.lonamiwebs.stringlate.classes.applications.ApplicationsSyncTask;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.FileCache;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.DEFAULT_APPS_LIMIT;
 
 public class DiscoverActivity extends AppCompatActivity {
@@ -39,6 +39,8 @@ public class DiscoverActivity extends AppCompatActivity {
 
     private AppSettings mSettings;
 
+    private LinearLayout mSyncingLayout;
+    private ProgressBar mSyncingProgressBar;
     private TextView mNoRepositoryTextView;
     private ListView mApplicationListView;
 
@@ -58,6 +60,8 @@ public class DiscoverActivity extends AppCompatActivity {
 
         mSettings = new AppSettings(this);
 
+        mSyncingLayout = findViewById(R.id.syncingLayout);
+        mSyncingProgressBar = findViewById(R.id.syncingProgressBar);
         mNoRepositoryTextView = findViewById(R.id.noRepositoryTextView);
         mApplicationListView = findViewById(R.id.applicationListView);
 
@@ -87,14 +91,24 @@ public class DiscoverActivity extends AppCompatActivity {
             }
         });
 
+        mNoRepositoryTextView.setText(getString(
+                R.string.apps_repo_not_downloaded, getString(R.string.update_applications)));
+
         mApplicationList = new ApplicationList(this);
         if (mApplicationList.loadIndexXml()) {
+            checkViewsVisibility(true);
             refreshListView("");
         } else {
-            mNoRepositoryTextView.setText(getString(
-                    R.string.apps_repo_not_downloaded, getString(R.string.update_applications)));
-            mNoRepositoryTextView.setVisibility(VISIBLE);
+            checkViewsVisibility(false);
         }
+
+        Messenger.onApplicationsSync.add(applicationsSync);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Messenger.onApplicationsSync.remove(applicationsSync);
     }
 
     //endregion
@@ -164,48 +178,35 @@ public class DiscoverActivity extends AppCompatActivity {
     //region Update index
 
     private void updateApplicationsIndex() {
-        // TODO We need to avoid calling this twice.
-        // If the async task already exists, don't create another.
-        // For some reason rotating the screen will *not* dismiss the async task, but attempting
-        // to report any progress to the main UI activity will fail to do so.
-        new AsyncTask<Void, String, Boolean>() {
-            @Override
-            protected void onPreExecute() {
-                mNoRepositoryTextView.setText("");
-                mNoRepositoryTextView.setVisibility(VISIBLE);
-                mApplicationListView.setVisibility(GONE);
-            }
+        ApplicationsSyncTask.startSync(mApplicationList);
+    }
 
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                return mApplicationList.syncRepo(new ProgressUpdateCallback() {
-                    @Override
-                    public void onProgressUpdate(String title, String description) {
-                        publishProgress(title, description);
-                    }
+    private final Messenger.OnApplicationsSync applicationsSync = new Messenger.OnApplicationsSync() {
+        @Override
+        public void onUpdate(float progress) {
+            checkViewsVisibility(false);
+            mSyncingProgressBar.setProgress((int)(progress * 100f));
+        }
 
-                    @Override
-                    public void showMessage(String message) { /* No toast is shown here */ }
-                });
-            }
-
-            @Override
-            protected void onProgressUpdate(String... values) {
-                // Description\n\nText
-                mNoRepositoryTextView.setText(values[0] + "\n\n" + values[1]);
-            }
-
-            @Override
-            protected void onPostExecute(Boolean okay) {
-                if (!okay) {
-                    // Set back the "repo not synced" text
-                    mNoRepositoryTextView.setText(getString(
-                            R.string.apps_repo_not_downloaded, getString(R.string.update_applications)));
-                }
-
+        @Override
+        public void onFinish(boolean okay) {
+            checkViewsVisibility(okay);
+            if (okay)
                 refreshListView("");
-            }
-        }.execute();
+        }
+    };
+
+    // Updates the visibility of the views depending on the current state
+    void checkViewsVisibility(boolean appsLoaded) {
+        final boolean syncing = ApplicationsSyncTask.isSyncing();
+        if (syncing) {
+            mSyncingLayout.setVisibility(View.VISIBLE);
+            mSyncingProgressBar.setProgress((int)(100 * ApplicationsSyncTask.progress));
+        } else {
+            mSyncingLayout.setVisibility(View.GONE);
+        }
+
+        mNoRepositoryTextView.setVisibility(syncing || appsLoaded ? View.GONE : View.VISIBLE);
     }
 
     //endregion
@@ -219,16 +220,12 @@ public class DiscoverActivity extends AppCompatActivity {
         // Initial bulk load, this will determine whether there are more apps left or not
         anyAppLeft = mApplicationList.increaseSlice(DEFAULT_APPS_LIMIT);
 
-        if (appsSlice.isEmpty()) {
-            mNoRepositoryTextView.setVisibility(VISIBLE);
-            mApplicationListView.setVisibility(GONE);
+        checkViewsVisibility(!appsSlice.isEmpty());
+        if (appsSlice.isEmpty())
             mApplicationListView.setAdapter(null);
-        } else {
-            mNoRepositoryTextView.setVisibility(GONE);
-            mApplicationListView.setVisibility(VISIBLE);
+        else
             mApplicationListView.setAdapter(new ApplicationAdapter(
                     this, appsSlice, mSettings.isDownloadIconsAllowed()));
-        }
     }
 
     private void loadMore() {

@@ -44,7 +44,7 @@ public class GitSource implements StringsSource {
 
     @Override
     public boolean setup(final Context context, final SourceSettings settings, final File workDir,
-                         final Messenger.OnRepoSyncProgress callback) {
+                         final Messenger.OnSyncProgress callback) {
         callback.onUpdate(1, 0f);
 
         settings.set("git_url", mGitUrl);

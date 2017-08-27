@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.utilities.Constants;
 import io.github.lonamiwebs.stringlate.utilities.FileDownloader;
@@ -110,30 +111,25 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
 
     //endregion
 
-    public boolean syncRepo(final ProgressUpdateCallback callback) {
+    public boolean syncRepo(final Messenger.OnSyncProgress callback) {
         // Step 1: Download the index.jar
-        callback.onProgressUpdate(mContext.getString(R.string.downloading_index_jar),
-                mContext.getString(R.string.downloading_index_jar_long));
-
+        callback.onUpdate(1, 0f);
         FileDownloader.downloadFile(Constants.FDROID_INDEX_URL, getIndexFile("jar"));
 
         // Step 2: Extract the index.xml from the index.jar, then delete the index.jar
-        callback.onProgressUpdate(mContext.getString(R.string.extracting_index_xml),
-                mContext.getString(R.string.extracting_index_xml_long));
-
+        callback.onUpdate(2, 0f);
         FileExtractor.unpackZip(getIndexFile("jar"), mRoot, false);
         if (!getIndexFile("jar").delete())
             return false;
 
         // Step 3, load the xml and lose non-required information, then save it minimized
-        callback.onProgressUpdate(mContext.getString(R.string.loading_index_xml),
-                mContext.getString(R.string.loading_index_xml_long));
-
+        callback.onUpdate(3, 0f);
         if (!loadIndexXml())
             return false;
 
         try {
             // Save index.xml
+            callback.onUpdate(4, 0f);
             ApplicationListParser.parseToXml(
                     this, new FileOutputStream(getIndexFile("xml"))
             );
