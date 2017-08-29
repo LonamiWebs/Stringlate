@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/user_accounts">
+    <PreferenceCategory android:title="@string/appearance">
+
         <!--suppress AndroidDomInspection -->
         <io.github.gsantner.opoc.ui.LanguagePreference
             android:defaultValue=""
@@ -10,7 +11,7 @@
             android:title="@string/pref_title__language" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/appearance">
+    <PreferenceCategory android:title="@string/user_accounts">
 
         <Preference
             android:icon="@drawable/ic_github_black_24dp"
