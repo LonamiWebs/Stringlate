@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import io.github.lonamiwebs.stringlate.utilities.Utils;
+import io.github.lonamiwebs.stringlate.utilities.Helpers;
 
 // We can't quite save the SharedPreferences in a custom path so… use JSON (easier than XML)
 public class RepoSettings {
@@ -222,7 +222,7 @@ public class RepoSettings {
     @NonNull
     private JSONObject load() {
         try {
-            final String json = Utils.readFile(mSettingsFile);
+            final String json = Helpers.readTextFile(mSettingsFile);
             if (!json.isEmpty())
                 return new JSONObject(json);
         } catch (JSONException e) {
@@ -232,7 +232,7 @@ public class RepoSettings {
     }
 
     public boolean save() {
-        return Utils.writeFile(mSettingsFile, mSettings.toString());
+        return Helpers.writeFile(mSettingsFile, mSettings.toString());
     }
 
     //endregion

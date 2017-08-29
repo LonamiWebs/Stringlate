@@ -73,7 +73,7 @@ public class WebUtils {
                 os.close();
             }
 
-            result = Utils.readCloseStream(conn.getInputStream());
+            result = Helpers.readCloseTextStream(conn.getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }

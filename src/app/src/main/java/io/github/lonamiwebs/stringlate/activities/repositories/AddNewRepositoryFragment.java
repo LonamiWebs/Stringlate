@@ -24,7 +24,7 @@ import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
-import io.github.lonamiwebs.stringlate.utilities.Utils;
+import io.github.lonamiwebs.stringlate.utilities.Helpers;
 
 import static android.app.Activity.RESULT_OK;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -197,7 +197,7 @@ public class AddNewRepositoryFragment extends Fragment {
     //region Checking and adding a new local "repository"
 
     private void scanDownloadStrings(final RepoHandler repo) {
-        if (Utils.isNotConnected(getContext(), true))
+        if (new Helpers(getContext()).isDisconnectedFromInternet(R.string.no_internet_connection))
             return;
 
         new RepoSyncTask(getContext(), repo,

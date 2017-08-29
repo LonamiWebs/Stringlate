@@ -53,7 +53,7 @@ import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.utilities.Utils;
+import io.github.lonamiwebs.stringlate.utilities.Helpers;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_ID;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
@@ -155,7 +155,7 @@ public class TranslateActivity extends AppCompatActivity {
             mUsesTranslationServiceTextView.setVisibility(View.VISIBLE);
             mUsesTranslationServiceTextView.setText(getString(
                     R.string.application_may_use_translation_platform,
-                    Utils.toTitleCase(mRepo.getUsedTranslationService())
+                    Helpers.toTitleCase(mRepo.getUsedTranslationService())
             ));
         }
     }
@@ -417,7 +417,7 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Synchronize our local strings.xml files with the remote GitHub repository
     private void updateStrings(@NonNull final String branch) {
-        if (Utils.isNotConnected(this, true))
+        if (new Helpers(this).isDisconnectedFromInternet(R.string.no_internet_connection))
             return;
 
         // Don't let the users stay while we're synchronizing resources.
@@ -669,7 +669,7 @@ public class TranslateActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.login_required, Toast.LENGTH_LONG).show();
             return;
         }
-        if (Utils.isNotConnected(this, true))
+        if (new Helpers(this).isDisconnectedFromInternet(R.string.no_internet_connection))
             return;
 
         Intent intent = new Intent(this, CreatePullRequestActivity.class);

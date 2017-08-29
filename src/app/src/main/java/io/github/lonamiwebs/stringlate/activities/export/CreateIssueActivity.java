@@ -16,7 +16,7 @@ import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.utilities.Utils;
+import io.github.lonamiwebs.stringlate.utilities.Helpers;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -88,7 +88,7 @@ public class CreateIssueActivity extends AppCompatActivity {
             String xml = mRepo.mergeDefaultTemplate(mLocale);
             description = description.replace("%x", String.format("```xml\n%s\n```", xml));
         }
-        if (Utils.isNotConnected(this, true))
+        if (new Helpers(this).isDisconnectedFromInternet(R.string.no_internet_connection))
             return;
 
         final String issueTitle = title;

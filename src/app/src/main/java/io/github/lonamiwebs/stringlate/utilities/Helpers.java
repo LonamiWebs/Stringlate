@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,21 +18,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
-import io.github.lonamiwebs.stringlate.R;
+public class Helpers extends io.github.gsantner.opoc.util.Helpers {
 
-public class Utils {
+    public Helpers(Context context) {
+        super(context);
+    }
 
     //region Network
 
-    public static boolean isNotConnected(final Context ctx, boolean warn) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public boolean isDisconnectedFromInternet(@Nullable @StringRes Integer warnMessageStringRes) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-
         boolean notConnected = activeNetworkInfo == null || !activeNetworkInfo.isConnected();
-        if (notConnected && warn) {
-            Toast.makeText(ctx, R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
+        if (notConnected && warnMessageStringRes != null) {
+            Toast.makeText(_context, _context.getString(warnMessageStringRes), Toast.LENGTH_SHORT).show();
         }
         return notConnected;
     }
@@ -63,29 +67,38 @@ public class Utils {
     //region Reading and writing files
 
     @NonNull
-    public static String readFile(final File file) {
+    public static String readTextFile(final File file) {
         try {
-            return readCloseStream(new FileInputStream(file));
+            return readCloseTextStream(new FileInputStream(file));
         } catch (FileNotFoundException e) {
-            Log.w("Utils/readFile", "File " + file + " not found.");
+            Log.w("readTextFile", "File " + file + " not found.");
         }
 
         return "";
     }
 
+
+    public static String readCloseTextStream(final InputStream stream) {
+        return readCloseTextStream(stream, false).get(0);
+    }
+
     @NonNull
-    static String readCloseStream(final InputStream stream) {
-        String line;
+    static List<String> readCloseTextStream(final InputStream stream, boolean concatToOneString) {
+        final ArrayList<String> lines = new ArrayList<>();
         BufferedReader reader = null;
+        String line = "";
         try {
+            StringBuilder sb = new StringBuilder();
             reader = new BufferedReader(new InputStreamReader(stream));
 
-            StringBuilder sb = new StringBuilder();
-            while ((line = reader.readLine()) != null)
-                sb.append(line).append('\n');
-
-            reader.close();
-            return sb.toString();
+            while ((line = reader.readLine()) != null) {
+                if (concatToOneString) {
+                    sb.append(line).append('\n');
+                } else {
+                    lines.add(line);
+                }
+            }
+            line = sb.toString();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -97,8 +110,11 @@ public class Utils {
                 }
             }
         }
-
-        return "";
+        if (concatToOneString) {
+            lines.clear();
+            lines.add(line);
+        }
+        return lines;
     }
 
     public static boolean writeFile(final File file, final String content) {

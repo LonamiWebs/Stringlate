@@ -37,7 +37,7 @@ import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 import io.github.lonamiwebs.stringlate.settings.RepoSettings;
 import io.github.lonamiwebs.stringlate.settings.SourceSettings;
-import io.github.lonamiwebs.stringlate.utilities.Utils;
+import io.github.lonamiwebs.stringlate.utilities.Helpers;
 import io.github.lonamiwebs.stringlate.utilities.ZipUtils;
 
 // Represents a locally saved string repository, which can be synchronized from any StringsSource
@@ -159,7 +159,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     // Deletes the repository erasing its existence from Earth. Forever. (Unless added again)
     public boolean delete() {
-        boolean ok = Utils.deleteRecursive(mRoot);
+        boolean ok = Helpers.deleteRecursive(mRoot);
         Messenger.notifyRepoRemoved(this);
         return ok;
     }
@@ -272,7 +272,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
         final File tmpWorkDir = new File(mContext.getCacheDir(), "tmp_sync_" + mRoot.getName());
         if (tmpWorkDir.isDirectory())
-            if (!Utils.deleteRecursive(tmpWorkDir))
+            if (!Helpers.deleteRecursive(tmpWorkDir))
                 return false;
 
         if (!source.setup(mContext, mSourceSettings, tmpWorkDir, callback))
@@ -541,7 +541,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     // TranslateActivity, to quickly reuse it on the history screen
     public boolean saveProgress(RepoProgress progress) {
         try {
-            return Utils.writeFile(mProgressFile, progress.toJson().toString());
+            return Helpers.writeFile(mProgressFile, progress.toJson().toString());
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
@@ -551,7 +551,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     // Gets the progress of the last calculated progress locale
     public RepoProgress loadProgress() {
         try {
-            final String json = Utils.readFile(mProgressFile);
+            final String json = Helpers.readTextFile(mProgressFile);
             if (!json.isEmpty())
                 return RepoProgress.fromJson(new JSONObject(json));
         } catch (JSONException e) {
@@ -726,7 +726,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             // Get temporary import directory and delete any previous directory
             File dir = getTempImportDir();
             File backupDir = getTempImportBackupDir();
-            if (!Utils.deleteRecursive(dir) || !Utils.deleteRecursive(backupDir))
+            if (!Helpers.deleteRecursive(dir) || !Helpers.deleteRecursive(backupDir))
                 throw new IOException("Could not delete old temporary directories.");
 
             // Unzip the given input stream
