@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">Stringlate</string>
     <string name="original_string">Original string:</string>
     <string name="translated_string_colon">Translated string:</string>
     <string name="next">Next</string>
@@ -7,8 +6,6 @@
     <string name="selected_locale">Selected locale:</string>
     <string name="welcome">Welcome to Stringlate! Enter a GitHub project name and its owner or paste the repository\'s Git URL below to continue.</string>
     <string name="owner_hint">owner</string>
-    <string name="slash" translatable="false">/</string>
-    <string name="github" translatable="false">GitHub</string>
     <string name="repository_hint">repository</string>
     <string name="or">or</string>
     <string name="github_repo_url_hint">https://github.com/owner/repository</string>
@@ -55,7 +52,6 @@
     <string name="delete_no_locale_bad_joke">You first need to have a locale before you can remove its existence from this planet ;-)</string>
     <string name="discover">Discover projects</string>
     <string name="gist_description">Gist description (optional):</string>
-    <string name="default_gist_share_description" translatable="false">strings.xml translation shared with Stringlate</string>
     <string name="gist_filename">Gist filename:</string>
     <string name="is_public_gist">This is a public Gist</string>
     <string name="post_gist">Post GitHub Gist</string>
@@ -117,6 +113,7 @@
     <string name="github_yes_logged_long">You\'re already logged in to GitHub. No further action is required. If things are not working, you can always click the button again to start over.</string>
     <string name="login_to_github">Login to GitHub</string>
     <string name="auth_success">Authorization success</string>
+    <string name="auth_failure">Authorization failure</string>
     <string name="completing_auth_ellipsis">Completing authorization…</string>
     <string name="is_anonymous_gist">This is an anonymous Gist</string>
     <string name="gist_login_needed">To post non-anonymous Gists you need to authorize Stringlate on GitHub from the main screen.</string>
@@ -124,11 +121,7 @@
     <string name="create_issue">Create issue</string>
     <string name="creating_issue_ellipsis">Creating issue…</string>
     <string name="creating_issue_long_ellipsis">Trying to create the issue on GitHub…</string>
-    <string name="added_x_translation" translatable="false">Added %s (%s) translation</string>
-    <string name="added_x_translation_spam" translatable="false">Updated %s (%s) translation\n\nCommit made via Stringlate</string>
     <string name="issue_description">Issue description (%x will be replaced with the translation):</string>
-    <string name="new_issue_template" translatable="false">I have translated your application into `%s` (*%s*). Here is the xml:\n%%x\n\n---\n\n*Translation made with [Stringlate](https://github.com/LonamiWebs/Stringlate).*</string>
-    <string name="comment_issue_template" translatable="false">I have updated the `%s` (*%s*) translation:\n%%x\n\n---\n\n*Translation made with [Stringlate](https://github.com/LonamiWebs/Stringlate).*</string>
     <string name="url_copied">The Url has been copied to your clipboard.</string>
     <string name="share_url">Share Url</string>
     <string name="create_issue_success">Your issue has been created, well done!</string>
@@ -151,15 +144,12 @@
     <string name="creating_pr">Creating PR…</string>
     <string name="creating_pr_long">Creating a pull request on the original repository…</string>
     <string name="something_went_wrong">Something went wrong.</string>
-    <string name="warning_experimental" translatable="false">Please note that this feature is still experimental. Use with care!!</string>
     <string name="cloning_repo">Cloning repository…</string>
     <string name="cloning_repo_progress">Temporary cloning the remote repository… %.1f%%</string>
     <string name="copying_res">Copying resources…</string>
     <string name="copying_res_long">Validating and copying resources to their final location…</string>
-    <string name="bytes_size_format" translatable="false">%.2f %s</string>
     <string name="issue_title_colon">Issue title:</string>
     <string name="issue_title">Issue title</string>
-    <string name="xml_comment_filename" translatable="false">&lt;!-- File \"%s\" --&gt;\n</string>
     <string name="title_empty">The title cannot be empty.</string>
     <string name="issue_desc_x">The issue description must contain \"%x\".</string>
     <string name="no_strings_to_export">There are no strings to export.</string>
@@ -182,4 +172,9 @@
     <string name="wait_until_sync">Please wait until the repository has been synchronized.</string>
     <string name="invalid_project">%s  input repository doesn\'t seem valid.</string>
     <string name="project_no_strings">The input repository doesn\'t seem valid.</string>
+    <string name="settings">Settings</string>
+    <string name="pref_desc__language">Change language of this app. Restart app for changes to take effect</string>
+    <string name="pref_title__language">Language</string>
+    <string name="appearance">Appearance</string>
+    <string name="user_accounts">User accounts</string>
 </resources>

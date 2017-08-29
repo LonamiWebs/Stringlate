@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.InvalidObjectException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,21 +82,21 @@ public class CreatePullRequestActivity extends AppCompatActivity {
     //region First time setup
 
     private void checkPermissions() {
-        new AsyncTask<Void, Void, Pair<String, Boolean>>() {
+        new AsyncTask<Void, Void, AbstractMap.SimpleImmutableEntry<String, Boolean>>() {
             @Override
-            protected Pair<String, Boolean> doInBackground(Void... params) {
+            protected AbstractMap.SimpleImmutableEntry<String, Boolean> doInBackground(Void... params) {
                 return GitHub.gCanPush(mSettings.getGitHubToken(), mRepo);
             }
 
             @Override
-            protected void onPostExecute(Pair<String, Boolean> canPush) {
-                if (canPush.second) {
+            protected void onPostExecute(AbstractMap.SimpleImmutableEntry<String, Boolean> canPush) {
+                if (canPush.getValue()) {
                     mInfoTextView.setText(R.string.can_push_no_pr);
                 } else {
                     mInfoTextView.setText(R.string.cannot_push_will_pr);
                 }
-                mUsername = canPush.first;
-                mNeedFork = !canPush.second;
+                mUsername = canPush.getKey();
+                mNeedFork = !canPush.getValue();
             }
         }.execute();
     }

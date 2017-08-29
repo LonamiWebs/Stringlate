@@ -1,18 +1,27 @@
 package io.github.lonamiwebs.stringlate.git;
 
 import android.support.annotation.NonNull;
-import android.util.Pair;
 
+import org.eclipse.jgit.util.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InvalidObjectException;
+import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.WebUtils;
+
+import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_AUTH_URL;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_CLIENT_ID;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_CLIENT_SECRET;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_COMPLETE_AUTH_URL;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_WANTED_SCOPES;
 
 // Static GitHub API interface that uses AsyncTasks
 public class GitHub {
@@ -120,11 +129,11 @@ public class GitHub {
     }
 
     // Returns both the authenticated user and whether they have right to push
-    public static Pair<String, Boolean> gCanPush(String token, RepoHandler repo) {
+    public static AbstractMap.SimpleImmutableEntry<String, Boolean> gCanPush(String token, RepoHandler repo) {
         JSONObject user = gGetUserInfo(token);
         if (user == null)
             // TODO Actually, maybe throw an NoPermissionException or something
-            return new Pair<>(null, false);
+            return new AbstractMap.SimpleImmutableEntry<>(null, false);
 
         String username = "";
         try {
@@ -137,15 +146,15 @@ public class GitHub {
                     if (collaborator.getString("login").equals(username)) {
                         JSONObject permissions = collaborator.getJSONObject("permissions");
                         // TODO Can someone possibly not have 'pull' permissions? Then what?
-                        return new Pair<>(username, permissions.getBoolean("push"));
+                        return new AbstractMap.SimpleImmutableEntry<>(username, permissions.getBoolean("push"));
                     }
                 }
             }
             // If we're not a collaborator, then we obviously don't have permission
-            return new Pair<>(username, false);
+            return new AbstractMap.SimpleImmutableEntry<>(username, false);
         } catch (JSONException | InvalidObjectException e) {
             e.printStackTrace();
-            return new Pair<>(username, false);
+            return new AbstractMap.SimpleImmutableEntry<>(username, false);
         }
     }
 
@@ -312,5 +321,44 @@ public class GitHub {
                 WebUtils.PATCH, patch));
     }
 
+
+    //endregion
+
+    //region Authentication
+    public static class Authentication {
+        public static class CompleteAuthenticationResult {
+            public boolean ok;
+            public String message, token, grantedScopes;
+        }
+
+        public static String gGetAuthRequestUrl() {
+            return String.format(GITHUB_AUTH_URL,
+                    StringUtils.join(Arrays.asList(GITHUB_WANTED_SCOPES), "%20"), GITHUB_CLIENT_ID);
+        }
+
+        public static CompleteAuthenticationResult gCompleteGitHubAuth(AppSettings appSettings, String clientId, String clientSecret, String code) {
+            final HashMap<String, String> map = new HashMap<>();
+            map.put("client_id", GITHUB_CLIENT_ID);
+            map.put("client_secret", GITHUB_CLIENT_SECRET);
+            map.put("code", code);
+
+            CompleteAuthenticationResult ret = new CompleteAuthenticationResult();
+            HashMap<String, String> postResult = WebUtils.getDataMap(
+                    WebUtils.performCall(GITHUB_COMPLETE_AUTH_URL, WebUtils.POST, map)
+            );
+            if (postResult.containsKey("error")) {
+                ret.message = postResult.get("error_description");
+            } else {
+                ret.token = postResult.get("access_token");
+                ret.grantedScopes = postResult.get("scope");
+                appSettings.setGitHubAccess(ret.token, ret.grantedScopes);
+                if (appSettings.hasGitHubAuthorization()) {
+                    ret.ok = true;
+                }
+            }
+            return ret;
+        }
+
+    }
     //endregion
 }

@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/help"
+        android:id="@+id/action_help"
         android:icon="@drawable/ic_help_white_24dp"
         android:title="@string/help"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/github_login"
-        android:icon="@drawable/ic_github_white_24dp"
-        android:title="@string/login_to_github"
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_settings_white_24dp"
+        android:title="@string/settings"
         app:showAsAction="ifRoom" />
 
 </menu>

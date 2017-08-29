@@ -20,6 +20,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data android:name="android.max_aspect" android:value="2.1" />
+
         <activity
             android:name=".activities.repositories.RepositoriesActivity"
             android:label="@string/app_name"
@@ -65,8 +68,9 @@
         <activity android:name=".activities.BrowserActivity" />
         <activity android:name=".activities.translate.SearchStringActivity" />
         <activity
-            android:name=".activities.GitHubLoginActivity"
-            android:label="@string/login_to_github">
+            android:name=".activities.SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/settings">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

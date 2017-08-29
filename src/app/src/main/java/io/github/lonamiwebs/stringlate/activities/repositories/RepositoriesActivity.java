@@ -10,11 +10,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import io.github.gsantner.opoc.util.Helpers;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
-import io.github.lonamiwebs.stringlate.activities.GitHubLoginActivity;
+import io.github.lonamiwebs.stringlate.activities.SettingsActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_REPO_DISCOVERED;
@@ -34,6 +36,7 @@ public class RepositoriesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        new Helpers(this).setAppLanguage(new AppSettings(this).getLanguage());
         setContentView(R.layout.activity_repositories);
 
         // Compatibility code
@@ -89,6 +92,11 @@ public class RepositoriesActivity extends AppCompatActivity {
 
         // Always notify data set changed to refresh the repository list
         mRepositoriesPagerAdapter.notifyDataSetChanged();
+
+        if (SettingsActivity.activityRetVal == SettingsActivity.RESULT.CHANGE_RESTART) {
+            SettingsActivity.activityRetVal = SettingsActivity.RESULT.NOCHANGE;
+            recreate();
+        }
     }
 
     //endregion
@@ -107,7 +115,7 @@ public class RepositoriesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // Online help
-            case R.id.help:
+            case R.id.action_help:
                 // Avoid the "Remove unused resources" from removing these files…
                 if (R.raw.en != 0 && R.raw.es != 0) {
                     Intent intent = new Intent(this, BrowserActivity.class);
@@ -116,8 +124,8 @@ public class RepositoriesActivity extends AppCompatActivity {
                 }
                 return true;
             // Login to GitHub
-            case R.id.github_login:
-                startActivity(new Intent(this, GitHubLoginActivity.class));
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
