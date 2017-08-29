@@ -51,7 +51,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
 
         mSettings = new AppSettings(this);
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_black_48px));
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 SettingsActivity.this.onBackPressed();
