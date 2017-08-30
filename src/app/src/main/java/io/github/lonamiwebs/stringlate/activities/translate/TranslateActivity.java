@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
@@ -161,8 +162,33 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onSaveInstanceState(final Bundle state) {
+        super.onSaveInstanceState(state);
+        state.putString("translated_string_text", mTranslatedStringEditText.getText().toString());
+        state.putString("selected_string", mSelectedResource == null ? null : mSelectedResource.getId());
+        // TODO Should the state of all resources be saved (i.e. so the user can go back and
+        // modify the translations they had made), or consider them as "translated" already?
+    }
+
+    @Override
+    protected void onRestoreInstanceState(final Bundle state) {
+        super.onRestoreInstanceState(state);
+
+        // TODO Get rid of this arbitrary delay
+        // Other places reload and save and the state a lot of times, prevent them from doing
+        // so so that this is the only place that loads as needed on rotation changes.
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                final String selectedString = state.getString("selected_string");
+                final String stringText = state.getString("translated_string_text");
+
+                mSelectedLocaleResources.deleteId(selectedString);
+                loadStringIDsSpinner();
+                setStringId(selectedString);
+                mTranslatedStringEditText.setText(stringText);
+            }
+        }, 200);
     }
 
     private void loadResources() {
