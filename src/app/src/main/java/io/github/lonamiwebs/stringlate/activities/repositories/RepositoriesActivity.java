@@ -39,14 +39,6 @@ public class RepositoriesActivity extends AppCompatActivity {
         new Helpers(this).setAppLanguage(new AppSettings(this).getLanguage());
         setContentView(R.layout.activity_repositories);
 
-        // Compatibility code
-        try {
-            RepoHandler.checkUpgradeRepositories(this);
-        } catch (Exception e) {
-            // We don't want any upgrade checking to break our application…
-            e.printStackTrace();
-        }
-
         mRepositoriesPagerAdapter = new RepositoriesPagerAdapter(getSupportFragmentManager(), this);
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mRepositoriesPagerAdapter);
