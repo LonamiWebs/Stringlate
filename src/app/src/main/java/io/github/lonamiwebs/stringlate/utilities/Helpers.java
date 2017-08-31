@@ -80,7 +80,7 @@ public class Helpers extends io.github.gsantner.opoc.util.Helpers {
 
 
     public static String readCloseTextStream(final InputStream stream) {
-        return readCloseTextStream(stream, false).get(0);
+        return readCloseTextStream(stream, true).get(0);
     }
 
     @NonNull
