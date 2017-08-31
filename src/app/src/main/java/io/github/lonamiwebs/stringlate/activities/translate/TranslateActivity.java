@@ -1166,6 +1166,9 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     private void setStringId(String id) {
+        if (id == null)
+            return;
+
         int i = getItemIndex(mStringIdSpinner, id);
         if (i > -1) {
             mStringIdSpinner.setSelection(i);
