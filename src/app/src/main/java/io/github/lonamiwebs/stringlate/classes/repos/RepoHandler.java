@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
@@ -346,7 +344,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             // and save it's path (we must keep track of the used extension)
             File newIcon = new File(mRoot, icon.getName());
             if (!newIcon.isFile() || newIcon.delete()) {
-                if (icon.renameTo(newIcon)) // TODO Do NOT rename the icon, rather copy it
+                if (Helpers.copy(icon, newIcon))
                     settings.setIconFile(newIcon);
             }
         }

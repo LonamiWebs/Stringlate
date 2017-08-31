@@ -14,6 +14,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -139,6 +140,27 @@ public class Helpers extends io.github.gsantner.opoc.util.Helpers {
                 }
             }
         }
+    }
+
+    public static boolean copy(final File src, final File dst) {
+        try {
+            final FileInputStream in = new FileInputStream(src);
+            try {
+                final FileOutputStream out = new FileOutputStream(dst);
+                try {
+                    int length;
+                    byte[] buf = new byte[4096];
+                    while ((length = in.read(buf)) > 0)
+                        out.write(buf, 0, length);
+
+                } finally {
+                    out.close();
+                }
+            } finally {
+                in.close();
+            }
+        } catch (IOException ignored) { }
+        return false;
     }
 
     //endregion
