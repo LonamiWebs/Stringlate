@@ -9,13 +9,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -174,21 +174,13 @@ public class TranslateActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(final Bundle state) {
         super.onRestoreInstanceState(state);
 
-        // TODO Get rid of this arbitrary delay
-        // Other places reload and save and the state a lot of times, prevent them from doing
-        // so so that this is the only place that loads as needed on rotation changes.
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                final String selectedString = state.getString("selected_string");
-                final String stringText = state.getString("translated_string_text");
+        final String selectedString = state.getString("selected_string");
+        final String stringText = state.getString("translated_string_text");
 
-                mSelectedLocaleResources.deleteId(selectedString);
-                loadStringIDsSpinner();
-                setStringId(selectedString);
-                mTranslatedStringEditText.setText(stringText);
-            }
-        }, 200);
+        mSelectedLocaleResources.deleteId(selectedString);
+        loadStringIDsSpinner();
+        setStringId(selectedString);
+        mTranslatedStringEditText.setText(stringText);
     }
 
     private void loadResources() {
@@ -1119,6 +1111,9 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Sets the current locale also updating the spinner selection
     private void setCurrentLocale(String locale) {
+        if (TextUtils.equals(mSelectedLocale, locale))
+            return;
+
         // Clear the previous EditText fields
         mOriginalStringEditText.setText("");
         mTranslatedStringEditText.setText("");
