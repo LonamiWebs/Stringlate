@@ -6,17 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
-import org.json.JSONObject;
-
-import java.io.InvalidObjectException;
-
-import io.github.lonamiwebs.stringlate.utilities.NotificationRunner;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.Helpers;
+import io.github.lonamiwebs.stringlate.utilities.NotificationRunner;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -97,29 +92,10 @@ public class CreateIssueActivity extends AppCompatActivity {
             @Override
             protected Boolean doInBackground(Void... params) {
                 try {
-                    final JSONObject result;
-                    if (mExistingIssueNumber == -1) {
-                        result = GitHub.gCreateIssue(
-                                mRepo, issueTitle, issueDesc, mSettings.getGitHubToken()
-                        );
-                    } else {
-                        result = GitHub.gCommentIssue(
-                                mRepo, mExistingIssueNumber, issueDesc, mSettings.getGitHubToken()
-                        );
-                    }
-
-                    if (result == null)
-                        throw new InvalidObjectException("Invalid GitHub repository.");
-
-                    String postedUrl = result.optString("html_url", "");
-                    if (postedUrl.isEmpty())
-                        throw new InvalidObjectException("Invalid GitHub repository.");
-
-                    if (mExistingIssueNumber == -1) {
-                        mExistingIssueNumber = result.optInt("number");
-                        mRepo.settings.addCreatedIssue(mLocale, mExistingIssueNumber);
-                    }
-
+                    final String postedUrl = Exporter.getIssueExporter(
+                            mRepo, mExistingIssueNumber, mLocale,
+                            issueTitle, issueDesc, mSettings.getGitHubToken()
+                    ).call();
                     setSuccess(
                             getString(R.string.create_issue_success),
                             postedUrl,
@@ -127,9 +103,7 @@ public class CreateIssueActivity extends AppCompatActivity {
                                     mContext, getString(R.string.create_issue_success), postedUrl)
                     );
                     return true;
-
-                } catch (InvalidObjectException ignored) {
-                    // This wasn't a GitHub repository. How did we get here?
+                } catch (Exception ignored) {
                     return false;
                 }
             }

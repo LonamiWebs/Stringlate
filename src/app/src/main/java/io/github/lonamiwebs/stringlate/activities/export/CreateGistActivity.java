@@ -9,18 +9,14 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.util.HashMap;
 
-import io.github.lonamiwebs.stringlate.utilities.NotificationRunner;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.Helpers;
+import io.github.lonamiwebs.stringlate.utilities.NotificationRunner;
 
 import static android.view.View.GONE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
@@ -125,11 +121,9 @@ public class CreateGistActivity extends AppCompatActivity {
             @Override
             protected Boolean doInBackground(Void... params) {
                 try {
-                    JSONObject result = GitHub.gCreateGist(description, isPublic, fileContents, token);
-                    if (result == null)
-                        throw new JSONException("Null JSON");
-
-                    final String postedUrl = result.getString("html_url");
+                    final String postedUrl = Exporter.getGistExporter(
+                            description, isPublic, fileContents, token
+                    ).call();
                     setSuccess(
                             mContext.getString(R.string.post_gist_success),
                             postedUrl,
@@ -137,7 +131,8 @@ public class CreateGistActivity extends AppCompatActivity {
                                     mContext, getString(R.string.post_gist_success), postedUrl)
                     );
                     return true;
-                } catch (JSONException ignored) {
+                } catch (Exception ignored) {
+                    ignored.printStackTrace();
                     return false;
                 }
             }

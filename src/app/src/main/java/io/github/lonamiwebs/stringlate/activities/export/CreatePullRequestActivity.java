@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Pair;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -14,22 +13,16 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.File;
-import java.io.InvalidObjectException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-import io.github.lonamiwebs.stringlate.utilities.NotificationRunner;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.git.GitHub;
-import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
+import io.github.lonamiwebs.stringlate.utilities.NotificationRunner;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -157,90 +150,14 @@ public class CreatePullRequestActivity extends AppCompatActivity {
             return;
         }
 
-        final String token = mSettings.getGitHubToken();
-
         new NotificationRunner(this) {
             @Override
             protected Boolean doInBackground(Void... params) {
-
-                JSONObject commitResult;
-                RepoHandler repo;
-                if (mNeedFork) {
-                    updateProgress(getString(R.string.forking_repo), getString(R.string.forking_repo_long));
-
-                    // Fork the repository
-                    try {
-                        JSONObject fork = GitHub.gForkRepository(token, mRepo);
-                        if (fork == null) throw new JSONException("Resulting fork is null.");
-
-                        String owner = fork.getJSONObject("owner").getString("login");
-                        String repoName = fork.getString("name");
-                        repo = new RepoHandler(mContext, GitWrapper.buildGitHubUrl(owner, repoName));
-                    } catch (JSONException | InvalidObjectException e) {
-                        e.printStackTrace();
-                        setFailure(getString(R.string.fork_failed));
-                        return false;
-                    }
-                } else {
-                    repo = mRepo;
-                }
-
-                // Commit the file
                 try {
-                    updateProgress(getString(R.string.creating_commit), getString(R.string.creating_commit_long));
-
-                    final HashMap<String, String> remoteContents = new HashMap<>();
-                    for (Map.Entry<File, String> templateRemote :
-                            mRepo.getTemplateRemotePaths(mLocale).entrySet()) {
-                        // Iterate over the local template files and the remote paths for this locale
-                        String content = mRepo.applyTemplate(templateRemote.getKey(), mLocale);
-                        if (!content.isEmpty()) {
-                            remoteContents.put(templateRemote.getValue(), content);
-                        }
-                    }
-                    commitResult = GitHub.gCreateCommitFile(
-                            token, repo, branch, remoteContents, commitMessage
-                    );
-
-                } catch (JSONException | InvalidObjectException e) {
-                    setFailure(getString(R.string.commit_failed));
-                    e.printStackTrace();
-                    return false;
-                }
-
-                if (mNeedFork) {
-                    // Create pull request
-                    updateProgress(getString(R.string.creating_pr), getString(R.string.creating_pr_long));
-
-                    String title, body;
-                    int newLineIndex = commitMessage.indexOf('\n');
-                    if (newLineIndex > -1) {
-                        title = commitMessage.substring(0, newLineIndex);
-                        body = commitMessage.substring(newLineIndex).trim().replace(
-                                "Stringlate", "[Stringlate](https://lonamiwebs.github.io/stringlate/)"
-                        );
-                    } else {
-                        title = commitMessage;
-                        body = "";
-                    }
-                    try {
-                        commitResult = GitHub.gCreatePullRequest(
-                                token, mRepo, title, mUsername + ":" + branch, branch, body
-                        );
-                    } catch (InvalidObjectException ignored) {
-                        return false;
-                    }
-                }
-
-                // Now we finally have our commitResult ready
-                if (commitResult == null)
-                    return false;
-
-                try {
-                    String postedUrl = mNeedFork ? commitResult.getString("html_url")
-                            : String.format("https://github.com%s/commit/%s",
-                            mRepo.getPath(), commitResult.getJSONObject("object").getString("sha"));
-
+                    final String postedUrl = Exporter.getPullRequestExporter(
+                            mRepo, mContext, mNeedFork, mLocale, branch, commitMessage,
+                            mUsername, mSettings.getGitHubToken()
+                    ).call();
                     setSuccess(
                             getString(R.string.done),
                             postedUrl,
@@ -248,7 +165,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                                     mContext, getString(R.string.done), postedUrl)
                     );
                     return true;
-                } catch (JSONException e) {
+                } catch (Exception ignored) {
                     return false;
                 }
             }
