@@ -31,6 +31,8 @@ import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerAdapter;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
+import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
 
 import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
@@ -128,6 +130,11 @@ public class HistoryFragment extends Fragment {
             return false;
 
         switch (item.getItemId()) {
+            case R.id.syncRepo:
+                // TODO Don't assume GitSource, neither empty branch
+                new RepoSyncTask(getContext(), mLastSelectedRepo,
+                        new GitSource(mLastSelectedRepo.settings.getSource(), ""), false).start();
+                return true;
             case R.id.importRepo:
                 importFromSd();
                 return true;

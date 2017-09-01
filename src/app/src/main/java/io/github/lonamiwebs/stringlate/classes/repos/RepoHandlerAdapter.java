@@ -117,6 +117,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.add(Menu.NONE, R.id.syncRepo, Menu.NONE, R.string.update_strings);
             menu.add(Menu.NONE, R.id.importRepo, Menu.NONE, R.string.import_repository);
             menu.add(Menu.NONE, R.id.exportRepo, Menu.NONE, R.string.export_repository);
             menu.add(Menu.NONE, R.id.deleteRepo, Menu.NONE, R.string.delete_repository);
