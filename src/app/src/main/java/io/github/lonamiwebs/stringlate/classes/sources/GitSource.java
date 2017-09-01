@@ -81,7 +81,6 @@ public class GitSource implements StringsSource {
             // Ensure that we can tell the locale from the path (otherwise it's invalid)
             if (m.find()) {
                 if (m.group(1) == null) { // Default locale
-                    // If this is the default locale, TODO save its remote path
                     // If the file name is something like "do not translate", skip it
                     if (DO_NOT_TRANSLATE.matcher(resourceFile.getName()).find())
                         continue;
