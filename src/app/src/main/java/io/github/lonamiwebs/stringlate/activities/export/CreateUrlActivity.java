@@ -11,11 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.concurrent.Callable;
-
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_ID;
 
@@ -24,10 +25,11 @@ public class CreateUrlActivity extends AppCompatActivity {
     //region Members
 
     private String mPostedUrl;
-    private Callable<String> mPostUrlCallable;
+    private Exporter.CallableExporter mPostUrlCallable;
 
-    private LinearLayout mWorkingLinearLayout;
     private LinearLayout mSuccessLinearLayout;
+    private TextView mInfoTextView;
+    private ProgressBar mIndeterminateBar;
 
     //endregion
 
@@ -38,8 +40,9 @@ public class CreateUrlActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_url);
 
-        mWorkingLinearLayout = findViewById(R.id.workingLinearLayout);
         mSuccessLinearLayout = findViewById(R.id.successLinearLayout);
+        mInfoTextView = findViewById(R.id.infoTextView);
+        mIndeterminateBar = findViewById(R.id.indeterminateBar);
 
         Intent intent = getIntent();
         mPostUrlCallable = Exporter.getExporter(intent.getIntExtra(EXTRA_ID, 0));
@@ -47,12 +50,18 @@ public class CreateUrlActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
             finish();
         } else {
-            // TODO Get more information (i.e. progress, name) from the exporters
-            new AsyncTask<Void, Void, String>() {
+            mInfoTextView.setText(mPostUrlCallable.getDescription(this));
+
+            new AsyncTask<Void, String, String>() {
                 @Override
                 protected String doInBackground(Void... params) {
                     try {
-                        return mPostUrlCallable.call();
+                        return mPostUrlCallable.call(CreateUrlActivity.this, new Callback<String>() {
+                            @Override
+                            public void onCallback(String s) {
+                                publishProgress(s);
+                            }
+                        });
                     } catch (Exception e) {
                         e.printStackTrace();
                         return null;
@@ -60,16 +69,25 @@ public class CreateUrlActivity extends AppCompatActivity {
                 }
 
                 @Override
+                protected void onProgressUpdate(String... values) {
+                    mInfoTextView.setText(values[0]);
+                }
+
+                @Override
                 protected void onPostExecute(final String postedUrl) {
                     if (postedUrl == null) {
+                        if (mPostUrlCallable.mFailureReason.isEmpty())
+                            mPostUrlCallable.mFailureReason = getString(R.string.something_went_wrong);
+
                         Toast.makeText(CreateUrlActivity.this,
-                                R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+                                mPostUrlCallable.mFailureReason, Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
                         mPostedUrl = postedUrl;
-                        mWorkingLinearLayout.setVisibility(View.GONE);
+                        mIndeterminateBar.setVisibility(View.GONE);
                         mSuccessLinearLayout.setVisibility(View.VISIBLE);
 
+                        mInfoTextView.setText(mPostUrlCallable.getSuccessDescription(CreateUrlActivity.this));
                         ((EditText) findViewById(R.id.postedUrlEditText)).setText(mPostedUrl);
                     }
                 }

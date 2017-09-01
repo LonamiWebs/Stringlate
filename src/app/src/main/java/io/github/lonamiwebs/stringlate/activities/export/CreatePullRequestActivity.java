@@ -150,7 +150,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
         }
 
         CreateUrlActivity.launchIntent(this, Exporter.createPullRequestExporter(
-                mRepo, this, mNeedFork, mLocale, branch, commitMessage,
+                mRepo, mNeedFork, mLocale, branch, commitMessage,
                 mUsername, mSettings.getGitHubToken()
         ));
 
