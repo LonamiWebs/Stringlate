@@ -1,6 +1,7 @@
 package io.github.lonamiwebs.stringlate.activities.export;
 
 import android.content.Context;
+import android.util.SparseArray;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +10,7 @@ import java.io.File;
 import java.io.InvalidObjectException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
@@ -16,11 +18,36 @@ import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
 
 class Exporter {
-    // Callable exporters return the non-null posted URL as String on success, or throw on failure
-    static Callable<String> getGistExporter(
+
+    // TODO Android lint didn't complain about static contexts, maybe
+    // there is a way to avoid this though? Pass context as a parameter?
+    // Or maybe there is no leak indeed?
+    private static SparseArray<Callable<String>> exporters = new SparseArray<>();
+    private static Random random = new Random();
+
+    private static int addExporter(final Callable<String> exporter) {
+        int id = random.nextInt();
+        while (id == 0 || exporters.indexOfKey(id) != -1)
+            id = random.nextInt();
+
+        exporters.put(id, exporter);
+        return id;
+    }
+
+    // Callable exporters return the non-null posted URL as String on success
+    // Note that the exporter may be null if no such ID is found.
+    // The ID 0 will never exist.
+    static Callable<String> getExporter(final int id) {
+        final Callable<String> result = exporters.get(id);
+        if (result != null)
+            exporters.delete(id);
+        return result;
+    }
+
+    static int createGistExporter(
             final String description, final boolean isPublic,
             final HashMap<String, String> fileContents, final String token) {
-        return new Callable<String>() {
+        return addExporter(new Callable<String>() {
             @Override
             public String call() throws Exception {
                 JSONObject result = GitHub.gCreateGist(description, isPublic, fileContents, token);
@@ -29,13 +56,13 @@ class Exporter {
 
                 return result.getString("html_url");
             }
-        };
+        });
     }
 
-    static Callable<String> getIssueExporter(
+    static int createIssueExporter(
             final RepoHandler repo, final int existingIssueNumber, final String forLocale,
             final String issueTitle, final String issueDesc, final String token) {
-        return new Callable<String>() {
+        return addExporter(new Callable<String>() {
             @Override
             public String call() throws Exception {
                 final JSONObject result;
@@ -59,14 +86,14 @@ class Exporter {
 
                 return postedUrl;
             }
-        };
+        });
     }
 
-    static Callable<String> getPullRequestExporter(
+    static int createPullRequestExporter(
             final RepoHandler originalRepo, final Context context, final boolean needFork,
             final String locale, final String branch, final String commitMessage,
             final String username, final String token) {
-        return new Callable<String>() {
+        return addExporter(new Callable<String>() {
             @Override
             public String call() throws Exception {
 
@@ -153,6 +180,6 @@ class Exporter {
                 }
                 */
             }
-        };
+        });
     }
 }

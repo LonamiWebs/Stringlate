@@ -16,7 +16,6 @@ import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.Helpers;
-import io.github.lonamiwebs.stringlate.utilities.NotificationRunner;
 
 import static android.view.View.GONE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
@@ -116,29 +115,9 @@ public class CreateGistActivity extends AppCompatActivity {
                 !mSettings.hasGitHubAuthorization();
 
         final String token = isAnonymous ? "" : mSettings.getGitHubToken();
-
-        new NotificationRunner(this) {
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                try {
-                    final String postedUrl = Exporter.getGistExporter(
-                            description, isPublic, fileContents, token
-                    ).call();
-                    setSuccess(
-                            mContext.getString(R.string.post_gist_success),
-                            postedUrl,
-                            CreateUrlSuccessActivity.createIntent(
-                                    mContext, getString(R.string.post_gist_success), postedUrl)
-                    );
-                    return true;
-                } catch (Exception ignored) {
-                    ignored.printStackTrace();
-                    return false;
-                }
-            }
-        }.setRunning(getString(R.string.posting_gist_ellipsis), getString(R.string.posting_gist_ellipsis_long))
-                .setFailure(getString(R.string.post_gist_error))
-                .execute();
+        CreateUrlActivity.launchIntent(this, Exporter.createGistExporter(
+                description, isPublic, fileContents, token
+        ));
 
         finish();
     }

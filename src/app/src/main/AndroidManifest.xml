@@ -88,7 +88,7 @@
         <activity
             android:name=".activities.export.CreatePullRequestActivity"
             android:label="@string/create_pr" />
-        <activity android:name=".activities.export.CreateUrlSuccessActivity" />
+        <activity android:name=".activities.export.CreateUrlActivity" />
         <activity android:name=".activities.translate.PeekTranslationsActivity" />
     </application>
 </manifest>

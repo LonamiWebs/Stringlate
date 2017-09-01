@@ -12,16 +12,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.concurrent.Callable;
+
 import io.github.lonamiwebs.stringlate.R;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_DESCRIPTION;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_ID;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REMOTE_PATH;
 
-public class CreateUrlSuccessActivity extends AppCompatActivity {
+public class CreateUrlActivity extends AppCompatActivity {
 
     //region Members
 
     private String mPostedUrl;
+    private Callable<String> mPostUrlCallable;
 
     //endregion
 
@@ -33,16 +37,17 @@ public class CreateUrlSuccessActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_url_success);
 
         Intent intent = getIntent();
-        mPostedUrl = intent.getStringExtra(EXTRA_REMOTE_PATH);
-        ((EditText) findViewById(R.id.postedUrlEditText)).setText(mPostedUrl);
-        ((TextView) findViewById(R.id.postSuccessTextView)).setText(
-                intent.getStringExtra(EXTRA_DESCRIPTION));
+        mPostUrlCallable = Exporter.getExporter(intent.getIntExtra(EXTRA_ID, 0));
+        if (mPostUrlCallable == null) {
+            // TODO Notify something went wrong
+        } else {
+            // TODO Run the callable on a background task
+        }
     }
 
-    public static Intent createIntent(final Context ctx, final String description, final String postedUrl) {
-        return new Intent(ctx, CreateUrlSuccessActivity.class)
-                .putExtra(EXTRA_DESCRIPTION, description)
-                .putExtra(EXTRA_REMOTE_PATH, postedUrl);
+    public static void launchIntent(final Context ctx, final int exporterHandle) {
+        ctx.startActivity(new Intent(ctx, CreateUrlActivity.class)
+                .putExtra(EXTRA_ID, exporterHandle));
     }
 
     //endregion

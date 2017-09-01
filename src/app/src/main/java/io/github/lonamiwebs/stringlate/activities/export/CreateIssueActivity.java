@@ -11,7 +11,6 @@ import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.Helpers;
-import io.github.lonamiwebs.stringlate.utilities.NotificationRunner;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -86,30 +85,10 @@ public class CreateIssueActivity extends AppCompatActivity {
         if (new Helpers(this).isDisconnectedFromInternet(R.string.no_internet_connection))
             return;
 
-        final String issueTitle = title;
-        final String issueDesc = description;
-        new NotificationRunner(this) {
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                try {
-                    final String postedUrl = Exporter.getIssueExporter(
-                            mRepo, mExistingIssueNumber, mLocale,
-                            issueTitle, issueDesc, mSettings.getGitHubToken()
-                    ).call();
-                    setSuccess(
-                            getString(R.string.create_issue_success),
-                            postedUrl,
-                            CreateUrlSuccessActivity.createIntent(
-                                    mContext, getString(R.string.create_issue_success), postedUrl)
-                    );
-                    return true;
-                } catch (Exception ignored) {
-                    return false;
-                }
-            }
-        }.setRunning(getString(R.string.creating_issue_ellipsis), getString(R.string.creating_issue_long_ellipsis))
-                .setFailure(getString(R.string.create_issue_error))
-                .execute();
+        CreateUrlActivity.launchIntent(this, Exporter.createIssueExporter(
+                mRepo, mExistingIssueNumber, mLocale,
+                title, description, mSettings.getGitHubToken()
+        ));
 
         finish();
     }

@@ -22,7 +22,6 @@ import io.github.lonamiwebs.stringlate.classes.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.utilities.NotificationRunner;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -150,27 +149,10 @@ public class CreatePullRequestActivity extends AppCompatActivity {
             return;
         }
 
-        new NotificationRunner(this) {
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                try {
-                    final String postedUrl = Exporter.getPullRequestExporter(
-                            mRepo, mContext, mNeedFork, mLocale, branch, commitMessage,
-                            mUsername, mSettings.getGitHubToken()
-                    ).call();
-                    setSuccess(
-                            getString(R.string.done),
-                            postedUrl,
-                            CreateUrlSuccessActivity.createIntent(
-                                    mContext, getString(R.string.done), postedUrl)
-                    );
-                    return true;
-                } catch (Exception ignored) {
-                    return false;
-                }
-            }
-        }.setFailure(getString(R.string.something_went_wrong))
-                .execute();
+        CreateUrlActivity.launchIntent(this, Exporter.createPullRequestExporter(
+                mRepo, this, mNeedFork, mLocale, branch, commitMessage,
+                mUsername, mSettings.getGitHubToken()
+        ));
 
         finish();
     }
