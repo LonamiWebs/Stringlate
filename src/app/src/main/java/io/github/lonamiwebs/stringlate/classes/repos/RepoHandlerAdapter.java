@@ -8,7 +8,9 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -32,6 +34,8 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     private final int mSize; // Used to generate default images
     private final Context mContext;
 
+    private int mContextMenuPosition;
+
     // We actually have two RecyclerViews in one with a custom separator.
     // Simply, if we have any repositories synchronizing, we'll add an extra item which
     // will behave as a separator, and this separator (which will always be on
@@ -40,7 +44,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     private final ArrayList<RepoHandler> mRepositories = new ArrayList<>();
     private final ArrayList<Pair<RepoHandler, Float>> mSyncingRepositories = new ArrayList<>();
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         final LinearLayout root, repositoryLayout;
         final ImageView iconView;
         final TextView pathTextView, hostTextView, translatedProgressTextView, separatorTextView;
@@ -107,6 +111,13 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
                 separatorTextView.setVisibility(View.GONE);
             }
         }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.add(Menu.NONE, R.id.importRepo, Menu.NONE, R.string.import_repository);
+            menu.add(Menu.NONE, R.id.exportRepo, Menu.NONE, R.string.export_repository);
+            menu.add(Menu.NONE, R.id.deleteRepo, Menu.NONE, R.string.delete_repository);
+        }
     }
 
     public RepoHandlerAdapter(final Context context) {
@@ -136,7 +147,13 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
                 }
             });
 
-            // TODO Context menu on long click
+            view.root.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mContextMenuPosition = view.getAdapterPosition();
+                    return false;
+                }
+            });
         } else if (i == mRepositories.size()) {
             // Separator view on the edge case
             view.setIsSeparator(true);
@@ -149,12 +166,27 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     }
 
     @Override
+    public void onViewRecycled(final ViewHolder view) {
+        view.root.setOnClickListener(null);
+        view.root.setOnLongClickListener(null);
+        super.onViewRecycled(view);
+    }
+
+    @Override
     public int getItemCount() {
         if (mSyncingRepositories.isEmpty())
             return mRepositories.size();
         else
             // +1 for the separator view on the edge case
             return mRepositories.size() + 1 + mSyncingRepositories.size();
+    }
+
+    public RepoHandler getContextMenuRepository() {
+        // Reason for saving menu position like this: https://stackoverflow.com/a/27886458
+        if (mContextMenuPosition < mRepositories.size())
+            return mRepositories.get(mContextMenuPosition);
+        else
+            return null;
     }
 
     // Returns true if there are items left, or false otherwise

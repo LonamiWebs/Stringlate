@@ -123,11 +123,10 @@ public class HistoryFragment extends Fragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        /*
-        AdapterView.AdapterContextMenuInfo info =
-                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        mLastSelectedRepo = mRepositoryAdapter.getContextMenuRepository();
+        if (mLastSelectedRepo == null)
+            return false;
 
-        mLastSelectedRepo = (RepoHandler) mRepositoryListView.getItemAtPosition(info.position);
         switch (item.getItemId()) {
             case R.id.importRepo:
                 importFromSd();
@@ -141,8 +140,6 @@ public class HistoryFragment extends Fragment {
             default:
                 return super.onContextItemSelected(item);
         }
-        */
-        return false;
     }
 
     private void promptDeleteRepo(final RepoHandler repo) {
