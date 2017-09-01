@@ -153,6 +153,7 @@ public class Helpers extends io.github.gsantner.opoc.util.Helpers {
                     while ((length = in.read(buf)) > 0)
                         out.write(buf, 0, length);
 
+                    return true;
                 } finally {
                     out.close();
                 }
