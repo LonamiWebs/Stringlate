@@ -11,6 +11,32 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="io.github.lonamiwebs.stringlate.activities.export.CreateUrlActivity">
 
+    <LinearLayout
+        android:id="@+id/workingLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Working…" />
+
+        <ProgressBar
+            android:id="@+id/indeterminateBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/successLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
     <TextView
         android:id="@+id/postSuccessTextView"
         android:layout_width="match_parent"
@@ -60,5 +86,7 @@
         android:layout_height="wrap_content"
         android:onClick="onExit"
         android:text="@string/exit" />
+
+    </LinearLayout>
 
 </LinearLayout>

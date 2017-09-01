@@ -5,20 +5,19 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.concurrent.Callable;
 
 import io.github.lonamiwebs.stringlate.R;
 
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_DESCRIPTION;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_ID;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REMOTE_PATH;
 
 public class CreateUrlActivity extends AppCompatActivity {
 
@@ -27,6 +26,9 @@ public class CreateUrlActivity extends AppCompatActivity {
     private String mPostedUrl;
     private Callable<String> mPostUrlCallable;
 
+    private LinearLayout mWorkingLinearLayout;
+    private LinearLayout mSuccessLinearLayout;
+
     //endregion
 
     //region Initialization
@@ -34,14 +36,44 @@ public class CreateUrlActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_url_success);
+        setContentView(R.layout.activity_create_url);
+
+        mWorkingLinearLayout = findViewById(R.id.workingLinearLayout);
+        mSuccessLinearLayout = findViewById(R.id.successLinearLayout);
 
         Intent intent = getIntent();
         mPostUrlCallable = Exporter.getExporter(intent.getIntExtra(EXTRA_ID, 0));
         if (mPostUrlCallable == null) {
-            // TODO Notify something went wrong
+            Toast.makeText(this, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+            finish();
         } else {
-            // TODO Run the callable on a background task
+            // TODO Get more information (i.e. progress, name) from the exporters
+            new AsyncTask<Void, Void, String>() {
+                @Override
+                protected String doInBackground(Void... params) {
+                    try {
+                        return mPostUrlCallable.call();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+
+                @Override
+                protected void onPostExecute(final String postedUrl) {
+                    if (postedUrl == null) {
+                        Toast.makeText(CreateUrlActivity.this,
+                                R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        mPostedUrl = postedUrl;
+                        mWorkingLinearLayout.setVisibility(View.GONE);
+                        mSuccessLinearLayout.setVisibility(View.VISIBLE);
+
+                        ((EditText) findViewById(R.id.postedUrlEditText)).setText(mPostedUrl);
+                    }
+                }
+            }.execute();
         }
     }
 
