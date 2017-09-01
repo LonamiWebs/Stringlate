@@ -34,7 +34,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     private final int mSize; // Used to generate default images
     private final Context mContext;
 
-    private int mContextMenuPosition;
+    private RepoHandler mContextMenuRepo;
 
     // We actually have two RecyclerViews in one with a custom separator.
     // Simply, if we have any repositories synchronizing, we'll add an extra item which
@@ -49,6 +49,8 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
         final ImageView iconView;
         final TextView pathTextView, hostTextView, translatedProgressTextView, separatorTextView;
         final ProgressBar translatedProgressBar;
+
+        boolean showMenu;
 
         ViewHolder(final LinearLayout root) {
             super(root);
@@ -106,6 +108,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
             if (isSeparator) {
                 repositoryLayout.setVisibility(View.GONE);
                 separatorTextView.setVisibility(View.VISIBLE);
+                showMenu = false;
             } else {
                 repositoryLayout.setVisibility(View.VISIBLE);
                 separatorTextView.setVisibility(View.GONE);
@@ -137,6 +140,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
             final RepoProgress progress = mRepositories.get(i).loadProgress();
             view.update(mRepositories.get(i), mSize);
             view.updateProgress(progress == null ? null : progress.getProgress());
+            view.showMenu = true;
 
             view.root.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -150,7 +154,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
             view.root.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    mContextMenuPosition = view.getAdapterPosition();
+                    mContextMenuRepo = mRepositories.get(view.getAdapterPosition());
                     return false;
                 }
             });
@@ -162,6 +166,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
             final Pair<RepoHandler, Float> repo = mSyncingRepositories.get(i);
             view.update(repo.first, mSize);
             view.updateProgress(repo.second);
+            view.showMenu = false;
         }
     }
 
@@ -183,10 +188,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
 
     public RepoHandler getContextMenuRepository() {
         // Reason for saving menu position like this: https://stackoverflow.com/a/27886458
-        if (mContextMenuPosition < mRepositories.size())
-            return mRepositories.get(mContextMenuPosition);
-        else
-            return null;
+        return mContextMenuRepo;
     }
 
     // Returns true if there are items left, or false otherwise
