@@ -23,8 +23,8 @@ import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
-import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 import io.github.lonamiwebs.stringlate.utilities.Helpers;
+import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 
 import static android.app.Activity.RESULT_OK;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -205,7 +205,7 @@ public class AddNewRepositoryFragment extends Fragment {
 
         if (getActivity() instanceof RepositoriesActivity) {
             // Take the user to the repositories history if the parent activity matches
-            ((RepositoriesActivity)getActivity()).goToHistory();
+            ((RepositoriesActivity) getActivity()).goToHistory();
         }
     }
 

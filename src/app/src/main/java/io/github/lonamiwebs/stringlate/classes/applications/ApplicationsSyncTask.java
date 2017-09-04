@@ -26,6 +26,7 @@ public class ApplicationsSyncTask extends Thread {
     public static boolean isSyncing() {
         return syncingLock.isLocked();
     }
+
     public static float progress;
 
     private ApplicationsSyncTask(final ApplicationList appList) {

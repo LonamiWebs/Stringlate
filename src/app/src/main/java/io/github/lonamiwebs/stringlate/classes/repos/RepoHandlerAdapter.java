@@ -75,8 +75,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
                     iconView.setImageBitmap(getBitmap(name, bitmapDpiSize));
                     iconView.setTag(name);
                 }
-            }
-            else {
+            } else {
                 if (!iconFile.equals(iconView.getTag())) {
                     iconView.setImageURI(Uri.fromFile(iconFile));
                     iconView.setTag(iconFile);
@@ -97,7 +96,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
 
                 // Just some very large number since the progressbar doesn't support floats
                 translatedProgressBar.setMax(1000000);
-                translatedProgressBar.setProgress((int)(progress * 1000000));
+                translatedProgressBar.setProgress((int) (progress * 1000000));
                 translatedProgressTextView.setText(
                         String.format(Locale.ENGLISH, "%.1f%%", 100f * progress)
                 );
@@ -215,7 +214,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
 
     // Returns true if there are items left, or false otherwise
     public boolean notifyRepoRemoved(final RepoHandler which) {
-        for (int i = mRepositories.size(); i-- != 0;) {
+        for (int i = mRepositories.size(); i-- != 0; ) {
             if (mRepositories.get(i).equals(which)) {
                 mRepositories.remove(i);
                 notifyItemRemoved(i);
@@ -229,7 +228,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     public void notifySyncingProgressChanged(final RepoHandler which, float progress) {
         boolean updated = false;
         // Update the progress of an existing repository, if any
-        for (int i = mSyncingRepositories.size(); i-- != 0;) {
+        for (int i = mSyncingRepositories.size(); i-- != 0; ) {
             if (mSyncingRepositories.get(i).first.equals(which)) {
                 mSyncingRepositories.set(i, new Pair<>(
                         mSyncingRepositories.get(i).first, progress
@@ -250,7 +249,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
 
     // Returns true if there are items left, or false otherwise
     public boolean notifySyncingRepoFinished(final RepoHandler which) {
-        for (int i = mSyncingRepositories.size(); i-- != 0;) {
+        for (int i = mSyncingRepositories.size(); i-- != 0; ) {
             if (mSyncingRepositories.get(i).first.equals(which)) {
                 mSyncingRepositories.remove(i);
                 notifyItemRemoved(mRepositories.size() + 1 + i);

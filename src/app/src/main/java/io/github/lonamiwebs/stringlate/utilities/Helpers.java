@@ -160,7 +160,8 @@ public class Helpers extends io.github.gsantner.opoc.util.Helpers {
             } finally {
                 in.close();
             }
-        } catch (IOException ignored) { }
+        } catch (IOException ignored) {
+        }
         return false;
     }
 

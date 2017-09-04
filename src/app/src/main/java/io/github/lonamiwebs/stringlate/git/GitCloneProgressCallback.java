@@ -47,7 +47,7 @@ public class GitCloneProgressCallback implements ProgressMonitor {
         long time = System.currentTimeMillis();
         if (time - mLastMs >= DELAY_PER_UPDATE) {
             mLastMs = time;
-            mCallback.onUpdate(1, (float)mDone / (float)mWork);
+            mCallback.onUpdate(1, (float) mDone / (float) mWork);
         }
     }
 

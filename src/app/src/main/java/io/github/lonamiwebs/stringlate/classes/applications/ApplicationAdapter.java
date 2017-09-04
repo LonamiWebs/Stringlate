@@ -27,6 +27,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     public interface OnItemClick {
         void onClick(Intent data);
     }
+
     public OnItemClick onItemClick;
 
     class ViewHolder extends RecyclerView.ViewHolder {

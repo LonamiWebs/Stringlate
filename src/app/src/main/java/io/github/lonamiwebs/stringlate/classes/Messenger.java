@@ -18,16 +18,19 @@ public class Messenger {
     // This interface is meant to be used as the progress of the task running RepoHandler.sync
     public interface OnRepoSync {
         void onUpdate(RepoHandler which, float progress);
+
         void onFinish(RepoHandler which, boolean okay);
     }
 
     public interface OnRepoChange {
         void onRepoAdded(RepoHandler which);
+
         void onRepoRemoved(RepoHandler which);
     }
 
     public interface OnApplicationsSync {
         void onUpdate(float progress);
+
         void onFinish(boolean okay);
     }
 

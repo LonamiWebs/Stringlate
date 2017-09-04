@@ -164,7 +164,7 @@ public class DiscoverActivity extends AppCompatActivity {
         @Override
         public void onUpdate(float progress) {
             checkViewsVisibility(false);
-            mSyncingProgressBar.setProgress((int)(progress * 100f));
+            mSyncingProgressBar.setProgress((int) (progress * 100f));
         }
 
         @Override
@@ -180,7 +180,7 @@ public class DiscoverActivity extends AppCompatActivity {
         final boolean syncing = ApplicationsSyncTask.isSyncing();
         if (syncing) {
             mSyncingLayout.setVisibility(View.VISIBLE);
-            mSyncingProgressBar.setProgress((int)(100 * ApplicationsSyncTask.progress));
+            mSyncingProgressBar.setProgress((int) (100 * ApplicationsSyncTask.progress));
         } else {
             mSyncingLayout.setVisibility(View.GONE);
         }

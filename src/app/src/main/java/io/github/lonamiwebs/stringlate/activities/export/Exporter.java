@@ -27,8 +27,11 @@ class Exporter {
     public static abstract class CallableExporter {
         @NonNull
         String mFailureReason = ""; // Meant to be set before a possible exception happens
+
         abstract String getDescription(Context context);
+
         abstract String getSuccessDescription(Context context);
+
         abstract String call(Context context, Callback<String> progress) throws Exception;
     }
 

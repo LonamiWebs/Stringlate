@@ -34,7 +34,9 @@ public class SourceSettings {
     //region Getters
 
     @NonNull
-    public String getName() { return mSettings.optString(KEY_NAME, DEFAULT_NAME); }
+    public String getName() {
+        return mSettings.optString(KEY_NAME, DEFAULT_NAME);
+    }
 
     public Object get(final String name) {
         return mSettings.opt(name);

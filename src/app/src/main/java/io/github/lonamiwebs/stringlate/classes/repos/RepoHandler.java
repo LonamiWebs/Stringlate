@@ -522,7 +522,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     @NonNull
     public String getUsedTranslationService() {
-        final String result = (String)mSourceSettings.get("translation_service");
+        final String result = (String) mSourceSettings.get("translation_service");
         return result == null ? "" : result;
     }
 

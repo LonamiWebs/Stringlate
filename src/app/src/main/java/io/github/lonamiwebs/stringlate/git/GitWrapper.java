@@ -318,8 +318,8 @@ public class GitWrapper {
 
     // resourceDir might be '/mipmap(-density)' or '/drawable(-density)'
     private static ArrayList<File> findIcons(final RepositoryResources resources,
-                                  final String resourceDir,
-                                  final String name) {
+                                             final String resourceDir,
+                                             final String name) {
         final ArrayList<File> result = new ArrayList<>();
         for (File file : resources.img)
             if (file.getPath().contains(resourceDir) && file.getName().startsWith(name))
