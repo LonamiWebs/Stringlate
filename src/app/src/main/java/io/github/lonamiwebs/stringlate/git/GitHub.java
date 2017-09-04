@@ -1,7 +1,5 @@
 package io.github.lonamiwebs.stringlate.git;
 
-import android.support.annotation.NonNull;
-
 import org.eclipse.jgit.util.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +44,7 @@ public class GitHub {
 
     public static JSONObject gCreateGist(String description, boolean isPublic,
                                          HashMap<String, String> fileContents,
-                                         @NonNull String token) {
+                                         String token) {
         try {
             JSONObject params = new JSONObject();
 

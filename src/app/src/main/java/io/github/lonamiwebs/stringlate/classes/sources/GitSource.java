@@ -53,7 +53,7 @@ public class GitSource implements StringsSource {
         // 2. Clone the repository itself
         if (!GitWrapper.cloneRepo(
                 mGitUrl, mWorkDir, mBranch,
-                new GitCloneProgressCallback(context, callback))) {
+                new GitCloneProgressCallback(callback))) {
             // TODO These messages are still useful, show them somehow?
             //callback.showMessage(context.getString(R.string.invalid_repo));
             return false;

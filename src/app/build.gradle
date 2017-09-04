@@ -47,6 +47,8 @@ dependencies {
 
     // Tool libraries
     compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.2.201411120430-r'
+
+    compile project (':core')
 }
 
 @SuppressWarnings(["UnnecessaryQualifiedReference", "SpellCheckingInspection"])

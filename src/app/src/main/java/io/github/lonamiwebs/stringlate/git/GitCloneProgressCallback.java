@@ -1,14 +1,11 @@
 package io.github.lonamiwebs.stringlate.git;
 
-import android.content.Context;
 
 import org.eclipse.jgit.lib.ProgressMonitor;
 
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 
 public class GitCloneProgressCallback implements ProgressMonitor {
-
-    private final Context mContext;
     private final Messenger.OnSyncProgress mCallback;
     private int mDone, mWork;
     private boolean mStarted;
@@ -20,8 +17,7 @@ public class GitCloneProgressCallback implements ProgressMonitor {
     private final static String RECEIVING_TITLE = "Receiving objects";
     private final static String RESOLVING_TITLE = "Resolving deltas";
 
-    public GitCloneProgressCallback(final Context context, final Messenger.OnSyncProgress callback) {
-        mContext = context;
+    public GitCloneProgressCallback(final Messenger.OnSyncProgress callback) {
         mCallback = callback;
     }
 
