@@ -4,7 +4,7 @@
     <string name="next">Další</string>
     <string name="current_string_id">Stávající ID řetězce:</string>
     <string name="selected_locale">Vybraný jazyk:</string>
-    <string name="welcome">Vítá vás Stringlate! Pro pokračování zadejte název projektu a jeho vlastníka, nebo vložte URL repozitáře z GitHubu.</string>
+    <string name="welcome">Vítá vás Stringlate! Pro pokračování zadejte název projektu a jeho vlastníka, nebo vložte URL repozitáře z Git.</string>
     <string name="owner_hint">vlastník</string>
     <string name="repository_hint">repozitář</string>
     <string name="or">nebo</string>
@@ -74,7 +74,7 @@
     <string name="import_file_success">Import proběhl úspěšně</string>
     <string name="update_applications">Aktualizovat aplikace</string>
     <string name="apps_repo_not_downloaded">Repozitáře aplikací ještě nebyly staženy. Abyste si mohli prohlédnout dostupné aplikace, ťukněte na tlačítko \"%s\" pro stažení rejstříku repozitářů.</string>
-    <string name="sync_failed">Chyba při synchronizaci.</string>
+    <string name="sync_failed">Chyba při synchronizaci %s.</string>
     <string name="downloading_index_jar">Stahování souboru index.jar…</string>
     <string name="downloading_index_jar_long">Stahuje se index.jar obsahující seznam aplikací…</string>
     <string name="extracting_index_xml">Extrahování index.xml z index.jar…</string>
@@ -144,10 +144,10 @@
     <string name="creating_pr">Vytváření pull požadavku…</string>
     <string name="creating_pr_long">Vytváří se pull požadavek v původním repozitáři…</string>
     <string name="something_went_wrong">Něco se pokazilo.</string>
-    <string name="cloning_repo">Klonování reportáže...</string>
-    <string name="cloning_repo_progress">Dočasné kopírování vzdáleného repozitáře... %.1f%%</string>
-    <string name="copying_res">Kopírování zdrojů...</string>
-    <string name="copying_res_long">Ověřování a stahování zdrojů do cílového umístění...</string>
+    <string name="cloning_repo">Klonování reportáže…</string>
+    <string name="cloning_repo_progress">Dočasné kopírování vzdáleného repozitáře… %.1f%%</string>
+    <string name="copying_res">Kopírování zdrojů…</string>
+    <string name="copying_res_long">Ověřování a stahování zdrojů do cílového umístění…</string>
     <string name="issue_title_colon">Název problému:</string>
     <string name="issue_title">Název problému</string>
     <string name="title_empty">Titulek nemůže být prázdný</string>
@@ -155,7 +155,7 @@
     <string name="no_strings_to_export">Nejsou dostupné žádné řetězce k překladu.</string>
     <string name="filtering_strings_with">Filtrování řetězců s \"%s"</string>
     <string name="clear_filter">Vymazat filtr</string>
-    <string name="sort_by_ellipsis">Seřadit podle...</string>
+    <string name="sort_by_ellipsis">Seřadit podle…</string>
     <string name="sort_alphabetically">Abecedně</string>
     <string name="sort_string_length">Délka řetězce</string>
     <string name="retry">Opakovat</string>
@@ -170,7 +170,7 @@
     <string name="peek_translations">Náhled dalších překladů</string>
     <string name="syncing_now">Synchronizace:</string>
     <string name="wait_until_sync">Vyčkejte prosím na dokončení synchronizace.</string>
-    <string name="invalid_project">%s  vstupní repozitář zřejmě nebo platný.</string>
+    <string name="invalid_project">%s vstupní repozitář zřejmě nebo platný.</string>
     <string name="project_no_strings">Vstupní repozitář zřejmě nebo platný.</string>
     <string name="settings">Nastavení</string>
     <string name="pref_desc__language">Změna jazyka aplikace. Restartujte aplikaci, aby se změna projevila.</string>
