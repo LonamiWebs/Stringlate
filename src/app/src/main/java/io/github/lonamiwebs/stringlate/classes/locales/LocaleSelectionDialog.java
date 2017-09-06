@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -98,7 +99,10 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
         mTabLocales = mTabLayout.getTabAt(0);
         mTabCountries = mTabLayout.getTabAt(1);
 
-        // TODO Setup adapters
+        mLocaleRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mLocaleEntryAdapterLocales = new LocaleEntryAdapter();
+
+        mTabLocales.select();
     }
 
     //endregion
@@ -116,12 +120,10 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
-        /*
         if (tab == mTabLocales)
             mLocaleRecyclerView.setAdapter(mLocaleEntryAdapterLocales);
         else
             mLocaleRecyclerView.setAdapter(mLocaleEntryAdapterCountries);
-        */
     }
 
     @Override
