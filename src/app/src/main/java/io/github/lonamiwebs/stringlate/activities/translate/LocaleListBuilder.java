@@ -16,7 +16,7 @@ import java.util.Comparator;
 import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.classes.LocaleString;
+import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 
 /**
  * Created by stani on 2017-03-04.

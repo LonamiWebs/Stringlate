@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.classes;
+package io.github.lonamiwebs.stringlate.classes.locales;
 
 import android.support.annotation.NonNull;
 
