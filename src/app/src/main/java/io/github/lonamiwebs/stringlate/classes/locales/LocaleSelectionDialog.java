@@ -100,7 +100,7 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
         mTabCountries = mTabLayout.getTabAt(1);
 
         mLocaleRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mLocaleEntryAdapterLocales = new LocaleEntryAdapter();
+        mLocaleEntryAdapterLocales = new LocaleEntryAdapter(false);
 
         mTabLocales.select();
     }

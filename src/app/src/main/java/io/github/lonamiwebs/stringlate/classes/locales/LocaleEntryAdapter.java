@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -49,11 +50,13 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
         }
     }
 
-    LocaleEntryAdapter() {
+    // Optionally show also the country-specific locales, or not at all
+    LocaleEntryAdapter(boolean showCountrySpecific) {
         // Create a map {locale code: Locale} to behave like a set and avoid duplicates
         final HashMap<String, Locale> locales = new HashMap<>();
         for (Locale locale : Locale.getAvailableLocales()) {
-            locales.put(LocaleString.getFullCode(locale), locale);
+            if (showCountrySpecific || locale.getCountry().isEmpty())
+                locales.put(LocaleString.getFullCode(locale), locale);
         }
 
         for (String isoLang : Locale.getISOLanguages()) {
@@ -62,12 +65,24 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
         }
 
         // Once everything is filtered, fill in the array list
+        initLocales(locales.values());
+    }
+
+    // Used to show only all the specialized countries for a given locale code
+    LocaleEntryAdapter(final String localeCode) {
+        final ArrayList<Locale> locales = new ArrayList<>();
+        for (Locale locale : Locale.getAvailableLocales())
+            if (locale.getLanguage().equals(localeCode))
+                locales.add(locale);
+
+        initLocales(locales);
+    }
+
+    private void initLocales(final Collection<Locale> locales) {
         mLocales = new ArrayList<>(locales.size());
         mFilteredLocales = new ArrayList<>(locales.size());
-        for (Map.Entry<String, Locale> locale : locales.entrySet()) {
-            mLocales.add(locale.getValue());
-            mFilteredLocales.add(locale.getValue());
-        }
+        for (Locale locale : locales)
+            mLocales.add(locale);
 
         Collections.sort(mLocales, new Comparator<Locale>() {
             @Override
@@ -75,6 +90,10 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
                 return o1.getDisplayLanguage().compareTo(o2.getDisplayLanguage());
             }
         });
+
+        // Initial collection is now sorted, so add everything to our filtered list
+        for (Locale locale : mLocales)
+            mFilteredLocales.add(locale);
 
         notifyDataSetChanged();
     }
