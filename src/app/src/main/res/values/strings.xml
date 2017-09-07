@@ -177,4 +177,6 @@
     <string name="pref_title__language">Language</string>
     <string name="appearance">Appearance</string>
     <string name="user_accounts">User accounts</string>
+    <string name="language">Language</string>
+    <string name="country">Country</string>
 </resources>

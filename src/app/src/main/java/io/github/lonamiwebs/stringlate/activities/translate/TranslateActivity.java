@@ -46,7 +46,8 @@ import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity;
-import io.github.lonamiwebs.stringlate.classes.LocaleString;
+import io.github.lonamiwebs.stringlate.classes.locales.LocaleSelectionDialog;
+import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoProgress;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
@@ -63,7 +64,7 @@ import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_CREATE_
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_OPEN_TREE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_STRING_SELECTED;
 
-public class TranslateActivity extends AppCompatActivity {
+public class TranslateActivity extends AppCompatActivity implements LocaleSelectionDialog.OnLocaleSelected {
 
     //region Members
 
@@ -483,57 +484,25 @@ public class TranslateActivity extends AppCompatActivity {
 
     //region Adding locales menu events
 
-    private void promptAddLocale() {
-        promptAddLocale("");
-    }
-
     // Prompts the user to add a new locale. If it exists,
     // no new file is created but the entered locale is selected.
-    private void promptAddLocale(final String presetLocaleCode) {
+    private void promptAddLocale() {
+        final LocaleSelectionDialog dialog = LocaleSelectionDialog.newInstance();
+        dialog.show(getFragmentManager(), LocaleSelectionDialog.TAG);
+    }
 
-        final LocaleListBuilder localeList = new LocaleListBuilder(this,
-                new LocaleListBuilder.LocalePickCallback() {
-                    @Override
-                    public void onChoice(final String localeCode) {
-                        promptAddLocale(localeCode);
-                    }
-                });
+    @Override
+    public void onLocaleSelected(final Locale which) {
+        if (which == null)
+            return;
 
-        final EditText et = new EditText(this);
-        et.setText(presetLocaleCode);
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.enter_locale)
-                .setMessage(getString(R.string.enter_locale_long, Locale.getDefault().getLanguage()))
-                .setView(et)
-                .setNeutralButton(R.string.choose_locale_from_list, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        localeList.show();
-                    }
-                })
-                .setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        String locale = LocaleString.sanitizeLocale(et.getText().toString());
-                        if (LocaleString.isValid(locale)) {
-                            if (mRepo.createLocale(locale)) {
-                                loadLocalesSpinner();
-                                setCurrentLocale(locale);
-                            } else {
-                                Toast.makeText(getApplicationContext(),
-                                        R.string.create_locale_error,
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            // The input locale is not a valid locale
-                            Toast.makeText(getApplicationContext(),
-                                    R.string.invalid_locale,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .show();
+        final String locale = LocaleString.getFullCode(which);
+        if (mRepo.createLocale(locale)) {
+            loadLocalesSpinner();
+            setCurrentLocale(locale);
+        } else {
+            Toast.makeText(TranslateActivity.this, R.string.create_locale_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     //endregion

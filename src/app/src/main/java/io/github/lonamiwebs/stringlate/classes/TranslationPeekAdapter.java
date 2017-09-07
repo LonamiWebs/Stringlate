@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 
 public class TranslationPeekAdapter extends ArrayAdapter<TranslationPeekAdapter.Item> {
 
