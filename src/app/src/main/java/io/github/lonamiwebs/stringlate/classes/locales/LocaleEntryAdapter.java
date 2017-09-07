@@ -4,6 +4,7 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,7 +15,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import io.github.lonamiwebs.stringlate.R;
 
@@ -22,6 +22,12 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
 
     private ArrayList<Locale> mLocales;
     private ArrayList<Locale> mFilteredLocales;
+
+    public interface OnItemClick {
+        void onClick(Locale which);
+    }
+
+    public LocaleEntryAdapter.OnItemClick onItemClick;
 
     class ViewHolder extends RecyclerView.ViewHolder {
         final LinearLayout root;
@@ -70,15 +76,19 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
 
     // Used to show only all the specialized countries for a given locale code
     LocaleEntryAdapter(final String localeCode) {
-        final ArrayList<Locale> locales = new ArrayList<>();
-        for (Locale locale : Locale.getAvailableLocales())
-            if (locale.getLanguage().equals(localeCode))
-                locales.add(locale);
+        if (localeCode.isEmpty()) {
+            initLocales(new ArrayList<Locale>(0));
+        } else {
+            final ArrayList<Locale> locales = new ArrayList<>();
+            for (Locale locale : Locale.getAvailableLocales())
+                if (locale.getLanguage().equals(localeCode))
+                    locales.add(locale);
 
-        initLocales(locales);
+            initLocales(locales);
+        }
     }
 
-    private void initLocales(final Collection<Locale> locales) {
+    public void initLocales(final Collection<Locale> locales) {
         mLocales = new ArrayList<>(locales.size());
         mFilteredLocales = new ArrayList<>(locales.size());
         for (Locale locale : locales)
@@ -117,6 +127,14 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
     @Override
     public void onBindViewHolder(final ViewHolder view, final int i) {
         view.update(mFilteredLocales.get(i));
+        view.root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClick != null) {
+                    onItemClick.onClick(mFilteredLocales.get(view.getAdapterPosition()));
+                }
+            }
+        });
     }
 
     @Override

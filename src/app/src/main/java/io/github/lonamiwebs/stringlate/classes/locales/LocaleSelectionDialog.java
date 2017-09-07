@@ -15,8 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
 
@@ -101,6 +103,23 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
 
         mLocaleRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mLocaleEntryAdapterLocales = new LocaleEntryAdapter(false);
+        mLocaleEntryAdapterCountries = new LocaleEntryAdapter("");
+
+        mLocaleEntryAdapterLocales.onItemClick = new LocaleEntryAdapter.OnItemClick() {
+            @Override
+            public void onClick(final Locale which) {
+                ArrayList<Locale> locales = LocaleString.getCountriesForLocale(which.getLanguage());
+                if (locales.isEmpty()) {
+                    // No locale, shouldn't happen since we're only showing valid ones. No-op
+                } else if (locales.size() == 1) {
+                    // Single locale, TODO use this one with no country code
+                } else {
+                    // More than a country is available, so switch to the countries tab
+                    mLocaleEntryAdapterCountries.initLocales(locales);
+                    mTabCountries.select();
+                }
+            }
+        };
 
         mTabLocales.select();
     }

@@ -2,6 +2,7 @@ package io.github.lonamiwebs.stringlate.classes.locales;
 
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.regex.Matcher;
@@ -99,5 +100,21 @@ public class LocaleString {
                 return lang;
         }
         return locale;
+    }
+
+    @NonNull
+    public static ArrayList<Locale> getCountriesForLocale(final String localeCode) {
+        final ArrayList<Locale> result = new ArrayList<>();
+        for (Locale l : Locale.getAvailableLocales())
+            if (l.getLanguage().equals(localeCode))
+                result.add(l);
+
+        if (result.isEmpty()) {
+            final Locale locale = new Locale(localeCode);
+            if (isValid(locale))
+                result.add(locale);
+        }
+
+        return result;
     }
 }
