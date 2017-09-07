@@ -1,6 +1,7 @@
 package io.github.lonamiwebs.stringlate.classes.locales;
 
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import io.github.lonamiwebs.stringlate.R;
 public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.ViewHolder> {
 
     private ArrayList<Locale> mLocales;
+    private ArrayList<Locale> mFilteredLocales;
 
     class ViewHolder extends RecyclerView.ViewHolder {
         final LinearLayout root;
@@ -61,8 +63,11 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
 
         // Once everything is filtered, fill in the array list
         mLocales = new ArrayList<>(locales.size());
-        for (Map.Entry<String, Locale> locale : locales.entrySet())
+        mFilteredLocales = new ArrayList<>(locales.size());
+        for (Map.Entry<String, Locale> locale : locales.entrySet()) {
             mLocales.add(locale.getValue());
+            mFilteredLocales.add(locale.getValue());
+        }
 
         Collections.sort(mLocales, new Comparator<Locale>() {
             @Override
@@ -70,6 +75,16 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
                 return o1.getDisplayLanguage().compareTo(o2.getDisplayLanguage());
             }
         });
+
+        notifyDataSetChanged();
+    }
+
+    public void setFilter(@NonNull String filter) {
+        mFilteredLocales.clear();
+        filter = filter.toLowerCase();
+        for (Locale locale : mLocales)
+            if (locale.getDisplayLanguage().toLowerCase().contains(filter))
+                mFilteredLocales.add(locale);
 
         notifyDataSetChanged();
     }
@@ -82,12 +97,11 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder view, final int i) {
-        view.update(mLocales.get(i));
+        view.update(mFilteredLocales.get(i));
     }
 
     @Override
     public int getItemCount() {
-        return mLocales.size();
+        return mFilteredLocales.size();
     }
-
 }

@@ -114,8 +114,10 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
     }
 
     void onSearchChanged() {
-        mTabLocales.select();
-        //mLocaleEntryAdapterCountries.filter(mSearchEditText.getText().toString());
+        if (!mTabLocales.isSelected())
+            mTabLocales.select();
+
+        mLocaleEntryAdapterLocales.setFilter(mSearchEditText.getText().toString());
     }
 
     @Override
