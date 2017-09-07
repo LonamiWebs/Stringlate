@@ -1,6 +1,5 @@
 package io.github.lonamiwebs.stringlate.classes.locales;
 
-import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,13 +45,10 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
             langCode.setText(LocaleString.getFullCode(locale));
 
             final String displayCountryText = locale.getDisplayCountry();
-            if (displayCountryText.isEmpty()) {
-                displayCountry.setText(R.string.default_parenthesis);
-                displayCountry.setTypeface(null, Typeface.ITALIC);
-            } else {
+            if (displayCountryText.isEmpty())
+                displayCountry.setText(LocaleString.getEmojiFlag(locale));
+            else
                 displayCountry.setText(displayCountryText);
-                displayCountry.setTypeface(null, Typeface.NORMAL);
-            }
         }
     }
 

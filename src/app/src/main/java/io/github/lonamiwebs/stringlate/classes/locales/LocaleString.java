@@ -117,4 +117,18 @@ public class LocaleString {
 
         return result;
     }
+
+    public static String getEmojiFlag(final Locale locale) {
+        try {
+            final String countryCode = locale.getLanguage().toUpperCase();
+            if (countryCode.length() != 2)
+                return "";
+
+            final int firstLetter = Character.codePointAt(countryCode, 0) - 'A' + 0x1F1E6;
+            final int secondLetter = Character.codePointAt(countryCode, 1) - 'A' + 0x1F1E6;
+            return new String(Character.toChars(firstLetter)) + new String(Character.toChars(secondLetter));
+        } catch (IndexOutOfBoundsException ignored) {
+            return "";
+        }
+    }
 }
