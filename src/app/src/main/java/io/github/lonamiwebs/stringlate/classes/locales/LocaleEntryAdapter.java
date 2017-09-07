@@ -1,5 +1,6 @@
 package io.github.lonamiwebs.stringlate.classes.locales;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,11 +17,14 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
 
 public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.ViewHolder> {
 
     private ArrayList<Locale> mLocales;
     private ArrayList<Locale> mFilteredLocales;
+
+    private final String mPreferredLocale;
 
     public interface OnItemClick {
         void onClick(Locale which);
@@ -53,7 +57,8 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
     }
 
     // Optionally show also the country-specific locales, or not at all
-    LocaleEntryAdapter(boolean showCountrySpecific) {
+    LocaleEntryAdapter(final Context context, boolean showCountrySpecific) {
+        mPreferredLocale = new AppSettings(context).getLanguage();
         // Create a map {locale code: Locale} to behave like a set and avoid duplicates
         final HashMap<String, Locale> locales = new HashMap<>();
         for (Locale locale : Locale.getAvailableLocales()) {
@@ -71,7 +76,8 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
     }
 
     // Used to show only all the specialized countries for a given locale code
-    LocaleEntryAdapter(final String localeCode) {
+    LocaleEntryAdapter(final Context context, final String localeCode) {
+        mPreferredLocale = new AppSettings(context).getLanguage();
         if (localeCode.isEmpty()) {
             initLocales(new ArrayList<Locale>(0));
         } else {
@@ -93,7 +99,16 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
         Collections.sort(mLocales, new Comparator<Locale>() {
             @Override
             public int compare(Locale o1, Locale o2) {
-                return o1.getDisplayLanguage().compareTo(o2.getDisplayLanguage());
+                final boolean left = o1.getLanguage().equals(mPreferredLocale);
+                final boolean right = o2.getLanguage().equals(mPreferredLocale);
+                if (left != right) {
+                    if (left)
+                        return -1;
+                    else
+                        return +1;
+                } else {
+                    return o1.getDisplayLanguage().compareTo(o2.getDisplayLanguage());
+                }
             }
         });
 
