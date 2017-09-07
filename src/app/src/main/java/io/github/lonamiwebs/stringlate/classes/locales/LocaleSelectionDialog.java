@@ -3,6 +3,7 @@ package io.github.lonamiwebs.stringlate.classes.locales;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -46,6 +47,12 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
     private RecyclerView mLocaleRecyclerView;
     private TabLayout mTabLayout;
     private EditText mSearchEditText;
+
+    public interface OnLocaleSelected {
+        void onLocaleSelected(Locale which);
+    }
+
+    OnLocaleSelected onLocaleSelected;
 
     //endregion
 
@@ -112,7 +119,8 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
                 if (locales.isEmpty()) {
                     // No locale, shouldn't happen since we're only showing valid ones. No-op
                 } else if (locales.size() == 1) {
-                    // Single locale, TODO use this one with no country code
+                    // Single locale, no need to show country selection
+                    onLocaleSelected(locales.get(0));
                 } else {
                     // More than a country is available, so switch to the countries tab
                     mLocaleEntryAdapterCountries.initLocales(locales);
@@ -121,14 +129,33 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
             }
         };
 
+        mLocaleEntryAdapterCountries.onItemClick = new LocaleEntryAdapter.OnItemClick() {
+            @Override
+            public void onClick(final Locale which) {
+                onLocaleSelected(which);
+            }
+        };
+
         mTabLocales.select();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            onLocaleSelected = (OnLocaleSelected) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnLocaleSelected");
+        }
     }
 
     //endregion
 
     //region Events
 
-    void onLocaleSelected() {
+    void onLocaleSelected(final Locale which) {
+        onLocaleSelected.onLocaleSelected(which);
         dismiss();
     }
 

@@ -64,7 +64,7 @@ import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_CREATE_
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_OPEN_TREE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_STRING_SELECTED;
 
-public class TranslateActivity extends AppCompatActivity {
+public class TranslateActivity extends AppCompatActivity implements LocaleSelectionDialog.OnLocaleSelected {
 
     //region Members
 
@@ -493,6 +493,20 @@ public class TranslateActivity extends AppCompatActivity {
     private void promptAddLocale(final String presetLocaleCode) {
         final LocaleSelectionDialog dialog = LocaleSelectionDialog.newInstance();
         dialog.show(getFragmentManager(), LocaleSelectionDialog.TAG);
+    }
+
+    @Override
+    public void onLocaleSelected(final Locale which) {
+        if (which == null)
+            return;
+
+        final String locale = LocaleString.getFullCode(which);
+        if (mRepo.createLocale(locale)) {
+            loadLocalesSpinner();
+            setCurrentLocale(locale);
+        } else {
+            Toast.makeText(TranslateActivity.this, R.string.create_locale_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     //endregion
