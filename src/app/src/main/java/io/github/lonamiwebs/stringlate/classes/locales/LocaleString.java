@@ -3,6 +3,7 @@ package io.github.lonamiwebs.stringlate.classes.locales;
 import android.support.annotation.NonNull;
 
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -70,16 +71,19 @@ public class LocaleString {
 
     public static boolean isValid(@NonNull String locale) {
         if (locale.contains("-")) {
-            for (Locale l : Locale.getAvailableLocales())
-                if (!l.getCountry().isEmpty())
-                    if (locale.equals(l.getLanguage() + "-r" + l.getCountry()))
-                        return true;
-        } else {
-            for (Locale l : Locale.getAvailableLocales())
-                if (locale.equals(l.getLanguage()))
-                    return true;
+            final String[] parts = locale.split("-");
+            return isValid(new Locale(parts[0], parts[1].substring(1)));
         }
-        return false;
+
+        return isValid(new Locale(locale));
+    }
+
+    private static boolean isValid(final Locale locale) {
+        try {
+            return locale.getISO3Language() != null && locale.getISO3Country() != null;
+        } catch (MissingResourceException ignored) {
+            return false;
+        }
     }
 
     @NonNull
