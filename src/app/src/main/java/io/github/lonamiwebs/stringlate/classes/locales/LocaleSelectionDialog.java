@@ -6,9 +6,9 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class LocaleSelectionDialog extends DialogFragment {
 
     private RecyclerView mLocaleRecyclerView;
     private EditText mSearchEditText;
+    private SwitchCompat mMoreSwitch;
 
     public interface OnLocaleSelected {
         void onLocaleSelected(Locale which);
@@ -62,6 +64,7 @@ public class LocaleSelectionDialog extends DialogFragment {
 
         mLocaleRecyclerView = root.findViewById(R.id.locale_recycler_view);
         mSearchEditText = root.findViewById(R.id.search_edit_text);
+        mMoreSwitch = root.findViewById(R.id.more_switch);
 
         final Dialog dialog = getDialog();
         if (dialog != null) {
@@ -72,9 +75,17 @@ public class LocaleSelectionDialog extends DialogFragment {
             }
         }
 
+        mMoreSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                setupAdapter();
+            }
+        });
+
         mSearchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -82,7 +93,8 @@ public class LocaleSelectionDialog extends DialogFragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         root.findViewById(R.id.cancel_button).setOnClickListener(new View.OnClickListener() {
@@ -100,18 +112,37 @@ public class LocaleSelectionDialog extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         mLocaleRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mLocaleEntryAdapterLocales = new LocaleEntryAdapter(getActivity(), false);
         mLocaleEntryAdapterCountries = new LocaleEntryAdapter(getActivity(), "");
+        mLocaleEntryAdapterCountries.onItemClick = new LocaleEntryAdapter.OnItemClick() {
+            @Override
+            public void onLocaleSelected(final Locale which) {
+                LocaleSelectionDialog.this.dismissDialogWithLocaleResult(which);
+            }
 
+            @Override
+            public void onLocaleExpanderSelected(Locale which) {
+                LocaleSelectionDialog.this.dismissDialogWithLocaleResult(which);
+            }
+        };
+        setupAdapter();
+    }
+
+    public void setupAdapter() {
+        mLocaleEntryAdapterLocales = new LocaleEntryAdapter(getActivity(), false, mMoreSwitch.isChecked());
         mLocaleEntryAdapterLocales.onItemClick = new LocaleEntryAdapter.OnItemClick() {
             @Override
-            public void onClick(final Locale which) {
+            public void onLocaleSelected(final Locale which) {
+                LocaleSelectionDialog.this.dismissDialogWithLocaleResult(which);
+            }
+
+            @Override
+            public void onLocaleExpanderSelected(Locale which) {
                 ArrayList<Locale> locales = LocaleString.getCountriesForLocale(which.getLanguage());
                 if (locales.isEmpty()) {
                     // No locale, shouldn't happen since we're only showing valid ones. No-op
                 } else if (locales.size() == 1) {
                     // Single locale, no need to show country selection
-                    onLocaleSelected(locales.get(0));
+                    LocaleSelectionDialog.this.dismissDialogWithLocaleResult(locales.get(0));
                 } else {
                     // More than a country is available, so switch to the countries tab
                     mLocaleEntryAdapterCountries.initLocales(locales);
@@ -119,15 +150,8 @@ public class LocaleSelectionDialog extends DialogFragment {
                 }
             }
         };
-
-        mLocaleEntryAdapterCountries.onItemClick = new LocaleEntryAdapter.OnItemClick() {
-            @Override
-            public void onClick(final Locale which) {
-                onLocaleSelected(which);
-            }
-        };
-
         mLocaleRecyclerView.setAdapter(mLocaleEntryAdapterLocales);
+        onSearchChanged();
     }
 
     @Override
@@ -145,7 +169,7 @@ public class LocaleSelectionDialog extends DialogFragment {
 
     //region Events
 
-    void onLocaleSelected(final Locale which) {
+    void dismissDialogWithLocaleResult(final Locale which) {
         onLocaleSelected.onLocaleSelected(which);
         dismiss();
     }
