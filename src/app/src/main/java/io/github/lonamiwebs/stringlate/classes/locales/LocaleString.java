@@ -119,14 +119,20 @@ public class LocaleString {
     }
 
     public static String getEmojiFlag(final Locale locale) {
-        try {
-            final String countryCode = locale.getLanguage().toUpperCase();
-            if (countryCode.length() != 2)
-                return "";
+        final String countryCode = locale.getLanguage().toUpperCase();
+        return joinAsRIS(countryCode, countryCode.length() != 2);
+    }
 
-            final int firstLetter = Character.codePointAt(countryCode, 0) - 'A' + 0x1F1E6;
-            final int secondLetter = Character.codePointAt(countryCode, 1) - 'A' + 0x1F1E6;
-            return new String(Character.toChars(firstLetter)) + new String(Character.toChars(secondLetter));
+    // https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
+    private static String joinAsRIS(final String text, boolean addInvisibleChar) {
+        try {
+            final StringBuilder result = new StringBuilder();
+            for (int i = 0; i != text.length(); ++i) {
+                result.append(Character.toChars(Character.codePointAt(text, i) - 'A' + 0x1F1E6));
+                if (addInvisibleChar && i != text.length() - 1)
+                    result.append('\u2063'); // http://www.fileformat.info/info/unicode/char/2063/index.htm
+            }
+            return result.toString();
         } catch (IndexOutOfBoundsException ignored) {
             return "";
         }
