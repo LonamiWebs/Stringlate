@@ -484,13 +484,9 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
     //region Adding locales menu events
 
-    private void promptAddLocale() {
-        promptAddLocale("");
-    }
-
     // Prompts the user to add a new locale. If it exists,
     // no new file is created but the entered locale is selected.
-    private void promptAddLocale(final String presetLocaleCode) {
+    private void promptAddLocale() {
         final LocaleSelectionDialog dialog = LocaleSelectionDialog.newInstance();
         dialog.show(getFragmentManager(), LocaleSelectionDialog.TAG);
     }
