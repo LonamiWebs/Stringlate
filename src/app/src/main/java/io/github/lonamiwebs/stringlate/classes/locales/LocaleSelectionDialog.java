@@ -23,7 +23,7 @@ import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
 
-public class LocaleSelectionDialog extends DialogFragment implements TabLayout.OnTabSelectedListener {
+public class LocaleSelectionDialog extends DialogFragment {
 
     //region Static methods and members
 
@@ -41,11 +41,8 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
 
     private LocaleEntryAdapter mLocaleEntryAdapterLocales;
     private LocaleEntryAdapter mLocaleEntryAdapterCountries;
-    private TabLayout.Tab mTabLocales;
-    private TabLayout.Tab mTabCountries;
 
     private RecyclerView mLocaleRecyclerView;
-    private TabLayout mTabLayout;
     private EditText mSearchEditText;
 
     public interface OnLocaleSelected {
@@ -64,7 +61,6 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
         final View root = inflater.inflate(R.layout.dialog_locale_selection, container, false);
 
         mLocaleRecyclerView = root.findViewById(R.id.locale_recycler_view);
-        mTabLayout = root.findViewById(R.id.tab_layout);
         mSearchEditText = root.findViewById(R.id.search_edit_text);
 
         final Dialog dialog = getDialog();
@@ -103,11 +99,6 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // More UI
-        mTabLayout.addOnTabSelectedListener(this);
-        mTabLocales = mTabLayout.getTabAt(0);
-        mTabCountries = mTabLayout.getTabAt(1);
-
         mLocaleRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mLocaleEntryAdapterLocales = new LocaleEntryAdapter(getActivity(), false);
         mLocaleEntryAdapterCountries = new LocaleEntryAdapter(getActivity(), "");
@@ -124,7 +115,7 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
                 } else {
                     // More than a country is available, so switch to the countries tab
                     mLocaleEntryAdapterCountries.initLocales(locales);
-                    mTabCountries.select();
+                    mLocaleRecyclerView.setAdapter(mLocaleEntryAdapterCountries);
                 }
             }
         };
@@ -136,7 +127,7 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
             }
         };
 
-        mTabLocales.select();
+        mLocaleRecyclerView.setAdapter(mLocaleEntryAdapterLocales);
     }
 
     @Override
@@ -160,27 +151,8 @@ public class LocaleSelectionDialog extends DialogFragment implements TabLayout.O
     }
 
     void onSearchChanged() {
-        if (!mTabLocales.isSelected())
-            mTabLocales.select();
-
         mLocaleEntryAdapterLocales.setFilter(mSearchEditText.getText().toString());
     }
-
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-        if (tab == mTabLocales)
-            mLocaleRecyclerView.setAdapter(mLocaleEntryAdapterLocales);
-        else
-            mLocaleRecyclerView.setAdapter(mLocaleEntryAdapterCountries);
-    }
-
-    @Override
-    public void onTabSelected(TabLayout.Tab tab) {
-        onTabReselected(tab);
-    }
-
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) { }
 
     //endregion
 }

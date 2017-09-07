@@ -5,29 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-<LinearLayout android:id="@+id/dialog__entry_type_selection__root"
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabIndicatorHeight="4dp"
-        app:tabMode="fixed">
-
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/language" />
-
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/country" />
-
-    </android.support.design.widget.TabLayout>
 
     <EditText
         android:id="@+id/search_edit_text"
