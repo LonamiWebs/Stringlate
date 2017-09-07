@@ -107,7 +107,7 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
                     else
                         return +1;
                 } else {
-                    return o1.getDisplayLanguage().compareTo(o2.getDisplayLanguage());
+                    return LocaleString.getFullCode(o1).compareTo(LocaleString.getFullCode(o2));
                 }
             }
         });

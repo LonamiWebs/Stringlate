@@ -90,8 +90,11 @@ public class LocaleString {
     }
 
     public static String getEmojiFlag(final Locale locale) {
-        final String countryCode = locale.getLanguage().toUpperCase();
-        return joinAsRIS(countryCode, countryCode.length() != 2);
+        String countryCode = locale.getCountry();
+        if (countryCode.isEmpty())
+            return joinAsRIS(locale.getLanguage().toUpperCase(), true);
+        else
+            return joinAsRIS(countryCode.toUpperCase(), countryCode.length() != 2);
     }
 
     // https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
