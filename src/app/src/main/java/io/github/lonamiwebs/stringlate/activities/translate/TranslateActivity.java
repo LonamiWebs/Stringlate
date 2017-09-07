@@ -705,23 +705,38 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             Toast.makeText(this, R.string.delete_no_locale_bad_joke, Toast.LENGTH_LONG).show();
             return;
         }
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.sure_question)
-                .setMessage(getString(R.string.delete_locale_confirm_long, mSelectedLocale))
-                .setPositiveButton(getString(R.string.delete_locale), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        mRepo.deleteLocale(mSelectedLocale);
-                        loadLocalesSpinner();
-                        checkTranslationVisibility();
+        if (mSelectedLocaleResources.count() == 0) {
+            // No translation, no need to confirm
+            deleteCurrentLocale();
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.sure_question)
+                    .setMessage(getString(R.string.delete_locale_confirm_long, mSelectedLocale))
+                    .setPositiveButton(getString(R.string.delete_locale), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            mRepo.deleteLocale(mSelectedLocale);
+                            loadLocalesSpinner();
+                            checkTranslationVisibility();
 
-                        // We need to clear the selected locale if it's now empty
-                        if (mLocaleSpinner.getCount() == 0)
-                            setCurrentLocale(null);
-                    }
-                })
-                .setNegativeButton(getString(R.string.cancel), null)
-                .show();
+                            // We need to clear the selected locale if it's now empty
+                            if (mLocaleSpinner.getCount() == 0)
+                                setCurrentLocale(null);
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.cancel), null)
+                    .show();
+        }
+    }
+
+    private void deleteCurrentLocale() {
+        mRepo.deleteLocale(mSelectedLocale);
+        loadLocalesSpinner();
+        checkTranslationVisibility();
+
+        // We need to clear the selected locale if it's now empty
+        if (mLocaleSpinner.getCount() == 0)
+            setCurrentLocale(null);
     }
 
     // Prompts the user whether they want to delete the current "repository" clone or not
