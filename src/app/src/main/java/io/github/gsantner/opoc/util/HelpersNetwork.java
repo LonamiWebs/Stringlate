@@ -14,15 +14,14 @@ package io.github.gsantner.opoc.util;
 
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +34,7 @@ public class HelpersNetwork {
     private static final String UTF8 = "UTF-8";
 
     // No parameters, method can be GET, POST, etc.
-    public static String performCall(String url, String method) {
+    public static String performCall(final String url, final String method) {
         try {
             return performCall(new URL(url), method, "");
         } catch (MalformedURLException e) {
@@ -45,9 +44,9 @@ public class HelpersNetwork {
     }
 
     // URL encoded parameters
-    public static String performCall(String url, String method, HashMap<String, String> params) {
+    public static String performCall(final String url, final String method, final HashMap<String, String> params) {
         try {
-            return performCall(new URL(url), method, getQuery(params));
+            return performCall(new URL(url), method, encodeQuery(params));
         } catch (UnsupportedEncodingException | MalformedURLException e) {
             e.printStackTrace();
         }
@@ -55,11 +54,11 @@ public class HelpersNetwork {
     }
 
     // Defaults to POST
-    public static String performCall(String url, JSONObject json) {
+    public static String performCall(final String url, final JSONObject json) {
         return performCall(url, POST, json);
     }
 
-    public static String performCall(String url, String method, JSONObject json) {
+    public static String performCall(final String url, final String method, final JSONObject json) {
         try {
             return performCall(new URL(url), method, json.toString());
         } catch (MalformedURLException e) {
@@ -68,34 +67,29 @@ public class HelpersNetwork {
         return "";
     }
 
-    // Source: http://stackoverflow.com/a/31357311/4759433
-    private static String performCall(URL url, String method, String data) {
-        String result = "";
+    private static String performCall(final URL url, final String method, final String data) {
         try {
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(method);
             conn.setDoInput(true);
 
             if (data != null && !data.isEmpty()) {
                 conn.setDoOutput(true);
-                OutputStream os = conn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                writer.write(data);
-                writer.flush();
-                writer.close();
-                os.close();
+                final OutputStream output = conn.getOutputStream();
+                output.write(data.getBytes(Charset.forName(UTF8)));
+                output.flush();
+                output.close();
             }
 
-            result = HelpersFiles.readCloseTextStream(conn.getInputStream());
+            return HelpersFiles.readCloseTextStream(conn.getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return result;
+        return "";
     }
 
-    private static String getQuery(HashMap<String, String> params) throws UnsupportedEncodingException {
-        StringBuilder result = new StringBuilder();
+    private static String encodeQuery(final HashMap<String, String> params) throws UnsupportedEncodingException {
+        final StringBuilder result = new StringBuilder();
         boolean first = true;
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (first) first = false;
@@ -109,9 +103,9 @@ public class HelpersNetwork {
         return result.toString();
     }
 
-    public static HashMap<String, String> getDataMap(String query) {
-        HashMap<String, String> result = new HashMap<>();
-        StringBuilder sb = new StringBuilder();
+    public static HashMap<String, String> getDataMap(final String query) {
+        final HashMap<String, String> result = new HashMap<>();
+        final StringBuilder sb = new StringBuilder();
         String name = "";
 
         try {
