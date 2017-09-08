@@ -14,6 +14,12 @@ import java.util.List;
 import io.github.lonamiwebs.stringlate.R;
 
 public class ResourcesTranslationAdapter extends ArrayAdapter<ResourcesTranslation> {
+
+    // https://developer.android.com/training/improving-layouts/smooth-scrolling.html#ViewHolder
+    private static class ViewHolder {
+        TextView stringId, originalValue, translatedValue;
+    }
+
     public ResourcesTranslationAdapter(Context context,
                                        List<ResourcesTranslation> resourcesTranslations) {
         super(context, R.layout.item_resource_list, resourcesTranslations);
@@ -24,25 +30,29 @@ public class ResourcesTranslationAdapter extends ArrayAdapter<ResourcesTranslati
         ResourcesTranslation rt = getItem(position);
 
         // This may be the first time we use the recycled view
-        if (convertView == null)
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
                     .inflate(R.layout.item_resource_list, parent, false);
 
-        TextView stringId = (TextView)convertView.findViewById(R.id.stringIdTextView);
-        TextView originalValue = (TextView)convertView.findViewById(R.id.originalValueTextView);
-        TextView translatedValue = (TextView)convertView.findViewById(R.id.translatedValueTextView);
-
-        stringId.setText(rt.getId());
-        originalValue.setText(rt.getOriginal());
-
-        if (rt.hasTranslation()) {
-            translatedValue.setText(rt.getTranslation());
-            translatedValue.setTypeface(null, Typeface.NORMAL);
-        } else {
-            translatedValue.setText(R.string.not_translated);
-            translatedValue.setTypeface(null, Typeface.ITALIC);
+            final ViewHolder holder = new ViewHolder();
+            holder.stringId = convertView.findViewById(R.id.stringIdTextView);
+            holder.originalValue = convertView.findViewById(R.id.originalValueTextView);
+            holder.translatedValue = convertView.findViewById(R.id.translatedValueTextView);
+            convertView.setTag(holder);
         }
+        if (rt != null) {
+            final ViewHolder holder = (ViewHolder) convertView.getTag();
+            holder.stringId.setText(rt.getId());
+            holder.originalValue.setText(rt.getOriginal());
 
+            if (rt.hasTranslation()) {
+                holder.translatedValue.setText(rt.getTranslation());
+                holder.translatedValue.setTypeface(null, Typeface.NORMAL);
+            } else {
+                holder.translatedValue.setText(R.string.not_translated);
+                holder.translatedValue.setTypeface(null, Typeface.ITALIC);
+            }
+        }
         return convertView;
     }
 }

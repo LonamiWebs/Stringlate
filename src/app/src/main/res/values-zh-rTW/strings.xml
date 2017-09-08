@@ -35,8 +35,6 @@
     <string name="export_share">分享產生出來的 XML 檔</string>
     <string name="extracting_index_xml">正在從 index.jar 中解開拿到 index.xml……</string>
     <string name="extracting_index_xml_long">正在解開內有應用軟體資訊的 index.xml 檔案……</string>
-    <string name="files_modified">有些檔案已被修改</string>
-    <string name="files_modified_keep_changes">有些資源檔已被變更。您希望將您的本地變更跟遠端變更共存，還是要拋棄您所有的變更？</string>
     <string name="gist_description">Gist 描述文字（選填）：</string>
     <string name="gist_filename">Gist 檔案名稱：</string>
     <string name="github_repo_url_hint">http://github.com/擁有者/版控庫</string>
@@ -88,7 +86,7 @@
     <string name="show_more">顯示更多</string>
     <string name="show_translated_strings">顯示已翻譯過字串</string>
     <string name="sure_question">您確定嗎？</string>
-    <string name="sync_failed">同步失敗。</string>
+    <string name="sync_failed">同步失敗 %s。</string>
     <string name="translated_string">被翻譯的字串</string>
     <string name="translated_string_colon">被翻譯的字串：</string>
     <string name="translation_progress">%1$d/%2$d 個字串已翻譯 (%3$.1f%%)。</string>

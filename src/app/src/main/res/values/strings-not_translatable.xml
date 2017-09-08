@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name" translatable="false">Stringlate</string>
+    <string name="slash" translatable="false">/</string>
+    <string name="github" translatable="false">GitHub</string>
+    <string name="default_gist_share_description" translatable="false">strings.xml translation shared with Stringlate</string>
+    <string name="added_x_translation" translatable="false">Added %s (%s) translation</string>
+    <string name="added_x_translation_spam" translatable="false">Updated %s (%s) translation\n\nCommit made via Stringlate</string>
+    <string name="new_issue_template" translatable="false">I have translated your application into `%s` (*%s*). Here is the xml:\n%%x\n\n---\n\n*Translation made with [Stringlate](https://github.com/LonamiWebs/Stringlate).*</string>
+    <string name="comment_issue_template" translatable="false">I have updated the `%s` (*%s*) translation:\n%%x\n\n---\n\n*Translation made with [Stringlate](https://github.com/LonamiWebs/Stringlate).*</string>
+    <string name="warning_experimental" translatable="false">Please note that this feature is still experimental. Use with care!!</string>
+    <string name="bytes_size_format" translatable="false">%.2f %s</string>
+    <string name="xml_comment_filename" translatable="false">&lt;!-- File \"%s\" --&gt;\n</string>
+
+    <string name="pref_key__github_authentication_request" translatable="false">pref_key__github_authentication_request</string>
+    <string name="pref_key__language" translatable="false">pref_key__language</string>
+</resources>

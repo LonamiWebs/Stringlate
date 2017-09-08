@@ -1,17 +1,25 @@
 package io.github.lonamiwebs.stringlate.git;
 
-import android.support.annotation.NonNull;
-import android.util.Pair;
-
+import org.eclipse.jgit.util.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InvalidObjectException;
+import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.WebUtils;
+
+import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_AUTH_URL;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_CLIENT_ID;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_CLIENT_SECRET;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_COMPLETE_AUTH_URL;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_WANTED_SCOPES;
 
 // Static GitHub API interface that uses AsyncTasks
 public class GitHub {
@@ -25,33 +33,18 @@ public class GitHub {
 
     private static String gGetUrl(final String call, final Object... args) {
         if (args.length > 0)
-            return API_URL+String.format(call, args);
+            return API_URL + String.format(call, args);
         else
-            return API_URL+call;
+            return API_URL + call;
     }
 
     //endregion
 
     //region Public methods
 
-    // Determines whether a call to GitHub can be made or not
-    // This is equivalent to checking if the user is connected to the internet
-
-    public static boolean gCannotCall() {
-        // See http://stackoverflow.com/a/27312494/4759433
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
-            return ipProcess.waitFor() != 0;
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
-
-        return true;
-    }
-
     public static JSONObject gCreateGist(String description, boolean isPublic,
-                                   String filename, String content, @NonNull String token) {
+                                         HashMap<String, String> fileContents,
+                                         String token) {
         try {
             JSONObject params = new JSONObject();
 
@@ -60,20 +53,21 @@ public class GitHub {
 
             params.put("public", isPublic);
 
-            JSONObject fileObject = new JSONObject();
-            fileObject.put("content", content);
-
             JSONObject filesObject = new JSONObject();
-            filesObject.put(filename, fileObject);
+            for (Map.Entry<String, String> fileContent : fileContents.entrySet()) {
+                JSONObject fileObject = new JSONObject();
+                fileObject.put("content", fileContent.getValue());
 
+                // Add this file object (with content) using the filename as key
+                filesObject.put(fileContent.getKey(), fileObject);
+            }
             params.put("files", filesObject);
 
             if (token.isEmpty())
                 return new JSONObject(WebUtils.performCall(gGetUrl("gists"), params));
             else
-                return new JSONObject(WebUtils.performCall(gGetUrl("gists?access_token="+token), params));
-        }
-        catch (JSONException e) {
+                return new JSONObject(WebUtils.performCall(gGetUrl("gists?access_token=" + token), params));
+        } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
@@ -90,8 +84,22 @@ public class GitHub {
 
             return new JSONObject(WebUtils.performCall(gGetUrl("repos/%s/issues?access_token=%s",
                     repo.toOwnerRepo(), token), params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
         }
-        catch (JSONException e) {
+    }
+
+    public static JSONObject gCommentIssue(RepoHandler repo,
+                                           int issueNumber, String body, String token)
+            throws InvalidObjectException {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("body", body);
+            return new JSONObject(WebUtils.performCall(gGetUrl(
+                    "repos/%s/issues/%d/comments?access_token=%s",
+                    repo.toOwnerRepo(), issueNumber, token), params));
+        } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
@@ -119,11 +127,11 @@ public class GitHub {
     }
 
     // Returns both the authenticated user and whether they have right to push
-    public static Pair<String, Boolean> gCanPush(String token, RepoHandler repo) {
+    public static AbstractMap.SimpleImmutableEntry<String, Boolean> gCanPush(String token, RepoHandler repo) {
         JSONObject user = gGetUserInfo(token);
         if (user == null)
             // TODO Actually, maybe throw an NoPermissionException or something
-            return new Pair<>(null, false);
+            return new AbstractMap.SimpleImmutableEntry<>(null, false);
 
         String username = "";
         try {
@@ -136,15 +144,15 @@ public class GitHub {
                     if (collaborator.getString("login").equals(username)) {
                         JSONObject permissions = collaborator.getJSONObject("permissions");
                         // TODO Can someone possibly not have 'pull' permissions? Then what?
-                        return new Pair<>(username, permissions.getBoolean("push"));
+                        return new AbstractMap.SimpleImmutableEntry<>(username, permissions.getBoolean("push"));
                     }
                 }
             }
             // If we're not a collaborator, then we obviously don't have permission
-            return new Pair<>(username, false);
+            return new AbstractMap.SimpleImmutableEntry<>(username, false);
         } catch (JSONException | InvalidObjectException e) {
             e.printStackTrace();
-            return new Pair<>(username, false);
+            return new AbstractMap.SimpleImmutableEntry<>(username, false);
         }
     }
 
@@ -220,10 +228,11 @@ public class GitHub {
 
     // Really big thanks to http://www.levibotelho.com/development/commit-a-file-with-the-github-api
     public static JSONObject gCreateCommitFile(final String token, final RepoHandler repo,
-                                               final String branch, final String content,
-                                               final String filename, final String commitMessage)
+                                               final String branch,
+                                               final HashMap<String, String> pathContents,
+                                               final String commitMessage)
             throws JSONException, InvalidObjectException {
-        final String tokenQuery = "?access_token="+token;
+        final String tokenQuery = "?access_token=" + token;
         final String ownerRepo = repo.toOwnerRepo();
 
         // Step 1. Get a reference to HEAD (GET /repos/:owner/:repo/git/refs/:ref)
@@ -236,23 +245,29 @@ public class GitHub {
         String headCommitUrl = head.getJSONObject("object").getString("url");
         // Equivalent to getting object.sha and then formatting it
 
-        JSONObject commit = new JSONObject(WebUtils.performCall(headCommitUrl+tokenQuery, WebUtils.GET));
+        JSONObject commit = new JSONObject(WebUtils.performCall(headCommitUrl + tokenQuery, WebUtils.GET));
 
         // Step 3. Post your new file to the server (POST /repos/:owner/:repo/git/blobs)
         // https://developer.github.com/v3/git/blobs/#create-a-blob
-        JSONObject newBlob = new JSONObject();
-        newBlob.put("content", content);
-        newBlob.put("encoding", "utf-8");
+        final HashMap<String, JSONObject> pathBlobs = new HashMap<>();
 
-        JSONObject blob = new JSONObject(WebUtils.performCall(
-                gGetUrl("repos/%s/git/blobs%s", ownerRepo, tokenQuery), newBlob));
+        for (Map.Entry<String, String> pathContent : pathContents.entrySet()) {
+            JSONObject newBlob = new JSONObject();
+            newBlob.put("content", pathContent.getValue());
+            newBlob.put("encoding", "utf-8");
+
+            JSONObject blob = new JSONObject(WebUtils.performCall(
+                    gGetUrl("repos/%s/git/blobs%s", ownerRepo, tokenQuery), newBlob));
+
+            pathBlobs.put(pathContent.getKey(), blob);
+        }
 
         // Step 4. Get a hold of the tree that the commit points to (GET /repos/:owner/:repo/git/trees/:sha)
         // https://developer.github.com/v3/git/trees/#get-a-tree
         String treeUrl = commit.getJSONObject("tree").getString("url");
         // Equivalent to getting tree.sha and then formatting it
 
-        JSONObject baseTree = new JSONObject(WebUtils.performCall(treeUrl+tokenQuery, WebUtils.GET));
+        JSONObject baseTree = new JSONObject(WebUtils.performCall(treeUrl + tokenQuery, WebUtils.GET));
 
         // Step 5. Create a tree containing your new file
         //      5a. The easy way (POST /repos/:owner/:repo/git/trees)
@@ -260,14 +275,16 @@ public class GitHub {
         JSONObject newTree = new JSONObject();
         newTree.put("base_tree", baseTree.get("sha"));
         {
-            JSONObject blobFileTree = new JSONObject();
-            blobFileTree.put("path", filename);
-            blobFileTree.put("mode", "100644"); // 100644 (blob), 100755 (executable), 040000 (subdirectory/tree), 160000 (submodule/commit), or 120000 (blob specifying path of symlink)
-            blobFileTree.put("type", "blob"); // "blob", "tree", or "commit"
-            blobFileTree.put("sha", blob.getString("sha"));
-            // More files could be added to the array
             JSONArray blobFileArray = new JSONArray();
-            blobFileArray.put(0, blobFileTree);
+            for (Map.Entry<String, JSONObject> pathBlob : pathBlobs.entrySet()) {
+                JSONObject blobFileTree = new JSONObject();
+                blobFileTree.put("path", pathBlob.getKey());
+                blobFileTree.put("mode", "100644"); // 100644 (blob), 100755 (executable), 040000 (subdirectory/tree), 160000 (submodule/commit), or 120000 (blob specifying path of symlink)
+                blobFileTree.put("type", "blob"); // "blob", "tree", or "commit"
+                blobFileTree.put("sha", pathBlob.getValue().getString("sha"));
+
+                blobFileArray.put(blobFileTree);
+            }
 
             // Finally put the array with our files
             newTree.put("tree", blobFileArray);
@@ -302,5 +319,44 @@ public class GitHub {
                 WebUtils.PATCH, patch));
     }
 
+
+    //endregion
+
+    //region Authentication
+    public static class Authentication {
+        public static class CompleteAuthenticationResult {
+            public boolean ok;
+            public String message, token, grantedScopes;
+        }
+
+        public static String gGetAuthRequestUrl() {
+            return String.format(GITHUB_AUTH_URL,
+                    StringUtils.join(Arrays.asList(GITHUB_WANTED_SCOPES), "%20"), GITHUB_CLIENT_ID);
+        }
+
+        public static CompleteAuthenticationResult gCompleteGitHubAuth(AppSettings appSettings, String clientId, String clientSecret, String code) {
+            final HashMap<String, String> map = new HashMap<>();
+            map.put("client_id", GITHUB_CLIENT_ID);
+            map.put("client_secret", GITHUB_CLIENT_SECRET);
+            map.put("code", code);
+
+            CompleteAuthenticationResult ret = new CompleteAuthenticationResult();
+            HashMap<String, String> postResult = WebUtils.getDataMap(
+                    WebUtils.performCall(GITHUB_COMPLETE_AUTH_URL, WebUtils.POST, map)
+            );
+            if (postResult.containsKey("error")) {
+                ret.message = postResult.get("error_description");
+            } else {
+                ret.token = postResult.get("access_token");
+                ret.grantedScopes = postResult.get("scope");
+                appSettings.setGitHubAccess(ret.token, ret.grantedScopes);
+                if (appSettings.hasGitHubAuthorization()) {
+                    ret.ok = true;
+                }
+            }
+            return ret;
+        }
+
+    }
     //endregion
 }

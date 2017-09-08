@@ -4,7 +4,7 @@
     <string name="next">Următoarea</string>
     <string name="current_string_id">ID frază curentă:</string>
     <string name="selected_locale">Selectează limbă:</string>
-    <string name="welcome">Bine ați venit la Stringlate! Introdu mai jos numele autorului și al proiectului sau o adresă GitHub pentru a continua.</string>
+    <string name="welcome">Bine ați venit la Stringlate! Introdu mai jos numele autorului și al proiectului sau o adresă Git pentru a continua.</string>
     <string name="owner_hint">autor</string>
     <string name="repository_hint">proiect</string>
     <string name="or">sau</string>
@@ -70,7 +70,7 @@
     <string name="export_file_success">Fișierul salvat cu succes ca %s</string>
     <string name="update_applications">Aplicații actualizate</string>
     <string name="apps_repo_not_downloaded">Sursele proiectului nu au fost descărcate încă. Atingeți butonul \"%s\" din meniu pentru a descărca indexul proiectelor și a putea explora toate aplicatiile disponibile.</string>
-    <string name="sync_failed">Sincronizare eșuată.</string>
+    <string name="sync_failed">Sincronizare eșuată: %s</string>
     <string name="downloading_index_jar">Se descarcă index.jar…</string>
     <string name="downloading_index_jar_long">Fișierul index.jar ce conține lista de aplicații se descarcă…</string>
     <string name="extracting_index_xml">Se extrage index.xml din index.jar…</string>
@@ -81,8 +81,6 @@
     <string name="search">Căutare</string>
     <string name="search_apps_ellipsis">Căutare aplicații…</string>
     <string name="icon_cache_cleared">Iconițele din memorie au fost curățate (%s eliberat).</string>
-    <string name="files_modified">Există fișiere modificate</string>
-    <string name="files_modified_keep_changes">Unele fișiere ale proiectului au fost modificate. Vrei sa păstrezi schimbările locale alături de cele descărcate sau renunți la ele?</string>
     <string name="keep_changes">Păstrează schimbările</string>
     <string name="discard_changes">Anulează schimbări</string>
     <string name="save_before_sync_required">Înainte să sincronizezi trebuie să salvezi.</string>

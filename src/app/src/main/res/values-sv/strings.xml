@@ -37,8 +37,6 @@
     <string name="export_share">Dela genererade xml</string>
     <string name="extracting_index_xml">Extraherar index.xml från index.jar…</string>
     <string name="extracting_index_xml_long">Extraherar index.xml som innehåller information om apparna…</string>
-    <string name="files_modified">Vissa filer var modifierade</string>
-    <string name="files_modified_keep_changes">Vissa filer har modifierats. Vill du behålla alla dina lokala ändringar tillsammans med de modifieringarna eller vill du ta bort alla dina ändringar?</string>
     <string name="gist_description">Gist beskrivning (Inte obligatoriskt)</string>
     <string name="gist_filename">Gist filnamn</string>
     <string name="github_repo_url_hint">https://github.com/ägare/repo</string>
@@ -93,7 +91,7 @@
     <string name="show_more">Visa mer</string>
     <string name="show_translated_strings">Visa översatta strängar</string>
     <string name="sure_question">Är du säker?</string>
-    <string name="sync_failed">Synkronisering misslyckades.</string>
+    <string name="sync_failed">Synkronisering misslyckades: %s.</string>
     <string name="translated_string">Översatt sträng</string>
     <string name="translated_string_colon">Översatt sträng:</string>
     <string name="translation_progress">%1$d/%2$d strängar översatta (%3$.1f%%).</string>

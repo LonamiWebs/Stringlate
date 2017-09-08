@@ -2,7 +2,9 @@ package io.github.lonamiwebs.stringlate.classes.resources;
 
 import java.util.ArrayList;
 
-// Represents a ResourcesString-like object, but rather with
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
+
+// Represents a ResString-like object, but rather with
 // the resource ID, its original value and its translated value for a given locale
 public class ResourcesTranslation {
 
@@ -22,14 +24,14 @@ public class ResourcesTranslation {
         String id;
         ArrayList<ResourcesTranslation> result = new ArrayList<>();
         if (filter == null) {
-            for (ResourcesString rs : original) {
+            for (ResTag rs : original) {
                 id = rs.getId();
                 result.add(new ResourcesTranslation(id, rs.getContent(), translation.getContent(id)));
             }
         } else {
             String ori, trn;
             filter = filter.toLowerCase();
-            for (ResourcesString rs : original) {
+            for (ResTag rs : original) {
                 id = rs.getId();
                 ori = rs.getContent();
                 trn = translation.getContent(id);

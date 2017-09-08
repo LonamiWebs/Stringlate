@@ -389,6 +389,9 @@ pre code:after {
 <li><a href="#load-progress">¿Cómo cargo mi trabajo previo?</a></li>
 <li><a href="#string-symbols">¿Qué significa <code>%s</code> ó <code>%1$d/%2$d</code>?</a></li>
 <li><a href="#locale-missing-strings">¿Por qué algunos idiomas tienen más cadenas que otros?</a></li>
+<li><a href="#online-services">¿Qué significa "puede que esta app use servicios de traducción en línea"?</a></li>
+<li><a href="#escape-equences">Soy desarrollador, ¿debería escapar ciertas secuencias?</a></li>
+<li><a href="#non-github-repos">¿Hay soporte para los proyectos hospedados fuera de GitHub?</a></li>
 <li><a href="#chaos">¡Usaré esta app para causar el caos!</a></li>
 </ul>
 
@@ -485,6 +488,28 @@ aquellos textos que ya han sido traducidos <em>no</em> se muestran para no moles
 (si ya estos ya están traducidos, ¡lo normal es que traduzcas el resto!). Sin
 embargo, si quieres verlos todos, por ejemplo para revisar alguna falta de
 ortografía, puedes abrir el menú y activar "<em>Mostrar el texto traducido</em>".</p>
+
+<h2>¿Qué significa "puede que esta app use servicios de traducción en línea"? <a name="online-services"></a></h2>
+<p>Este mensaje significa que es posible que la aplicación que estás intentando traducir use
+servicios en línea para administrar sus traducciones, así como Transifex, Crowdin, Weblate,
+Zanata, Pootle, etc. Aunque puedes seguir traduciendo la aplicación con Stringlate, es posible
+que necesites dar pasos extra (como exportando el resultado y re-importándolo en dicho servicio)
+para que el desarrollador admita tu traducción. La mayoría de los desarrolladores aceptarán
+la traducción de una manera u otra, aunque puede ser mejor idea asegurarse sobre si usan dichos
+servicios o no.</p>
+
+<h2>Soy desarrollador, ¿debería escapar ciertas secuencias? <a name="escape-equences"></a></h2>
+
+<p>No, no deberías escapar ninguna secuencia. Estos casos deberían ser manejados
+automáticamente al leer y escribir el xml. Si aún así reconoces alguna secuencia
+escapada en la cadena original, por favor abre una nueva incidencia para que la
+podamos manejar automáticamente también (y debatir sobre cómo deberíamos hacerlo).</p>
+
+<h2>¿Hay soporte para los proyectos hospedados fuera de GitHub? <a name="non-github-repos"></a></h2>
+
+<p>¡Sí! Puedes introducir o bien una URL de GitHub ó de GitLab y será reconocida.
+Si el proyecto está hospedado en algún otro lugar, debes introducir la misma
+URL que usarías para clonar el repositorio (probablemente termine en <code>.git</code>).</p>
 
 <h2>¡Usaré esta app para causar el caos! <a name="chaos"></a></h2>
 

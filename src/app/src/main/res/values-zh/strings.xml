@@ -36,8 +36,6 @@
     <string name="export_share">分享生成的 XML 文件</string>
     <string name="extracting_index_xml">正在从 index.jar 中提取 index.xml 文件</string>
     <string name="extracting_index_xml_long">正在提取 index.xml 中所包含的应用信息</string>
-    <string name="files_modified">某些文件已被修改</string>
-    <string name="files_modified_keep_changes">某些资源文件已被修改. 您希望您的本地修改与远程修改并存还是放弃您所有的更改？</string>
     <string name="gist_description">Gist 描述 (可选)</string>
     <string name="gist_filename">Gist 文件名：</string>
     <string name="github_repo_url_hint">https://github.com/所有者名称/版本库名称</string>
@@ -88,14 +86,14 @@
     <string name="share">分享</string>
     <string name="show_more">显示更多</string>
     <string name="show_translated_strings">显示已翻译过的字符串</string>
-    <string name="sync_failed">同步失败.</string>
+    <string name="sync_failed">同步失败 %s.</string>
     <string name="sure_question">您确定吗？</string>
     <string name="translated_string">翻译后的字符串</string>
     <string name="translated_string_colon">翻译后的字符串:</string>
     <string name="translation_progress">已翻译 %1$d/%2$d 个字符串 (%3$.1f%%)</string>
     <string name="update_applications">更新应用程序</string>
     <string name="update_strings">更新 strings.xml</string>
-    <string name="welcome">欢迎使用 Stringlate ! 请输入项目名称及其所有者或将其Github版本库地址粘贴至下方以继续</string>
+    <string name="welcome">欢迎使用 Stringlate ! 请输入项目名称及其所有者或将其Git版本库地址粘贴至下方以继续</string>
     <string name="xml_copied_to_clipboard">已将 “%s” 的内容复制到您的剪贴板</string>
     <string name="allow_download_icons">允许下载图标</string>
     <string name="do_not_save">放弃修改</string>

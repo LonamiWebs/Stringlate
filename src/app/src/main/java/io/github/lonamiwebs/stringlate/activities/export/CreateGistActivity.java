@@ -1,8 +1,6 @@
 package io.github.lonamiwebs.stringlate.activities.export;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,15 +9,17 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.io.File;
+import java.util.HashMap;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.git.GitHub;
+import io.github.lonamiwebs.stringlate.utilities.Helpers;
 
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_FILENAME;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_XML_CONTENT;
+import static android.view.View.GONE;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
+import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
 
 public class CreateGistActivity extends AppCompatActivity {
 
@@ -27,7 +27,8 @@ public class CreateGistActivity extends AppCompatActivity {
 
     private AppSettings mSettings;
 
-    private String mXmlContent;
+    private RepoHandler mRepo;
+    private String mLocale;
 
     private EditText mDescriptionEditText;
     private CheckBox mIsPublicCheckBox;
@@ -45,18 +46,27 @@ public class CreateGistActivity extends AppCompatActivity {
 
         mSettings = new AppSettings(this);
 
-        mDescriptionEditText = (EditText)findViewById(R.id.gistDescriptionEditText);
-        mIsPublicCheckBox = (CheckBox)findViewById(R.id.gistIsPublicCheckBox);
-        mIsAnonymousCheckBox = (CheckBox)findViewById(R.id.gistIsAnonymousCheckBox);
-        mFilenameEditText = (EditText)findViewById(R.id.gistFilenameEditText);
+        mDescriptionEditText = findViewById(R.id.gistDescriptionEditText);
+        mIsPublicCheckBox = findViewById(R.id.gistIsPublicCheckBox);
+        mIsAnonymousCheckBox = findViewById(R.id.gistIsAnonymousCheckBox);
+        mFilenameEditText = findViewById(R.id.gistFilenameEditText);
 
         // Retrieve the strings.xml content to be exported
         Intent intent = getIntent();
-        mXmlContent = intent.getStringExtra(EXTRA_XML_CONTENT);
-        String filename = intent.getStringExtra(EXTRA_FILENAME);
+        mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
+        mLocale = intent.getStringExtra(EXTRA_LOCALE);
 
-        mFilenameEditText.setText(filename);
-        setTitle(getString(R.string.posting_gist_title, filename));
+        File[] defaultResources = mRepo.getDefaultResourcesFiles();
+        if (defaultResources.length > 1) {
+            // More than one file, don't allow to change the filename - use the original filename
+            mFilenameEditText.setVisibility(GONE);
+            setTitle(getString(R.string.posting_gist_title, ""));
+        } else {
+            // Only one file, let the user change it if they want to
+            String filename = defaultResources[0].getName();
+            mFilenameEditText.setText(filename);
+            setTitle(getString(R.string.posting_gist_title, filename));
+        }
 
         // Check whether the Gist can be non-anonymous
         boolean notAuth = !mSettings.hasGitHubAuthorization();
@@ -77,20 +87,27 @@ public class CreateGistActivity extends AppCompatActivity {
     //region Button events
 
     public void onPostGist(final View v) {
-        final String filename = mFilenameEditText.getText().toString().trim();
-        if (filename.length() == 0) {
-            mFilenameEditText.setError(getString(R.string.error_gist_filename_empty));
-            return;
-        }
-        if (GitHub.gCannotCall()) {
-            Toast.makeText(getApplicationContext(),
-                    R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
-            return;
-        }
+        final HashMap<String, String> fileContents = new HashMap<>();
 
-        final ProgressDialog progress = ProgressDialog.show(this,
-                getString(R.string.posting_gist_ellipsis),
-                getString(R.string.posting_gist_ellipsis_long), true);
+        File[] defaultResources = mRepo.getDefaultResourcesFiles();
+        if (defaultResources.length > 1) {
+            for (File template : defaultResources) {
+                String content = mRepo.applyTemplate(template, mLocale);
+                if (!content.isEmpty())
+                    fileContents.put(template.getName(), content);
+            }
+        } else {
+            final String filename = mFilenameEditText.getText().toString().trim();
+            if (filename.length() == 0) {
+                mFilenameEditText.setError(getString(R.string.error_gist_filename_empty));
+                return;
+            } else {
+                fileContents.put(filename,
+                        mRepo.applyTemplate(defaultResources[0], mLocale));
+            }
+        }
+        if (new Helpers(this).isDisconnectedFromInternet(R.string.no_internet_connection))
+            return;
 
         final String description = mDescriptionEditText.getText().toString().trim();
         final boolean isPublic = mIsPublicCheckBox.isChecked();
@@ -98,34 +115,11 @@ public class CreateGistActivity extends AppCompatActivity {
                 !mSettings.hasGitHubAuthorization();
 
         final String token = isAnonymous ? "" : mSettings.getGitHubToken();
-        new AsyncTask<Void, Void, JSONObject>() {
-            @Override
-            protected JSONObject doInBackground(Void... params) {
-                return GitHub.gCreateGist(description, isPublic, filename, mXmlContent, token);
-            }
+        CreateUrlActivity.launchIntent(this, Exporter.createGistExporter(
+                description, isPublic, fileContents, token
+        ));
 
-            @Override
-            protected void onPostExecute(JSONObject result) {
-                progress.dismiss();
-                onGistPosted(result);
-            }
-        }.execute();
-    }
-
-    //endregion
-
-    //region Check posted Gist
-
-    private void onGistPosted(JSONObject jsonObject) {
-        try {
-            String postedUrl = jsonObject.getString("html_url");
-            finish();
-            CreateUrlSuccessActivity.launchIntent(
-                    this, getString(R.string.post_gist_success), postedUrl);
-        }
-        catch (JSONException e) {
-            Toast.makeText(this, R.string.post_gist_error, Toast.LENGTH_SHORT).show();
-        }
+        finish();
     }
 
     //endregion

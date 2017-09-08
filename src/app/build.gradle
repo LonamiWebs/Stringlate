@@ -1,15 +1,33 @@
 apply plugin: 'com.android.application'
 
+ext {
+    version_sdk = [
+        compileSdk : 26,
+        buildTools : "26.0.1",
+        minSdk     : 15,
+        //targetSdk: compileSdk,
+    ]
+    version_sdk.targetSdk = version_sdk.compileSdk
+    version_lib = [
+        appcompat   : "26.0.0",
+    ]
+}
+
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion version_sdk.compileSdk
+    buildToolsVersion version_sdk.buildTools
+
     defaultConfig {
+        minSdkVersion version_sdk.minSdk
+        targetSdkVersion version_sdk.targetSdk
+
+        versionCode 1000
+        versionName "0.10"
         applicationId "io.github.lonamiwebs.stringlate"
-        minSdkVersion 15
-        targetSdkVersion 25
-        versionCode 950
-        versionName "0.9.5"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String[]", "APPLICATION_LANGUAGES", '{' + getUsedAndroidLanguages().collect {"\"${it}\""}.join(",")  + '}')
     }
     buildTypes {
         release {
@@ -23,7 +41,29 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:design:25.1.0'
+    // Android standard libs
+    compile "com.android.support:appcompat-v7:${version_lib.appcompat}"
+    compile "com.android.support:design:${version_lib.appcompat}"
+
+    // Tool libraries
     compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.2.201411120430-r'
+
+    compile project (':core')
+}
+
+@SuppressWarnings(["UnnecessaryQualifiedReference", "SpellCheckingInspection"])
+static String[] getUsedAndroidLanguages() {
+    Set<String> langs = new HashSet<>()
+    new File('.').eachFileRecurse(groovy.io.FileType.DIRECTORIES) {
+        final foldername = it.name
+        if (foldername.startsWith('values-') && !it.canonicalPath.contains("build" + File.separator + "intermediates")) {
+            new File(it.toString()).eachFileRecurse(groovy.io.FileType.FILES) {
+                if (it.name.toLowerCase().endsWith(".xml") && it.getCanonicalFile().getText('UTF-8').contains("<string")) {
+                    langs.add(foldername.replace("values-", ""))
+
+                }
+            }
+        }
+    }
+    return langs.toArray(new String[langs.size()])
 }

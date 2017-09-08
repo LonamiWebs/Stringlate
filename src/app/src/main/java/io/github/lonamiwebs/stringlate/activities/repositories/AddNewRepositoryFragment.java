@@ -1,22 +1,30 @@
 package io.github.lonamiwebs.stringlate.activities.repositories;
 
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
-import io.github.lonamiwebs.stringlate.git.GitHub;
-import io.github.lonamiwebs.stringlate.utilities.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.applications.ApplicationDetails;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
+import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
+import io.github.lonamiwebs.stringlate.git.GitWrapper;
+import io.github.lonamiwebs.stringlate.utilities.Helpers;
+import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 
 import static android.app.Activity.RESULT_OK;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -26,8 +34,11 @@ public class AddNewRepositoryFragment extends Fragment {
 
     //region Members
 
-    private AutoCompleteTextView mOwnerEditText, mRepositoryEditText;
-    private AutoCompleteTextView mUrlEditText;
+    private EditText mOwnerEditText, mRepositoryEditText;
+    private EditText mUrlEditText;
+
+    // All details may not be filled out. Used as temporary data container till RepoHandler creation
+    private ApplicationDetails mProjectDetails;
 
     //endregion
 
@@ -38,22 +49,77 @@ public class AddNewRepositoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_new_repository, container, false);
 
-        mOwnerEditText = (AutoCompleteTextView)rootView.findViewById(R.id.ownerEditText);
-        mRepositoryEditText = (AutoCompleteTextView)rootView.findViewById(R.id.repositoryEditText);
+        mOwnerEditText = rootView.findViewById(R.id.ownerEditText);
+        mRepositoryEditText = rootView.findViewById(R.id.repositoryEditText);
 
-        mUrlEditText = (AutoCompleteTextView)rootView.findViewById(R.id.urlEditText);
+        mUrlEditText = rootView.findViewById(R.id.urlEditText);
+        mProjectDetails = new ApplicationDetails();
 
         // Set button events
         rootView.findViewById(R.id.discoverButton).setOnClickListener(onDiscoverClick);
         rootView.findViewById(R.id.nextButton).setOnClickListener(onNextClick);
 
         // Check if we opened the application because a GitHub link was clicked
-        Uri data = getActivity().getIntent().getData();
+        final Intent intent = getActivity().getIntent();
+        final Uri data = intent.getData();
         if (data != null) {
-            String scheme = data.getScheme();
-            String fullPath = data.getEncodedSchemeSpecificPart();
-            setUrl(scheme+":"+fullPath);
+            // Try to retrieve information from the special URL, i.e.
+            // https://lonamiwebs.github.io/stringlate/translate?git=<encoded git url>
+            final String paramGit = data.getQueryParameter("git");
+            final String paramWeb = data.getQueryParameter("web");
+            final String paramName = data.getQueryParameter("name");
+
+            if (paramGit == null) {
+                // If no URL was found, it may just be a git repository by itself
+                String scheme = data.getScheme();
+                String fullPath = data.getEncodedSchemeSpecificPart();
+                setUrl(scheme + ":" + fullPath);
+            } else {
+                // We got the encoded git url, so set it
+                setUrl(paramGit);
+            }
+            if (paramWeb != null) {
+                mProjectDetails.setWebUrl(paramWeb);
+            }
+            if (paramName != null) {
+                mProjectDetails.setName(paramName);
+            }
         }
+        // Or we were opened from the StringlateApi
+        if (intent.getAction().equals(StringlateApi.ACTION_TRANSLATE) &&
+                intent.hasExtra(StringlateApi.EXTRA_GIT_URL)) {
+            setUrl(intent.getStringExtra(StringlateApi.EXTRA_GIT_URL));
+            mProjectDetails.setWebUrl(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_HOMEPAGE));
+            mProjectDetails.setName(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_NAME));
+        }
+
+        // If the user presses enter on an EditText, select the next one
+        mOwnerEditText.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int kc, KeyEvent e) {
+                if (e.getAction() == KeyEvent.ACTION_DOWN && kc == KeyEvent.KEYCODE_ENTER) {
+                    mRepositoryEditText.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        // Or, if we're on the repository EditText, hide the keyboard
+        mRepositoryEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int kc, KeyEvent e) {
+                if (e.getAction() == KeyEvent.ACTION_DOWN && kc == KeyEvent.KEYCODE_ENTER) {
+                    InputMethodManager imm = (InputMethodManager)
+                            getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    imm.hideSoftInputFromWindow(mRepositoryEditText.getWindowToken(), 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         return rootView;
     }
@@ -86,13 +152,21 @@ public class AddNewRepositoryFragment extends Fragment {
             } else {
                 // Determine whether we already have this repo or if it's a new one
                 RepoHandler repo = url.isEmpty() ?
-                        new RepoHandler(getContext(), owner, repository) :
-                        new RepoHandler(getContext(), url);
+                        new RepoHandler(getContext(), GitWrapper.buildGitHubUrl(owner, repository)) :
+                        new RepoHandler(getContext(), GitWrapper.getGitUri(url));
 
-                if (repo.isEmpty())
+                if (!TextUtils.isEmpty(mProjectDetails.getWebUrl())) {
+                    repo.settings.setProjectHomepageUrl(mProjectDetails.getWebUrl());
+                }
+                if (!TextUtils.isEmpty(mProjectDetails.getName())) {
+                    repo.settings.setProjectName(mProjectDetails.getName());
+                }
+
+                if (repo.isEmpty()) {
                     scanDownloadStrings(repo);
-                else
+                } else {
                     launchTranslateActivity(repo);
+                }
             }
         }
     };
@@ -107,6 +181,8 @@ public class AddNewRepositoryFragment extends Fragment {
             switch (requestCode) {
                 case RESULT_REPO_DISCOVERED:
                     setUrl(data.getStringExtra("url"));
+                    mProjectDetails.setWebUrl(data.getStringExtra("web"));
+                    mProjectDetails.setName(data.getStringExtra("name"));
                     break;
                 default:
                     super.onActivityResult(requestCode, resultCode, data);
@@ -121,30 +197,16 @@ public class AddNewRepositoryFragment extends Fragment {
     //region Checking and adding a new local "repository"
 
     private void scanDownloadStrings(final RepoHandler repo) {
-        if (GitHub.gCannotCall()) {
-            Toast.makeText(getContext(),
-                    R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
+        if (new Helpers(getContext()).isDisconnectedFromInternet(R.string.no_internet_connection))
             return;
+
+        new RepoSyncTask(getContext(), repo,
+                new GitSource(repo.settings.getSource(), ""), true).start();
+
+        if (getActivity() instanceof RepositoriesActivity) {
+            // Take the user to the repositories history if the parent activity matches
+            ((RepositoriesActivity) getActivity()).goToHistory();
         }
-
-        final ProgressDialog progress = ProgressDialog.show(getContext(), "…", "…", true);
-        repo.syncResources(new ProgressUpdateCallback() {
-            @Override
-            public void onProgressUpdate(String title, String description) {
-                progress.setTitle(title);
-                progress.setMessage(description);
-            }
-
-            @Override
-            public void onProgressFinished(String description, boolean status) {
-                progress.dismiss();
-                if (description != null)
-                    Toast.makeText(getContext(), description, Toast.LENGTH_SHORT).show();
-                if (status)
-                    launchTranslateActivity(repo);
-            }
-        }, false);
-        // false, do not keep any previous modification (there should not be any)
     }
 
     //endregion

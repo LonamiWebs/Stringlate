@@ -1,6 +1,8 @@
 # Stringlate
 *Help translating FOSS applications.*
 
+[![Translate - with Stringlate](https://img.shields.io/badge/stringlate-translate-green.svg)](https://lonamiwebs.github.io/stringlate/translate?git=https%3A%2F%2Fgithub.com%2FLonamiWebs%2Fstringlate.git&name=Stringlate&web=https%3A%2F%2Fgithub.com%2FLonamiWebs%2FStringlate)
+
 [<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="60">](https://f-droid.org/app/io.github.lonamiwebs.stringlate)
 
 ## Description
@@ -30,6 +32,8 @@ online help by going to the [help index](help/index.md).
 - **Internet**. Required to be able to fetch a remote GitHub repository in
   order to download its contents. Also used to post a GitHub *Gist* and to
   load the *Discover* activity.
+- **Access network state**. Required to warn the user that they're not
+  connected to the internet (and to prevent the application from crashing).
 
 ## Notes
 This application has not yet been tested on pre-Lollipop devices and it

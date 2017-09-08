@@ -4,11 +4,11 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
     tools:context="io.github.lonamiwebs.stringlate.activities.repositories.AddNewRepositoryFragment">
 
     <TextView
@@ -21,38 +21,40 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <AutoCompleteTextView
+        <EditText
+            android:id="@+id/ownerEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:hint="@string/owner_hint"
-            android:id="@+id/ownerEditText"
-            android:layout_weight="1" />
+            android:maxLines="1" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/slash" />
 
-        <AutoCompleteTextView
+        <EditText
+            android:id="@+id/repositoryEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:hint="@string/repository_hint"
-            android:id="@+id/repositoryEditText"
-            android:layout_weight="1" />
+            android:maxLines="1" />
 
     </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="@string/or" />
+        android:text="@string/or"
+        android:textAlignment="center" />
 
-    <AutoCompleteTextView
+    <EditText
+        android:id="@+id/urlEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/github_repo_url_hint"
-        android:id="@+id/urlEditText"
         android:inputType="textUri" />
 
     <LinearLayout
@@ -62,23 +64,23 @@
 
         <Button
             android:id="@+id/discoverButton"
+            style="?buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableStart="@drawable/ic_explore_24dp"
-            android:drawableLeft="@drawable/ic_explore_24dp"
-            style="?buttonBarButtonStyle"
+            android:drawableLeft="@drawable/ic_explore_yellow_24dp"
+            android:drawableStart="@drawable/ic_explore_yellow_24dp"
             android:text="@string/discover" />
 
         <Button
             android:id="@+id/nextButton"
+            style="?buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableStart="@drawable/ic_add_circle_24dp"
-            android:drawableLeft="@drawable/ic_add_circle_24dp"
-            style="?buttonBarButtonStyle"
-            android:text="@string/add_new_repo" />
+            android:drawableLeft="@drawable/ic_play_circle_filled_yellow_24dp"
+            android:drawableStart="@drawable/ic_play_circle_filled_yellow_24dp"
+            android:text="@string/start_translating" />
     </LinearLayout>
 
 </LinearLayout>

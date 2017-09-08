@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_history"
+        android:icon="@drawable/ic_history_white_24dp"
+        android:title="@string/history" />
+
+    <item
+        android:id="@+id/navigation_add_repository"
+        android:icon="@drawable/ic_add_box_white_24dp"
+        android:title="@string/add_project" />
+</menu>

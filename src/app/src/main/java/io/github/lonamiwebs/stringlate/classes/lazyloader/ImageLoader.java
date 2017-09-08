@@ -44,7 +44,7 @@ public class ImageLoader {
     private final ExecutorService mExecutorService;
     private final Handler mHandler;
 
-    private final boolean mAllowInternetDownload;
+    public boolean mAllowInternetDownload;
 
     //endregion
 
@@ -138,7 +138,7 @@ public class ImageLoader {
         Bitmap bitmap;
 
         if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable)drawable;
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
             if (bitmapDrawable.getBitmap() != null)
                 return bitmapDrawable.getBitmap();
         }

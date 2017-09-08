@@ -49,7 +49,7 @@ public class FileCache {
     }
 
     public static String getHumanReadableSize(Context ctx, long sizeInBytes) {
-        String[] suffixes = new String[] {
+        String[] suffixes = new String[]{
                 // Some day phones will have peta bytes, and then I'll laugh
                 "bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"
         };

@@ -3,6 +3,15 @@
     package="io.github.lonamiwebs.stringlate">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="21" />
+
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="21" />
 
     <application
         android:allowBackup="true"
@@ -11,15 +20,27 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data android:name="android.max_aspect" android:value="2.1" />
+
         <activity
             android:name=".activities.repositories.RepositoriesActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Launch Stringlate from another application -->
+            <intent-filter>
+                <action android:name="io.github.lonamiwebs.stringlate.TRANSLATE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+
+            <!-- Launch Stringlate from clicking a special URL:
+                 https://lonamiwebs.github.io/stringlate/translate?git={git repo url} -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -27,9 +48,10 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="github.com"
-                    android:pathPattern="/.*/.*"
+                    android:host="lonamiwebs.github.io"
+                    android:pathPattern="/stringlate/translate.*"
                     android:scheme="https" />
+
             </intent-filter>
         </activity>
         <activity
@@ -39,13 +61,16 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".activities.translate.TranslateActivity" />
-        <activity android:name=".activities.export.CreateGistActivity" />
-        <activity android:name=".activities.OnlineHelpActivity" />
+        <activity
+            android:name=".activities.translate.TranslateActivity" />
+        <activity
+            android:name=".activities.export.CreateGistActivity" />
+        <activity android:name=".activities.BrowserActivity" />
         <activity android:name=".activities.translate.SearchStringActivity" />
         <activity
-            android:name=".activities.GitHubLoginActivity"
-            android:label="@string/login_to_github">
+            android:name=".activities.SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/settings">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -63,6 +88,7 @@
         <activity
             android:name=".activities.export.CreatePullRequestActivity"
             android:label="@string/create_pr" />
-        <activity android:name=".activities.export.CreateUrlSuccessActivity" />
+        <activity android:name=".activities.export.CreateUrlActivity" />
+        <activity android:name=".activities.translate.PeekTranslationsActivity" />
     </application>
 </manifest>

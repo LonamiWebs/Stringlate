@@ -2,9 +2,7 @@ package io.github.lonamiwebs.stringlate.utilities;
 
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -27,7 +25,9 @@ public class WebUtils {
     public static String performCall(String url, String method) {
         try {
             return performCall(new URL(url), method, "");
-        } catch (MalformedURLException e) { e.printStackTrace(); }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         return "";
     }
 
@@ -35,7 +35,9 @@ public class WebUtils {
     public static String performCall(String url, String method, HashMap<String, String> params) {
         try {
             return performCall(new URL(url), method, getQuery(params));
-        } catch (UnsupportedEncodingException | MalformedURLException e) { e.printStackTrace(); }
+        } catch (UnsupportedEncodingException | MalformedURLException e) {
+            e.printStackTrace();
+        }
         return "";
     }
 
@@ -43,18 +45,21 @@ public class WebUtils {
     public static String performCall(String url, JSONObject json) {
         return performCall(url, POST, json);
     }
+
     public static String performCall(String url, String method, JSONObject json) {
         try {
             return performCall(new URL(url), method, json.toString());
-        } catch (MalformedURLException e) { e.printStackTrace(); }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         return "";
     }
 
     // Source: http://stackoverflow.com/a/31357311/4759433
     private static String performCall(URL url, String method, String data) {
-        StringBuilder sb = new StringBuilder();
+        String result = "";
         try {
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(method);
             conn.setDoInput(true);
 
@@ -68,17 +73,12 @@ public class WebUtils {
                 os.close();
             }
 
-            String line;
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-                sb.append('\n');
-            }
+            result = Helpers.readCloseTextStream(conn.getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return sb.toString();
+        return result;
     }
 
     private static String getQuery(HashMap<String, String> params) throws UnsupportedEncodingException {
@@ -120,7 +120,9 @@ public class WebUtils {
             }
             if (!name.isEmpty())
                 result.put(name, URLDecoder.decode(sb.toString(), UTF8));
-        } catch (UnsupportedEncodingException e) { e.printStackTrace(); }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         return result;
     }

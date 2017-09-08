@@ -1,38 +1,30 @@
 package io.github.lonamiwebs.stringlate.activities;
 
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.HeaderViewListAdapter;
-import android.widget.ListView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.classes.applications.Application;
+import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.applications.ApplicationAdapter;
-import io.github.lonamiwebs.stringlate.classes.applications.ApplicationList;
+import io.github.lonamiwebs.stringlate.classes.applications.ApplicationsSyncTask;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.FileCache;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.DEFAULT_APPS_LIMIT;
 
 public class DiscoverActivity extends AppCompatActivity {
 
@@ -40,11 +32,11 @@ public class DiscoverActivity extends AppCompatActivity {
 
     private AppSettings mSettings;
 
+    private LinearLayout mSyncingLayout;
+    private ProgressBar mSyncingProgressBar;
     private TextView mNoRepositoryTextView;
-    private ListView mApplicationListView;
-    private Button mShowMoreButton;
-
-    private ApplicationList mApplicationList;
+    private RecyclerView mApplicationListView;
+    private ApplicationAdapter mApplicationAdapter;
 
     //endregion
 
@@ -57,38 +49,49 @@ public class DiscoverActivity extends AppCompatActivity {
 
         mSettings = new AppSettings(this);
 
-        mNoRepositoryTextView = (TextView)findViewById(R.id.noRepositoryTextView);
-        mApplicationListView = (ListView)findViewById(R.id.applicationListView);
+        mSyncingLayout = findViewById(R.id.syncingLayout);
+        mSyncingProgressBar = findViewById(R.id.syncingProgressBar);
+        mNoRepositoryTextView = findViewById(R.id.noRepositoryTextView);
+        mApplicationListView = findViewById(R.id.applicationListView);
 
-        mShowMoreButton = new Button(this);
-        mShowMoreButton.setText(getString(R.string.show_more));
-        mShowMoreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadMore();
-            }
-        });
-        mApplicationListView.addFooterView(mShowMoreButton);
+        mApplicationAdapter = new ApplicationAdapter(this, mSettings.isDownloadIconsAllowed());
+        mApplicationListView.setAdapter(mApplicationAdapter);
+        mApplicationListView.setLayoutManager(new LinearLayoutManager(this));
 
-        mApplicationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mApplicationAdapter.onItemClick = new ApplicationAdapter.OnItemClick() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Application app = (Application)mApplicationListView.getItemAtPosition(i);
-                Intent data = new Intent();
-                data.putExtra("url", app.getSourceCodeUrl());
+            public void onClick(final Intent data) {
                 setResult(RESULT_OK, data);
                 finish();
             }
+        };
+
+        mApplicationListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy <= 0) {
+                    final LinearLayoutManager manager = (LinearLayoutManager)
+                            mApplicationListView.getLayoutManager();
+
+                    if (manager.findFirstVisibleItemPosition() + manager.getChildCount() ==
+                            manager.getItemCount()) {
+                        mApplicationAdapter.loadMore();
+                    }
+                }
+            }
         });
 
-        mApplicationList = new ApplicationList(this);
-        if (mApplicationList.loadIndexXml()) {
-            refreshListView("");
-        } else {
-            mNoRepositoryTextView.setText(getString(
-                    R.string.apps_repo_not_downloaded, getString(R.string.update_applications)));
-            mNoRepositoryTextView.setVisibility(VISIBLE);
-        }
+        mNoRepositoryTextView.setText(getString(
+                R.string.apps_repo_not_downloaded, getString(R.string.update_applications)));
+        checkViewsVisibility(mApplicationAdapter.getItemCount() != 0);
+
+        Messenger.onApplicationsSync.add(applicationsSync);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Messenger.onApplicationsSync.remove(applicationsSync);
     }
 
     //endregion
@@ -103,8 +106,8 @@ public class DiscoverActivity extends AppCompatActivity {
         menu.findItem(R.id.allowDownloadIcons).setChecked(mSettings.isDownloadIconsAllowed());
 
         // Associate the searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView)menu.findItem(R.id.search).getActionView();
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -128,14 +131,14 @@ public class DiscoverActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Synchronizing repository
             case R.id.updateApplications:
-                updateApplicationsIndex();
+                mApplicationAdapter.beginSyncApplications();
                 return true;
             // Toggle downloading icons ability
             case R.id.allowDownloadIcons:
                 boolean allow = !item.isChecked();
                 item.setChecked(allow);
                 mSettings.setDownloadIconsAllowed(allow);
-                refreshListView("");
+                mApplicationAdapter.setAllowInternetDownload(allow);
                 return true;
             // Clearing the icons cache
             case R.id.clearIconsCache:
@@ -153,32 +156,36 @@ public class DiscoverActivity extends AppCompatActivity {
 
     //endregion
 
-    //region Application list view
+    //region ApplicationDetails list view
 
     //region Update index
 
-    private void updateApplicationsIndex() {
-        // There must be a non-empty title if we want it to be set later
-        final ProgressDialog progress = ProgressDialog.show(this, "…", "…", true);
+    private final Messenger.OnApplicationsSync applicationsSync = new Messenger.OnApplicationsSync() {
+        @Override
+        public void onUpdate(float progress) {
+            checkViewsVisibility(false);
+            mSyncingProgressBar.setProgress((int) (progress * 100f));
+        }
 
-        mApplicationList.syncRepo(new ProgressUpdateCallback() {
-            @Override
-            public void onProgressUpdate(String title, String description) {
-                progress.setTitle(title);
-                progress.setMessage(description);
-            }
+        @Override
+        public void onFinish(boolean okay) {
+            checkViewsVisibility(okay);
+            if (okay)
+                refreshListView("");
+        }
+    };
 
-            @Override
-            public void onProgressFinished(String description, boolean status) {
-                progress.dismiss();
-                if (status) {
-                    refreshListView("");
-                }
-                else
-                    Toast.makeText(getApplicationContext(),
-                            R.string.sync_failed, Toast.LENGTH_SHORT).show();
-            }
-        });
+    // Updates the visibility of the views depending on the current state
+    void checkViewsVisibility(boolean appsLoaded) {
+        final boolean syncing = ApplicationsSyncTask.isSyncing();
+        if (syncing) {
+            mSyncingLayout.setVisibility(View.VISIBLE);
+            mSyncingProgressBar.setProgress((int) (100 * ApplicationsSyncTask.progress));
+        } else {
+            mSyncingLayout.setVisibility(View.GONE);
+        }
+
+        mNoRepositoryTextView.setVisibility(syncing || appsLoaded ? View.GONE : View.VISIBLE);
     }
 
     //endregion
@@ -186,37 +193,8 @@ public class DiscoverActivity extends AppCompatActivity {
     //region Update list view
 
     private void refreshListView(@NonNull String filter) {
-        // Keep the reference of the new internal slice array list
-        ArrayList<Application> appsSlice = mApplicationList.newSlice(filter);
-
-        // Initial bulk load (the whole list might also have
-        // been consumed, so also update the "Show more" visibility)
-        updateShowMoreVisibility(mApplicationList.increaseSlice(DEFAULT_APPS_LIMIT));
-
-        if (appsSlice.isEmpty()) {
-            mNoRepositoryTextView.setVisibility(VISIBLE);
-            mApplicationListView.setVisibility(GONE);
-            mApplicationListView.setAdapter(null);
-        } else {
-            mNoRepositoryTextView.setVisibility(GONE);
-            mApplicationListView.setVisibility(VISIBLE);
-            mApplicationListView.setAdapter(new ApplicationAdapter(
-                    this, appsSlice, mSettings.isDownloadIconsAllowed()));
-        }
-    }
-
-    private void loadMore() {
-        // We first need to cast to HeaderViewListAdapter since we're using a footer view
-        ApplicationAdapter adapter = (ApplicationAdapter)
-                ((HeaderViewListAdapter)mApplicationListView.getAdapter()).getWrappedAdapter();
-
-        // Increase the slice size and notify the changes
-        updateShowMoreVisibility(mApplicationList.increaseSlice(DEFAULT_APPS_LIMIT));
-        adapter.notifyDataSetChanged();
-    }
-
-    private void updateShowMoreVisibility(boolean anyAppLeft) {
-        mShowMoreButton.setVisibility(anyAppLeft ? VISIBLE : GONE);
+        mApplicationAdapter.setNewFilter(filter);
+        checkViewsVisibility(mApplicationAdapter.getItemCount() != 0);
     }
 
     //endregion

@@ -10,11 +10,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:orientation="horizontal">
+        android:paddingTop="@dimen/activity_vertical_margin">
 
         <EditText
             android:id="@+id/searchEditText"
@@ -23,18 +23,23 @@
             android:layout_weight="1"
             android:hint="@string/search_id_content_ellipsis" />
 
-        <ImageView
-            android:src="@drawable/ic_search_36dp"
+        <ImageButton
+            android:id="@+id/clearFilterButton"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:padding="4dp" />
+            android:background="@null"
+            android:contentDescription="@string/clear_filter"
+            android:onClick="onClearFilterClick"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_search_yellow_36dp" />
 
     </LinearLayout>
 
     <View
         android:layout_width="fill_parent"
         android:layout_height="2dp"
-        android:background="@color/colorDivider"/>
+        android:background="@color/colorDivider" />
 
     <ListView
         android:id="@+id/resourcesListView"

@@ -32,7 +32,7 @@ class MemoryCache {
     //region Constructor
 
     public MemoryCache() {
-        setLimit((long)(Runtime.getRuntime().maxMemory() * MAXIMUM_MEMORY_PERCENTAGE));
+        setLimit((long) (Runtime.getRuntime().maxMemory() * MAXIMUM_MEMORY_PERCENTAGE));
 
         // Last argument true for Least Recently Used ordering
         mCache = Collections.synchronizedMap(new LinkedHashMap<String, Bitmap>(
@@ -61,14 +61,14 @@ class MemoryCache {
 
     // Puts the given bitmap into memory with a given identifier
     public void put(String id, Bitmap bitmap) {
-        try{
+        try {
             if (mCache.containsKey(id))
                 mUsed -= getSizeInBytes(mCache.get(id));
 
             mCache.put(id, bitmap);
             mUsed += getSizeInBytes(bitmap);
             checkUsedSize();
-        }catch(Throwable th) {
+        } catch (Throwable th) {
             th.printStackTrace();
         }
     }

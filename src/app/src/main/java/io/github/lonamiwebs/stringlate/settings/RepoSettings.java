@@ -2,16 +2,16 @@ package io.github.lonamiwebs.stringlate.settings;
 
 import android.support.annotation.NonNull;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import io.github.lonamiwebs.stringlate.utilities.Helpers;
 
 // We can't quite save the SharedPreferences in a custom path so… use JSON (easier than XML)
 public class RepoSettings {
@@ -20,47 +20,198 @@ public class RepoSettings {
     private final File mSettingsFile;
     private JSONObject mSettings;
 
-    private static final String KEY_GIT_URL = "git_url";
+    private static final String KEY_SOURCE = "source";
+    private static final String KEY_PROJECT_HOMEPAGE_URL = "project_homepage_url";
     private static final String KEY_LAST_LOCALE = "last_locale";
+    private static final String KEY_REMOTE_PATHS = "remote_paths";
+    private static final String KEY_ICON_PATH = "icon_path";
+    private static final String KEY_SEARCH_FILTER = "search_filter";
+    private static final String KEY_CREATED_ISSUES = "created_issues";
+    private static final String KEY_PROJECT_NAME = "project_name";
 
-    private static final String DEFAULT_GIT_URL = "";
-    private static final String DEFAULT_LAST_LOCALE = null;
+    private static final String DEFAULT_LAST_LOCALE = "";
+    private static final String DEFAULT_PROJECT_NAME = "";
 
     //region Constructor
 
     public RepoSettings(final File repoDir) {
         mSettingsFile = new File(repoDir, FILENAME);
-        load();
+        mSettings = load();
     }
 
     //endregion
 
+    // TODO Remove by version 1.0 or so
+    public void checkUpgradeSettingsToSpecific(final SourceSettings sourceSettings) {
+        if (mSettings.has("git_url")) {
+            // Name change: "git_url" -> "source"
+            setSource(mSettings.optString("git_url", ""));
+
+            // Location change: RepoSettings -> git-specific SourceSettings (all if upgrading)
+            sourceSettings.set("translation_service", mSettings.optString("translation_service"));
+            try {
+                final ArrayList<String> branchesArray = new ArrayList<>();
+                JSONArray branches = mSettings.optJSONArray("remote_branches");
+                if (branches != null) {
+                    for (int i = 0; i < branches.length(); ++i) {
+                        branchesArray.add(branches.getString(i));
+                    }
+                    sourceSettings.setArray("remote_branches", branchesArray);
+                }
+            } catch (JSONException ignored) {
+            }
+
+            mSettings.remove("git_url");
+            mSettings.remove("translation_service");
+            mSettings.remove("remote_branches");
+            save();
+        }
+    }
+
     //region Getters
 
     @NonNull
-    public String getGitUrl() {
-        return mSettings.optString(KEY_GIT_URL, DEFAULT_GIT_URL);
+    public String getSource() {
+        return mSettings.optString(KEY_SOURCE, "");
+    }
+
+    public String getProjectHomepageUrl() {
+        return mSettings.optString(KEY_PROJECT_HOMEPAGE_URL, getSource());
+    }
+
+    @NonNull
+    public String getProjectName() {
+        return mSettings.optString(KEY_PROJECT_NAME, DEFAULT_PROJECT_NAME);
     }
 
     public String getLastLocale() {
         return mSettings.optString(KEY_LAST_LOCALE, DEFAULT_LAST_LOCALE);
     }
 
-    // TODO Save the remote paths here or when exporting it will get messed up......
+    public HashMap<String, String> getRemotePaths() {
+        HashMap<String, String> map = new HashMap<>();
+        JSONObject json = mSettings.optJSONObject(KEY_REMOTE_PATHS);
+        if (json != null) {
+            try {
+                Iterator<String> keysItr = json.keys();
+                while (keysItr.hasNext()) {
+                    String key = keysItr.next();
+                    map.put(key, json.getString(key));
+                }
+            } catch (JSONException ignored) {
+            }
+        }
+        return map;
+    }
+
+    public static boolean exists(final File repoDir) {
+        return new File(repoDir, FILENAME).isFile();
+    }
+
+    public File getIconFile() {
+        String path = mSettings.optString(KEY_ICON_PATH, "");
+        if (path.isEmpty())
+            return null;
+
+        File result = new File(path);
+        return result.isFile() ? result : null;
+    }
+
+    @NonNull
+    public String getStringFilter() {
+        return mSettings.optString(KEY_SEARCH_FILTER, "");
+    }
+
+    // HashMap<Locale string, GitHub issue number>
+    public HashMap<String, Integer> getCreatedIssues() {
+        HashMap<String, Integer> map = new HashMap<>();
+        JSONObject json = mSettings.optJSONObject(KEY_CREATED_ISSUES);
+        if (json != null) {
+            try {
+                Iterator<String> keysItr = json.keys();
+                while (keysItr.hasNext()) {
+                    String key = keysItr.next();
+                    map.put(key, json.getInt(key));
+                }
+            } catch (JSONException ignored) {
+            }
+        }
+        return map;
+    }
 
     //endregion
 
     //region Setters
 
-    public void setGitUrl(final String gitUrl) {
-        try { mSettings.put(KEY_GIT_URL, gitUrl); }
-        catch (JSONException ignored) { }
+    public void setSource(final String source) {
+        try {
+            mSettings.put(KEY_SOURCE, source);
+        } catch (JSONException ignored) {
+        }
+        save();
+    }
+
+    public void setProjectHomepageUrl(final String homepageUrl) {
+        try {
+            mSettings.put(KEY_PROJECT_HOMEPAGE_URL, homepageUrl);
+        } catch (JSONException ignored) {
+        }
+        save();
+    }
+
+    public void setProjectName(final String projectName) {
+        try {
+            mSettings.put(KEY_PROJECT_NAME, projectName);
+        } catch (JSONException ignored) {
+        }
         save();
     }
 
     public void setLastLocale(String locale) {
-        try { mSettings.put(KEY_LAST_LOCALE, locale); }
-        catch (JSONException ignored) { }
+        try {
+            mSettings.put(KEY_LAST_LOCALE, locale);
+        } catch (JSONException ignored) {
+        }
+        save();
+    }
+
+    public void addRemotePath(String filename, String remotePath) {
+        try {
+            HashMap<String, String> map = getRemotePaths();
+            map.put(filename, remotePath);
+            mSettings.put(KEY_REMOTE_PATHS, new JSONObject(map));
+        } catch (JSONException ignored) {
+        }
+        save();
+    }
+
+    public void clearRemotePaths() {
+        mSettings.remove(KEY_REMOTE_PATHS);
+    }
+
+    public void setIconFile(File file) {
+        try {
+            mSettings.put(KEY_ICON_PATH, file == null ? "" : file.getAbsolutePath());
+        } catch (JSONException ignored) {
+        }
+        save();
+    }
+
+    public void setStringFilter(@NonNull final String filter) {
+        try {
+            mSettings.put(KEY_SEARCH_FILTER, filter);
+        } catch (JSONException ignored) {
+        }
+        save();
+    }
+
+    public void addCreatedIssue(String locale, int issueNumber) {
+        try {
+            HashMap<String, Integer> map = getCreatedIssues();
+            map.put(locale, issueNumber);
+            mSettings.put(KEY_CREATED_ISSUES, new JSONObject(map));
+        } catch (JSONException ignored) {
+        }
         save();
     }
 
@@ -68,49 +219,20 @@ public class RepoSettings {
 
     //region Load/save
 
-    public void load() {
-        BufferedReader reader = null;
+    @NonNull
+    private JSONObject load() {
         try {
-            reader = new BufferedReader(new FileReader(mSettingsFile));
-            mSettings = new JSONObject(reader.readLine());
-        } catch (FileNotFoundException ignored) {
-            mSettings = new JSONObject();
-        } catch (IOException | JSONException e) {
+            final String json = Helpers.readTextFile(mSettingsFile);
+            if (!json.isEmpty())
+                return new JSONObject(json);
+        } catch (JSONException e) {
             e.printStackTrace();
-            mSettings = new JSONObject();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
+        return new JSONObject();
     }
 
     public boolean save() {
-        BufferedWriter writer = null;
-        try {
-            if (!mSettingsFile.getParentFile().isDirectory())
-                mSettingsFile.getParentFile().mkdirs();
-
-            writer = new BufferedWriter(new FileWriter(mSettingsFile));
-            writer.write(mSettings.toString());
-            writer.flush();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        return Helpers.writeFile(mSettingsFile, mSettings.toString());
     }
 
     //endregion

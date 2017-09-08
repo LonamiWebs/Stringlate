@@ -1,5 +1,6 @@
 package io.github.lonamiwebs.stringlate.classes.applications;
 
+import android.content.Context;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -12,20 +13,28 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-class ApplicationListParser {
-    // We don't use namespaces
-    private static final String ns = null;
+import io.github.lonamiwebs.stringlate.utilities.Constants;
 
+import static io.github.lonamiwebs.stringlate.utilities.Constants.FDROID_REPO_URL;
+
+class ApplicationListParser {
+    // parser ids
     private static final String ID = "id";
     private static final String LAST_UPDATED = "lastupdated";
     private static final String NAME = "name";
     private static final String DESCRIPTION = "summary";
     private static final String ICON = "icon";
+    private static final String ICON_URL = "sl_iconurl";
     private static final String SOURCE_URL = "source";
+    private static final String WEB = "web";
+
+    // We don't use namespaces
+    private static final String ns = null;
+    private static String fdroidIconPath = null;
 
     //region Xml -> ApplicationsList
 
-    static ArrayList<Application> parseFromXml(InputStream in, HashSet<String> installedPackages)
+    static ArrayList<ApplicationDetails> parseFromXml(InputStream in, HashSet<String> installedPackages)
             throws XmlPullParserException, IOException {
 
         try {
@@ -34,9 +43,9 @@ class ApplicationListParser {
             parser.setInput(in, null);
             parser.nextTag();
 
-            ArrayList<Application> apps = readFdroid(parser);
+            ArrayList<ApplicationDetails> apps = readFdroid(parser);
             // Now set which applications are installed on the device
-            for (Application app : apps) {
+            for (ApplicationDetails app : apps) {
                 if (installedPackages.contains(app.getPackageName()))
                     app.setInstalled();
             }
@@ -45,15 +54,16 @@ class ApplicationListParser {
         } finally {
             try {
                 in.close();
-            } catch (IOException ignored) { }
+            } catch (IOException ignored) {
+            }
         }
     }
 
     // Reads the <fdroid> tag and returns a list of its <application> tags
-    private static ArrayList<Application> readFdroid(XmlPullParser parser)
+    private static ArrayList<ApplicationDetails> readFdroid(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
-        ArrayList<Application> apps = new ArrayList<>();
+        ArrayList<ApplicationDetails> apps = new ArrayList<>();
 
         parser.require(XmlPullParser.START_TAG, ns, "fdroid");
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -70,11 +80,13 @@ class ApplicationListParser {
     }
 
     // Reads a <application id="...">...</application> tag from the xml
-    private static Application readApplication(XmlPullParser parser)
+    private static ApplicationDetails readApplication(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
-        String packageName, lastUpdated, name, description, iconName, sourceCodeUrl;
-        packageName = lastUpdated = name = description = iconName = sourceCodeUrl = "";
+        String packageName, lastUpdated, name, description, iconUrl, sourceCodeUrl, webUrl;
+        packageName = lastUpdated = name = description = iconUrl = sourceCodeUrl = webUrl = "";
+        iconUrl = "";
+        sourceCodeUrl = "";
 
         parser.require(XmlPullParser.START_TAG, ns, "application");
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -94,8 +106,16 @@ class ApplicationListParser {
                 case DESCRIPTION:
                     description = readText(parser);
                     break;
+                case WEB:
+                    webUrl = readText(parser);
+                    break;
                 case ICON:
-                    iconName = readText(parser);
+                    if (fdroidIconPath != null) {
+                        iconUrl = fdroidIconPath + readText(parser);
+                    }
+                    break;
+                case ICON_URL:
+                    iconUrl = readText(parser);
                     break;
                 case SOURCE_URL:
                     sourceCodeUrl = readText(parser);
@@ -107,8 +127,8 @@ class ApplicationListParser {
         }
         parser.require(XmlPullParser.END_TAG, ns, "application");
 
-        return new Application(packageName, lastUpdated,
-                name, description, iconName, sourceCodeUrl);
+        return new ApplicationDetails(packageName, lastUpdated,
+                name, description, iconUrl, sourceCodeUrl, webUrl);
     }
 
     // Reads the text from an xml tag
@@ -129,8 +149,12 @@ class ApplicationListParser {
         int depth = 1;
         while (depth != 0) {
             switch (parser.next()) {
-                case XmlPullParser.END_TAG: --depth; break;
-                case XmlPullParser.START_TAG: ++depth; break;
+                case XmlPullParser.END_TAG:
+                    --depth;
+                    break;
+                case XmlPullParser.START_TAG:
+                    ++depth;
+                    break;
             }
         }
     }
@@ -145,15 +169,16 @@ class ApplicationListParser {
             serializer.setOutput(out, "UTF-8");
             serializer.startTag(ns, "fdroid");
 
-            for (Application app : applications) {
+            for (ApplicationDetails app : applications) {
                 serializer.startTag(ns, "application");
 
                 writeTag(serializer, ID, app.getPackageName());
                 writeTag(serializer, LAST_UPDATED, app.getLastUpdatedDateString());
                 writeTag(serializer, NAME, app.getName());
                 writeTag(serializer, DESCRIPTION, app.getDescription());
-                writeTag(serializer, ICON, app.getIconName());
+                writeTag(serializer, ICON_URL, app.getIconUrl());
                 writeTag(serializer, SOURCE_URL, app.getSourceCodeUrl());
+                writeTag(serializer, WEB, app.getWebUrl());
 
                 serializer.endTag(ns, "application");
             }
@@ -174,4 +199,16 @@ class ApplicationListParser {
     }
 
     //endregion
+
+    public static void loadFDroidIconPath(Context context) {
+        final double dpi = context.getResources().getDisplayMetrics().densityDpi;
+        String iconDir = Constants.FALLBACK_FDROID_ICONS_DIR;
+        if (dpi >= 120) iconDir = "/icons-120/";
+        if (dpi >= 160) iconDir = "/icons-160/";
+        if (dpi >= 240) iconDir = "/icons-240/";
+        if (dpi >= 320) iconDir = "/icons-320/";
+        if (dpi >= 480) iconDir = "/icons-480/";
+        if (dpi >= 640) iconDir = "/icons-640/";
+        fdroidIconPath = FDROID_REPO_URL + iconDir;
+    }
 }

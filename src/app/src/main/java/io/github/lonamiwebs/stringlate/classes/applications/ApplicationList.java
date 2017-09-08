@@ -3,7 +3,6 @@ package io.github.lonamiwebs.stringlate.classes.applications;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -19,29 +18,27 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.interfaces.ProgressUpdateCallback;
+import io.github.lonamiwebs.stringlate.classes.Messenger;
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
+import io.github.lonamiwebs.stringlate.utilities.Constants;
 import io.github.lonamiwebs.stringlate.utilities.FileDownloader;
 import io.github.lonamiwebs.stringlate.utilities.FileExtractor;
 
-public class ApplicationList implements Iterable<Application> {
+public class ApplicationList implements Iterable<ApplicationDetails> {
 
     //region Members
-
-    final static String FDROID_REPO_URL = "https://f-droid.org/repo";
-    private final static String FDROID_INDEX_URL = FDROID_REPO_URL+"/index.jar";
-
     private final File mRoot;
     private final Context mContext;
 
     private static final String BASE_DIR = "index";
 
-    private ArrayList<Application> mApplications;
+    private ArrayList<ApplicationDetails> mApplications;
     private final HashSet<String> mInstalledPackages;
 
     // Keep track of a filtered slice, so ListViews can have a "Show more"
-    private ArrayList<Application> mApplicationsSlice;
-    @NonNull private String mSliceFilter;
+    private ArrayList<ApplicationDetails> mApplicationsSlice;
+    @NonNull
+    private String mSliceFilter;
     private int mLastSliceIndex;
 
     //endregion
@@ -61,6 +58,8 @@ public class ApplicationList implements Iterable<Application> {
         for (ApplicationInfo packageInfo : packages) {
             mInstalledPackages.add(packageInfo.packageName);
         }
+
+        ApplicationListParser.loadFDroidIconPath(mContext);
     }
 
     //endregion
@@ -68,7 +67,7 @@ public class ApplicationList implements Iterable<Application> {
     //region Getters
 
     // Gets a new slice with the given filter for the application name
-    public ArrayList<Application> newSlice(@NonNull String filter) {
+    public ArrayList<ApplicationDetails> newSlice(@NonNull String filter) {
         mApplicationsSlice = new ArrayList<>();
         mSliceFilter = filter.trim().toLowerCase();
         mLastSliceIndex = 0;
@@ -95,7 +94,7 @@ public class ApplicationList implements Iterable<Application> {
             end = mApplications.size();
 
             for (; mLastSliceIndex < end && count > 0; mLastSliceIndex++) {
-                Application app = mApplications.get(mLastSliceIndex);
+                ApplicationDetails app = mApplications.get(mLastSliceIndex);
                 if (app.getName().toLowerCase().contains(mSliceFilter) ||
                         app.getDescription().toLowerCase().contains(mSliceFilter)) {
                     mApplicationsSlice.add(app);
@@ -110,89 +109,47 @@ public class ApplicationList implements Iterable<Application> {
 
     //endregion
 
-    public void syncRepo(final ProgressUpdateCallback callback) {
-        final AsyncTask<Void, Void, Void> step3 = new AsyncTask<Void, Void, Void>() {
+    public boolean syncRepo(final Messenger.OnSyncProgress callback) {
+        // Step 1: Download the index.jar
+        callback.onUpdate(1, 0f);
+        FileDownloader.downloadFile(Constants.FDROID_INDEX_URL, getIndexFile("jar"), new Callback<Float>() {
             @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                callback.onProgressUpdate(mContext.getString(R.string.loading_index_xml),
-                        mContext.getString(R.string.loading_index_xml_long));
+            public void onCallback(Float progress) {
+                callback.onUpdate(1, progress);
             }
+        });
 
+        // Step 2: Extract the index.xml from the index.jar, then delete the index.jar
+        callback.onUpdate(2, 0f);
+        FileExtractor.unpackZip(getIndexFile("jar"), mRoot, false, new Callback<Float>() {
             @Override
-            protected Void doInBackground(Void... voids) {
-                loadIndexXml(); // Loses not-required information
-                saveIndexXml(); // Thus minimizes the file
-                return null;
+            public void onCallback(Float progress) {
+                callback.onUpdate(2, progress);
             }
+        });
+        if (!getIndexFile("jar").delete())
+            return false;
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                callback.onProgressFinished(mContext.getString(R.string.done), true);
-            }
-        };
-        final AsyncTask<Void, Void, Void> step2 = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                callback.onProgressUpdate(mContext.getString(R.string.extracting_index_xml),
-                        mContext.getString(R.string.extracting_index_xml_long));
-            }
+        // Step 3, load the xml and lose non-required information, then save it minimized
+        callback.onUpdate(3, 0f);
+        if (!loadIndexXml())
+            return false;
 
-            @Override
-            protected Void doInBackground(Void... voids) {
-                extractIndexXml();
-                deleteIndexJar();
-                return null;
-            }
+        try {
+            // Save index.xml
+            callback.onUpdate(4, 0f);
+            ApplicationListParser.parseToXml(
+                    this, new FileOutputStream(getIndexFile("xml"))
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                step3.execute();
-            }
-        };
-        final AsyncTask<Void, Void, Void> step1 = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                callback.onProgressUpdate(mContext.getString(R.string.downloading_index_jar),
-                        mContext.getString(R.string.downloading_index_jar_long));
-            }
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-                downloadIndexJar();
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                step2.execute();
-            }
-        };
-
-        step1.execute();
+        // Done
+        return true;
     }
 
-    // Step 1: Download the index.jar
-    private void downloadIndexJar() {
-        FileDownloader.downloadFile(FDROID_INDEX_URL, getIndexFile("jar"));
-    }
-
-    // Step 2a: Extract the index.xml from the index.jar
-    private void extractIndexXml() {
-        FileExtractor.unpackZip(getIndexFile("jar"), mRoot, false);
-    }
-
-    // Step 2b: Delete index.jar
-    private boolean deleteIndexJar() {
-        return getIndexFile("jar").delete();
-    }
-
-    // Step 3a: Load the ApplicationList from the index.xml
     public boolean loadIndexXml() {
         try {
             File file = getIndexFile("xml");
@@ -202,11 +159,11 @@ public class ApplicationList implements Iterable<Application> {
                         mInstalledPackages);
 
                 // Also sort the applications alphabetically, installed first
-                Collections.sort(mApplications, new Comparator<Application>() {
+                Collections.sort(mApplications, new Comparator<ApplicationDetails>() {
                     @Override
-                    public int compare(Application t1, Application t2) {
+                    public int compare(ApplicationDetails t1, ApplicationDetails t2) {
                         if (t1.isInstalled() == t2.isInstalled()) {
-                            return t1.getName().compareTo(t2.getName());
+                            return t1.getName().compareToIgnoreCase(t2.getName());
                         } else {
                             return t1.isInstalled() ? -1 : 1;
                         }
@@ -223,22 +180,12 @@ public class ApplicationList implements Iterable<Application> {
         return false;
     }
 
-    // Step 3b: Save a (minimized) version of the index.xml
-    private void saveIndexXml() {
-        try {
-            ApplicationListParser.parseToXml(this,
-                    new FileOutputStream(getIndexFile("xml")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private File getIndexFile(String extension) {
-        return new File(mRoot, "index."+extension);
+        return new File(mRoot, "index." + extension);
     }
 
     @Override
-    public Iterator<Application> iterator() {
+    public Iterator<ApplicationDetails> iterator() {
         return mApplications.iterator();
     }
 }
