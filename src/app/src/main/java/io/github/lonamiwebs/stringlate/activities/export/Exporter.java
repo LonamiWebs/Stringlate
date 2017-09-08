@@ -1,5 +1,6 @@
 package io.github.lonamiwebs.stringlate.activities.export;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
@@ -123,7 +124,7 @@ class Exporter {
 
     static int createPullRequestExporter(
             final RepoHandler originalRepo, final boolean needFork,
-            final String locale, final String branch, final String commitMessage,
+            final String locale, final String commitMessage,
             final String username, final String token) {
         return addExporter(new CallableExporter() {
 
@@ -150,6 +151,15 @@ class Exporter {
                 } else {
                     repo = originalRepo;
                 }
+
+                // Create a temporary branch
+                // TODO If we have write access, should we create a new branch at all?
+                @SuppressLint("DefaultLocale")
+                final String branch = String.format(
+                        "stringlate-%s-%d", locale, 1000 + new Random().nextInt(8999)
+                );
+                JSONObject result = GitHub.gCreateBranch(token, repo, branch);
+                if (result == null) throw new JSONException("Failed to create a new branch.");
 
                 // Commit the file
                 progress.onCallback(context.getString(R.string.creating_commit_long));
