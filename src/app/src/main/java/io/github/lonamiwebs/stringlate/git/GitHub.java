@@ -180,14 +180,14 @@ public class GitHub {
     public static JSONObject gCreateBranch(final String token, final RepoHandler repo, final String branchName)
             throws InvalidObjectException {
         try {
-            JSONArray head = new JSONArray(HelpersNetwork.performCall(gGetUrl(
-                    "repos/%s/git/refs/heads?access_token=%s", repo.toOwnerRepo(), token), HelpersNetwork.GET));
+            JSONArray head = new JSONArray(NetworkUtils.performCall(gGetUrl(
+                    "repos/%s/git/refs/heads?access_token=%s", repo.toOwnerRepo(), token), NetworkUtils.GET));
 
             final String sha = head.getJSONObject(0).getJSONObject("object").getString("sha");
             JSONObject params = new JSONObject();
             params.put("ref", "refs/heads/" + branchName);
             params.put("sha", sha);
-            return new JSONObject(HelpersNetwork.performCall(gGetUrl(
+            return new JSONObject(NetworkUtils.performCall(gGetUrl(
                     "repos/%s/git/refs?access_token=%s", repo.toOwnerRepo(), token), params));
 
         } catch (JSONException e) {
