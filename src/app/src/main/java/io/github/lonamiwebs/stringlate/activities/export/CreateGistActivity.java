@@ -15,7 +15,7 @@ import java.util.HashMap;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.utilities.Helpers;
+import io.github.gsantner.opoc.util.Helpers;
 
 import static android.view.View.GONE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
@@ -106,7 +106,7 @@ public class CreateGistActivity extends AppCompatActivity {
                         mRepo.applyTemplate(defaultResources[0], mLocale));
             }
         }
-        if (new Helpers(this).isDisconnectedFromInternet(R.string.no_internet_connection))
+        if (!new Helpers(this).isConnectedToInternet(R.string.no_internet_connection))
             return;
 
         final String description = mDescriptionEditText.getText().toString().trim();

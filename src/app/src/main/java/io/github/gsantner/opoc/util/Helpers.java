@@ -29,6 +29,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.support.annotation.RawRes;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
@@ -42,6 +43,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -109,6 +111,28 @@ public class Helpers {
 
     public String colorToHexString(int intColor) {
         return String.format("#%06X", 0xFFFFFF & intColor);
+    }
+
+    // https://stackoverflow.com/a/1086134
+    public static String toTitleCase(String string) {
+        if (string == null)
+            return null;
+
+        StringBuilder titleCase = new StringBuilder();
+        boolean nextTitleCase = true;
+
+        for (char c : string.toCharArray()) {
+            if (Character.isSpaceChar(c)) {
+                nextTitleCase = true;
+            } else if (nextTitleCase) {
+                c = Character.toTitleCase(c);
+                nextTitleCase = false;
+            }
+
+            titleCase.append(c);
+        }
+
+        return titleCase.toString();
     }
 
     public String getAppVersionName() {
@@ -229,6 +253,14 @@ public class Helpers {
                 _context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetInfo != null && activeNetInfo.isConnectedOrConnecting();
+    }
+
+    public boolean isConnectedToInternet(@Nullable @StringRes Integer warnMessageStringRes) {
+        final boolean result = isConnectedToInternet();
+        if (!result && warnMessageStringRes != null)
+            Toast.makeText(_context, _context.getString(warnMessageStringRes), Toast.LENGTH_SHORT).show();
+
+        return result;
     }
 
     public void restartApp(Class classToStartupWith) {

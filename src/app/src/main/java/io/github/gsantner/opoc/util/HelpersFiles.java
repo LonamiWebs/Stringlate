@@ -1,13 +1,20 @@
-package io.github.lonamiwebs.stringlate.utilities;
+/*
+ * ------------------------------------------------------------------------------
+ * Gregor Santner <gsantner.github.io> & Lonami Exo <lonamiwebs.github.io> wrote
+ * this. You can do whatever you want with it. If we meet some day, and you
+ * think it is worth it, you can buy us a coke in return. Provided as is without
+ * any kind of warranty. Do not blame or sue us if something goes wrong.
+ * No attribution required.    - Gregor Santner & Lonami Exo
+ *
+ * License: Creative Commons Zero (CC0 1.0)
+ *  http://creativecommons.org/publicdomain/zero/1.0/
+ * ----------------------------------------------------------------------------
+ */
+package io.github.gsantner.opoc.util;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -22,50 +29,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Helpers extends io.github.gsantner.opoc.util.Helpers {
+@SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
+public class HelpersFiles {
 
-    public Helpers(Context context) {
-        super(context);
-    }
-
-    //region Network
-
-    public boolean isDisconnectedFromInternet(@Nullable @StringRes Integer warnMessageStringRes) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        boolean notConnected = activeNetworkInfo == null || !activeNetworkInfo.isConnected();
-        if (notConnected && warnMessageStringRes != null) {
-            Toast.makeText(_context, _context.getString(warnMessageStringRes), Toast.LENGTH_SHORT).show();
-        }
-        return notConnected;
-    }
-
-    //endregion
-
-    //region String utilities
-
-    // https://stackoverflow.com/a/1086134
-    public static String toTitleCase(final String input) {
-        StringBuilder titleCase = new StringBuilder();
-        boolean nextTitleCase = true;
-
-        for (char c : input.toCharArray()) {
-            if (Character.isSpaceChar(c)) {
-                nextTitleCase = true;
-            } else if (nextTitleCase) {
-                c = Character.toTitleCase(c);
-                nextTitleCase = false;
-            }
-
-            titleCase.append(c);
-        }
-
-        return titleCase.toString();
-    }
-
-    //endregion
-
-    //region Reading and writing files
+    // Used on methods like copy(src, dst)
+    private static final int BUFFER_SIZE = 4096;
 
     @NonNull
     public static String readTextFile(final File file) {
@@ -78,13 +46,12 @@ public class Helpers extends io.github.gsantner.opoc.util.Helpers {
         return "";
     }
 
-
     public static String readCloseTextStream(final InputStream stream) {
         return readCloseTextStream(stream, true).get(0);
     }
 
     @NonNull
-    static List<String> readCloseTextStream(final InputStream stream, boolean concatToOneString) {
+    public static List<String> readCloseTextStream(final InputStream stream, boolean concatToOneString) {
         final ArrayList<String> lines = new ArrayList<>();
         BufferedReader reader = null;
         String line = "";
@@ -149,7 +116,7 @@ public class Helpers extends io.github.gsantner.opoc.util.Helpers {
                 final FileOutputStream out = new FileOutputStream(dst);
                 try {
                     int length;
-                    byte[] buf = new byte[4096];
+                    byte[] buf = new byte[BUFFER_SIZE];
                     while ((length = in.read(buf)) > 0)
                         out.write(buf, 0, length);
 
@@ -164,10 +131,6 @@ public class Helpers extends io.github.gsantner.opoc.util.Helpers {
         }
         return false;
     }
-
-    //endregion
-
-    //region Searching in files
 
     // Returns -1 if the file did not contain any of the needles, otherwise,
     // the index of which needle was found in the contents of the file.
@@ -194,21 +157,15 @@ public class Helpers extends io.github.gsantner.opoc.util.Helpers {
         return -1;
     }
 
-    //endregion
-
-    //region Directories
-
-    public static boolean deleteRecursive(File dir) {
+    public static boolean deleteRecursive(final File file) {
         boolean ok = true;
-        if (dir.exists()) {
-            if (dir.isDirectory()) {
-                for (File child : dir.listFiles())
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                for (File child : file.listFiles())
                     ok &= deleteRecursive(child);
             }
-            ok &= dir.delete();
+            ok &= file.delete();
         }
         return ok;
     }
-
-    //endregion
 }

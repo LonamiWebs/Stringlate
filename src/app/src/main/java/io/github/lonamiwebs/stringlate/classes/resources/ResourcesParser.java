@@ -23,11 +23,11 @@ import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.github.gsantner.opoc.util.HelpersFiles;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResPlurals;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResString;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResStringArray;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
-import io.github.lonamiwebs.stringlate.utilities.Helpers;
 
 // Class used to parse strings.xml files into Resources objects
 // Please NOTE that strings with `translatable="false"` will NOT be parsed
@@ -410,7 +410,7 @@ public class ResourcesParser {
             Pattern.compile("<([\\w-]+).*?translatable\\s*=\\s*\"false\".*?>");
 
     public static boolean cleanXml(final File inFile, final File outFile) {
-        return cleanXml(Helpers.readTextFile(inFile), outFile);
+        return cleanXml(HelpersFiles.readTextFile(inFile), outFile);
     }
 
     public static boolean cleanXml(final String xml, final File outFile) {
@@ -648,7 +648,7 @@ public class ResourcesParser {
     // Returns TRUE if the template was applied successfully
     public static boolean applyTemplate(File template, Resources resources, OutputStream out) {
         // The xml will be empty if we have no translation for this file.
-        String xml = cleanMissingStrings(Helpers.readTextFile(template), resources);
+        String xml = cleanMissingStrings(HelpersFiles.readTextFile(template), resources);
         return !xml.isEmpty() && writeReplaceStrings(xml, resources, out);
     }
 

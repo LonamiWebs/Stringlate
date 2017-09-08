@@ -1,4 +1,16 @@
-package io.github.lonamiwebs.stringlate.utilities;
+/*
+ * ------------------------------------------------------------------------------
+ * Lonami Exo <lonamiwebs.github.io> wrote this. You can do whatever you want
+ * with it. If we meet some day, and you think it is worth it, you can buy me
+ * a coke in return. Provided as is without any kind of warranty. Do not blame
+ * or sue me if something goes wrong. No attribution required.
+ *                                                             - Lonami Exo
+ *
+ * License: Creative Commons Zero (CC0 1.0)
+ *  http://creativecommons.org/publicdomain/zero/1.0/
+ * ----------------------------------------------------------------------------
+ */
+package io.github.gsantner.opoc.util;
 
 import org.json.JSONObject;
 
@@ -14,14 +26,15 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WebUtils {
+@SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
+public class HelpersNetwork {
 
     public static final String GET = "GET";
     public static final String POST = "POST";
     public static final String PATCH = "PATCH";
     private static final String UTF8 = "UTF-8";
 
-    // No parameters
+    // No parameters, method can be GET, POST, etc.
     public static String performCall(String url, String method) {
         try {
             return performCall(new URL(url), method, "");
@@ -41,7 +54,7 @@ public class WebUtils {
         return "";
     }
 
-    // JSON encoded parameters are usually POST
+    // Defaults to POST
     public static String performCall(String url, JSONObject json) {
         return performCall(url, POST, json);
     }
@@ -73,7 +86,7 @@ public class WebUtils {
                 os.close();
             }
 
-            result = Helpers.readCloseTextStream(conn.getInputStream());
+            result = HelpersFiles.readCloseTextStream(conn.getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -6,11 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
+import io.github.gsantner.opoc.util.Helpers;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.utilities.Helpers;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -82,7 +82,7 @@ public class CreateIssueActivity extends AppCompatActivity {
             String xml = mRepo.mergeDefaultTemplate(mLocale);
             description = description.replace("%x", String.format("```xml\n%s\n```", xml));
         }
-        if (new Helpers(this).isDisconnectedFromInternet(R.string.no_internet_connection))
+        if (!new Helpers(this).isConnectedToInternet(R.string.no_internet_connection))
             return;
 
         CreateUrlActivity.launchIntent(this, Exporter.createIssueExporter(

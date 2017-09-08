@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
-import io.github.lonamiwebs.stringlate.utilities.Helpers;
+import io.github.gsantner.opoc.util.HelpersFiles;
 
 // Custom settings that different StringsSource may need
 public class SourceSettings {
@@ -105,7 +105,7 @@ public class SourceSettings {
     @NonNull
     private JSONObject load() {
         try {
-            final String json = Helpers.readTextFile(mSettingsFile);
+            final String json = HelpersFiles.readTextFile(mSettingsFile);
             if (!json.isEmpty())
                 return new JSONObject(json);
         } catch (JSONException e) {
@@ -115,7 +115,7 @@ public class SourceSettings {
     }
 
     public boolean save() {
-        return Helpers.writeFile(mSettingsFile, mSettings.toString());
+        return HelpersFiles.writeFile(mSettingsFile, mSettings.toString());
     }
 
     public void reset(final String newName) {
