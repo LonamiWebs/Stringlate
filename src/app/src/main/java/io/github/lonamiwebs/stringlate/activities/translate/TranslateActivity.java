@@ -41,7 +41,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 
-import io.github.gsantner.opoc.util.Helpers;
+import io.github.gsantner.opoc.util.ContextUtils;
+import io.github.gsantner.opoc.util.GeneralUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
@@ -157,7 +158,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             mUsesTranslationServiceTextView.setVisibility(View.VISIBLE);
             mUsesTranslationServiceTextView.setText(getString(
                     R.string.application_may_use_translation_platform,
-                    Helpers.toTitleCase(mRepo.getUsedTranslationService())
+                    GeneralUtils.toTitleCase(mRepo.getUsedTranslationService())
             ));
         }
     }
@@ -436,7 +437,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
     // Synchronize our local strings.xml files with the remote GitHub repository
     private void updateStrings(@NonNull final String branch) {
-        if (!new Helpers(this).isConnectedToInternet(R.string.no_internet_connection))
+        if (!new ContextUtils(this).isConnectedToInternet(R.string.no_internet_connection))
             return;
 
         // Don't let the users stay while we're synchronizing resources.
@@ -656,7 +657,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             Toast.makeText(this, R.string.login_required, Toast.LENGTH_LONG).show();
             return;
         }
-        if (!new Helpers(this).isConnectedToInternet(R.string.no_internet_connection))
+        if (!new ContextUtils(this).isConnectedToInternet(R.string.no_internet_connection))
             return;
 
         Intent intent = new Intent(this, CreatePullRequestActivity.class);

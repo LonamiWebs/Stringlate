@@ -26,13 +26,13 @@ import android.view.inputmethod.InputMethodManager;
 
 
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection"})
-public class HelpersA extends Helpers {
+public class ActivityUtils extends ContextUtils {
     //########################
     //## Members, Constructors
     //########################
     protected Activity _activity;
 
-    public HelpersA(final Activity activity) {
+    public ActivityUtils(final Activity activity) {
         super(activity);
         _activity = activity;
     }

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import io.github.gsantner.opoc.util.HelpersFiles;
+import io.github.gsantner.opoc.util.FileUtils;
 
 // We can't quite save the SharedPreferences in a custom path so… use JSON (easier than XML)
 public class RepoSettings {
@@ -222,7 +222,7 @@ public class RepoSettings {
     @NonNull
     private JSONObject load() {
         try {
-            final String json = HelpersFiles.readTextFile(mSettingsFile);
+            final String json = FileUtils.readTextFile(mSettingsFile);
             if (!json.isEmpty())
                 return new JSONObject(json);
         } catch (JSONException e) {
@@ -232,7 +232,7 @@ public class RepoSettings {
     }
 
     public boolean save() {
-        return HelpersFiles.writeFile(mSettingsFile, mSettings.toString());
+        return FileUtils.writeFile(mSettingsFile, mSettings.toString());
     }
 
     //endregion

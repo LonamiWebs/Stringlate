@@ -14,7 +14,7 @@
  * A ListPreference that displays a list of available languages
  * Requires:
  *     The BuildConfig field "APPLICATION_LANGUAGES" which is a array of all available languages
- *     opoc/Helpers
+ *     opoc/ContextUtils
  * BuildConfig field can be defined by using the method below
 
 buildConfigField("String[]", "APPLICATION_LANGUAGES", '{' + getUsedAndroidLanguages().collect {"\"${it}\""}.join(",")  + '}')
@@ -60,7 +60,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.gsantner.opoc.util.Helpers;
+import io.github.gsantner.opoc.util.ContextUtils;
 
 /**
  * A {@link android.preference.ListPreference} that displays a list of languages to select from
@@ -93,19 +93,19 @@ public class LanguagePreference extends ListPreference {
     protected boolean callChangeListener(Object newValue) {
         if (newValue instanceof String) {
             // Does not apply to existing UI, use recreate()
-            new Helpers(getContext()).setAppLanguage((String) newValue);
+            new ContextUtils(getContext()).setAppLanguage((String) newValue);
         }
         return super.callChangeListener(newValue);
     }
 
     private void init(Context context, AttributeSet attrs) {
         // Fetch readable details
-        Helpers helpers = new Helpers(context);
+        ContextUtils contextUtils = new ContextUtils(context);
         List<String> languages = new ArrayList<>();
-        Object bcof = helpers.getBuildConfigValue("APPLICATION_LANGUAGES");
+        Object bcof = contextUtils.getBuildConfigValue("APPLICATION_LANGUAGES");
         if (bcof instanceof String[]) {
             for (String langId : (String[]) bcof) {
-                Locale locale = helpers.getLocaleByAndroidCode(langId);
+                Locale locale = contextUtils.getLocaleByAndroidCode(langId);
                 languages.add(summarizeLocale(locale) + ";" + langId);
             }
         }
@@ -143,7 +143,7 @@ public class LanguagePreference extends ListPreference {
     // Add current language to summary
     @Override
     public CharSequence getSummary() {
-        Locale locale = new Helpers(getContext()).getLocaleByAndroidCode(getValue());
+        Locale locale = new ContextUtils(getContext()).getLocaleByAndroidCode(getValue());
         return super.getSummary() + "\n\n" + summarizeLocale(locale);
     }
 }

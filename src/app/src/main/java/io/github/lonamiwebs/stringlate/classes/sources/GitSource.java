@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.gsantner.opoc.util.HelpersFiles;
+import io.github.gsantner.opoc.util.FileUtils;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
@@ -151,7 +151,7 @@ public class GitSource implements StringsSource {
     public String getDefaultResourceXml(String name) {
         for (File file : mLocaleFiles.get(null))
             if (getDefaultResourceName(file).equals(name))
-                return HelpersFiles.readTextFile(file);
+                return FileUtils.readTextFile(file);
 
         throw new IllegalArgumentException("No XML was found with that name");
     }
@@ -168,7 +168,7 @@ public class GitSource implements StringsSource {
 
     @Override
     public void dispose() {
-        HelpersFiles.deleteRecursive(mWorkDir);
+        FileUtils.deleteRecursive(mWorkDir);
         mLocaleFiles.clear();
         iconFile = null;
     }

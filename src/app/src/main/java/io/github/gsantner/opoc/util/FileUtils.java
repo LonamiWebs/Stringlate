@@ -13,9 +13,6 @@
 package io.github.gsantner.opoc.util;
 
 
-import android.support.annotation.NonNull;
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,17 +27,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
-public class HelpersFiles {
+public class FileUtils {
 
     // Used on methods like copy(src, dst)
     private static final int BUFFER_SIZE = 4096;
 
-    @NonNull
     public static String readTextFile(final File file) {
         try {
             return readCloseTextStream(new FileInputStream(file));
         } catch (FileNotFoundException e) {
-            Log.w("readTextFile", "File " + file + " not found.");
+            System.err.println("readTextFile: File " + file + " not found.");
         }
 
         return "";
@@ -50,7 +46,6 @@ public class HelpersFiles {
         return readCloseTextStream(stream, true).get(0);
     }
 
-    @NonNull
     public static List<String> readCloseTextStream(final InputStream stream, boolean concatToOneString) {
         final ArrayList<String> lines = new ArrayList<>();
         BufferedReader reader = null;

@@ -19,7 +19,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.github.gsantner.opoc.util.Helpers;
+import io.github.gsantner.opoc.util.ContextUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
@@ -189,7 +189,7 @@ class GitHubCompleteAuthTask extends AsyncTask<Void, Void, GitHub.Authentication
     @Override
     protected void onPostExecute(GitHub.Authentication.CompleteAuthenticationResult result) {
         // NOTE: Preference Summary UI gets updated by preference changed event
-        Spanned message = new Helpers(mViewRoot.getContext()).htmlToSpanned("<strong>GitHub " +
+        Spanned message = new ContextUtils(mViewRoot.getContext()).htmlToSpanned("<strong>GitHub " +
                 mViewRoot.getContext().getString(result.ok ? R.string.auth_success : R.string.auth_failure)
                 + "</strong>" + (result.message != null ? ("<br/>" + result.message) : "")
         );

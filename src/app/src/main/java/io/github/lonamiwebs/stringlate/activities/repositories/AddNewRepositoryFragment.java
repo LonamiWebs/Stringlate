@@ -15,7 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import io.github.gsantner.opoc.util.Helpers;
+import io.github.gsantner.opoc.util.ContextUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
@@ -197,7 +197,7 @@ public class AddNewRepositoryFragment extends Fragment {
     //region Checking and adding a new local "repository"
 
     private void scanDownloadStrings(final RepoHandler repo) {
-        if (!new Helpers(getContext()).isConnectedToInternet(R.string.no_internet_connection))
+        if (!new ContextUtils(getContext()).isConnectedToInternet(R.string.no_internet_connection))
             return;
 
         new RepoSyncTask(getContext(), repo,

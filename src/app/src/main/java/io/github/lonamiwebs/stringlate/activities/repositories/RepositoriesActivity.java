@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import io.github.gsantner.opoc.util.Helpers;
+import io.github.gsantner.opoc.util.ContextUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
 import io.github.lonamiwebs.stringlate.activities.SettingsActivity;
@@ -36,7 +36,7 @@ public class RepositoriesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new Helpers(this).setAppLanguage(new AppSettings(this).getLanguage());
+        new ContextUtils(this).setAppLanguage(new AppSettings(this).getLanguage());
         setContentView(R.layout.activity_repositories);
 
         mRepositoriesPagerAdapter = new RepositoriesPagerAdapter(getSupportFragmentManager(), this);

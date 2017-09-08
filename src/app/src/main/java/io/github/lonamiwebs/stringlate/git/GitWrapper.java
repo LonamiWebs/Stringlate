@@ -21,7 +21,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.gsantner.opoc.util.HelpersFiles;
+import io.github.gsantner.opoc.util.FileUtils;
 
 public class GitWrapper {
 
@@ -171,7 +171,7 @@ public class GitWrapper {
     public static ArrayList<File> searchAndroidResources(final RepositoryResources resources) {
         ArrayList<File> result = new ArrayList<>();
         for (File file : resources.xml)
-            if (HelpersFiles.fileContains(file, STR_STRING, STR_PLURALS) != -1)
+            if (FileUtils.fileContains(file, STR_STRING, STR_PLURALS) != -1)
                 result.add(file);
         return result;
     }
@@ -335,7 +335,7 @@ public class GitWrapper {
     @NonNull
     public static String mayUseTranslationServices(final RepositoryResources resources) {
         for (File file : resources.readme) {
-            int i = HelpersFiles.fileContains(file, STR_TRANSLATION_SERVICES);
+            int i = FileUtils.fileContains(file, STR_TRANSLATION_SERVICES);
             if (i != -1)
                 return STR_TRANSLATION_SERVICES[i];
         }

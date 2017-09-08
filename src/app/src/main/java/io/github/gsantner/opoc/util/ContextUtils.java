@@ -52,13 +52,13 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
-public class Helpers {
+public class ContextUtils {
     //########################
     //## Members, Constructors
     //########################
     protected Context _context;
 
-    public Helpers(Context context) {
+    public ContextUtils(Context context) {
         _context = context;
     }
 
@@ -112,31 +112,6 @@ public class Helpers {
 
     public String colorToHexString(int intColor) {
         return String.format("#%06X", 0xFFFFFF & intColor);
-    }
-
-    public static String toTitleCase(final String string) {
-        return toTitleCase(string, Pattern.compile("\\s"));
-    }
-
-    public static String toTitleCase(final String string, final Pattern separator) {
-        if (string == null)
-            return null;
-
-        final StringBuilder result = new StringBuilder();
-        boolean nextTitleCase = true;
-
-        for (char c : string.toCharArray()) {
-            if (separator.matcher(String.valueOf(c)).matches()) {
-                nextTitleCase = true;
-            } else if (nextTitleCase) {
-                c = Character.toTitleCase(c);
-                nextTitleCase = false;
-            }
-
-            result.append(c);
-        }
-
-        return result.toString();
     }
 
     public String getAppVersionName() {

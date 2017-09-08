@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.gsantner.opoc.util.HelpersNetwork;
+import io.github.gsantner.opoc.util.NetworkUtils;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 
@@ -64,9 +64,9 @@ public class GitHub {
             params.put("files", filesObject);
 
             if (token.isEmpty())
-                return new JSONObject(HelpersNetwork.performCall(gGetUrl("gists"), params));
+                return new JSONObject(NetworkUtils.performCall(gGetUrl("gists"), params));
             else
-                return new JSONObject(HelpersNetwork.performCall(gGetUrl("gists?access_token=" + token), params));
+                return new JSONObject(NetworkUtils.performCall(gGetUrl("gists?access_token=" + token), params));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -82,7 +82,7 @@ public class GitHub {
             params.put("title", title);
             params.put("body", description);
 
-            return new JSONObject(HelpersNetwork.performCall(gGetUrl("repos/%s/issues?access_token=%s",
+            return new JSONObject(NetworkUtils.performCall(gGetUrl("repos/%s/issues?access_token=%s",
                     repo.toOwnerRepo(), token), params));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -96,7 +96,7 @@ public class GitHub {
         try {
             JSONObject params = new JSONObject();
             params.put("body", body);
-            return new JSONObject(HelpersNetwork.performCall(gGetUrl(
+            return new JSONObject(NetworkUtils.performCall(gGetUrl(
                     "repos/%s/issues/%d/comments?access_token=%s",
                     repo.toOwnerRepo(), issueNumber, token), params));
         } catch (JSONException e) {
@@ -107,8 +107,8 @@ public class GitHub {
 
     private static JSONObject gGetUserInfo(String token) {
         try {
-            return new JSONObject(HelpersNetwork.performCall(gGetUrl(
-                    "user?access_token=%s", token), HelpersNetwork.GET));
+            return new JSONObject(NetworkUtils.performCall(gGetUrl(
+                    "user?access_token=%s", token), NetworkUtils.GET));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -118,8 +118,8 @@ public class GitHub {
     private static JSONArray gGetCollaborators(String token, RepoHandler repo)
             throws InvalidObjectException {
         try {
-            return new JSONArray(HelpersNetwork.performCall(gGetUrl(
-                    "repos/%s/collaborators?access_token=%s", repo.toOwnerRepo(), token), HelpersNetwork.GET));
+            return new JSONArray(NetworkUtils.performCall(gGetUrl(
+                    "repos/%s/collaborators?access_token=%s", repo.toOwnerRepo(), token), NetworkUtils.GET));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -158,8 +158,8 @@ public class GitHub {
 
     public static JSONArray gGetBranches(final RepoHandler repo) {
         try {
-            return new JSONArray(HelpersNetwork.performCall(gGetUrl(
-                    "repos/%s/branches", repo.toOwnerRepo()), HelpersNetwork.GET));
+            return new JSONArray(NetworkUtils.performCall(gGetUrl(
+                    "repos/%s/branches", repo.toOwnerRepo()), NetworkUtils.GET));
         } catch (JSONException | InvalidObjectException e) {
             e.printStackTrace();
             return null;
@@ -169,8 +169,8 @@ public class GitHub {
     private static JSONArray gGetCommits(final String token, final RepoHandler repo)
             throws InvalidObjectException {
         try {
-            return new JSONArray(HelpersNetwork.performCall(gGetUrl(
-                    "repos/%s/commits?access_token=%s", repo.toOwnerRepo(), token), HelpersNetwork.GET));
+            return new JSONArray(NetworkUtils.performCall(gGetUrl(
+                    "repos/%s/commits?access_token=%s", repo.toOwnerRepo(), token), NetworkUtils.GET));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -180,8 +180,8 @@ public class GitHub {
     public static JSONObject gForkRepository(final String token, final RepoHandler repo)
             throws InvalidObjectException {
         try {
-            JSONObject result = new JSONObject(HelpersNetwork.performCall(gGetUrl(
-                    "repos/%s/forks?access_token=%s", repo.toOwnerRepo(), token), HelpersNetwork.POST));
+            JSONObject result = new JSONObject(NetworkUtils.performCall(gGetUrl(
+                    "repos/%s/forks?access_token=%s", repo.toOwnerRepo(), token), NetworkUtils.POST));
 
             // "Forking a Repository happens asynchronously."
             // One way to know when forking is done is to fetch the list of commits for the fork.
@@ -218,7 +218,7 @@ public class GitHub {
             if (body != null && !body.isEmpty())
                 params.put("body", body);
 
-            return new JSONObject(HelpersNetwork.performCall(gGetUrl(
+            return new JSONObject(NetworkUtils.performCall(gGetUrl(
                     "repos/%s/pulls?access_token=%s", originalRepo.toOwnerRepo(), token), params));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -237,15 +237,15 @@ public class GitHub {
 
         // Step 1. Get a reference to HEAD (GET /repos/:owner/:repo/git/refs/:ref)
         // https://developer.github.com/v3/git/refs/#get-a-reference
-        JSONObject head = new JSONObject(HelpersNetwork.performCall(
-                gGetUrl("repos/%s/git/refs/heads/%s%s", ownerRepo, branch, tokenQuery), HelpersNetwork.GET));
+        JSONObject head = new JSONObject(NetworkUtils.performCall(
+                gGetUrl("repos/%s/git/refs/heads/%s%s", ownerRepo, branch, tokenQuery), NetworkUtils.GET));
 
         // Step 2. Grab the commit that HEAD points to (GET /repos/:owner/:repo/git/commits/:sha)
         // https://developer.github.com/v3/git/commits/#get-a-commit
         String headCommitUrl = head.getJSONObject("object").getString("url");
         // Equivalent to getting object.sha and then formatting it
 
-        JSONObject commit = new JSONObject(HelpersNetwork.performCall(headCommitUrl + tokenQuery, HelpersNetwork.GET));
+        JSONObject commit = new JSONObject(NetworkUtils.performCall(headCommitUrl + tokenQuery, NetworkUtils.GET));
 
         // Step 3. Post your new file to the server (POST /repos/:owner/:repo/git/blobs)
         // https://developer.github.com/v3/git/blobs/#create-a-blob
@@ -256,7 +256,7 @@ public class GitHub {
             newBlob.put("content", pathContent.getValue());
             newBlob.put("encoding", "utf-8");
 
-            JSONObject blob = new JSONObject(HelpersNetwork.performCall(
+            JSONObject blob = new JSONObject(NetworkUtils.performCall(
                     gGetUrl("repos/%s/git/blobs%s", ownerRepo, tokenQuery), newBlob));
 
             pathBlobs.put(pathContent.getKey(), blob);
@@ -267,7 +267,7 @@ public class GitHub {
         String treeUrl = commit.getJSONObject("tree").getString("url");
         // Equivalent to getting tree.sha and then formatting it
 
-        JSONObject baseTree = new JSONObject(HelpersNetwork.performCall(treeUrl + tokenQuery, HelpersNetwork.GET));
+        JSONObject baseTree = new JSONObject(NetworkUtils.performCall(treeUrl + tokenQuery, NetworkUtils.GET));
 
         // Step 5. Create a tree containing your new file
         //      5a. The easy way (POST /repos/:owner/:repo/git/trees)
@@ -290,7 +290,7 @@ public class GitHub {
             newTree.put("tree", blobFileArray);
         }
 
-        JSONObject createdTree = new JSONObject(HelpersNetwork.performCall(
+        JSONObject createdTree = new JSONObject(NetworkUtils.performCall(
                 gGetUrl("repos/%s/git/trees%s", ownerRepo, tokenQuery), newTree));
 
         // Step 6. Create a new commit (POST /repos/:owner/:repo/git/commits)
@@ -306,7 +306,7 @@ public class GitHub {
         // and the SHA of your newly-created tree from step #5 in the tree field.
         newCommit.put("tree", createdTree.getString("sha"));
 
-        JSONObject repliedNewCommit = new JSONObject(HelpersNetwork.performCall(
+        JSONObject repliedNewCommit = new JSONObject(NetworkUtils.performCall(
                 gGetUrl("repos/%s/git/commits%s", ownerRepo, tokenQuery), newCommit));
 
         // Step 7. Update HEAD (PATCH /repos/:owner/:repo/git/refs/:ref)
@@ -314,9 +314,9 @@ public class GitHub {
         JSONObject patch = new JSONObject();
         patch.put("sha", repliedNewCommit.getString("sha"));
 
-        return new JSONObject(HelpersNetwork.performCall(
+        return new JSONObject(NetworkUtils.performCall(
                 gGetUrl("repos/%s/git/refs/heads/%s%s", ownerRepo, branch, tokenQuery),
-                HelpersNetwork.PATCH, patch));
+                NetworkUtils.PATCH, patch));
     }
 
 
@@ -341,8 +341,8 @@ public class GitHub {
             map.put("code", code);
 
             CompleteAuthenticationResult ret = new CompleteAuthenticationResult();
-            HashMap<String, String> postResult = HelpersNetwork.getDataMap(
-                    HelpersNetwork.performCall(GITHUB_COMPLETE_AUTH_URL, HelpersNetwork.POST, map)
+            HashMap<String, String> postResult = NetworkUtils.getDataMap(
+                    NetworkUtils.performCall(GITHUB_COMPLETE_AUTH_URL, NetworkUtils.POST, map)
             );
             if (postResult.containsKey("error")) {
                 ret.message = postResult.get("error_description");

@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
-public class HelpersNetwork {
+public class NetworkUtils {
 
     public static final String GET = "GET";
     public static final String POST = "POST";
@@ -81,7 +81,7 @@ public class HelpersNetwork {
                 output.close();
             }
 
-            return HelpersFiles.readCloseTextStream(conn.getInputStream());
+            return FileUtils.readCloseTextStream(conn.getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }

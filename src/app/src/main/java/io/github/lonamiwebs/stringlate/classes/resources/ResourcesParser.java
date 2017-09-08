@@ -23,7 +23,7 @@ import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.gsantner.opoc.util.HelpersFiles;
+import io.github.gsantner.opoc.util.FileUtils;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResPlurals;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResString;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResStringArray;
@@ -410,7 +410,7 @@ public class ResourcesParser {
             Pattern.compile("<([\\w-]+).*?translatable\\s*=\\s*\"false\".*?>");
 
     public static boolean cleanXml(final File inFile, final File outFile) {
-        return cleanXml(HelpersFiles.readTextFile(inFile), outFile);
+        return cleanXml(FileUtils.readTextFile(inFile), outFile);
     }
 
     public static boolean cleanXml(final String xml, final File outFile) {
@@ -648,7 +648,7 @@ public class ResourcesParser {
     // Returns TRUE if the template was applied successfully
     public static boolean applyTemplate(File template, Resources resources, OutputStream out) {
         // The xml will be empty if we have no translation for this file.
-        String xml = cleanMissingStrings(HelpersFiles.readTextFile(template), resources);
+        String xml = cleanMissingStrings(FileUtils.readTextFile(template), resources);
         return !xml.isEmpty() && writeReplaceStrings(xml, resources, out);
     }
 

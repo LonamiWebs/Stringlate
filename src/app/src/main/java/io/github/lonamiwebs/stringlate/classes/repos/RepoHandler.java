@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
-import io.github.gsantner.opoc.util.HelpersFiles;
+import io.github.gsantner.opoc.util.FileUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
@@ -157,7 +157,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     // Deletes the repository erasing its existence from Earth. Forever. (Unless added again)
     public boolean delete() {
-        boolean ok = HelpersFiles.deleteRecursive(mRoot);
+        boolean ok = FileUtils.deleteRecursive(mRoot);
         Messenger.notifyRepoRemoved(this);
         return ok;
     }
@@ -270,7 +270,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
         final File tmpWorkDir = new File(mContext.getCacheDir(), "tmp_sync_" + mRoot.getName());
         if (tmpWorkDir.isDirectory())
-            if (!HelpersFiles.deleteRecursive(tmpWorkDir))
+            if (!FileUtils.deleteRecursive(tmpWorkDir))
                 return false;
 
         if (!source.setup(mContext, mSourceSettings, tmpWorkDir, callback))
@@ -344,7 +344,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             // and save it's path (we must keep track of the used extension)
             File newIcon = new File(mRoot, icon.getName());
             if (!newIcon.isFile() || newIcon.delete()) {
-                if (HelpersFiles.copy(icon, newIcon))
+                if (FileUtils.copy(icon, newIcon))
                     settings.setIconFile(newIcon);
             }
         }
@@ -539,7 +539,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     // TranslateActivity, to quickly reuse it on the history screen
     public boolean saveProgress(RepoProgress progress) {
         try {
-            return HelpersFiles.writeFile(mProgressFile, progress.toJson().toString());
+            return FileUtils.writeFile(mProgressFile, progress.toJson().toString());
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
@@ -549,7 +549,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     // Gets the progress of the last calculated progress locale
     public RepoProgress loadProgress() {
         try {
-            final String json = HelpersFiles.readTextFile(mProgressFile);
+            final String json = FileUtils.readTextFile(mProgressFile);
             if (!json.isEmpty())
                 return RepoProgress.fromJson(new JSONObject(json));
         } catch (JSONException e) {
@@ -656,7 +656,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             // Get temporary import directory and delete any previous directory
             File dir = getTempImportDir();
             File backupDir = getTempImportBackupDir();
-            if (!HelpersFiles.deleteRecursive(dir) || !HelpersFiles.deleteRecursive(backupDir))
+            if (!FileUtils.deleteRecursive(dir) || !FileUtils.deleteRecursive(backupDir))
                 throw new IOException("Could not delete old temporary directories.");
 
             // Unzip the given input stream
