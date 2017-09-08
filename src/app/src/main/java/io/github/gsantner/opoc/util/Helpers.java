@@ -49,6 +49,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
 public class Helpers {
@@ -113,26 +114,29 @@ public class Helpers {
         return String.format("#%06X", 0xFFFFFF & intColor);
     }
 
-    // https://stackoverflow.com/a/1086134
-    public static String toTitleCase(String string) {
+    public static String toTitleCase(final String string) {
+        return toTitleCase(string, Pattern.compile("\\s"));
+    }
+
+    public static String toTitleCase(final String string, final Pattern separator) {
         if (string == null)
             return null;
 
-        StringBuilder titleCase = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
         boolean nextTitleCase = true;
 
         for (char c : string.toCharArray()) {
-            if (Character.isSpaceChar(c)) {
+            if (separator.matcher(String.valueOf(c)).matches()) {
                 nextTitleCase = true;
             } else if (nextTitleCase) {
                 c = Character.toTitleCase(c);
                 nextTitleCase = false;
             }
 
-            titleCase.append(c);
+            result.append(c);
         }
 
-        return titleCase.toString();
+        return result.toString();
     }
 
     public String getAppVersionName() {
