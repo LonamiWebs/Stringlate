@@ -22,7 +22,7 @@ import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.utilities.Constants;
 import io.github.lonamiwebs.stringlate.utilities.FileDownloader;
-import io.github.lonamiwebs.stringlate.utilities.FileExtractor;
+import io.github.lonamiwebs.stringlate.utilities.ZipUtils;
 
 public class ApplicationList implements Iterable<ApplicationDetails> {
 
@@ -121,7 +121,7 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
 
         // Step 2: Extract the index.xml from the index.jar, then delete the index.jar
         callback.onUpdate(2, 0f);
-        FileExtractor.unpackZip(getIndexFile("jar"), mRoot, false, new Callback<Float>() {
+        ZipUtils.unpackZip(getIndexFile("jar"), mRoot, false, new Callback<Float>() {
             @Override
             public void onCallback(Float progress) {
                 callback.onUpdate(2, progress);
