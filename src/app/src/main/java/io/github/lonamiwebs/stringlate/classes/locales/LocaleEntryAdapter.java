@@ -30,6 +30,7 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
 
     public interface OnItemClick {
         void onLocaleSelected(Locale which);
+
         void onLocaleExpanderSelected(Locale which);
     }
 
@@ -152,7 +153,7 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
     @Override
     public void onBindViewHolder(final ViewHolder view, final int i) {
         view.update(mFilteredLocales.get(i));
-        ((LinearLayout)view.expand.getParent()).setOnClickListener(new View.OnClickListener() {
+        ((LinearLayout) view.expand.getParent()).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onItemClick != null) {
@@ -160,7 +161,7 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
                 }
             }
         });
-        ((LinearLayout)view.displayLang.getParent()).setOnClickListener(new View.OnClickListener() {
+        ((LinearLayout) view.displayLang.getParent()).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onItemClick != null) {

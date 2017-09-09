@@ -22,6 +22,7 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 
@@ -105,5 +106,19 @@ public class ActivityUtils extends ContextUtils {
                 .setTitle(resTitleId)
                 .setView(textView);
         dialog.show();
+    }
+
+    // Toggle with no param, else set visibility according to first bool
+    public void toggleStatusbarVisibility(boolean... optionalForceVisible) {
+        WindowManager.LayoutParams attrs = _activity.getWindow().getAttributes();
+        int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        if (optionalForceVisible.length == 0) {
+            attrs.flags ^= flag;
+        } else if (optionalForceVisible.length == 1 && optionalForceVisible[0]) {
+            attrs.flags &= ~flag;
+        } else {
+            attrs.flags |= flag;
+        }
+        _activity.getWindow().setAttributes(attrs);
     }
 }

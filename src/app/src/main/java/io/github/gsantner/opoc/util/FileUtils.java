@@ -28,8 +28,7 @@ import java.util.List;
 
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
 public class FileUtils {
-
-    // Used on methods like copy(src, dst)
+    // Used on methods like copyFile(src, dst)
     private static final int BUFFER_SIZE = 4096;
 
     public static String readTextFile(final File file) {
@@ -104,27 +103,30 @@ public class FileUtils {
         }
     }
 
-    public static boolean copy(final File src, final File dst) {
+    public static boolean copyFile(final File src, final File dst) {
+        InputStream is = null;
+        FileOutputStream os = null;
         try {
-            final FileInputStream in = new FileInputStream(src);
             try {
-                final FileOutputStream out = new FileOutputStream(dst);
-                try {
-                    int length;
-                    byte[] buf = new byte[BUFFER_SIZE];
-                    while ((length = in.read(buf)) > 0)
-                        out.write(buf, 0, length);
-
-                    return true;
-                } finally {
-                    out.close();
+                is = new FileInputStream(src);
+                os = new FileOutputStream(dst);
+                byte[] buf = new byte[BUFFER_SIZE];
+                int len;
+                while ((len = is.read(buf)) > 0) {
+                    os.write(buf, 0, len);
                 }
             } finally {
-                in.close();
+                if (is != null) {
+                    is.close();
+                }
+                if (os != null) {
+                    os.close();
+                }
             }
-        } catch (IOException ignored) {
+        } catch (IOException ex) {
+            return false;
         }
-        return false;
+        return true;
     }
 
     // Returns -1 if the file did not contain any of the needles, otherwise,
@@ -140,8 +142,9 @@ public class FileUtils {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             while ((line = reader.readLine()) != null) {
                 for (i = 0; i != needles.length; ++i)
-                    if (line.toLowerCase().contains(needles[i]))
+                    if (line.toLowerCase().contains(needles[i])) {
                         return i;
+                    }
             }
 
             in.close();

@@ -340,11 +340,11 @@ public class RepoHandler implements Comparable<RepoHandler> {
         // Check out if we have any icon for this repository
         File icon = source.getIcon();
         if (icon != null) {
-            // We have an icon to show, copy it to our repository root
+            // We have an icon to show, copyFile it to our repository root
             // and save it's path (we must keep track of the used extension)
             File newIcon = new File(mRoot, icon.getName());
             if (!newIcon.isFile() || newIcon.delete()) {
-                if (FileUtils.copy(icon, newIcon))
+                if (FileUtils.copyFile(icon, newIcon))
                     settings.setIconFile(newIcon);
             }
         }

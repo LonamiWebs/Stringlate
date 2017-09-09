@@ -1009,7 +1009,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
     private void onFilterUpdated(@NonNull final String filter) {
         // Update the filter, it might have been changed from the Search activity
-        // and JSON doesn't load the changes from the file but rather keeps a copy
+        // and JSON doesn't load the changes from the file but rather keeps a copyFile
         mRepo.settings.setStringFilter(filter);
 
         if (mDefaultResources != null)

@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LocaleString {
