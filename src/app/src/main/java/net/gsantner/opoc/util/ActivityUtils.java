@@ -9,7 +9,7 @@
  *  http://creativecommons.org/publicdomain/zero/1.0/
  * ----------------------------------------------------------------------------
  */
-package io.github.gsantner.opoc.util;
+package net.gsantner.opoc.util;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -27,7 +27,7 @@ import android.view.inputmethod.InputMethodManager;
 
 
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection"})
-public class ActivityUtils extends ContextUtils {
+public class ActivityUtils extends net.gsantner.opoc.util.ContextUtils {
     //########################
     //## Members, Constructors
     //########################

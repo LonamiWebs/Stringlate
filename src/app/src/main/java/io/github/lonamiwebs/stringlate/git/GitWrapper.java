@@ -21,7 +21,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.gsantner.opoc.util.FileUtils;
+import net.gsantner.opoc.util.FileUtils;
 
 public class GitWrapper {
 

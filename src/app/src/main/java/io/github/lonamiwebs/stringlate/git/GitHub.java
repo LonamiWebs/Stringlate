@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.gsantner.opoc.util.NetworkUtils;
+import net.gsantner.opoc.util.NetworkUtils;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 

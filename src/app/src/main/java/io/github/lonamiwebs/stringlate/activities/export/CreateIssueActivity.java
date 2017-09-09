@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
-import io.github.gsantner.opoc.util.ContextUtils;
+import net.gsantner.opoc.util.ContextUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;

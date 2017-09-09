@@ -10,7 +10,7 @@
  *  http://creativecommons.org/publicdomain/zero/1.0/
  * ----------------------------------------------------------------------------
  */
-package io.github.gsantner.opoc.util;
+package net.gsantner.opoc.util;
 
 
 import java.io.BufferedReader;

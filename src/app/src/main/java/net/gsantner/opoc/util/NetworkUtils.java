@@ -10,7 +10,7 @@
  *  http://creativecommons.org/publicdomain/zero/1.0/
  * ----------------------------------------------------------------------------
  */
-package io.github.gsantner.opoc.util;
+package net.gsantner.opoc.util;
 
 import org.json.JSONObject;
 
@@ -27,11 +27,10 @@ import java.util.Map;
 
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
 public class NetworkUtils {
-
+    private static final String UTF8 = "UTF-8";
     public static final String GET = "GET";
     public static final String POST = "POST";
     public static final String PATCH = "PATCH";
-    private static final String UTF8 = "UTF-8";
 
     // No parameters, method can be GET, POST, etc.
     public static String performCall(final String url, final String method) {

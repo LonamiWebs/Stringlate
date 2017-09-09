@@ -41,8 +41,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 
-import io.github.gsantner.opoc.util.ContextUtils;
-import io.github.gsantner.opoc.util.GeneralUtils;
+import net.gsantner.opoc.util.ContextUtils;
+import net.gsantner.opoc.util.GeneralUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;

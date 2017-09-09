@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import io.github.gsantner.opoc.util.ContextUtils;
+import net.gsantner.opoc.util.ContextUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
 import io.github.lonamiwebs.stringlate.activities.SettingsActivity;

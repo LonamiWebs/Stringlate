@@ -23,7 +23,7 @@ import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.gsantner.opoc.util.FileUtils;
+import net.gsantner.opoc.util.FileUtils;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResPlurals;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResString;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResStringArray;

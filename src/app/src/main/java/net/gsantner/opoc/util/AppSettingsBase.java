@@ -44,7 +44,7 @@
     }
  */
 
-package io.github.gsantner.opoc.util;
+package net.gsantner.opoc.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -73,9 +73,9 @@ public class AppSettingsBase {
     //########################
     //## Members, Constructors
     //########################
-    protected final Context _context;
     protected final SharedPreferences _prefApp;
     protected final String _prefAppName;
+    protected final Context _context;
 
     public AppSettingsBase(final Context context) {
         this(context, SHARED_PREF_APP);

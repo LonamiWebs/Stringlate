@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import io.github.gsantner.opoc.util.FileUtils;
+import net.gsantner.opoc.util.FileUtils;
 
 // We can't quite save the SharedPreferences in a custom path so… use JSON (easier than XML)
 public class RepoSettings {

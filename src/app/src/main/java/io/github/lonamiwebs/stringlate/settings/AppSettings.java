@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import java.util.Comparator;
 
-import io.github.gsantner.opoc.util.AppSettingsBase;
+import net.gsantner.opoc.util.AppSettingsBase;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 

@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
-import io.github.gsantner.opoc.util.FileUtils;
+import net.gsantner.opoc.util.FileUtils;
 
 // Custom settings that different StringsSource may need
 public class SourceSettings {

@@ -15,7 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import io.github.gsantner.opoc.util.ContextUtils;
+import net.gsantner.opoc.util.ContextUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;

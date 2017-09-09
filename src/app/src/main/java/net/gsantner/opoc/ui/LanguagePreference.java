@@ -39,15 +39,13 @@ static String[] getUsedAndroidLanguages() {
  * Summary: Change language of this app. Restart app for changes to take effect
 
  * Define element in Preferences-XML:
-    <!--suppress AndroidDomInspection -->
-    <io.github.gsantner.opoc.ui.LanguagePreference
+    <net.gsantner.opoc.ui.LanguagePreference
         android:icon="@drawable/ic_language_black_24dp"
-        android:defaultValue=""
         android:key="@string/pref_key__language"
         android:summary="@string/pref_desc__language"
         android:title="@string/pref_title__language"/>
  */
-package io.github.gsantner.opoc.ui;
+package net.gsantner.opoc.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -55,18 +53,25 @@ import android.os.Build;
 import android.preference.ListPreference;
 import android.util.AttributeSet;
 
+import net.gsantner.opoc.util.ContextUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.gsantner.opoc.util.ContextUtils;
-
 /**
  * A {@link android.preference.ListPreference} that displays a list of languages to select from
  */
-@SuppressWarnings({"unused", "SpellCheckingInspection"})
+@SuppressWarnings({"unused", "SpellCheckingInspection", "WeakerAccess"})
 public class LanguagePreference extends ListPreference {
+    private static final String SYSTEM_LANGUAGE_CODE = "";
+    public static String SYSTEM_LANGUAGE_NAME = "System";
+
+    // The language of res/values/ -> (usually English)
+    public static String DEFAULT_LANGUAGE_NAME = "English";
+    public static String DEFAULT_LANGUAGE_CODE = "en";
+
     public LanguagePreference(Context context) {
         super(context);
         init(context, null);
@@ -99,6 +104,8 @@ public class LanguagePreference extends ListPreference {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        setDefaultValue(SYSTEM_LANGUAGE_CODE);
+
         // Fetch readable details
         ContextUtils contextUtils = new ContextUtils(context);
         List<String> languages = new ArrayList<>();
@@ -120,10 +127,10 @@ public class LanguagePreference extends ListPreference {
             entries[i + 2] = languages.get(i).split(";")[0];
             entryval[i + 2] = languages.get(i).split(";")[1];
         }
-        entries[0] = "System";
-        entryval[0] = "";
-        entries[1] = "English";
-        entryval[1] = "en";
+        entries[0] = SYSTEM_LANGUAGE_NAME;
+        entryval[0] = SYSTEM_LANGUAGE_CODE;
+        entries[1] = DEFAULT_LANGUAGE_NAME;
+        entryval[1] = DEFAULT_LANGUAGE_CODE;
 
         setEntries(entries);
         setEntryValues(entryval);

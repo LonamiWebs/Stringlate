@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
-import io.github.gsantner.opoc.util.FileUtils;
+import net.gsantner.opoc.util.FileUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;

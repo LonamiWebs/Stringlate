@@ -12,7 +12,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.HashMap;
 
-import io.github.gsantner.opoc.util.ContextUtils;
+import net.gsantner.opoc.util.ContextUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
