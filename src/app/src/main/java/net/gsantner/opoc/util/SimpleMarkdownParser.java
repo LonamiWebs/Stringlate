@@ -128,7 +128,7 @@ public class SimpleMarkdownParser {
     };
 
     //########################
-    //## SingletonHelpers
+    //## Singleton
     //########################
     private static SimpleMarkdownParser __instance;
 

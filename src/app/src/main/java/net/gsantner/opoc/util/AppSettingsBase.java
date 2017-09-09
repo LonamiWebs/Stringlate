@@ -11,8 +11,6 @@
  */
 
 /*
- * Get updates:
- *  https://github.com/gsantner/onePieceOfCode/blob/master/java/AppSettingsBase.java
  * This is a wrapper for settings based on SharedPreferences
  * with keys in resources. Extend from this class and add
  * getters/setters for the app's settings.
