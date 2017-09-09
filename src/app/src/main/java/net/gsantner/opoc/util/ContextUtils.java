@@ -22,7 +22,10 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -46,9 +49,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Locale;
+
+import static android.graphics.Bitmap.CompressFormat;
 
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
 public class ContextUtils {
@@ -326,5 +334,68 @@ public class ContextUtils {
 
     public float dp2px(final float dp) {
         return dp * _context.getResources().getDisplayMetrics().density;
+    }
+
+    public Bitmap loadImageFromFilesystem(String imagePath, int maxDimen) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imagePath, options);
+        options.inSampleSize = calculateInSampleSize(options, maxDimen);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(imagePath, options);
+    }
+
+    /**
+     * Calculates the scaling factor so the bitmap is maximal as big as the maxDimen
+     *
+     * @param options  Bitmap-options that contain the current dimensions of the bitmap
+     * @param maxDimen Max size of the Bitmap (width or height)
+     * @return the scaling factor that needs to be applied to the bitmap
+     */
+    public int calculateInSampleSize(BitmapFactory.Options options, int maxDimen) {
+        // Raw height and width of image
+        int height = options.outHeight;
+        int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (Math.max(height, width) > maxDimen) {
+            inSampleSize = Math.round(1f * Math.max(height, width) / maxDimen);
+        }
+        return inSampleSize;
+    }
+
+    public Bitmap scaleBitmap(Bitmap bitmap, int maxDimen) {
+        int picSize = Math.min(bitmap.getHeight(), bitmap.getWidth());
+        float scale = 1.f * maxDimen / picSize;
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    public File writeImageToFileJpeg(String path, String filename, Bitmap image) {
+        return writeImageToFile(path, filename, image, Bitmap.CompressFormat.JPEG, 95);
+    }
+
+    public File writeImageToFile(String path, String filename, Bitmap image, CompressFormat format, int quality) {
+        File imageFile = new File(path);
+        if (imageFile.exists() || imageFile.mkdirs()) {
+            imageFile = new File(path, filename);
+
+            FileOutputStream stream = null;
+            try {
+                stream = new FileOutputStream(imageFile); // overwrites this image every time
+                image.compress(format, quality, stream);
+                return imageFile;
+            } catch (FileNotFoundException ignored) {
+            } finally {
+                try {
+                    if (stream != null) {
+                        stream.close();
+                    }
+                } catch (IOException ignored) {
+                }
+            }
+        }
+        return null;
     }
 }
