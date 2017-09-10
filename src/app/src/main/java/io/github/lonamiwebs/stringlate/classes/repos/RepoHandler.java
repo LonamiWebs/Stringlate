@@ -6,6 +6,9 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Pair;
 
+import net.gsantner.opoc.util.FileUtils;
+import net.gsantner.opoc.util.ZipUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,7 +28,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
-import net.gsantner.opoc.util.FileUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
@@ -36,7 +38,6 @@ import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 import io.github.lonamiwebs.stringlate.settings.RepoSettings;
 import io.github.lonamiwebs.stringlate.settings.SourceSettings;
-import io.github.lonamiwebs.stringlate.utilities.ZipUtils;
 
 // Represents a locally saved string repository, which can be synchronized from any StringsSource
 public class RepoHandler implements Comparable<RepoHandler> {
@@ -660,7 +661,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
                 throw new IOException("Could not delete old temporary directories.");
 
             // Unzip the given input stream
-            ZipUtils.unzipRecursive(inputStream, dir);
+            ZipUtils.unzip(inputStream, dir, false, null, -1f);
 
             // Ensure it's a valid repository (only one parent directory, containing settings)
             final File[] unzippedFiles = dir.listFiles();
