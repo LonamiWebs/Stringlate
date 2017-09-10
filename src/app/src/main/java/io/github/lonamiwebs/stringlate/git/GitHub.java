@@ -1,5 +1,7 @@
 package io.github.lonamiwebs.stringlate.git;
 
+import net.gsantner.opoc.util.NetworkUtils;
+
 import org.eclipse.jgit.util.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,9 +13,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.gsantner.opoc.util.NetworkUtils;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.settings.AppSettings;
+import io.github.lonamiwebs.stringlate.interfaces.SlAppSettings;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_AUTH_URL;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_CLIENT_ID;
@@ -353,7 +354,7 @@ public class GitHub {
                     StringUtils.join(Arrays.asList(GITHUB_WANTED_SCOPES), "%20"), GITHUB_CLIENT_ID);
         }
 
-        public static CompleteAuthenticationResult gCompleteGitHubAuth(AppSettings appSettings, String clientId, String clientSecret, String code) {
+        public static CompleteAuthenticationResult gCompleteGitHubAuth(SlAppSettings appSettings, String clientId, String clientSecret, String code) {
             final HashMap<String, String> map = new HashMap<>();
             map.put("client_id", GITHUB_CLIENT_ID);
             map.put("client_secret", GITHUB_CLIENT_SECRET);

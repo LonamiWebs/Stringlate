@@ -55,6 +55,7 @@ import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoProgress;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
+import io.github.lonamiwebs.stringlate.classes.resources.ResourceStringComparator;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
@@ -265,12 +266,12 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
             // Sorting modes
             case R.id.sortAlphabetically:
-                mSettings.setStringSortMode(AppSettings.SORT_ALPHABETICALLY);
+                mSettings.setStringSortMode(ResourceStringComparator.SORT_ALPHABETICALLY);
                 loadStringIDsSpinner();
                 return true;
 
             case R.id.sortLength:
-                mSettings.setStringSortMode(AppSettings.SORT_STRING_LENGTH);
+                mSettings.setStringSortMode(ResourceStringComparator.SORT_STRING_LENGTH);
                 loadStringIDsSpinner();
                 return true;
 
@@ -1055,7 +1056,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         if (!loaded || !isLocaleSelected(false)) return;
 
         ArrayList<String> spinnerArray = new ArrayList<>();
-        final Iterator<ResTag> it = mDefaultResources.sortIterator(mSettings.getStringsComparator());
+        final Iterator<ResTag> it = mDefaultResources.sortIterator(ResourceStringComparator.getStringsComparator(mSettings.getStringSortMode()));
         if (mShowIdentical) {
             // Only show those which translation is identical to the original text
             while (it.hasNext()) {
