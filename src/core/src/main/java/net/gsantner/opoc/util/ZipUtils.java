@@ -27,27 +27,25 @@ import io.github.lonamiwebs.stringlate.interfaces.Callback;
 
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
 public class ZipUtils {
-
     private static final int BUFFER_SIZE = 4096;
 
-    //region Public methods
-
-    public static boolean unzip(final File zipFile, final File dstRoot, boolean flatten) {
-        return unzip(zipFile, dstRoot, flatten, null);
+    public static boolean unzip(final File zipFile, final File destRootFolder, boolean flatten) {
+        return unzip(zipFile, destRootFolder, flatten, null);
     }
 
-    public static boolean unzip(final File zipFile, final File dstRoot, final boolean flatten,
-                                final Callback<Float> progressCallback) {
+    public static boolean unzip(final File zipFile, final File destRootFolder,
+                                final boolean flatten, final Callback<Float> progressCallback) {
         try {
             final float knownLength = progressCallback == null ? -1f : getZipLength(zipFile);
-            return unzip(new FileInputStream(zipFile), dstRoot, flatten, progressCallback, knownLength);
+            return unzip(new FileInputStream(zipFile), destRootFolder, flatten, progressCallback, knownLength);
         } catch (IOException ignored) {
             return false;
         }
     }
 
-    public static boolean unzip(final InputStream input, final File dstRoot, final boolean flatten,
-                                final Callback<Float> progressCallback, final float knownLength) throws IOException {
+    public static boolean unzip(final InputStream input, final File destRootFolder,
+                                final boolean flatten, final Callback<Float> progressCallback,
+                                final float knownLength) throws IOException {
         String filename;
         final ZipInputStream in = new ZipInputStream(new BufferedInputStream(input));
 
@@ -60,7 +58,7 @@ public class ZipUtils {
         while ((ze = in.getNextEntry()) != null) {
             filename = ze.getName();
             if (!flatten && ze.isDirectory()) {
-                if (!new File(dstRoot, filename).mkdirs())
+                if (!new File(destRootFolder, filename).mkdirs())
                     return false;
             } else {
                 if (flatten) {
@@ -69,7 +67,7 @@ public class ZipUtils {
                         filename = filename.substring(idx + 1);
                 }
 
-                final FileOutputStream out = new FileOutputStream(new File(dstRoot, filename));
+                final FileOutputStream out = new FileOutputStream(new File(destRootFolder, filename));
                 while ((count = in.read(buffer)) != -1) {
                     out.write(buffer, 0, count);
                     if (invLength != -1f) {
@@ -93,7 +91,7 @@ public class ZipUtils {
         long totalSize = 0;
         byte[] buffer = new byte[BUFFER_SIZE];
         try {
-            final ZipInputStream  in = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)));
+            final ZipInputStream in = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)));
 
             ZipEntry ze;
             while ((ze = in.getNextEntry()) != null) {
@@ -115,38 +113,34 @@ public class ZipUtils {
     }
 
     public static void zipFolder(final File srcFolder, final OutputStream out) throws IOException {
-        ZipOutputStream zip = null;
+        ZipOutputStream outZip = null;
         try {
-            zip = new ZipOutputStream(out);
-            addFolderToZip("", srcFolder, zip);
+            outZip = new ZipOutputStream(out);
+            addFolderToZip("", srcFolder, outZip);
         } finally {
-            if (zip != null) {
+            if (outZip != null) {
                 try {
-                    zip.close();
+                    outZip.close();
                 } catch (IOException ignored) {
                 }
             }
         }
     }
 
-    //endregion
-
-    //region Private methods
-
-    private static void addFileToZip(final String path, final File srcFile,
-                                     final ZipOutputStream zip) throws IOException {
-        if (srcFile.isDirectory()) {
-            addFolderToZip(path, srcFile, zip);
+    private static void addFileToZip(final String pathInsideZip, final File fileToZip,
+                                     final ZipOutputStream outZip) throws IOException {
+        if (fileToZip.isDirectory()) {
+            addFolderToZip(pathInsideZip, fileToZip, outZip);
         } else {
             FileInputStream in = null;
             try {
-                in = new FileInputStream(srcFile);
-                zip.putNextEntry(new ZipEntry(path + "/" + srcFile.getName()));
+                in = new FileInputStream(fileToZip);
+                outZip.putNextEntry(new ZipEntry(pathInsideZip + "/" + fileToZip.getName()));
 
                 int count;
                 byte[] buffer = new byte[BUFFER_SIZE];
                 while ((count = in.read(buffer)) > 0)
-                    zip.write(buffer, 0, count);
+                    outZip.write(buffer, 0, count);
 
             } finally {
                 if (in != null) {
@@ -159,15 +153,17 @@ public class ZipUtils {
         }
     }
 
-    private static void addFolderToZip(String path, final File srcFolder,
-                                       final ZipOutputStream zip) throws IOException {
-        path = path.isEmpty() ?
-                srcFolder.getName() :
-                path + "/" + srcFolder.getName();
 
-        for (File file : srcFolder.listFiles())
-            addFileToZip(path, file, zip);
+    private static void addFolderToZip(String pathInsideZip, final File folderToZip,
+                                       final ZipOutputStream outZip) throws IOException {
+        pathInsideZip = pathInsideZip.isEmpty() ?
+                folderToZip.getName() :
+                pathInsideZip + "/" + folderToZip.getName();
+
+        File[] files = folderToZip.listFiles();
+        if (files != null) {
+            for (File file : files)
+                addFileToZip(pathInsideZip, file, outZip);
+        }
     }
-
-    //endregion
 }

@@ -48,7 +48,9 @@ dependencies {
     // Tool libraries
     compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.2.201411120430-r'
 
-    compile project (':core')
+    compile(project (':core')){
+        exclude(group: 'org.json', module: 'json')
+    }
 }
 
 @SuppressWarnings(["UnnecessaryQualifiedReference", "SpellCheckingInspection"])
