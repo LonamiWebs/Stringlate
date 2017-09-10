@@ -16,6 +16,7 @@ import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
 import io.github.lonamiwebs.stringlate.activities.SettingsActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 
@@ -59,7 +60,7 @@ public class RepositoriesActivity extends AppCompatActivity {
             // Opened via our custom StringlateApi, ensure we have the required extras
             if (intent.hasExtra(StringlateApi.EXTRA_GIT_URL)) {
                 final String gitUrl = intent.getStringExtra(StringlateApi.EXTRA_GIT_URL);
-                RepoHandler repo = new RepoHandler(this, gitUrl);
+                RepoHandler repo = RepoHandlerHelper.fromContext(this, gitUrl);
                 if (repo.isEmpty()) {
                     // This repository is empty, clean any created
                     // garbage and show the "Add repository" fragment

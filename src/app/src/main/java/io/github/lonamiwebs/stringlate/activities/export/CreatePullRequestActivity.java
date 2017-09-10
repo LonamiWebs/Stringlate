@@ -14,6 +14,7 @@ import java.util.AbstractMap;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 
@@ -50,7 +51,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
         mSettings = new AppSettings(this);
 
         Intent intent = getIntent();
-        mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
+        mRepo = RepoHandlerHelper.fromBundle(intent.getBundleExtra(EXTRA_REPO));
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
 
         mCommitMessageEditText.setText(getString(

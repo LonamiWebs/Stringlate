@@ -1,9 +1,9 @@
 package io.github.lonamiwebs.stringlate.git;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
-import android.util.Pair;
+
+import net.gsantner.opoc.util.FileUtils;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.gsantner.opoc.util.FileUtils;
 
 public class GitWrapper {
 
@@ -72,11 +70,11 @@ public class GitWrapper {
         return url;
     }
 
-    public static Pair<String, String> getGitHubOwnerRepo(final String url)
+    public static String getGitHubOwnerRepo(final String url)
             throws InvalidObjectException {
         Matcher m = OWNER_REPO.matcher(url);
         if (m.matches() && m.group(1).equalsIgnoreCase("github.com")) {
-            return new Pair<>(m.group(2), m.group(3));
+            return String.format("%s/%s", m.group(2), m.group(3));
         }
         throw new InvalidObjectException("Not a GitHub repository.");
     }
@@ -183,7 +181,7 @@ public class GitWrapper {
 
     private static final String MANIFEST = "AndroidManifest.xml";
 
-    public static File findProperIcon(final RepositoryResources resources, final Context ctx) {
+    public static File findProperIcon(final RepositoryResources resources, final int desiredIconDpi) {
         ArrayList<File> foundIcons;
         // First try to find the most common icon name: /mipmap(.*)/ic_launcher.png
         foundIcons = findIcons(resources, "/mipmap", "ic_launcher.png");
@@ -202,7 +200,7 @@ public class GitWrapper {
             return foundIcons.get(0); // No choice, don't bother with density checks
 
         String density;
-        int wantedDensity = getDensityIndex(ctx.getResources().getDisplayMetrics().densityDpi);
+        int wantedDensity = getDensityIndex(desiredIconDpi);
         // Check whether we're looking on drawables or mipmaps (usual is mipmap)
         // If we're using mipmaps, we want the corresponding drawable size (2 less) because:
         //   mipmap-mdpi has the same size as drawable-xdpi (2 more)

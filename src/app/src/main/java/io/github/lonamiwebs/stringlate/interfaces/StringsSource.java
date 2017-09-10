@@ -1,6 +1,5 @@
 package io.github.lonamiwebs.stringlate.interfaces;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.io.File;
@@ -14,9 +13,9 @@ public interface StringsSource {
 
     // Sources may need to prepare some files first, e.g. strings from git repositories
     // need to pull the repository itself in order to get access to the files.
-    boolean setup(final Context context,
-                  final SourceSettings settings,
+    boolean setup(final SourceSettings settings,
                   final File workDir,
+                  final int desiredIconDpi,
                   final Messenger.OnSyncProgress callback);
 
     // The name for a certain StringsSource, e.g. "git"

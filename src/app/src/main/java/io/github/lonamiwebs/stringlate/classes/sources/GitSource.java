@@ -43,7 +43,8 @@ public class GitSource implements StringsSource {
     }
 
     @Override
-    public boolean setup(final Context context, final SourceSettings settings, final File workDir,
+    public boolean setup(final SourceSettings settings, final File workDir,
+                         final int desiredIconDpi,
                          final Messenger.OnSyncProgress callback) {
         callback.onUpdate(1, 0f);
 
@@ -72,7 +73,7 @@ public class GitSource implements StringsSource {
         // Save the branches of this repository
         settings.setArray("remote_branches", GitWrapper.getBranches(mWorkDir));
 
-        iconFile = GitWrapper.findProperIcon(repoResources, context);
+        iconFile = GitWrapper.findProperIcon(repoResources, desiredIconDpi);
 
         // Iterate over all the found resources to sort them by locale
         for (File resourceFile : resourceFiles) {

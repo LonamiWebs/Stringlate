@@ -1,11 +1,5 @@
 package io.github.lonamiwebs.stringlate.classes.repos;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.util.Log;
-import android.util.Pair;
-
 import net.gsantner.opoc.util.FileUtils;
 import net.gsantner.opoc.util.ZipUtils;
 
@@ -28,7 +22,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
-import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
@@ -44,33 +37,28 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Members
 
-    private final Context mContext;
     public final RepoSettings settings; // Public to avoid a lot of wrapper methods
     private final SourceSettings mSourceSettings;
 
-    private final File mRoot;
+    public final File mRoot, mCacheDir;
     private final File mProgressFile;
 
     private final ArrayList<String> mLocales = new ArrayList<>();
 
-    private static final String BASE_DIR = "repos";
     public static final String DEFAULT_LOCALE = "default";
 
     private final static ReentrantLock syncingLock = new ReentrantLock();
     private final static HashSet<File> rootsInSync = new HashSet<>();
 
+    private final static String XML_MERGING_HEADER = "<!-- File \"%s\" -->\n";
+
     //endregion
 
     //region Constructors
 
-    public static RepoHandler fromBundle(Context context, Bundle bundle) {
-        return new RepoHandler(context, bundle.getString("source"));
-    }
-
-    public RepoHandler(Context context, final String source) {
-        mContext = context;
-
-        mRoot = new File(mContext.getFilesDir(), BASE_DIR + "/" + getId(source));
+    public RepoHandler(final String source, final File workDir, final File cacheDir) {
+        mRoot = new File(workDir, getId(source));
+        mCacheDir = cacheDir;
         settings = new RepoSettings(mRoot);
         settings.setSource(source);
 
@@ -81,9 +69,9 @@ public class RepoHandler implements Comparable<RepoHandler> {
         loadLocales();
     }
 
-    private RepoHandler(Context context, File root) {
-        mContext = context;
+    public RepoHandler(final File root, final File cacheDir) {
         mRoot = root;
+        mCacheDir = cacheDir;
         settings = new RepoSettings(mRoot);
         mSourceSettings = new SourceSettings(mRoot);
         settings.checkUpgradeSettingsToSpecific(mSourceSettings);
@@ -98,11 +86,15 @@ public class RepoHandler implements Comparable<RepoHandler> {
     //region Utilities
 
     // Retrieves the File object for the given locale
-    private File getResourcesFile(@NonNull String locale) {
+    private File getResourcesFile(final String locale) {
+        if (locale == null)
+            throw new IllegalArgumentException("locale cannot be null");
         return new File(mRoot, locale + "/strings.xml");
     }
 
-    private File getDefaultResourcesFile(@NonNull String filename) {
+    private File getDefaultResourcesFile(final String filename) {
+        if (filename == null)
+            throw new IllegalArgumentException("filename cannot be null");
         return new File(mRoot, DEFAULT_LOCALE + "/" + filename);
     }
 
@@ -121,7 +113,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return result;
     }
 
-    @NonNull
+    // Never returns null
     public File[] getDefaultResourcesFiles() {
         File root = new File(mRoot, DEFAULT_LOCALE);
         if (root.isDirectory()) {
@@ -137,7 +129,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     // Determines whether a given locale is saved or not
-    private boolean hasLocale(@NonNull String locale) {
+    private boolean hasLocale(final String locale) {
         return getResourcesFile(locale).isFile();
     }
 
@@ -164,11 +156,11 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     private File getTempImportDir() {
-        return new File(mContext.getCacheDir(), "tmp_import");
+        return new File(mCacheDir, "tmp_import");
     }
 
     private File getTempImportBackupDir() {
-        return new File(mContext.getCacheDir(), "tmp_import_backup");
+        return new File(mCacheDir, "tmp_import_backup");
     }
 
     private static String getId(String gitUrl) {
@@ -237,6 +229,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     public boolean syncResources(final StringsSource source,
+                                 final int desiredIconDpi,
                                  final Messenger.OnSyncProgress callback) {
 
         syncingLock.lock();
@@ -249,7 +242,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
         }
 
         try {
-            return doSyncResources(source, callback);
+            return doSyncResources(source, desiredIconDpi, callback);
         } finally {
             syncingLock.lock();
             rootsInSync.remove(mRoot);
@@ -261,6 +254,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     // Should be called from a background thread
     private boolean doSyncResources(final StringsSource source,
+                                    final int desiredIconDpi,
                                     final Messenger.OnSyncProgress callback) {
 
         if (!mSourceSettings.getName().equals(source.getName())) {
@@ -269,12 +263,12 @@ public class RepoHandler implements Comparable<RepoHandler> {
             mSourceSettings.reset(source.getName());
         }
 
-        final File tmpWorkDir = new File(mContext.getCacheDir(), "tmp_sync_" + mRoot.getName());
+        final File tmpWorkDir = new File(mCacheDir, "tmp_sync_" + mRoot.getName());
         if (tmpWorkDir.isDirectory())
             if (!FileUtils.deleteRecursive(tmpWorkDir))
                 return false;
 
-        if (!source.setup(mContext, mSourceSettings, tmpWorkDir, callback))
+        if (!source.setup(mSourceSettings, tmpWorkDir, desiredIconDpi, callback))
             return false;
 
         callback.onUpdate(2, (0f / 3f));
@@ -398,14 +392,13 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return resources;
     }
 
-    public Resources loadResources(@NonNull String locale) {
+    public Resources loadResources(final String locale) {
         return Resources.fromFile(getResourcesFile(locale));
     }
 
-    @NonNull
-    // Returns "" if the template wasn't applied successfully
+    // Returns "" if the template wasn't applied successfully (never null)
     // TODO Handle the above case more gracefully, display a toast error maybe
-    public String applyTemplate(File template, String locale) {
+    public String applyTemplate(final File template, final String locale) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         if (applyTemplate(template, locale, out))
             return out.toString();
@@ -430,20 +423,20 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     // TODO Why do I load the resources all the time - can't I just pass the loaded one?
     // Returns TRUE if the template was applied successfully
-    public boolean applyTemplate(File template, String locale, OutputStream out) {
+    public boolean applyTemplate(final File template, final String locale, final OutputStream out) {
         return hasLocale(locale) &&
                 template.isFile() &&
                 ResourcesParser.applyTemplate(template, loadResources(locale), out);
     }
 
-    @NonNull
-    public String mergeDefaultTemplate(String locale) {
+    // Never returns null
+    public String mergeDefaultTemplate(final String locale) {
         // TODO What should we do if any fails? How can it even fail? No translations for a file?
         File[] files = getDefaultResourcesFiles();
         if (files.length > 1) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             for (File template : files) {
-                String header = mContext.getString(R.string.xml_comment_filename, template.getName());
+                final String header = String.format(XML_MERGING_HEADER, template.getName());
                 try {
                     out.write(header.getBytes());
                     applyTemplate(template, locale, out);
@@ -463,14 +456,13 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Static repository listing
 
-    public static ArrayList<RepoHandler> listRepositories(Context context) {
+    public static ArrayList<RepoHandler> listRepositories(final File workDir, final File cacheDir) {
         ArrayList<RepoHandler> repositories = new ArrayList<>();
 
-        File root = new File(context.getFilesDir(), BASE_DIR);
-        if (root.isDirectory()) {
-            for (File f : root.listFiles()) {
+        if (workDir.isDirectory()) {
+            for (File f : workDir.listFiles()) {
                 if (isValidRepoDir(f)) {
-                    repositories.add(new RepoHandler(context, f));
+                    repositories.add(new RepoHandler(f, cacheDir));
                 }
             }
         }
@@ -486,7 +478,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     //region Settings
 
-    @NonNull
+    // Never returns null
     public String getSourceName() {
         return mSourceSettings.getName();
     }
@@ -521,13 +513,13 @@ public class RepoHandler implements Comparable<RepoHandler> {
         return result;
     }
 
-    @NonNull
+    // Never returns null
     public String getUsedTranslationService() {
         final String result = (String) mSourceSettings.get("translation_service");
         return result == null ? "" : result;
     }
 
-    @NonNull
+    // Never returns null
     public ArrayList<String> getRemoteBranches() {
         if (getSourceName().equals("git")) {
             return mSourceSettings.getArray("remote_branches");
@@ -571,7 +563,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
             int end = url.endsWith(".git") ? url.lastIndexOf('.') : url.length();
             return url.substring(url.indexOf("://") + 3, end);
         } catch (StringIndexOutOfBoundsException e) {
-            Log.w("RepoHandler", "Please report that \"" + url + "\" got somehow saved…");
             return url; // We must have a really weird url. Maybe saved invalid repo somehow?
         }
     }
@@ -623,14 +614,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     public String toOwnerRepo() throws InvalidObjectException {
-        Pair<String, String> pair = GitWrapper.getGitHubOwnerRepo(settings.getSource());
-        return String.format("%s/%s", pair.first, pair.second);
-    }
-
-    public Bundle toBundle() {
-        Bundle result = new Bundle();
-        result.putString("source", settings.getSource());
-        return result;
+        return GitWrapper.getGitHubOwnerRepo(settings.getSource());
     }
 
     //endregion
@@ -638,7 +622,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     //region Interface implementations
 
     @Override
-    public int compareTo(@NonNull RepoHandler o) {
+    public int compareTo(final RepoHandler o) {
         return toString().compareTo(o.toString());
     }
 

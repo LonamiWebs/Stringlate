@@ -9,7 +9,6 @@
     <string name="comment_issue_template" translatable="false">I have updated the `%s` (*%s*) translation:\n%%x\n\n---\n\n*Translation made with [Stringlate](https://github.com/LonamiWebs/Stringlate).*</string>
     <string name="warning_experimental" translatable="false">Please note that this feature is still experimental. Use with care!!</string>
     <string name="bytes_size_format" translatable="false">%.2f %s</string>
-    <string name="xml_comment_filename" translatable="false">&lt;!-- File \"%s\" --&gt;\n</string>
 
     <string name="pref_key__github_authentication_request" translatable="false">pref_key__github_authentication_request</string>
     <string name="pref_key__language" translatable="false">pref_key__language</string>

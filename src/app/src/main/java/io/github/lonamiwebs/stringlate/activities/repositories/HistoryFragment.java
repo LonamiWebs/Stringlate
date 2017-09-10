@@ -31,6 +31,7 @@ import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerAdapter;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
 
@@ -73,7 +74,7 @@ public class HistoryFragment extends Fragment {
         mRepositoriesTitle = rootView.findViewById(R.id.repositoriesTitle);
 
         // Load the initial list of repositories
-        if (mRepositoryAdapter.notifyDataSetChanged(RepoHandler.listRepositories(getContext()))) {
+        if (mRepositoryAdapter.notifyDataSetChanged(RepoHandlerHelper.listRepositories(getContext()))) {
             mRepositoriesTitle.setVisibility(VISIBLE);
             mHistoryMessageTextView.setText(R.string.history_contains_repos_hint);
         } else {

@@ -32,6 +32,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.gsantner.opoc.util.ContextUtils;
+import net.gsantner.opoc.util.GeneralUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,8 +44,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 
-import net.gsantner.opoc.util.ContextUtils;
-import net.gsantner.opoc.util.GeneralUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
@@ -51,6 +52,7 @@ import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivi
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleSelectionDialog;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoProgress;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
@@ -109,7 +111,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             Toast.makeText(ctx, R.string.wait_until_sync, Toast.LENGTH_LONG).show();
         } else {
             Intent intent = new Intent(ctx, TranslateActivity.class);
-            intent.putExtra(EXTRA_REPO, repo.toBundle());
+            intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(repo));
             ctx.startActivity(intent);
         }
     }
@@ -141,7 +143,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         mLocaleSpinner.setOnItemSelectedListener(eOnLocaleSelected);
         mStringIdSpinner.setOnItemSelectedListener(eOnStringIdSelected);
 
-        mRepo = RepoHandler.fromBundle(this, getIntent().getBundleExtra(EXTRA_REPO));
+        mRepo = RepoHandlerHelper.fromBundle(getIntent().getBundleExtra(EXTRA_REPO));
         setTitle(mRepo.getProjectName());
 
         loadResources();
@@ -465,7 +467,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
     private void launchStringSearchActivity() {
         if (isLocaleSelected(true)) {
             Intent intent = new Intent(this, SearchStringActivity.class);
-            intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+            intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(mRepo));
             intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
             startActivityForResult(intent, RESULT_STRING_SELECTED);
         }
@@ -474,7 +476,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
     private void launchPeekTranslationsActivity() {
         if (isLocaleSelected(true) && mSelectedResource != null) {
             Intent intent = new Intent(this, PeekTranslationsActivity.class);
-            intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+            intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(mRepo));
             intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
             intent.putExtra(EXTRA_ID, mSelectedResource.getId());
             startActivity(intent);
@@ -629,7 +631,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
     // Exports the currently selected locale resources to a GitHub Gist
     private void exportToGist() {
         Intent intent = new Intent(this, CreateGistActivity.class);
-        intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+        intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(mRepo));
         intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
         startActivity(intent);
     }
@@ -641,7 +643,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             return;
         }
         Intent intent = new Intent(this, CreateIssueActivity.class);
-        intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+        intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(mRepo));
         intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
         startActivity(intent);
     }
@@ -661,7 +663,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             return;
 
         Intent intent = new Intent(this, CreatePullRequestActivity.class);
-        intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+        intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(mRepo));
         intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
         startActivity(intent);
     }

@@ -29,7 +29,8 @@ public class RepoSyncTask extends Thread {
 
     @Override
     public void run() {
-        final boolean okay = mRepo.syncResources(mSource, new Messenger.OnSyncProgress() {
+        final boolean okay =
+                RepoHandlerHelper.syncResources(mContext, mRepo, mSource, new Messenger.OnSyncProgress() {
             @Override
             public void onUpdate(final int stage, final float progress) {
                 mHandler.post(new Runnable() {

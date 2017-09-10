@@ -9,12 +9,14 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import net.gsantner.opoc.util.ContextUtils;
+
 import java.io.File;
 import java.util.HashMap;
 
-import net.gsantner.opoc.util.ContextUtils;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 
 import static android.view.View.GONE;
@@ -53,7 +55,7 @@ public class CreateGistActivity extends AppCompatActivity {
 
         // Retrieve the strings.xml content to be exported
         Intent intent = getIntent();
-        mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
+        mRepo = RepoHandlerHelper.fromBundle(intent.getBundleExtra(EXTRA_REPO));
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
 
         File[] defaultResources = mRepo.getDefaultResourcesFiles();

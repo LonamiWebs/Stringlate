@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslation;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslationAdapter;
 
@@ -46,7 +47,7 @@ public class SearchStringActivity extends AppCompatActivity {
         final ImageButton clearFilterButton = findViewById(R.id.clearFilterButton);
 
         Intent intent = getIntent();
-        mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
+        mRepo = RepoHandlerHelper.fromBundle(intent.getBundleExtra(EXTRA_REPO));
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
 
         setTitle(String.format("%s/%s (%s)", mRepo.getProjectName(),

@@ -21,6 +21,7 @@ import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.classes.applications.ApplicationDetails;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
@@ -152,8 +153,8 @@ public class AddNewRepositoryFragment extends Fragment {
             } else {
                 // Determine whether we already have this repo or if it's a new one
                 RepoHandler repo = url.isEmpty() ?
-                        new RepoHandler(getContext(), GitWrapper.buildGitHubUrl(owner, repository)) :
-                        new RepoHandler(getContext(), GitWrapper.getGitUri(url));
+                        RepoHandlerHelper.fromContext(getContext(), GitWrapper.buildGitHubUrl(owner, repository)) :
+                        RepoHandlerHelper.fromContext(getContext(), GitWrapper.getGitUri(url));
 
                 if (!TextUtils.isEmpty(mProjectDetails.getWebUrl())) {
                     repo.settings.setProjectHomepageUrl(mProjectDetails.getWebUrl());
@@ -214,15 +215,15 @@ public class AddNewRepositoryFragment extends Fragment {
     //region Utilities
 
     // Sets the URL EditText, clearing any value on the owner and repo fields
-    private void setUrl(String url) {
+    private void setUrl(final String url) {
         mOwnerEditText.setText("");
         mRepositoryEditText.setText("");
         mUrlEditText.setText(url);
     }
 
-    private void launchTranslateActivity(RepoHandler repo) {
+    private void launchTranslateActivity(final RepoHandler repo) {
         Intent intent = new Intent(getContext(), TranslateActivity.class);
-        intent.putExtra(EXTRA_REPO, repo.toBundle());
+        intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(repo));
         startActivity(intent);
     }
 
