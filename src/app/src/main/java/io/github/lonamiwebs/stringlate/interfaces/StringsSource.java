@@ -7,7 +7,7 @@ import java.util.List;
 
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
-import io.github.lonamiwebs.stringlate.settings.SourceSettings;
+import io.github.lonamiwebs.stringlate.classes.sources.SourceSettings;
 
 public interface StringsSource {
 

@@ -1,6 +1,6 @@
-package io.github.lonamiwebs.stringlate.settings;
+package io.github.lonamiwebs.stringlate.classes.repos;
 
-import android.support.annotation.NonNull;
+import net.gsantner.opoc.util.FileUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import net.gsantner.opoc.util.FileUtils;
+import io.github.lonamiwebs.stringlate.classes.sources.SourceSettings;
 
 // We can't quite save the SharedPreferences in a custom path so… use JSON (easier than XML)
 public class RepoSettings {
@@ -70,7 +70,6 @@ public class RepoSettings {
 
     //region Getters
 
-    @NonNull
     public String getSource() {
         return mSettings.optString(KEY_SOURCE, "");
     }
@@ -79,7 +78,6 @@ public class RepoSettings {
         return mSettings.optString(KEY_PROJECT_HOMEPAGE_URL, getSource());
     }
 
-    @NonNull
     public String getProjectName() {
         return mSettings.optString(KEY_PROJECT_NAME, DEFAULT_PROJECT_NAME);
     }
@@ -117,7 +115,6 @@ public class RepoSettings {
         return result.isFile() ? result : null;
     }
 
-    @NonNull
     public String getStringFilter() {
         return mSettings.optString(KEY_SEARCH_FILTER, "");
     }
@@ -197,7 +194,9 @@ public class RepoSettings {
         save();
     }
 
-    public void setStringFilter(@NonNull final String filter) {
+    public void setStringFilter(final String filter) {
+        if (filter == null)
+            throw new IllegalArgumentException();
         try {
             mSettings.put(KEY_SEARCH_FILTER, filter);
         } catch (JSONException ignored) {
@@ -219,7 +218,6 @@ public class RepoSettings {
 
     //region Load/save
 
-    @NonNull
     private JSONObject load() {
         try {
             final String json = FileUtils.readTextFile(mSettingsFile);

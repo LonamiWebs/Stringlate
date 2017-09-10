@@ -1,7 +1,6 @@
-package io.github.lonamiwebs.stringlate.settings;
+package io.github.lonamiwebs.stringlate.classes.sources;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
+import net.gsantner.opoc.util.FileUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,8 +8,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import net.gsantner.opoc.util.FileUtils;
 
 // Custom settings that different StringsSource may need
 public class SourceSettings {
@@ -33,7 +30,6 @@ public class SourceSettings {
 
     //region Getters
 
-    @NonNull
     public String getName() {
         return mSettings.optString(KEY_NAME, DEFAULT_NAME);
     }
@@ -42,7 +38,6 @@ public class SourceSettings {
         return mSettings.opt(name);
     }
 
-    @NonNull
     @SuppressWarnings("unchecked")
     public <T> ArrayList<T> getArray(final String name) {
         final ArrayList<T> result = new ArrayList<>();
@@ -55,7 +50,7 @@ public class SourceSettings {
                 try {
                     result.add((T) array.get(i));
                 } catch (ClassCastException ignored) {
-                    Log.e("SourceSettings", "Failed to load array item for setting " + name + ": " + array.get(i));
+                    System.err.println("SourceSettings: Failed to load array item for setting " + name + ": " + array.get(i));
                 }
             }
         } catch (JSONException ignored) {
@@ -102,7 +97,6 @@ public class SourceSettings {
 
     //region Load/save/reset
 
-    @NonNull
     private JSONObject load() {
         try {
             final String json = FileUtils.readTextFile(mSettingsFile);

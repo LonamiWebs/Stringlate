@@ -1,6 +1,5 @@
 package io.github.lonamiwebs.stringlate.classes.sources;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.io.File;
@@ -17,7 +16,6 @@ import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
-import io.github.lonamiwebs.stringlate.settings.SourceSettings;
 
 public class GitSource implements StringsSource {
 

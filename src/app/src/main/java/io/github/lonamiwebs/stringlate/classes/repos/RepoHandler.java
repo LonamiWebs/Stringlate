@@ -29,8 +29,7 @@ import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
-import io.github.lonamiwebs.stringlate.settings.RepoSettings;
-import io.github.lonamiwebs.stringlate.settings.SourceSettings;
+import io.github.lonamiwebs.stringlate.classes.sources.SourceSettings;
 
 // Represents a locally saved string repository, which can be synchronized from any StringsSource
 public class RepoHandler implements Comparable<RepoHandler> {
