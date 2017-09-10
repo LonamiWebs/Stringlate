@@ -12,4 +12,8 @@
 
     <string name="pref_key__github_authentication_request" translatable="false">pref_key__github_authentication_request</string>
     <string name="pref_key__language" translatable="false">pref_key__language</string>
+    <string name="pref_key__download_icons" translatable="false">download_icons</string>
+    <string name="pref_key__github_access_token" translatable="false">github_access_token</string>
+    <string name="pref_key__github_access_scope" translatable="false">github_access_scope</string>
+    <string name="pref_key__string_sorting" translatable="false">string_sorting</string>
 </resources>

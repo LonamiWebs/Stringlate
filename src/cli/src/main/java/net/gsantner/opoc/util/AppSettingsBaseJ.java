@@ -1,5 +1,17 @@
+/*
+ * ------------------------------------------------------------------------------
+ * Gregor Santner <gsantner.github.io> wrote this. You can do whatever you want
+ * with it. If we meet some day, and you think it is worth it, you can buy me a
+ * coke in return. Provided as is without any kind of warranty. Do not blame or
+ * sue me if something goes wrong. No attribution required.    - Gregor Santner
+ *
+ * License: Creative Commons Zero (CC0 1.0)
+ *  http://creativecommons.org/publicdomain/zero/1.0/
+ * ----------------------------------------------------------------------------
+ */
 package net.gsantner.opoc.util;
 
+import java.util.Locale;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -13,7 +25,7 @@ public class AppSettingsBaseJ {
         _classOfApplicationPackage = classOfApplicationPackage;
     }
 
-    private synchronized Preferences loadPref() {
+    private synchronized Preferences getPref() {
         if (_preference == null) {
             _preference = Preferences.userNodeForPackage(_classOfApplicationPackage);
         }
@@ -32,7 +44,16 @@ public class AppSettingsBaseJ {
     }
 
     public String getPathToPropertiesFile() {
-        return "~/.java/.userPrefs" + loadPref().absolutePath() + "/prefs.xml";
+        String ret;
+        String os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+        if ((os.contains("mac")) || (os.contains("darwin"))) {
+            ret = "~/Library/Preferences/%s";
+        } else if (os.contains("win")) {
+            ret = "HKEY_CURRENT_USER\\Software\\%s";
+        } else {
+            ret = System.getProperty("user.home") + "/.java/.userPrefs/%s/prefs.xml";
+        }
+        return String.format(ret, getPref().absolutePath().substring(1));
     }
 
     public boolean isAutoClose() {
@@ -40,7 +61,7 @@ public class AppSettingsBaseJ {
     }
 
     public void setAutoClose(boolean autoClose) {
-        this._isAutoClose = autoClose;
+        _isAutoClose = autoClose;
     }
 
     /**
@@ -50,23 +71,8 @@ public class AppSettingsBaseJ {
      * @param defaultValue the default value
      * @return the value or defaultValue if inexistient
      */
-    private int getInt(String key, int defaultValue) {
-        int ret = loadPref().getInt(key, defaultValue);
-        if (_isAutoClose) {
-            closePrefs();
-        }
-        return ret;
-    }
-
-    /**
-     * Get an String value
-     *
-     * @param key          the key
-     * @param defaultValue the default value
-     * @return the value or defaultValue if inexistient
-     */
-    private String getString(String key, String defaultValue) {
-        String ret = loadPref().get(key, defaultValue);
+    public int getInt(String key, int defaultValue) {
+        int ret = getPref().getInt(key, defaultValue);
         if (_isAutoClose) {
             closePrefs();
         }
@@ -79,11 +85,26 @@ public class AppSettingsBaseJ {
      * @param key   the key
      * @param value the value
      */
-    private void setInt(String key, int value) {
-        loadPref().putInt(key, value);
+    public void setInt(String key, int value) {
+        getPref().putInt(key, value);
         if (_isAutoClose) {
             closePrefs();
         }
+    }
+
+    /**
+     * Get an String value
+     *
+     * @param key          the key
+     * @param defaultValue the default value
+     * @return the value or defaultValue if inexistient
+     */
+    public String getString(String key, String defaultValue) {
+        String ret = getPref().get(key, defaultValue);
+        if (_isAutoClose) {
+            closePrefs();
+        }
+        return ret;
     }
 
     /**
@@ -92,8 +113,36 @@ public class AppSettingsBaseJ {
      * @param key   the key
      * @param value the value
      */
-    private void setString(String key, String value) {
-        loadPref().put(key, value);
+    public void setString(String key, String value) {
+        getPref().put(key, value);
+        if (_isAutoClose) {
+            closePrefs();
+        }
+    }
+
+    /**
+     * Get an int value
+     *
+     * @param key          the key
+     * @param defaultValue the default value
+     * @return the value or defaultValue if inexistient
+     */
+    public boolean getBool(String key, boolean defaultValue) {
+        boolean ret = getPref().getBoolean(key, defaultValue);
+        if (_isAutoClose) {
+            closePrefs();
+        }
+        return ret;
+    }
+
+    /**
+     * Set an int value
+     *
+     * @param key   the key
+     * @param value the value
+     */
+    public void setBool(String key, boolean value) {
+        getPref().putBoolean(key, value);
         if (_isAutoClose) {
             closePrefs();
         }
@@ -101,7 +150,7 @@ public class AppSettingsBaseJ {
 
     public void reset(boolean setDefaultOptions) {
         try {
-            loadPref().clear();
+            getPref().clear();
         } catch (BackingStoreException e) {
             e.printStackTrace();
         }
