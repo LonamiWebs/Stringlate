@@ -1,8 +1,5 @@
 package io.github.lonamiwebs.stringlate.git;
 
-import android.support.annotation.NonNull;
-import android.util.DisplayMetrics;
-
 import net.gsantner.opoc.util.FileUtils;
 
 import org.eclipse.jgit.api.CloneCommand;
@@ -20,6 +17,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.github.lonamiwebs.stringlate.classes.resources.DisplayMetrics;
 
 public class GitWrapper {
 
@@ -80,7 +79,7 @@ public class GitWrapper {
     }
 
     public static boolean cloneRepo(final String uri, final File cloneTo,
-                                    @NonNull final String branch,
+                                    final String branch,
                                     final GitCloneProgressCallback callback) {
         Git result = null;
 
@@ -111,7 +110,6 @@ public class GitWrapper {
         return false;
     }
 
-    @NonNull
     public static ArrayList<String> getBranches(final File repo) {
         try {
             final List<Ref> refs = Git.open(repo)
@@ -330,7 +328,6 @@ public class GitWrapper {
 
     //region Searching on the application's README
 
-    @NonNull
     public static String mayUseTranslationServices(final RepositoryResources resources) {
         for (File file : resources.readme) {
             int i = FileUtils.fileContains(file, STR_TRANSLATION_SERVICES);

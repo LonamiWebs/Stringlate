@@ -1,7 +1,5 @@
 package io.github.lonamiwebs.stringlate.classes.locales;
 
-import android.support.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -16,7 +14,7 @@ public class LocaleString {
     private final static Pattern SANITIZE_PATTERN = Pattern.compile(
             "^(\\w{2})(?:[ -_/]r?(\\w{2}))?$", Pattern.CASE_INSENSITIVE);
 
-    public LocaleString(@NonNull String locale) {
+    public LocaleString(String locale) {
         mLocale = locale;
         mLocaleDisplay = getDisplay(locale);
     }
@@ -30,7 +28,7 @@ public class LocaleString {
         return mLocaleDisplay;
     }
 
-    public static String getDisplay(@NonNull String localeCode) {
+    public static String getDisplay(String localeCode) {
         final Locale locale = getLocale(localeCode);
         if (isValid(locale))
             return locale.getDisplayName();
@@ -39,7 +37,7 @@ public class LocaleString {
     }
 
     // Useful when exporting to issue for example
-    public static String getEnglishDisplay(@NonNull String localeCode) {
+    public static String getEnglishDisplay(String localeCode) {
         final Locale locale = getLocale(localeCode);
         if (isValid(locale))
             return locale.getDisplayName(Locale.ENGLISH);
@@ -47,15 +45,13 @@ public class LocaleString {
             return localeCode;
     }
 
-    @NonNull
-    public static String getFullCode(@NonNull Locale locale) {
+    public static String getFullCode(Locale locale) {
         String language = locale.getLanguage();
         String country = locale.getCountry();
         return country.isEmpty() ? language : language + "-r" + country;
     }
 
-    @NonNull
-    public static Locale getLocale(@NonNull String locale) {
+    public static Locale getLocale(String locale) {
         if (locale.contains("-")) {
             final String[] parts = locale.split("-");
             return new Locale(parts[0], parts[1].substring(1));
@@ -72,7 +68,6 @@ public class LocaleString {
         }
     }
 
-    @NonNull
     public static ArrayList<Locale> getCountriesForLocale(final String localeCode) {
         final ArrayList<Locale> result = new ArrayList<>();
         for (Locale l : Locale.getAvailableLocales())
