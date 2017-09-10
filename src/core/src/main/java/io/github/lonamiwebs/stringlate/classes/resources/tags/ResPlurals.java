@@ -1,23 +1,21 @@
 package io.github.lonamiwebs.stringlate.classes.resources.tags;
 
-import android.support.annotation.NonNull;
-
 import java.util.HashSet;
 
 public class ResPlurals {
 
     //region Members
 
-    @NonNull
     private final HashSet<Item> mItems;
-    @NonNull
     private final String mId;
 
     //endregion
 
     //region Constructor
 
-    public ResPlurals(@NonNull String id) {
+    public ResPlurals(final String id) {
+        if (id == null)
+            throw new IllegalArgumentException();
         mItems = new HashSet<>();
         mId = id;
     }
@@ -30,7 +28,10 @@ public class ResPlurals {
         return mId;
     }
 
-    public Item getItem(@NonNull final String quantity) {
+    public Item getItem(final String quantity) {
+        if (quantity == null)
+            throw new IllegalArgumentException();
+
         for (Item i : mItems)
             if (i.mQuantity.equals(quantity))
                 return i;
@@ -52,8 +53,7 @@ public class ResPlurals {
 
     //region Setters
 
-    public Item addItem(@NonNull final String quantity,
-                        @NonNull final String content, final boolean modified) {
+    public Item addItem(final String quantity, final String content, final boolean modified) {
         Item result = new Item(this, quantity, content, modified);
         mItems.add(result);
         return result;
@@ -64,13 +64,13 @@ public class ResPlurals {
     //region Sub classes
 
     public class Item extends ResTag {
-        @NonNull
         final ResPlurals mParent;
-        @NonNull
         final String mQuantity;
 
-        Item(@NonNull final ResPlurals parent, @NonNull final String quantity,
-             @NonNull final String content, final boolean modified) {
+        Item(final ResPlurals parent, final String quantity, final String content,
+             final boolean modified) {
+            if (parent == null || quantity == null || content == null)
+                throw new IllegalArgumentException("Some of the arguments were null");
             mParent = parent;
             mQuantity = quantity;
             mContent = content.trim();
@@ -78,14 +78,12 @@ public class ResPlurals {
         }
 
         @Override
-        @NonNull
         public String getId() {
             // ':' is not a valid separator for the <string>'s, so use it to avoid conflicts
             return String.format("%s:%s", mParent.mId, mQuantity);
         }
 
         @Override
-        @NonNull
         public ResTag clone(String newContent) {
             ResPlurals parent = mParent.fakeClone();
             Item result = parent.addItem(mQuantity, mContent, mModified);
