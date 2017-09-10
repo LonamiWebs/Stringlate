@@ -1,8 +1,5 @@
 package io.github.lonamiwebs.stringlate.classes.resources;
 
-import android.support.annotation.NonNull;
-import android.util.Xml;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
@@ -60,11 +57,10 @@ public class ResourcesParser {
 
     //region Xml -> Resources
 
-    static void loadFromXml(final InputStream in, final Resources resources)
+    static void loadFromXml(final InputStream in, final Resources resources, final XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
         try {
-            XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
@@ -309,9 +305,7 @@ public class ResourcesParser {
 
     //region Resources -> Xml
 
-    static boolean parseToXml(Resources resources, OutputStream out) {
-        XmlSerializer serializer = Xml.newSerializer();
-
+    static boolean parseToXml(final Resources resources, final OutputStream out, final XmlSerializer serializer) {
         // We need to keep track of the parents which we have done already.
         // This is because we previously expanded the children, but they're
         // wrapped under the same parent (which we cannot duplicate).
@@ -499,7 +493,6 @@ public class ResourcesParser {
         }
     }
 
-    @NonNull
     private static String getAttr(String attrs, String attrName) {
         Matcher m = ATTRIBUTE_PATTERN.matcher(attrs);
         while (m.find()) {

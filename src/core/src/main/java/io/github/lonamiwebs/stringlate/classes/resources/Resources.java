@@ -1,8 +1,9 @@
 package io.github.lonamiwebs.stringlate.classes.resources;
 
-import android.support.annotation.NonNull;
-
+import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,15 +36,13 @@ public class Resources implements Iterable<ResTag> {
     private boolean mSavedChanges;
     private boolean mModified;
 
-    @NonNull
     private String mFilter;
 
     //endregion
 
     //region Constructors
 
-    @NonNull
-    public static Resources fromFile(File file) {
+    public static Resources fromFile(final File file) {
         Resources result = new Resources(file);
 
         if (file.isFile()) {
@@ -51,7 +50,8 @@ public class Resources implements Iterable<ResTag> {
             try {
                 is = new FileInputStream(file);
                 // Load the resources from the XML into our resulting Resources
-                ResourcesParser.loadFromXml(is, result);
+                final XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
+                ResourcesParser.loadFromXml(is, result, parser);
             } catch (IOException | XmlPullParserException e) {
                 e.printStackTrace();
             } finally {
@@ -68,7 +68,6 @@ public class Resources implements Iterable<ResTag> {
     }
 
     // Empty resources cannot be saved
-    @NonNull
     public static Resources empty() {
         return new Resources(null);
     }
@@ -97,7 +96,6 @@ public class Resources implements Iterable<ResTag> {
         return getTag(resourceId) != null;
     }
 
-    @NonNull
     public String getContent(String resourceId) {
         ResTag tag = getTag(resourceId);
         return tag == null ? "" : tag.getContent();
@@ -139,7 +137,9 @@ public class Resources implements Iterable<ResTag> {
 
     //region Updating (setting) content
 
-    public void setContent(ResTag original, @NonNull String content) {
+    public void setContent(final ResTag original, final String content) {
+        if (content == null)
+            throw new IllegalArgumentException();
         String resourceId = original == null ? "" : original.getId();
         if (resourceId.isEmpty())
             return;
@@ -249,10 +249,11 @@ public class Resources implements Iterable<ResTag> {
                 mFile.getParentFile().mkdirs();
 
             FileOutputStream out = new FileOutputStream(mFile);
-            mSavedChanges = ResourcesParser.parseToXml(this, out);
+            final XmlSerializer serializer = XmlPullParserFactory.newInstance().newSerializer();
+            mSavedChanges = ResourcesParser.parseToXml(this, out, serializer);
             mModified = true;
             out.close();
-        } catch (IOException e) {
+        } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
         }
         // We do not want empty files, if it exists and it's empty delete it
@@ -279,7 +280,7 @@ public class Resources implements Iterable<ResTag> {
 
     //region Iterator filtering
 
-    public void setFilter(@NonNull String filter) {
+    public void setFilter(String filter) {
         mFilter = filter.toLowerCase();
     }
 

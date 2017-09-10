@@ -50,6 +50,7 @@ dependencies {
 
     compile(project (':core')){
         exclude(group: 'org.json', module: 'json')
+        exclude(group: 'org.apache.servicemix.bundles', module: 'org.apache.servicemix.bundles.xmlpull')
     }
 }
 

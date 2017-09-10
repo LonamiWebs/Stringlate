@@ -4,6 +4,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile group: 'org.json', name: 'json', version: '20170516'
+    compile 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xmlpull:1.1.3.4a_1'
 }
 
 sourceCompatibility = "1.7"
