@@ -14,6 +14,10 @@ package net.gsantner.opoc.util;
 
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -25,12 +29,76 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.lonamiwebs.stringlate.interfaces.Callback;
+
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
 public class NetworkUtils {
     private static final String UTF8 = "UTF-8";
     public static final String GET = "GET";
     public static final String POST = "POST";
     public static final String PATCH = "PATCH";
+
+    private final static int BUFFER_SIZE = 4096;
+
+    // Downloads a file from the give url to the output file
+    // Creates the file's parent directory if it doesn't exist
+    public static boolean downloadFile(final String url, final File out) {
+        return downloadFile(url, out, null);
+    }
+
+    public static boolean downloadFile(final String url, final File out, final Callback<Float> progressCallback) {
+        try {
+            return downloadFile(new URL(url), out, progressCallback);
+        } catch (MalformedURLException e) {
+            // Won't happen
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean downloadFile(final URL url, final File outFile, final Callback<Float> progressCallback) {
+        InputStream input = null;
+        OutputStream output = null;
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) url.openConnection();
+            connection.connect();
+            input = connection.getInputStream();
+
+            if (!outFile.getParentFile().isDirectory())
+                if (!outFile.getParentFile().mkdirs())
+                    return false;
+            output = new FileOutputStream(outFile);
+
+            int count;
+            int written = 0;
+            final float invLength = 1f / connection.getContentLength();
+
+            byte data[] = new byte[BUFFER_SIZE];
+            while ((count = input.read(data)) != -1) {
+                output.write(data, 0, count);
+                if (invLength != -1f && progressCallback != null) {
+                    written += count;
+                    progressCallback.onCallback(written * invLength);
+                }
+            }
+
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (output != null)
+                    output.close();
+                if (input != null)
+                    input.close();
+            } catch (IOException ignored) {
+            }
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
 
     // No parameters, method can be GET, POST, etc.
     public static String performCall(final String url, final String method) {

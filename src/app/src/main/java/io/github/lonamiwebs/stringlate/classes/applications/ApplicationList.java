@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
+import net.gsantner.opoc.util.NetworkUtils;
 import net.gsantner.opoc.util.ZipUtils;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -23,7 +24,6 @@ import java.util.List;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.interfaces.Callback;
 import io.github.lonamiwebs.stringlate.utilities.Constants;
-import io.github.lonamiwebs.stringlate.utilities.FileDownloader;
 
 public class ApplicationList implements Iterable<ApplicationDetails> {
 
@@ -113,7 +113,7 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
     public boolean syncRepo(final Messenger.OnSyncProgress callback) {
         // Step 1: Download the index.jar
         callback.onUpdate(1, 0f);
-        FileDownloader.downloadFile(Constants.FDROID_INDEX_URL, getIndexFile("jar"), new Callback<Float>() {
+        NetworkUtils.downloadFile(Constants.FDROID_INDEX_URL, getIndexFile("jar"), new Callback<Float>() {
             @Override
             public void onCallback(Float progress) {
                 callback.onUpdate(1, progress);
