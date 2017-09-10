@@ -1,7 +1,5 @@
 package io.github.lonamiwebs.stringlate.classes.resources.tags;
 
-import android.support.annotation.NonNull;
-
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
@@ -13,7 +11,6 @@ public abstract class ResTag implements Comparable<ResTag> {
 
     //region Members
 
-    @NonNull
     String mContent = "";
 
     // "metadata" used to keep track whether a string is the original or not. This
@@ -24,7 +21,6 @@ public abstract class ResTag implements Comparable<ResTag> {
 
     //region Getters
 
-    @NonNull
     abstract public String getId();
 
     @Override
@@ -32,7 +28,6 @@ public abstract class ResTag implements Comparable<ResTag> {
         return getId().hashCode();
     }
 
-    @NonNull
     public String getContent() {
         return mContent;
     }
@@ -49,7 +44,6 @@ public abstract class ResTag implements Comparable<ResTag> {
         return mModified;
     }
 
-    @NonNull
     public abstract ResTag clone(String newContent);
 
     //endregion
@@ -73,7 +67,9 @@ public abstract class ResTag implements Comparable<ResTag> {
     //region Interfaces implementation
 
     @Override
-    public int compareTo(@NonNull ResTag o) {
+    public int compareTo(final ResTag o) {
+        if (o == null)
+            throw new IllegalArgumentException();
         return getId().compareTo(o.getId());
     }
 

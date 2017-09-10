@@ -1,7 +1,5 @@
 package io.github.lonamiwebs.stringlate.classes.resources.tags;
 
-import android.support.annotation.NonNull;
-
 import java.util.HashSet;
 import java.util.Locale;
 
@@ -9,16 +7,16 @@ public class ResStringArray {
 
     //region Members
 
-    @NonNull
     private final HashSet<Item> mItems;
-    @NonNull
     private final String mId;
 
     //endregion
 
     //region Constructor
 
-    public ResStringArray(@NonNull final String id) {
+    public ResStringArray(final String id) {
+        if (id == null)
+            throw new IllegalArgumentException();
         mItems = new HashSet<>();
         mId = id;
     }
@@ -27,7 +25,6 @@ public class ResStringArray {
 
     //region Getters
 
-    @NonNull
     public String getId() {
         return mId;
     }
@@ -55,7 +52,9 @@ public class ResStringArray {
 
     //region Setters
 
-    public Item addItem(@NonNull final String content, final boolean modified, final int index) {
+    public Item addItem(final String content, final boolean modified, final int index) {
+        if (content == null)
+            throw new IllegalArgumentException();
         int i = index < 0 ? mItems.size() : index; // Auto-detect index if -1 (negative)
         Item result = new Item(this, i, content, modified);
         mItems.add(result);
@@ -67,12 +66,13 @@ public class ResStringArray {
     //region Sub classes
 
     public class Item extends ResTag {
-        @NonNull
         final ResStringArray mParent;
         final int mIndex;
 
-        Item(@NonNull final ResStringArray parent,
-             final int index, @NonNull String content, final boolean modified) {
+        Item(final ResStringArray parent,
+             final int index, String content, final boolean modified) {
+            if (parent == null || content == null)
+                throw new IllegalArgumentException();
             mParent = parent;
             mIndex = index;
             mContent = content.trim();
@@ -80,7 +80,6 @@ public class ResStringArray {
         }
 
         @Override
-        @NonNull
         public String getId() {
             // ':' is not a valid separator for the <string>'s, so use it to avoid conflicts
             return String.format(Locale.ENGLISH, "%s:%d", mParent.mId, mIndex);
@@ -91,7 +90,6 @@ public class ResStringArray {
         }
 
         @Override
-        @NonNull
         public ResTag clone(String newContent) {
             ResStringArray parent = mParent.fakeClone();
             Item result = parent.addItem(mContent, mModified, mIndex);

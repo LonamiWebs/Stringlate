@@ -1,19 +1,18 @@
 package io.github.lonamiwebs.stringlate.classes.resources.tags;
 
-import android.support.annotation.NonNull;
-
 public class ResString extends ResTag {
 
     //region Members
 
-    @NonNull
     private final String mId;
 
     //endregion
 
     //region Constructors
 
-    public ResString(@NonNull String id, String content, boolean modified) {
+    public ResString(final String id, final String content, final boolean modified) {
+        if (id == null)
+            throw new IllegalArgumentException("ID is null");
         mId = id.trim();
         mContent = content.trim();
         mModified = modified;
@@ -24,13 +23,11 @@ public class ResString extends ResTag {
     //region Getters
 
     @Override
-    @NonNull
     public String getId() {
         return mId;
     }
 
     @Override
-    @NonNull
     public ResTag clone(String newContent) {
         ResString result = new ResString(mId, mContent, mModified);
         result.setContent(newContent);
