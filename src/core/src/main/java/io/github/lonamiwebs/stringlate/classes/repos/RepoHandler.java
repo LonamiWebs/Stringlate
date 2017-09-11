@@ -27,7 +27,7 @@ import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
-import io.github.lonamiwebs.stringlate.git.GitWrapper;
+import io.github.lonamiwebs.stringlate.classes.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 import io.github.lonamiwebs.stringlate.classes.sources.SourceSettings;
 

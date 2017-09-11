@@ -1,6 +1,6 @@
 package io.github.lonamiwebs.stringlate.classes.sources;
 
-import android.support.annotation.NonNull;
+import net.gsantner.opoc.util.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -9,12 +9,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.gsantner.opoc.util.FileUtils;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
+import io.github.lonamiwebs.stringlate.classes.git.GitCloneProgressCallback;
+import io.github.lonamiwebs.stringlate.classes.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
-import io.github.lonamiwebs.stringlate.git.GitCloneProgressCallback;
-import io.github.lonamiwebs.stringlate.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 
 public class GitSource implements StringsSource {
@@ -99,13 +98,11 @@ public class GitSource implements StringsSource {
         return true;
     }
 
-    @NonNull
     @Override
     public String getName() {
         return "git";
     }
 
-    @NonNull
     @Override
     public List<String> getLocales() {
         final ArrayList<String> result = new ArrayList<>(mLocaleFiles.size());
@@ -115,9 +112,8 @@ public class GitSource implements StringsSource {
         return result;
     }
 
-    @NonNull
     @Override
-    public Resources getResources(@NonNull final String locale) {
+    public Resources getResources(final String locale) {
         final Resources result = Resources.empty();
         for (File file : mLocaleFiles.get(locale)) {
             for (ResTag rt : Resources.fromFile(file))
@@ -126,7 +122,6 @@ public class GitSource implements StringsSource {
         return result;
     }
 
-    @NonNull
     @Override
     public List<String> getDefaultResources() {
         final ArrayList<String> result = new ArrayList<>(mLocaleFiles.get(null).size());
@@ -136,7 +131,6 @@ public class GitSource implements StringsSource {
         return result;
     }
 
-    @NonNull
     @Override
     public Resources getDefaultResource(String name) {
         for (File file : mLocaleFiles.get(null))
@@ -160,7 +154,6 @@ public class GitSource implements StringsSource {
         return iconFile;
     }
 
-    @NonNull
     private String getDefaultResourceName(final File file) {
         return file.getAbsolutePath().substring(mWorkDir.getAbsolutePath().length() + 1);
     }

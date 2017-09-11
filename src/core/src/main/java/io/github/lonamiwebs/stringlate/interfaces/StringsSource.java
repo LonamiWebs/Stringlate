@@ -1,7 +1,5 @@
 package io.github.lonamiwebs.stringlate.interfaces;
 
-import android.support.annotation.NonNull;
-
 import java.io.File;
 import java.util.List;
 
@@ -18,24 +16,19 @@ public interface StringsSource {
                   final int desiredIconDpi,
                   final Messenger.OnSyncProgress callback);
 
-    // The name for a certain StringsSource, e.g. "git"
-    @NonNull
+    // The name for a certain StringsSource, e.g. "git". Must be non-null
     String getName();
 
-    // Should retrieve a list of all locales available for this source
-    @NonNull
+    // Should retrieve a list of all locales available for this source. Must be non-null
     List<String> getLocales();
 
-    // Returns all the available, non-default resources for the specified locale.
-    @NonNull
-    Resources getResources(final @NonNull String locale);
+    // Returns all the available, non-default resources for the specified locale. Must be non-null
+    Resources getResources(final String locale);
 
-    // Returns all the names for available default resources (since these are named)
-    @NonNull
+    // Returns all the names for available default resources (since these are named). Must be non-null
     List<String> getDefaultResources();
 
-    // Given the name of a default resource, loads and returns its contents
-    @NonNull
+    // Given the name of a default resource, loads and returns its contents. Must be non-null
     Resources getDefaultResource(final String name);
 
     // Some developers have a well-defined XML structure already made,

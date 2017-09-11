@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.git;
+package io.github.lonamiwebs.stringlate.classes.git;
 
 
 import org.eclipse.jgit.lib.ProgressMonitor;

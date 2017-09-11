@@ -24,7 +24,7 @@ import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
-import io.github.lonamiwebs.stringlate.git.GitWrapper;
+import io.github.lonamiwebs.stringlate.classes.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 
 import static android.app.Activity.RESULT_OK;

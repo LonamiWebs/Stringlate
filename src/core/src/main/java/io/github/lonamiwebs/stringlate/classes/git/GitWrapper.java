@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.git;
+package io.github.lonamiwebs.stringlate.classes.git;
 
 import net.gsantner.opoc.util.FileUtils;
 
@@ -18,6 +18,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.github.lonamiwebs.stringlate.classes.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.classes.resources.DisplayMetrics;
 
 public class GitWrapper {
