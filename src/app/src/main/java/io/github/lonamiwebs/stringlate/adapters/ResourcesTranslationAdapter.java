@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.classes.resources;
+package io.github.lonamiwebs.stringlate.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslation;
 
 public class ResourcesTranslationAdapter extends ArrayAdapter<ResourcesTranslation> {
 

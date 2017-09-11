@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerHelper;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 
 import static android.view.View.GONE;

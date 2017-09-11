@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.classes.repos;
+package io.github.lonamiwebs.stringlate.utilities;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import io.github.lonamiwebs.stringlate.classes.Messenger;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 
 public class RepoHandlerHelper {

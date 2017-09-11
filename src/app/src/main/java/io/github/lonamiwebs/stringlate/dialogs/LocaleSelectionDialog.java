@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.classes.locales;
+package io.github.lonamiwebs.stringlate.dialogs;
 
 
 import android.app.Dialog;
@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.adapters.LocaleEntryAdapter;
+import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 
 public class LocaleSelectionDialog extends DialogFragment {
 

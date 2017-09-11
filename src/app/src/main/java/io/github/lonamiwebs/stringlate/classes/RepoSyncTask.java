@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.classes.repos;
+package io.github.lonamiwebs.stringlate.classes;
 
 import android.content.Context;
 import android.os.Handler;
@@ -6,7 +6,9 @@ import android.widget.Toast;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.Messenger;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 public class RepoSyncTask extends Thread {
 

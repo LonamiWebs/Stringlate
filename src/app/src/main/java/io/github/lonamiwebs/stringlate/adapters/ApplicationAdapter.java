@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.classes.applications;
+package io.github.lonamiwebs.stringlate.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.applications.ApplicationDetails;
+import io.github.lonamiwebs.stringlate.classes.applications.ApplicationList;
+import io.github.lonamiwebs.stringlate.classes.applications.ApplicationsSyncTask;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
 
 import static android.view.View.GONE;

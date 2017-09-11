@@ -10,9 +10,9 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.classes.TranslationPeekAdapter;
+import io.github.lonamiwebs.stringlate.adapters.TranslationPeekAdapter;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.classes.repos.RepoHandlerHelper;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_ID;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;

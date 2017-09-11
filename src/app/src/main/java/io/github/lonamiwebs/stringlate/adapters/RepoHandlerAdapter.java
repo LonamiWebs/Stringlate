@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.classes.repos;
+package io.github.lonamiwebs.stringlate.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -26,6 +26,8 @@ import java.util.Random;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoProgress;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.MATERIAL_COLORS;
 

@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.classes.locales;
+package io.github.lonamiwebs.stringlate.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
 
 public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.ViewHolder> {
@@ -68,7 +69,7 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
     }
 
     // Optionally show also the country-specific locales, or not at all
-    LocaleEntryAdapter(final Context context, boolean showCountrySpecific, boolean showMoreLocales) {
+    public LocaleEntryAdapter(final Context context, boolean showCountrySpecific, boolean showMoreLocales) {
         mPreferredLocale = new AppSettings(context).getLanguage();
         mShowMoreLocales = showMoreLocales;
         // Create a map {locale code: Locale} to behave like a set and avoid duplicates
@@ -90,7 +91,7 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
     }
 
     // Used to show only all the specialized countries for a given locale code
-    LocaleEntryAdapter(final Context context, final String localeCode) {
+    public LocaleEntryAdapter(final Context context, final String localeCode) {
         mPreferredLocale = new AppSettings(context).getLanguage();
         mShowMoreLocales = true;
         if (localeCode.isEmpty()) {
