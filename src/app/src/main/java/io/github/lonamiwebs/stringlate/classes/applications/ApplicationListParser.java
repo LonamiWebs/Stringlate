@@ -13,9 +13,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import io.github.lonamiwebs.stringlate.utilities.Constants;
-
-import static io.github.lonamiwebs.stringlate.utilities.Constants.FDROID_REPO_URL;
+import static io.github.lonamiwebs.stringlate.classes.applications.ApplicationList.FDROID_REPO_URL;
 
 class ApplicationListParser {
     // parser ids
@@ -202,7 +200,7 @@ class ApplicationListParser {
 
     public static void loadFDroidIconPath(Context context) {
         final double dpi = context.getResources().getDisplayMetrics().densityDpi;
-        String iconDir = Constants.FALLBACK_FDROID_ICONS_DIR;
+        String iconDir = ApplicationList.FDROID_ICONS_DIR_FALLBACK;
         if (dpi >= 120) iconDir = "/icons-120/";
         if (dpi >= 160) iconDir = "/icons-160/";
         if (dpi >= 240) iconDir = "/icons-240/";

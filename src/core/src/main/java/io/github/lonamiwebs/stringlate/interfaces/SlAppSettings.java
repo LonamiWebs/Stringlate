@@ -8,6 +8,11 @@ public interface SlAppSettings {
     String DEFAULT_GITHUB_SCOPE = "";
     boolean DEFAULT_DOWNLOAD_ICONS = false;
 
+    // Not very secret anymore is it v ? Some discussion available at:
+    // http://stackoverflow.com/q/4057277 and http://stackoverflow.com/q/4419915
+    String GITHUB_CLIENT_ID = "994d17302a9e34077cd9";
+    String GITHUB_CLIENT_SECRET = "863d91a38332b3648cd951c0c498fd2520a8dd9d";
+
     boolean isDownloadIconsAllowed();
 
     String getGitHubToken();
@@ -25,4 +30,13 @@ public interface SlAppSettings {
     int getStringSortMode();
 
     String[] getGitHubScopes();
+
+    String getGitHubClientSecret();
+
+    void setGitHubClientSecret(String value);
+
+    String getGitHubClientId();
+
+    void setGitHubClientId(String value);
+
 }

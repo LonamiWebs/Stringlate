@@ -23,9 +23,11 @@ import java.util.List;
 
 import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.interfaces.Callback;
-import io.github.lonamiwebs.stringlate.utilities.Constants;
 
 public class ApplicationList implements Iterable<ApplicationDetails> {
+    public final static String FDROID_REPO_URL = "https://f-droid.org/repo";
+    public final static String FDROID_INDEX_URL = FDROID_REPO_URL + "/index.jar";
+    public final static String FDROID_ICONS_DIR_FALLBACK = "/icons/";
 
     //region Members
     private final File mRoot;
@@ -113,7 +115,7 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
     public boolean syncRepo(final Messenger.OnSyncProgress callback) {
         // Step 1: Download the index.jar
         callback.onUpdate(1, 0f);
-        NetworkUtils.downloadFile(Constants.FDROID_INDEX_URL, getIndexFile("jar"), new Callback<Float>() {
+        NetworkUtils.downloadFile(FDROID_INDEX_URL, getIndexFile("jar"), new Callback<Float>() {
             @Override
             public void onCallback(Float progress) {
                 callback.onUpdate(1, progress);

@@ -11,21 +11,17 @@ import org.eclipse.jgit.lib.Ref;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.lonamiwebs.stringlate.classes.git.GitCloneProgressCallback;
 import io.github.lonamiwebs.stringlate.classes.resources.DisplayMetrics;
 
 public class GitWrapper {
 
     private static final String REMOTE_NAME = "origin";
-
-    private static final String BASE_GITHUB_URL = "https://github.com/%s/%s";
 
     // Only the '.xml' extension is case insensitive
     // No regex is required for '<string', which includes '<string-array'
@@ -41,12 +37,8 @@ public class GitWrapper {
     };
 
     // GitHub URLs (and GitLab) are well-known
-    private static final Pattern OWNER_REPO = Pattern.compile(
+    public static final Pattern OWNER_REPO = Pattern.compile(
             "(?:https?://|git@)(git(?:hub|lab).com)[/:]([\\w-]+)/([\\w-]+)(?:/.*|\\.git)?");
-
-    public static String buildGitHubUrl(String owner, String repository) {
-        return getGitUri(String.format(BASE_GITHUB_URL, owner, repository));
-    }
 
     // Attempts to convert a normal url to a git valid one
     public static String getGitUri(String url) {
@@ -68,15 +60,6 @@ public class GitWrapper {
 
         // Hope that the url is valid
         return url;
-    }
-
-    public static String getGitHubOwnerRepo(final String url)
-            throws InvalidObjectException {
-        Matcher m = OWNER_REPO.matcher(url);
-        if (m.matches() && m.group(1).equalsIgnoreCase("github.com")) {
-            return String.format("%s/%s", m.group(2), m.group(3));
-        }
-        throw new InvalidObjectException("Not a GitHub repository.");
     }
 
     public static boolean cloneRepo(final String uri, final File cloneTo,

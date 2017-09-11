@@ -19,8 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.adapters.ApplicationAdapter;
+import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.applications.ApplicationsSyncTask;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.FileCache;
 import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;

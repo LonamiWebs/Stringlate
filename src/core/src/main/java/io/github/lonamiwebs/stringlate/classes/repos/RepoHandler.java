@@ -23,13 +23,13 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import io.github.lonamiwebs.stringlate.classes.Messenger;
+import io.github.lonamiwebs.stringlate.classes.git.GitHub;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesParser;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
-import io.github.lonamiwebs.stringlate.classes.git.GitWrapper;
-import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 import io.github.lonamiwebs.stringlate.classes.sources.SourceSettings;
+import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 
 // Represents a locally saved string repository, which can be synchronized from any StringsSource
 public class RepoHandler implements Comparable<RepoHandler> {
@@ -487,7 +487,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
             return false;
 
         try {
-            GitWrapper.getGitHubOwnerRepo(settings.getSource());
+            GitHub.getGitHubOwnerRepo(settings.getSource());
             return true;
         } catch (InvalidObjectException ignored) {
             return false;
@@ -613,7 +613,7 @@ public class RepoHandler implements Comparable<RepoHandler> {
     }
 
     public String toOwnerRepo() throws InvalidObjectException {
-        return GitWrapper.getGitHubOwnerRepo(settings.getSource());
+        return GitHub.getGitHubOwnerRepo(settings.getSource());
     }
 
     //endregion

@@ -5,10 +5,12 @@ import net.gsantner.opoc.util.AppSettingsBaseJ;
 import io.github.lonamiwebs.stringlate.interfaces.SlAppSettings;
 
 public class AppSettings extends AppSettingsBaseJ implements SlAppSettings {
-    private static final String KEY_DOWNLOAD_ICONS = "download_icons";
-    private static final String KEY_GITHUB_TOKEN = "github_access_token";
-    private static final String KEY_GITHUB_SCOPE = "github_access_scope";
-    private static final String KEY_STRING_SORTING = "string_sorting";
+    private static final String KEY_DOWNLOAD_ICONS = "KEY_DOWNLOAD_ICONS";
+    private static final String KEY_GITHUB_TOKEN = "KEY_GITHUB_TOKEN";
+    private static final String KEY_GITHUB_SCOPE = "KEY_GITHUB_SCOPE";
+    private static final String KEY_STRING_SORTING = "KEY_STRING_SORTING";
+    private static final String KEY_GITHUB_CLIENT_ID = "KEY_GITHUB_CLIENT_ID";
+    private static final String KEY_GITHUB_CLIENT_SECRET = "KEY_GITHUB_CLIENT_SECRET";
 
     public AppSettings() {
         super(io.github.lonamiwebs.stringlate.cli.Main.class);
@@ -59,6 +61,26 @@ public class AppSettings extends AppSettingsBaseJ implements SlAppSettings {
     @Override
     public String[] getGitHubScopes() {
         return getString(KEY_GITHUB_SCOPE, DEFAULT_GITHUB_SCOPE).split(",");
+    }
+
+    @Override
+    public String getGitHubClientSecret() {
+        return getString(KEY_GITHUB_CLIENT_SECRET, GITHUB_CLIENT_SECRET);
+    }
+
+    @Override
+    public void setGitHubClientSecret(String value) {
+        setString(KEY_GITHUB_CLIENT_SECRET, value);
+    }
+
+    @Override
+    public String getGitHubClientId() {
+        return getString(KEY_GITHUB_CLIENT_ID, GITHUB_CLIENT_ID);
+    }
+
+    @Override
+    public void setGitHubClientId(String value) {
+        setString(KEY_GITHUB_CLIENT_ID, value);
     }
 
 }

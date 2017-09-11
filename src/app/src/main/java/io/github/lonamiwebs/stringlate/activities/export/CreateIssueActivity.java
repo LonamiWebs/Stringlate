@@ -7,11 +7,12 @@ import android.view.View;
 import android.widget.EditText;
 
 import net.gsantner.opoc.util.ContextUtils;
+
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;

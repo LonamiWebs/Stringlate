@@ -15,11 +15,10 @@ import java.util.Map;
 import java.util.Random;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.git.GitHub;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
-import io.github.lonamiwebs.stringlate.git.GitHub;
-import io.github.lonamiwebs.stringlate.classes.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.interfaces.Callback;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 class Exporter {
 
@@ -68,7 +67,7 @@ class Exporter {
             @Override
             public String call(final Context context, final Callback<String> progress) throws Exception {
                 mFailureReason = context.getString(R.string.post_gist_error);
-                JSONObject result = GitHub.gCreateGist(description, isPublic, fileContents, token);
+                JSONObject result = GitHub.createGist(description, isPublic, fileContents, token);
                 if (result == null)
                     throw new JSONException("Null JSON");
 
@@ -96,11 +95,11 @@ class Exporter {
                 final JSONObject result;
                 mFailureReason = context.getString(R.string.create_issue_error);
                 if (existingIssueNumber == -1) {
-                    result = GitHub.gCreateIssue(
+                    result = GitHub.createIssue(
                             repo, issueTitle, issueDesc, token
                     );
                 } else {
-                    result = GitHub.gCommentIssue(
+                    result = GitHub.commentIssue(
                             repo, existingIssueNumber, issueDesc, token
                     );
                 }
@@ -143,12 +142,12 @@ class Exporter {
                     mFailureReason = context.getString(R.string.fork_failed);
                     progress.onCallback(context.getString(R.string.forking_repo_long));
 
-                    JSONObject fork = GitHub.gForkRepository(token, originalRepo);
+                    JSONObject fork = GitHub.forkRepository(token, originalRepo);
                     if (fork == null) throw new JSONException("Resulting fork is null.");
 
                     String owner = fork.getJSONObject("owner").getString("login");
                     String repoName = fork.getString("name");
-                    repo = RepoHandlerHelper.fromContext(context, GitWrapper.buildGitHubUrl(owner, repoName));
+                    repo = RepoHandlerHelper.fromContext(context, GitHub.buildGitHubUrl(owner, repoName));
                 } else {
                     repo = originalRepo;
                 }
@@ -159,7 +158,7 @@ class Exporter {
                 final String branch = String.format(
                         "stringlate-%s-%d", locale, 1000 + new Random().nextInt(8999)
                 );
-                JSONObject result = GitHub.gCreateBranch(token, repo, branch);
+                JSONObject result = GitHub.createBranch(token, repo, branch);
                 if (result == null) throw new JSONException("Failed to create a new branch.");
 
                 // Commit the file
@@ -175,7 +174,7 @@ class Exporter {
                         remoteContents.put(templateRemote.getValue(), content);
                     }
                 }
-                commitResult = GitHub.gCreateCommitFile(
+                commitResult = GitHub.createCommitFile(
                         token, repo, branch, remoteContents, commitMessage
                 );
 
@@ -197,7 +196,7 @@ class Exporter {
                     }
 
                     // This may throw another InvalidObjectException
-                    commitResult = GitHub.gCreatePullRequest(
+                    commitResult = GitHub.createPullRequest(
                             token, originalRepo, title, username + ":" + branch, branch, body
                     );
                 }

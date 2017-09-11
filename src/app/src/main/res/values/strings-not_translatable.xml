@@ -16,4 +16,7 @@
     <string name="pref_key__github_access_token" translatable="false">github_access_token</string>
     <string name="pref_key__github_access_scope" translatable="false">github_access_scope</string>
     <string name="pref_key__string_sorting" translatable="false">string_sorting</string>
+    <string name="pref_key__github_client_id" translatable="false">pref_key__github_client_id</string>
+    <string name="pref_key__github_client_secret" translatable="false">pref_key__github_client_secret</string>
+
 </resources>

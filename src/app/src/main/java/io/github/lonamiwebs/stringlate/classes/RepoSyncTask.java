@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.interfaces.StringsSource;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
@@ -33,16 +32,16 @@ public class RepoSyncTask extends Thread {
     public void run() {
         final boolean okay =
                 RepoHandlerHelper.syncResources(mContext, mRepo, mSource, new Messenger.OnSyncProgress() {
-            @Override
-            public void onUpdate(final int stage, final float progress) {
-                mHandler.post(new Runnable() {
                     @Override
-                    public void run() {
-                        onProgressUpdate(stage, progress);
+                    public void onUpdate(final int stage, final float progress) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                onProgressUpdate(stage, progress);
+                            }
+                        });
                     }
                 });
-            }
-        });
 
         mHandler.post(new Runnable() {
             @Override

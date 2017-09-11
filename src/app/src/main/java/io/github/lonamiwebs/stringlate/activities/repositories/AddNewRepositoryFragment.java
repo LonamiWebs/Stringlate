@@ -16,15 +16,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import net.gsantner.opoc.util.ContextUtils;
+
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
-import io.github.lonamiwebs.stringlate.classes.applications.ApplicationDetails;
-import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.classes.RepoSyncTask;
-import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
+import io.github.lonamiwebs.stringlate.classes.applications.ApplicationDetails;
+import io.github.lonamiwebs.stringlate.classes.git.GitHub;
 import io.github.lonamiwebs.stringlate.classes.git.GitWrapper;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 
 import static android.app.Activity.RESULT_OK;
@@ -153,7 +155,7 @@ public class AddNewRepositoryFragment extends Fragment {
             } else {
                 // Determine whether we already have this repo or if it's a new one
                 RepoHandler repo = url.isEmpty() ?
-                        RepoHandlerHelper.fromContext(getContext(), GitWrapper.buildGitHubUrl(owner, repository)) :
+                        RepoHandlerHelper.fromContext(getContext(), GitHub.buildGitHubUrl(owner, repository)) :
                         RepoHandlerHelper.fromContext(getContext(), GitWrapper.getGitUri(url));
 
                 if (!TextUtils.isEmpty(mProjectDetails.getWebUrl())) {

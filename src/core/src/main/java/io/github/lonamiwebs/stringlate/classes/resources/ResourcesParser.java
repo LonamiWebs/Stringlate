@@ -1,5 +1,7 @@
 package io.github.lonamiwebs.stringlate.classes.resources;
 
+import net.gsantner.opoc.util.FileUtils;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
@@ -20,7 +22,6 @@ import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.gsantner.opoc.util.FileUtils;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResPlurals;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResString;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResStringArray;

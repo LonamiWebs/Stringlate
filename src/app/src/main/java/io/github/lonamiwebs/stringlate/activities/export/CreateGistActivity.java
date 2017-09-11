@@ -16,8 +16,8 @@ import java.util.HashMap;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 import static android.view.View.GONE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;

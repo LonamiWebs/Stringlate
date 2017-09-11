@@ -20,9 +20,11 @@ import io.github.lonamiwebs.stringlate.classes.lazyloader.ImageLoader;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.DEFAULT_APPS_LIMIT;
 
 public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.ViewHolder> {
+    public final static int DEFAULT_APPS_LIMIT = 50;
+
+    // Default app limit to show when discovering new applications
     private final ImageLoader mImageLoader;
     private final ApplicationList mApplicationList;
     private ArrayList<ApplicationDetails> appsSlice;

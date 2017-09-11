@@ -8,7 +8,7 @@ import net.gsantner.opoc.util.AppSettingsBase;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.interfaces.SlAppSettings;
 
-import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_WANTED_SCOPES;
+import static io.github.lonamiwebs.stringlate.classes.git.GitHub.GITHUB_WANTED_SCOPES;
 
 public class AppSettings extends AppSettingsBase implements SlAppSettings {
     //region Constructor
@@ -35,6 +35,26 @@ public class AppSettings extends AppSettingsBase implements SlAppSettings {
     @NonNull
     public String[] getGitHubScopes() {
         return getString(rstr(R.string.pref_key__github_access_scope), DEFAULT_GITHUB_SCOPE).split(",");
+    }
+
+    @Override
+    public String getGitHubClientSecret() {
+        return getString(R.string.pref_key__github_client_secret, SlAppSettings.GITHUB_CLIENT_SECRET);
+    }
+
+    @Override
+    public void setGitHubClientSecret(String value) {
+        setString(R.string.pref_key__github_client_secret, value);
+    }
+
+    @Override
+    public String getGitHubClientId() {
+        return getString(R.string.pref_key__github_client_id, SlAppSettings.GITHUB_CLIENT_ID);
+    }
+
+    @Override
+    public void setGitHubClientId(String value) {
+        setString(R.string.pref_key__github_client_id, value);
     }
 
     public boolean hasGitHubAuthorization() {

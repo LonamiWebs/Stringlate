@@ -28,12 +28,12 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.classes.Messenger;
-import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.adapters.RepoHandlerAdapter;
-import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
+import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.RepoSyncTask;
+import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;

@@ -2,6 +2,7 @@ package io.github.lonamiwebs.stringlate.activities;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -20,12 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.gsantner.opoc.util.ContextUtils;
-import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.git.GitHub;
-import io.github.lonamiwebs.stringlate.settings.AppSettings;
 
-import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_CLIENT_ID;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_CLIENT_SECRET;
+import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.git.GitHub;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
 
 @SuppressWarnings("WeakerAccess")
 public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -142,7 +141,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                 String key = preference.getKey();
 
                 if (key.equals(getString(R.string.pref_key__github_authentication_request))) {
-                    Uri url = Uri.parse(GitHub.Authentication.gGetAuthRequestUrl());
+                    Uri url = Uri.parse(GitHub.Authentication.getAuthRequestUrl());
                     startActivity(new Intent(Intent.ACTION_VIEW, url));
                 }
 
@@ -172,17 +171,21 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
 
 class GitHubCompleteAuthTask extends AsyncTask<Void, Void, GitHub.Authentication.CompleteAuthenticationResult> {
     private final View mViewRoot;
+    private final Context mContext;
     private final String mCode;
 
     GitHubCompleteAuthTask(View viewRoot, String code) {
         mCode = code;
         mViewRoot = viewRoot;
+        mContext = viewRoot.getContext();
     }
 
     @Override
     protected GitHub.Authentication.CompleteAuthenticationResult doInBackground(Void... params) {
-        return GitHub.Authentication.gCompleteGitHubAuth(
-                new AppSettings(mViewRoot.getContext()), GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, mCode
+        AppSettings appSettings = new AppSettings(mContext);
+        return GitHub.Authentication.completeGitHubAuth(
+                appSettings, appSettings.getGitHubClientId(),
+                appSettings.getGitHubClientSecret(), mCode
         );
     }
 

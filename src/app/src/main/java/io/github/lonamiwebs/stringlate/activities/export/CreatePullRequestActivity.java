@@ -12,11 +12,11 @@ import android.widget.Toast;
 import java.util.AbstractMap;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.git.GitHub;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
-import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -69,7 +69,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
         new AsyncTask<Void, Void, AbstractMap.SimpleImmutableEntry<String, Boolean>>() {
             @Override
             protected AbstractMap.SimpleImmutableEntry<String, Boolean> doInBackground(Void... params) {
-                return GitHub.gCanPush(mSettings.getGitHubToken(), mRepo);
+                return GitHub.canPush(mSettings.getGitHubToken(), mRepo);
             }
 
             @Override

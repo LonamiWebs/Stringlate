@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.git;
+package io.github.lonamiwebs.stringlate.classes.git;
 
 import net.gsantner.opoc.util.NetworkUtils;
 
@@ -12,40 +12,38 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.interfaces.SlAppSettings;
 
-import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_AUTH_URL;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_CLIENT_ID;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_CLIENT_SECRET;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_COMPLETE_AUTH_URL;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_WANTED_SCOPES;
-
 // Static GitHub API interface that uses AsyncTasks
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class GitHub {
-    //region Members
-
-    private static final String API_URL = "https://api.github.com/";
-
-    //endregion
+    // GitHub OAuth (https://developer.github.com/v3/oauth/#scopes)
+    // Scopes joined by '%20', although result scopes are joined by ','
+    public final static String GITHUB_API_URL = "https://api.github.com/";
+    public final static String GITHUB_AUTH_URL = "https://github.com/login/oauth/authorize?scope=%s&client_id=%s";
+    public final static String GITHUB_COMPLETE_AUTH_URL = "https://github.com/login/oauth/access_token";
+    public final static String[] GITHUB_WANTED_SCOPES = {"public_repo", "gist"};
+    private static final String GITHUB_REPO_URL_TEMPLATE = "https://github.com/%s/%s";
 
     //region Private methods
 
-    private static String gGetUrl(final String call, final Object... args) {
+    private static String getUrl(final String call, final Object... args) {
         if (args.length > 0)
-            return API_URL + String.format(call, args);
+            return GITHUB_API_URL + String.format(call, args);
         else
-            return API_URL + call;
+            return GITHUB_API_URL + call;
     }
 
     //endregion
 
     //region Public methods
 
-    public static JSONObject gCreateGist(String description, boolean isPublic,
-                                         HashMap<String, String> fileContents,
-                                         String token) {
+    public static JSONObject createGist(String description, boolean isPublic,
+                                        HashMap<String, String> fileContents,
+                                        String token) {
         try {
             JSONObject params = new JSONObject();
 
@@ -65,17 +63,17 @@ public class GitHub {
             params.put("files", filesObject);
 
             if (token.isEmpty())
-                return new JSONObject(NetworkUtils.performCall(gGetUrl("gists"), params));
+                return new JSONObject(NetworkUtils.performCall(getUrl("gists"), params));
             else
-                return new JSONObject(NetworkUtils.performCall(gGetUrl("gists?access_token=" + token), params));
+                return new JSONObject(NetworkUtils.performCall(getUrl("gists?access_token=" + token), params));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static JSONObject gCreateIssue(RepoHandler repo,
-                                          String title, String description, String token)
+    public static JSONObject createIssue(RepoHandler repo,
+                                         String title, String description, String token)
             throws InvalidObjectException {
         try {
             JSONObject params = new JSONObject();
@@ -83,7 +81,7 @@ public class GitHub {
             params.put("title", title);
             params.put("body", description);
 
-            return new JSONObject(NetworkUtils.performCall(gGetUrl("repos/%s/issues?access_token=%s",
+            return new JSONObject(NetworkUtils.performCall(getUrl("repos/%s/issues?access_token=%s",
                     repo.toOwnerRepo(), token), params));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -91,13 +89,13 @@ public class GitHub {
         }
     }
 
-    public static JSONObject gCommentIssue(RepoHandler repo,
-                                           int issueNumber, String body, String token)
+    public static JSONObject commentIssue(RepoHandler repo,
+                                          int issueNumber, String body, String token)
             throws InvalidObjectException {
         try {
             JSONObject params = new JSONObject();
             params.put("body", body);
-            return new JSONObject(NetworkUtils.performCall(gGetUrl(
+            return new JSONObject(NetworkUtils.performCall(getUrl(
                     "repos/%s/issues/%d/comments?access_token=%s",
                     repo.toOwnerRepo(), issueNumber, token), params));
         } catch (JSONException e) {
@@ -106,9 +104,9 @@ public class GitHub {
         }
     }
 
-    private static JSONObject gGetUserInfo(String token) {
+    private static JSONObject getUserInfo(String token) {
         try {
-            return new JSONObject(NetworkUtils.performCall(gGetUrl(
+            return new JSONObject(NetworkUtils.performCall(getUrl(
                     "user?access_token=%s", token), NetworkUtils.GET));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -116,10 +114,10 @@ public class GitHub {
         }
     }
 
-    private static JSONArray gGetCollaborators(String token, RepoHandler repo)
+    private static JSONArray getCollaborators(String token, RepoHandler repo)
             throws InvalidObjectException {
         try {
-            return new JSONArray(NetworkUtils.performCall(gGetUrl(
+            return new JSONArray(NetworkUtils.performCall(getUrl(
                     "repos/%s/collaborators?access_token=%s", repo.toOwnerRepo(), token), NetworkUtils.GET));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -128,8 +126,8 @@ public class GitHub {
     }
 
     // Returns both the authenticated user and whether they have right to push
-    public static AbstractMap.SimpleImmutableEntry<String, Boolean> gCanPush(String token, RepoHandler repo) {
-        JSONObject user = gGetUserInfo(token);
+    public static AbstractMap.SimpleImmutableEntry<String, Boolean> canPush(String token, RepoHandler repo) {
+        JSONObject user = getUserInfo(token);
         if (user == null)
             // TODO Actually, maybe throw an NoPermissionException or something
             return new AbstractMap.SimpleImmutableEntry<>(null, false);
@@ -138,7 +136,7 @@ public class GitHub {
         try {
             username = user.getString("login");
 
-            JSONArray collaborators = gGetCollaborators(token, repo);
+            JSONArray collaborators = getCollaborators(token, repo);
             if (collaborators != null) {
                 for (int i = 0; i < collaborators.length(); i++) {
                     JSONObject collaborator = collaborators.getJSONObject(i);
@@ -157,9 +155,9 @@ public class GitHub {
         }
     }
 
-    public static JSONArray gGetBranches(final RepoHandler repo) {
+    public static JSONArray getBranches(final RepoHandler repo) {
         try {
-            return new JSONArray(NetworkUtils.performCall(gGetUrl(
+            return new JSONArray(NetworkUtils.performCall(getUrl(
                     "repos/%s/branches", repo.toOwnerRepo()), NetworkUtils.GET));
         } catch (JSONException | InvalidObjectException e) {
             e.printStackTrace();
@@ -167,10 +165,10 @@ public class GitHub {
         }
     }
 
-    private static JSONArray gGetCommits(final String token, final RepoHandler repo)
+    private static JSONArray getCommits(final String token, final RepoHandler repo)
             throws InvalidObjectException {
         try {
-            return new JSONArray(NetworkUtils.performCall(gGetUrl(
+            return new JSONArray(NetworkUtils.performCall(getUrl(
                     "repos/%s/commits?access_token=%s", repo.toOwnerRepo(), token), NetworkUtils.GET));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -178,17 +176,17 @@ public class GitHub {
         }
     }
 
-    public static JSONObject gCreateBranch(final String token, final RepoHandler repo, final String branchName)
+    public static JSONObject createBranch(final String token, final RepoHandler repo, final String branchName)
             throws InvalidObjectException {
         try {
-            JSONArray head = new JSONArray(NetworkUtils.performCall(gGetUrl(
+            JSONArray head = new JSONArray(NetworkUtils.performCall(getUrl(
                     "repos/%s/git/refs/heads?access_token=%s", repo.toOwnerRepo(), token), NetworkUtils.GET));
 
             final String sha = head.getJSONObject(0).getJSONObject("object").getString("sha");
             JSONObject params = new JSONObject();
             params.put("ref", "refs/heads/" + branchName);
             params.put("sha", sha);
-            return new JSONObject(NetworkUtils.performCall(gGetUrl(
+            return new JSONObject(NetworkUtils.performCall(getUrl(
                     "repos/%s/git/refs?access_token=%s", repo.toOwnerRepo(), token), params));
 
         } catch (JSONException e) {
@@ -197,10 +195,10 @@ public class GitHub {
         }
     }
 
-    public static JSONObject gForkRepository(final String token, final RepoHandler repo)
+    public static JSONObject forkRepository(final String token, final RepoHandler repo)
             throws InvalidObjectException {
         try {
-            JSONObject result = new JSONObject(NetworkUtils.performCall(gGetUrl(
+            JSONObject result = new JSONObject(NetworkUtils.performCall(getUrl(
                     "repos/%s/forks?access_token=%s", repo.toOwnerRepo(), token), NetworkUtils.POST));
 
             // "Forking a Repository happens asynchronously."
@@ -215,7 +213,7 @@ public class GitHub {
                     e.printStackTrace();
                     return null;
                 }
-            } while (gGetCommits(token, repo) == null);
+            } while (getCommits(token, repo) == null);
 
             return result;
         } catch (JSONException e) {
@@ -226,9 +224,9 @@ public class GitHub {
 
     // head = Fork's branch name. If this PR is cross-repository, prefix username:branch.
     // base = Branch's name where the changes will be pulled into. This should exist already.
-    public static JSONObject gCreatePullRequest(final String token, final RepoHandler originalRepo,
-                                                final String title, final String head,
-                                                final String base, final String body)
+    public static JSONObject createPullRequest(final String token, final RepoHandler originalRepo,
+                                               final String title, final String head,
+                                               final String base, final String body)
             throws InvalidObjectException {
         try {
             JSONObject params = new JSONObject();
@@ -238,7 +236,7 @@ public class GitHub {
             if (body != null && !body.isEmpty())
                 params.put("body", body);
 
-            return new JSONObject(NetworkUtils.performCall(gGetUrl(
+            return new JSONObject(NetworkUtils.performCall(getUrl(
                     "repos/%s/pulls?access_token=%s", originalRepo.toOwnerRepo(), token), params));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -247,10 +245,10 @@ public class GitHub {
     }
 
     // Really big thanks to http://www.levibotelho.com/development/commit-a-file-with-the-github-api
-    public static JSONObject gCreateCommitFile(final String token, final RepoHandler repo,
-                                               final String branch,
-                                               final HashMap<String, String> pathContents,
-                                               final String commitMessage)
+    public static JSONObject createCommitFile(final String token, final RepoHandler repo,
+                                              final String branch,
+                                              final HashMap<String, String> pathContents,
+                                              final String commitMessage)
             throws JSONException, InvalidObjectException {
         final String tokenQuery = "?access_token=" + token;
         final String ownerRepo = repo.toOwnerRepo();
@@ -258,7 +256,7 @@ public class GitHub {
         // Step 1. Get a reference to HEAD (GET /repos/:owner/:repo/git/refs/:ref)
         // https://developer.github.com/v3/git/refs/#get-a-reference
         JSONObject head = new JSONObject(NetworkUtils.performCall(
-                gGetUrl("repos/%s/git/refs/heads/%s%s", ownerRepo, branch, tokenQuery), NetworkUtils.GET));
+                getUrl("repos/%s/git/refs/heads/%s%s", ownerRepo, branch, tokenQuery), NetworkUtils.GET));
 
         // Step 2. Grab the commit that HEAD points to (GET /repos/:owner/:repo/git/commits/:sha)
         // https://developer.github.com/v3/git/commits/#get-a-commit
@@ -277,7 +275,7 @@ public class GitHub {
             newBlob.put("encoding", "utf-8");
 
             JSONObject blob = new JSONObject(NetworkUtils.performCall(
-                    gGetUrl("repos/%s/git/blobs%s", ownerRepo, tokenQuery), newBlob));
+                    getUrl("repos/%s/git/blobs%s", ownerRepo, tokenQuery), newBlob));
 
             pathBlobs.put(pathContent.getKey(), blob);
         }
@@ -311,7 +309,7 @@ public class GitHub {
         }
 
         JSONObject createdTree = new JSONObject(NetworkUtils.performCall(
-                gGetUrl("repos/%s/git/trees%s", ownerRepo, tokenQuery), newTree));
+                getUrl("repos/%s/git/trees%s", ownerRepo, tokenQuery), newTree));
 
         // Step 6. Create a new commit (POST /repos/:owner/:repo/git/commits)
         // https://developer.github.com/v3/git/commits/#create-a-commit
@@ -327,7 +325,7 @@ public class GitHub {
         newCommit.put("tree", createdTree.getString("sha"));
 
         JSONObject repliedNewCommit = new JSONObject(NetworkUtils.performCall(
-                gGetUrl("repos/%s/git/commits%s", ownerRepo, tokenQuery), newCommit));
+                getUrl("repos/%s/git/commits%s", ownerRepo, tokenQuery), newCommit));
 
         // Step 7. Update HEAD (PATCH /repos/:owner/:repo/git/refs/:ref)
         // https://developer.github.com/v3/git/refs/#update-a-reference
@@ -335,10 +333,22 @@ public class GitHub {
         patch.put("sha", repliedNewCommit.getString("sha"));
 
         return new JSONObject(NetworkUtils.performCall(
-                gGetUrl("repos/%s/git/refs/heads/%s%s", ownerRepo, branch, tokenQuery),
+                getUrl("repos/%s/git/refs/heads/%s%s", ownerRepo, branch, tokenQuery),
                 NetworkUtils.PATCH, patch));
     }
 
+    public static String buildGitHubUrl(String owner, String repository) {
+        return GitWrapper.getGitUri(String.format(GITHUB_REPO_URL_TEMPLATE, owner, repository));
+    }
+
+    public static String getGitHubOwnerRepo(final String url)
+            throws InvalidObjectException {
+        Matcher m = GitWrapper.OWNER_REPO.matcher(url);
+        if (m.matches() && m.group(1).equalsIgnoreCase("github.com")) {
+            return String.format("%s/%s", m.group(2), m.group(3));
+        }
+        throw new InvalidObjectException("Not a GitHub repository.");
+    }
 
     //endregion
 
@@ -349,15 +359,15 @@ public class GitHub {
             public String message, token, grantedScopes;
         }
 
-        public static String gGetAuthRequestUrl() {
+        public static String getAuthRequestUrl() {
             return String.format(GITHUB_AUTH_URL,
-                    StringUtils.join(Arrays.asList(GITHUB_WANTED_SCOPES), "%20"), GITHUB_CLIENT_ID);
+                    StringUtils.join(Arrays.asList(GITHUB_WANTED_SCOPES), "%20"), SlAppSettings.GITHUB_CLIENT_ID);
         }
 
-        public static CompleteAuthenticationResult gCompleteGitHubAuth(SlAppSettings appSettings, String clientId, String clientSecret, String code) {
+        public static CompleteAuthenticationResult completeGitHubAuth(SlAppSettings appSettings, String clientId, String clientSecret, String code) {
             final HashMap<String, String> map = new HashMap<>();
-            map.put("client_id", GITHUB_CLIENT_ID);
-            map.put("client_secret", GITHUB_CLIENT_SECRET);
+            map.put("client_id", clientId);
+            map.put("client_secret", clientSecret);
             map.put("code", code);
 
             CompleteAuthenticationResult ret = new CompleteAuthenticationResult();
@@ -376,7 +386,6 @@ public class GitHub {
             }
             return ret;
         }
-
     }
     //endregion
 }
