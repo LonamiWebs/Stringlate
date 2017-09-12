@@ -1142,6 +1142,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
     // Increments the mStringIdSpinner index by delta i (di),
     // clamping the value if it's less than 0 or value ≥ IDs count.
     private void incrementStringIdIndex(int di) {
+        save(); // Save every time the user changes to a new string for safety reasons
         int i = mStringIdSpinner.getSelectedItemPosition() + di;
         if (i > -1) {
             if (i < mStringIdSpinner.getCount()) {
@@ -1159,6 +1160,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
         int i = getItemIndex(mStringIdSpinner, id);
         if (i > -1) {
+            save(); // Save every time the user changes to a new string for safety reasons
             mStringIdSpinner.setSelection(i);
             updateSelectedResourceId((String) mStringIdSpinner.getSelectedItem());
         } else if (!mShowTranslated) {
