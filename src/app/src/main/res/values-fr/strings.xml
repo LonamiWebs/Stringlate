@@ -92,9 +92,12 @@
     <string name="save_before_sync_required">Vous devez sauvegarder avant de synchroniser.</string>
     <string name="history">Historique</string>
     <string name="add_new_repo">Ajouter un nouveau dépôt</string>
+    <string name="add_project">Ajouter un projet</string>
+    <string name="start_translating">Commencer à traduire</string>
     <string name="history_no_repos_hint">Nouveau ? Allez voir l’onglet « %s » pour commencer !</string>
     <string name="history_contains_repos_hint">Voilà vos dépôts précédemment synchronisés. Choisissez en un ci-dessous ou ajoutez en un nouveau pour continuer.</string>
     <string name="repositories_colon">Dépôts :</string>
+    <string name="projects_colon">Projets :</string>
     <string name="show_more">Voir plus</string>
     <string name="clear_icons_cache">Vider le cache d’icônes</string>
     <string name="help">Aide</string>
@@ -110,6 +113,7 @@
     <string name="github_yes_logged_long">Vous êtes déjà connecté à Github. Aucun action supplémentaire n’est nécessaire. Si quelque chose ne fonctionne pas, vous pouvez toujours cliquer sur le bouton pour recommencer.</string>
     <string name="login_to_github">Se connecter à Github</string>
     <string name="auth_success">Autorisation accordée</string>
+    <string name="auth_failure">Échec de l\'autorisation</string>
     <string name="completing_auth_ellipsis">Autorisation en cours…</string>
     <string name="is_anonymous_gist">Ceci est un Gist anonyme</string>
     <string name="gist_login_needed">Pour publier des Gists non anonymes, vous devez autoriser Stringlate sur l’écran principal de Github.</string>
@@ -161,4 +165,19 @@
     <string name="application_may_use_translation_platform">Cette application semble utiliser %s pour gérer les traductions. Rapportez-vous à l\'aide pour plus d\'informations.</string>
     <string name="select_branch">Sélectionnez la branche à utiliser</string>
     <string name="ignore">Ignorer</string>
+    <string name="open_project_homepage">Visiter le site du projet</string>
+    <string name="open_in_external_browser">Ouvrir dans le navigateur externe</string>
+    <string name="peek_translations">Sélectionner une traduction</string>
+    <string name="syncing_now">Synchronisation :</string>
+    <string name="wait_until_sync">Merci de patienter le temps que le dépôt soit synchronisé.</string>
+    <string name="invalid_project">Le champ de dépôt %s ne semble pas valide.</string>
+    <string name="project_no_strings">Le champ de dépôt ne semble pas valide.</string>
+    <string name="settings">Paramètres</string>
+    <string name="pref_desc__language">Changer la langue de l\'interface. Redémarrer l\'application pour que le changement soit pris en compte</string>
+    <string name="pref_title__language">Langue</string>
+    <string name="appearance">Apparence</string>
+    <string name="user_accounts">Comptes utilisateur</string>
+    <string name="language">Langue</string>
+    <string name="country">Pays</string>
+    <string name="more">Plus</string>
 </resources>
