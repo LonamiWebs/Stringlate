@@ -59,7 +59,7 @@
     <string name="open">Ouvrir</string>
     <string name="copy">Copier</string>
     <string name="share">Partager</string>
-    <string name="exit">Sortie</string>
+    <string name="exit">Retour</string>
     <string name="posting_gist_title">Publication du Gist %s</string>
     <string name="error_gist_filename_empty">Le nom du Gist ne peut être vide</string>
     <string name="posting_gist_ellipsis">Publication du Gist…</string>
