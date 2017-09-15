@@ -113,6 +113,7 @@
     <string name="github_yes_logged_long">Ya has iniciado sesión en GitHub. No hace falta nada más. Si algo no funciona puedes hacer clic en el botón otra vez para volver a comenzar.</string>
     <string name="login_to_github">Iniciar sesión en GitHub</string>
     <string name="auth_success">Autorización completada</string>
+    <string name="auth_failure">Falló la Autorización</string>
     <string name="completing_auth_ellipsis">Finalizando autorización…</string>
     <string name="is_anonymous_gist">Este es un Gist anónimo</string>
     <string name="gist_login_needed">Para publicar Gists no-anónimos necesita autorizar a Stringlate en GitHub desde la pantalla principal.</string>
@@ -166,8 +167,17 @@
     <string name="ignore">Ignorar</string>
     <string name="open_project_homepage">Abrir la página inicial del proyecto</string>
     <string name="open_in_external_browser">Abrir en visor externo</string>
+    <string name="peek_translations">Previsualizar traducciones</string>
     <string name="syncing_now">Sincronizando:</string>
     <string name="wait_until_sync">Por favor espera hasta que el repositorio se sincronice.</string>
     <string name="invalid_project">el repositorio de entrada %s no parece válido.</string>
     <string name="project_no_strings">El repositorio de entrada no parece válido.</string>
+    <string name="settings">Ajustes</string>
+    <string name="pref_desc__language">Cambia el lenguaje de esta aplicación. Reinicia la aplicación para que tome los cambios</string>
+    <string name="pref_title__language">Lenguaje</string>
+    <string name="appearance">Apariencia</string>
+    <string name="user_accounts">Cuentas de Usuario</string>
+    <string name="language">Lenguaje</string>
+    <string name="country">País</string>
+    <string name="more">Más</string>
 </resources>
