@@ -41,11 +41,11 @@ This application has not yet been tested on pre-Lollipop devices and it
 this is the case, please let me know, or create a new pull request with a fix.
 
 ## Screenshots
-![Screenshot 1](./resources/screenshots/s1.png)
-![Screenshot 2](./resources/screenshots/s2.png)
-![Screenshot 3](./resources/screenshots/s3.png)
-![Screenshot 4](./resources/screenshots/s4.png)
-![Screenshot 4](./resources/screenshots/s5.png)
+![Screenshot 1](./metadata/en/phoneScreenshots/01.png)
+![Screenshot 2](./metadata/en/phoneScreenshots/02.png)
+![Screenshot 3](./metadata/en/phoneScreenshots/03.png)
+![Screenshot 4](./metadata/en/phoneScreenshots/04.png)
+![Screenshot 4](./metadata/en/phoneScreenshots/05.png)
 
 (*Thanks to [Clean Status Bar](https://f-droid.org/app/com.emmaguy.cleanstatusbar)
 for the tidy screenshots*)
