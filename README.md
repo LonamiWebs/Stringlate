@@ -51,9 +51,8 @@ this is the case, please let me know, or create a new pull request with a fix.
 for the tidy screenshots*)
 
 ## Donations
-At the moment I don't have any donating system. However, if you really are
-interested, please drop an issue on GitHub and I'll take a look at it. You
-would be my first donor!
+Please refer to https://lonamiwebs.github.io/donate/. Remember that not only
+you can donate money, but also appreciation. Both are very welcome!
 
 ## License
 The project is licensed under the
