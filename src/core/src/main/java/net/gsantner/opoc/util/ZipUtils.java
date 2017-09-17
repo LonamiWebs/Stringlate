@@ -57,8 +57,8 @@ public class ZipUtils {
         ZipEntry ze;
         while ((ze = in.getNextEntry()) != null) {
             filename = ze.getName();
-            if (!flatten && ze.isDirectory()) {
-                if (!new File(destRootFolder, filename).mkdirs())
+            if (ze.isDirectory()) {
+                if (!flatten && !new File(destRootFolder, filename).mkdirs())
                     return false;
             } else {
                 if (flatten) {
