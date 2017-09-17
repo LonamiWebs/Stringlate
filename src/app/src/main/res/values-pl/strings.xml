@@ -166,4 +166,12 @@
     <string name="ignore">Ignoruj</string>
     <string name="open_project_homepage">Otwórz stronę główną projektu</string>
     <string name="open_in_external_browser">Otwórz w zewnętrznej przeglądarce</string>
+    <string name="syncing_now">Synchronizowanie:</string>
+    <string name="settings">Ustawienia</string>
+    <string name="pref_desc__language">Zmień język aplikacji. Zrestartuj aplikację żeby zobaczyć efekty</string>
+    <string name="pref_title__language">Język</string>
+    <string name="user_accounts">Konta użytkowników</string>
+    <string name="language">Język</string>
+    <string name="country">Kraj</string>
+    <string name="more">Więcej</string>
 </resources>
