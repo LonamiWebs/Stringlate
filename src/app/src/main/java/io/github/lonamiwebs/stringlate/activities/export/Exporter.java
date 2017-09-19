@@ -17,7 +17,7 @@ import java.util.Random;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.git.GitHub;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
+import net.gsantner.opoc.util.Callback;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 class Exporter {

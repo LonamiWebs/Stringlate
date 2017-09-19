@@ -23,8 +23,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
-
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
 public class ZipUtils {
     private static final int BUFFER_SIZE = 4096;

@@ -29,8 +29,6 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
-
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue", "SpellCheckingInspection", "deprecation"})
 public class NetworkUtils {
     private static final String UTF8 = "UTF-8";

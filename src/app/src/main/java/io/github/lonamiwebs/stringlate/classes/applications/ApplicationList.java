@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import io.github.lonamiwebs.stringlate.classes.Messenger;
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
+import net.gsantner.opoc.util.Callback;
 
 public class ApplicationList implements Iterable<ApplicationDetails> {
     public final static String FDROID_REPO_URL = "https://f-droid.org/repo";

@@ -10,7 +10,7 @@
  *  http://creativecommons.org/publicdomain/zero/1.0/
  * ----------------------------------------------------------------------------
  */
-package io.github.lonamiwebs.stringlate.interfaces;
+package net.gsantner.opoc.util;
 
 // Simple callback interface which includes an object
 public interface Callback<T> {

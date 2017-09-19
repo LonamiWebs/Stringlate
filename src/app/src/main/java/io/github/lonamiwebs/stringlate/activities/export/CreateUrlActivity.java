@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
+import net.gsantner.opoc.util.Callback;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_ID;
 
