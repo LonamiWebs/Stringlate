@@ -13,6 +13,10 @@
 package net.gsantner.opoc.util;
 
 
+import android.webkit.MimeTypeMap;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +82,61 @@ public class FileUtils {
             lines.add(line);
         }
         return lines;
+    }
+
+    public static byte[] readBinaryFile(final File file) {
+        try {
+            return readCloseBinaryStream(new FileInputStream(file), (int) file.length());
+        } catch (FileNotFoundException e) {
+            System.err.println("readBinaryFile: File " + file + " not found.");
+        }
+
+        return new byte[0];
+    }
+
+    public static byte[] readCloseBinaryStream(final InputStream stream, int byteCount) {
+        final ArrayList<String> lines = new ArrayList<>();
+        BufferedInputStream reader = null;
+        byte[] buf = new byte[byteCount];
+        int totalBytesRead = 0;
+        try {
+            reader = new BufferedInputStream(stream);
+            while (totalBytesRead < byteCount) {
+                int bytesRead = reader.read(buf, totalBytesRead, byteCount - totalBytesRead);
+                if (bytesRead > 0) {
+                    totalBytesRead = totalBytesRead + bytesRead;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return buf;
+    }
+
+    public static boolean writeFile(final File file, byte[] data) {
+        try {
+            OutputStream output = null;
+            try {
+                output = new BufferedOutputStream(new FileOutputStream(file));
+                output.write(data);
+                output.flush();
+                return true;
+            } finally {
+                if (output != null) {
+                    output.close();
+                }
+            }
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     public static boolean writeFile(final File file, final String content) {
@@ -165,5 +225,24 @@ public class FileUtils {
             ok &= file.delete();
         }
         return ok;
+    }
+
+    public static String getMimeType(String url) {
+        String mime = null;
+        String ext = MimeTypeMap.getFileExtensionFromUrl(url);
+        return ext != null ? MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext) : null;
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static boolean renameFileInSameFolder(File srcFile, String destFilename) {
+        File destFile = new File(srcFile.getParent(), destFilename);
+
+        byte[] data = readBinaryFile(srcFile);
+        if (data.length > 0) {
+            if (writeFile(destFile, data)) {
+                srcFile.delete();
+            }
+        }
+        return true;
     }
 }
