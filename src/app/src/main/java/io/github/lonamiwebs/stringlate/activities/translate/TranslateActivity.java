@@ -1152,6 +1152,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
                 Toast.makeText(this, R.string.no_strings_left, Toast.LENGTH_SHORT).show();
             }
         }
+        mTranslatedStringEditText.requestFocus();
     }
 
     private void setStringId(String id) {

@@ -116,7 +116,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/translated_string"
-                android:inputType="textCapSentences|textMultiLine" />
+                android:inputType="textCapSentences|textMultiLine"
+                android:nextFocusForward="@+id/nextButton" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -130,6 +131,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:layout_weight="1"
+                    android:nextFocusForward="@+id/searchStrings"
                     android:onClick="onPreviousClick"
                     android:text="@string/previous"
                     android:textAlignment="textStart" />
@@ -141,6 +143,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_weight="1"
+                    android:nextFocusForward="@+id/previousButton"
                     android:onClick="onNextClick"
                     android:text="@string/next"
                     android:textAlignment="textEnd" />
