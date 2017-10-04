@@ -113,6 +113,7 @@
     <string name="github_yes_logged_long">Вы уже вошли на GitHub. Если что-то не работает можете снова нажать кнопку.</string>
     <string name="login_to_github">Логин на GitHub</string>
     <string name="auth_success">Успешная авторизация</string>
+    <string name="auth_failure">Ошибка авторизации</string>
     <string name="completing_auth_ellipsis">Завершение авторизации…</string>
     <string name="is_anonymous_gist">Это анонимный Gist</string>
     <string name="gist_login_needed">Для публикации неанонимных Gist-ов авторизуйте Stringlate на GitHub.</string>
@@ -169,4 +170,14 @@
     <string name="peek_translations">Получить переводы</string>
     <string name="syncing_now">Синхронизация:</string>
     <string name="wait_until_sync">Подождите, пока репозиторий синхронизируется.</string>
+    <string name="invalid_project">Неверный репозиторий %s.</string>
+    <string name="project_no_strings">Неверный проект.</string>
+    <string name="settings">Настройки</string>
+    <string name="pref_desc__language">Change language of this app. Потребуется перезапуск приложения</string>
+    <string name="pref_title__language">Язык</string>
+    <string name="appearance">Оформление</string>
+    <string name="user_accounts">Учетные записи</string>
+    <string name="language">Язык</string>
+    <string name="country">Страна</string>
+    <string name="more">Больше</string>
 </resources>
