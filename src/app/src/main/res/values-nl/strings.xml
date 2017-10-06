@@ -4,10 +4,10 @@
     <string name="next">Volgende</string>
     <string name="current_string_id">Huidige string ID:</string>
     <string name="selected_locale">Geselecteerde locale:</string>
-    <string name="welcome">Welkom bij Stringlate! Voer een GitHub project naam en de eigenaar in of plak de repositories Git URL hieronder om verder te gaan.</string>
+    <string name="welcome">Welkom bij Stringlate! Voer een GitHub project naam en zijn eigenaar in of plak de repositories Git URL hieronder om verder te gaan.</string>
     <string name="owner_hint">eigenaar</string>
     <string name="repository_hint">repository</string>
-    <string name="or">or</string>
+    <string name="or">of</string>
     <string name="github_repo_url_hint">https://github.com/eigenaar/repository</string>
     <string name="update_strings">Update strings.xml</string>
     <string name="add_locale">Voeg een nieuwe locale toe</string>
