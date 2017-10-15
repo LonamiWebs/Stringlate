@@ -38,17 +38,19 @@ android {
             }
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     // Android standard libs
     compile "com.android.support:appcompat-v7:${version_lib.appcompat}"
     compile "com.android.support:design:${version_lib.appcompat}"
-
     // Tool libraries
-
     // Include core project
-    compile(project (':core')){
+    compile(project(':core')) {
         exclude(group: 'org.json', module: 'json')
         exclude(group: 'org.apache.servicemix.bundles', module: 'org.apache.servicemix.bundles.xmlpull')
     }
