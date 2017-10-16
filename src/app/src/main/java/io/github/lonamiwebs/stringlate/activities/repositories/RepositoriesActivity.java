@@ -1,5 +1,6 @@
 package io.github.lonamiwebs.stringlate.activities.repositories;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
 
 import net.gsantner.opoc.util.ContextUtils;
 
@@ -169,12 +171,29 @@ public class RepositoriesActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onPageSelected(int position) {
+        public void onPageSelected(final int position) {
             mBottomNavigationView.getMenu().getItem(position).setChecked(true);
 
             // Animate add project fab
-            FloatingActionButton fab = findViewById(R.id.fab_add_project);
-            fab.animate().scaleX(position == 0 ? 1.0f : 0.0f).scaleY((position == 0 ? 1.0f : 0.0f));
+            final FloatingActionButton fab = findViewById(R.id.fab_add_project);
+            fab.animate().scaleX(position == 0 ? 1.0f : 0.0f).scaleY((position == 0 ? 1.0f : 0.0f)).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    fab.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    if (position == 1)
+                        fab.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) { }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) { }
+            });
         }
 
         @Override
