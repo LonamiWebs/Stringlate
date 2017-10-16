@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -48,6 +49,12 @@ public class RepositoriesActivity extends AppCompatActivity {
 
         mBottomNavigationView = findViewById(R.id.navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        // Add fab action
+        FloatingActionButton fab = findViewById(R.id.fab_add_project);
+        fab.setOnClickListener(view -> {
+            mViewPager.setCurrentItem(1, true);
+        });
 
         // Check if we opened the application because a GitHub link was clicked
         // If this is the case then we should show the "Add repository" fragment
@@ -160,6 +167,10 @@ public class RepositoriesActivity extends AppCompatActivity {
         @Override
         public void onPageSelected(int position) {
             mBottomNavigationView.getMenu().getItem(position).setChecked(true);
+
+            // Animate add project fab
+            FloatingActionButton fab = findViewById(R.id.fab_add_project);
+            fab.animate().scaleX(position == 0 ? 1.0f : 0.0f).scaleY((position == 0 ? 1.0f : 0.0f));
         }
 
         @Override
