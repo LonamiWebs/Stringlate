@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import net.gsantner.opoc.util.ContextUtils;
 
@@ -52,8 +53,11 @@ public class RepositoriesActivity extends AppCompatActivity {
 
         // Add fab action
         FloatingActionButton fab = findViewById(R.id.fab_add_project);
-        fab.setOnClickListener(view -> {
-            mViewPager.setCurrentItem(1, true);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewPager.setCurrentItem(1, true);
+            }
         });
 
         // Check if we opened the application because a GitHub link was clicked
