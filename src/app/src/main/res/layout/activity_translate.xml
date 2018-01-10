@@ -106,10 +106,27 @@
                 android:inputType="none"
                 android:textIsSelectable="true" />
 
-            <TextView
-                android:layout_width="wrap_content"
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/translated_string_colon" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/translated_string_colon" />
+
+                <TextView
+                    android:id="@+id/copyString"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="@string/copy"
+                    android:textColor="@android:color/holo_blue_dark" />
+
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/translatedStringEditText"

@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -76,6 +77,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
     private EditText mOriginalStringEditText;
     private EditText mTranslatedStringEditText;
+    private TextView mCopyStringTextView;
 
     private Spinner mLocaleSpinner;
     private Spinner mStringIdSpinner;
@@ -128,6 +130,10 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         mOriginalStringEditText = findViewById(R.id.originalStringEditText);
         mTranslatedStringEditText = findViewById(R.id.translatedStringEditText);
         mTranslatedStringEditText.addTextChangedListener(onTranslationChanged);
+
+        mCopyStringTextView = findViewById(R.id.copyString);
+        mCopyStringTextView.setPaintFlags(mCopyStringTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        mCopyStringTextView.setOnClickListener(copyStringListener);
 
         mLocaleSpinner = findViewById(R.id.localeSpinner);
         mStringIdSpinner = findViewById(R.id.stringIdSpinner);
@@ -1169,6 +1175,13 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             setStringId(id);
         }
     }
+
+    private final View.OnClickListener copyStringListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mTranslatedStringEditText.setText(mOriginalStringEditText.getText());
+        }
+    };
 
     // Updates the selected resource ID and also the EditTexts for its contents
     private void updateSelectedResourceId(@NonNull String resourceId) {
