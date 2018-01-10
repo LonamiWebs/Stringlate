@@ -33,7 +33,7 @@ public class GitWrapper {
     private static final String STR_STRING = "<string";
     private static final String STR_PLURALS = "<plurals";
     private static final String[] STR_TRANSLATION_SERVICES = {
-            "transifex", "crowdin", "weblate", "zanata", "pootle"
+            "transifex", "crowdin", "weblate", "zanata", "pootle", "onesky", "poeditor"
     };
 
     // GitHub URLs (and GitLab) are well-known
