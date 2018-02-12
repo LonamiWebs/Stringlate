@@ -1155,7 +1155,16 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
                 mStringIdSpinner.setSelection(i);
                 updateSelectedResourceId((String) mStringIdSpinner.getSelectedItem());
             } else {
-                Toast.makeText(this, R.string.no_strings_left, Toast.LENGTH_SHORT).show();
+                new AlertDialog.Builder(this)
+                        .setMessage(getString(R.string.next_steps,
+                                getString(R.string.export_ellipsis),
+                                getString(R.string.show_translated_strings)))
+                        .setPositiveButton(R.string.done, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        })
+                        .show();
             }
         }
         mTranslatedStringEditText.requestFocus();
@@ -1200,16 +1209,23 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
     private void checkPreviousNextVisibility() {
         int count = mStringIdSpinner.getCount();
+        boolean showDone;
         if (count == 0) {
             mPreviousButton.setVisibility(View.INVISIBLE);
-            mNextButton.setVisibility(View.INVISIBLE);
+            showDone = true;
             mOriginalStringEditText.setText("");
             if (mSelectedResource == null) // Ensure it's null
                 mTranslatedStringEditText.setText("");
         } else {
             int i = mStringIdSpinner.getSelectedItemPosition();
             mPreviousButton.setVisibility(i == 0 ? View.INVISIBLE : View.VISIBLE);
-            mNextButton.setVisibility(i == (count - 1) ? View.INVISIBLE : View.VISIBLE);
+            showDone = i == (count - 1);
+        }
+
+        if (showDone) {
+            mNextButton.setText(R.string.done);
+        } else {
+            mNextButton.setText(R.string.next);
         }
     }
 
