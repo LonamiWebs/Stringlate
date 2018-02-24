@@ -23,7 +23,10 @@ public class ResourcesTranslation {
             Resources original, Resources translation, String filter) {
         String id;
         ArrayList<ResourcesTranslation> result = new ArrayList<>();
-        if (filter == null) {
+        if (original == null || translation == null)
+            return result;
+
+        if (filter == null || filter.isEmpty()) {
             for (ResTag rs : original) {
                 id = rs.getId();
                 result.add(new ResourcesTranslation(id, rs.getContent(), translation.getContent(id)));

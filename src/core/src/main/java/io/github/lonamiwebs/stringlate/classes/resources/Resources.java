@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResPlurals;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResStringArray;
@@ -35,8 +36,6 @@ public class Resources implements Iterable<ResTag> {
 
     private boolean mSavedChanges;
     private boolean mModified;
-
-    private String mFilter;
 
     //endregion
 
@@ -77,7 +76,6 @@ public class Resources implements Iterable<ResTag> {
         mStrings = new HashMap<>();
         mReferenceStrings = new HashMap<>();
         mSavedChanges = mFile != null && mFile.isFile();
-        mFilter = "";
     }
 
     //endregion
@@ -278,31 +276,22 @@ public class Resources implements Iterable<ResTag> {
 
     //endregion
 
-    //region Iterator filtering
-
-    public void setFilter(String filter) {
-        mFilter = filter.toLowerCase();
-    }
-
-    //endregion
-
     //region Iterator wrapper
 
     @Override
     public Iterator<ResTag> iterator() {
-        return sortIterator(null);
+        return sortIterator(null, null);
     }
 
-    public Iterator<ResTag> sortIterator(final Comparator<ResTag> comparator) {
+    public Iterator<ResTag> sortIterator(final Comparator<ResTag> comparator, final Set<String> filterIDs) {
         final ArrayList<ResTag> strings = new ArrayList<>(mStrings.size());
-        if (mFilter.isEmpty()) {
+        if (filterIDs == null || filterIDs.isEmpty()) {
             for (Map.Entry<String, ResTag> srt : mStrings.entrySet()) {
                 strings.add(srt.getValue());
             }
         } else {
             for (Map.Entry<String, ResTag> srt : mStrings.entrySet()) {
-                if (srt.getKey().toLowerCase().contains(mFilter) ||
-                        srt.getValue().getContent().toLowerCase().contains(mFilter)) {
+                if (filterIDs.contains(srt.getKey())) {
                     strings.add(srt.getValue());
                 }
             }

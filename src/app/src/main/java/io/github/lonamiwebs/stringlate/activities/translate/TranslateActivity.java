@@ -42,8 +42,10 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Set;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
@@ -56,6 +58,7 @@ import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoProgress;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourceStringComparator;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
+import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslation;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
 import io.github.lonamiwebs.stringlate.dialogs.LocaleSelectionDialog;
@@ -104,6 +107,12 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
     private RepoHandler mRepo;
 
     private boolean loaded;
+
+    // Since the string filter (search) applies to both the original and the
+    // translated strings we can't just put the same filter on different sets.
+    // Instead, find the matching strings and save their IDs (so this new ID
+    // filter can be applied to any language indeed).
+    private Set<String> mFilteredIDs = new HashSet<>();
 
     //endregion
 
@@ -197,9 +206,6 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
     private void loadResources() {
         if (mRepo.hasDefaultLocale()) {
             mDefaultResources = mRepo.loadDefaultResources();
-            // TODO Better way to handle the filters? But mRepo might need it unfiltered internally
-            mDefaultResources.setFilter(mRepo.settings.getStringFilter());
-
             loadLocalesSpinner();
             checkTranslationVisibility();
         } else {
@@ -1020,13 +1026,13 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         // Update the filter, it might have been changed from the Search activity
         // and JSON doesn't load the changes from the file but rather keeps a copyFile
         mRepo.settings.setStringFilter(filter);
-
-        if (mDefaultResources != null)
-            mDefaultResources.setFilter(filter);
+        mFilteredIDs.clear();
+        for (ResourcesTranslation translation :
+                ResourcesTranslation.fromPairs(mDefaultResources, mSelectedLocaleResources, filter)) {
+            mFilteredIDs.add(translation.getId());
+        }
 
         if (mSelectedLocaleResources != null) {
-            mSelectedLocaleResources.setFilter(filter);
-
             String lastId = mSelectedResource == null ? null : mSelectedResource.getId();
             loadStringIDsSpinner();
             setStringId(lastId);
@@ -1062,7 +1068,10 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         if (!loaded || !isLocaleSelected(false)) return;
 
         ArrayList<String> spinnerArray = new ArrayList<>();
-        final Iterator<ResTag> it = mDefaultResources.sortIterator(ResourceStringComparator.getStringsComparator(mSettings.getStringSortMode()));
+        final Iterator<ResTag> it = mDefaultResources.sortIterator(
+                ResourceStringComparator.getStringsComparator(mSettings.getStringSortMode()),
+                mFilteredIDs
+        );
         if (mShowIdentical) {
             // Only show those which translation is identical to the original text
             while (it.hasNext()) {
@@ -1120,7 +1129,6 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             int i = getItemIndex(mLocaleSpinner, LocaleString.getDisplay(locale));
             mLocaleSpinner.setSelection(i);
             mSelectedLocaleResources = mRepo.loadResources(locale);
-            mSelectedLocaleResources.setFilter(mRepo.settings.getStringFilter());
         } else {
             mSelectedLocaleResources = null;
         }
