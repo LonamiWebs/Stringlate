@@ -53,15 +53,6 @@ public class RepositoriesActivity extends AppCompatActivity {
         mBottomNavigationView = findViewById(R.id.navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        // Add fab action
-        FloatingActionButton fab = findViewById(R.id.fab_add_project);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mViewPager.setCurrentItem(1, true);
-            }
-        });
-
         // Check if we opened the application because a GitHub link was clicked
         // If this is the case then we should show the "Add repository" fragment
         final Intent intent = getIntent();
@@ -173,27 +164,6 @@ public class RepositoriesActivity extends AppCompatActivity {
         @Override
         public void onPageSelected(final int position) {
             mBottomNavigationView.getMenu().getItem(position).setChecked(true);
-
-            // Animate add project fab
-            final FloatingActionButton fab = findViewById(R.id.fab_add_project);
-            fab.animate().scaleX(position == 0 ? 1.0f : 0.0f).scaleY((position == 0 ? 1.0f : 0.0f)).setListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animator) {
-                    fab.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animator) {
-                    if (position == 1)
-                        fab.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animator) { }
-
-                @Override
-                public void onAnimationRepeat(Animator animator) { }
-            });
         }
 
         @Override
