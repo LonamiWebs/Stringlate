@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -17,6 +18,7 @@ import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.adapters.ResourcesTranslationAdapter;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslation;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
@@ -32,6 +34,9 @@ public class SearchStringActivity extends AppCompatActivity {
 
     private EditText mSearchEditText;
     private ListView mResourcesListView;
+
+    private Resources defaultLocaleResources;
+    private Resources secondLocaleResources;
 
     //endregion
 
@@ -52,6 +57,9 @@ public class SearchStringActivity extends AppCompatActivity {
 
         setTitle(String.format("%s/%s (%s)", mRepo.getProjectName(),
                 LocaleString.getDisplay(mLocale), mLocale));
+
+        defaultLocaleResources = mRepo.loadDefaultResources();
+        secondLocaleResources = mRepo.loadResources(mLocale);
 
         refreshResourcesListView(null);
         mSearchEditText.addTextChangedListener(new TextWatcher() {
@@ -111,7 +119,7 @@ public class SearchStringActivity extends AppCompatActivity {
 
     private void refreshResourcesListView(String filter) {
         ArrayList<ResourcesTranslation> rts = ResourcesTranslation.fromPairs(
-                mRepo.loadDefaultResources(), mRepo.loadResources(mLocale), filter);
+                defaultLocaleResources, secondLocaleResources, filter);
 
         mResourcesListView.setAdapter(new ResourcesTranslationAdapter(this, rts));
     }
