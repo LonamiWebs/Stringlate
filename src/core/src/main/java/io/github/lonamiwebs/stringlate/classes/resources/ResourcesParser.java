@@ -45,10 +45,15 @@ public class ResourcesParser {
     private final static String ITEM = "item";
 
     private final static String ID = "name";
-    private final static String TRANSLATABLE = "translatable";
     private final static String QUANTITY = "quantity";
     private final static String INDEX = "index";
     private final static String MODIFIED = "modified";
+
+    // Not every application uses the official "translatable" name
+    private final static String[] TRANSLATABLE = {
+            "translatable", "translate", "translateable"
+    };
+
 
     private final static boolean DEFAULT_TRANSLATABLE = true;
     private final static boolean DEFAULT_MODIFIED = false;
@@ -140,7 +145,7 @@ public class ResourcesParser {
 
         parser.require(XmlPullParser.START_TAG, ns, STRING_ARRAY);
 
-        if (!readBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE)) {
+        if (!readFirstBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE)) {
             // We don't care about not-translatable strings
             skipInnerXml(parser);
             parser.require(XmlPullParser.END_TAG, ns, STRING_ARRAY);
@@ -180,7 +185,7 @@ public class ResourcesParser {
 
         parser.require(XmlPullParser.START_TAG, ns, PLURALS);
 
-        if (!readBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE)) {
+        if (!readFirstBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE)) {
             // We don't care about not-translatable strings
             skipInnerXml(parser);
             parser.require(XmlPullParser.END_TAG, ns, PLURALS);
@@ -217,6 +222,17 @@ public class ResourcesParser {
             return defaultV;
 
         return Boolean.parseBoolean(value);
+    }
+
+    private static boolean readFirstBooleanAttr(XmlPullParser parser, String[] attrs, boolean defaultV) {
+        for (String attr : attrs) {
+            String value = parser.getAttributeValue(null, attr);
+            if (value != null) {
+                return Boolean.parseBoolean(value);
+            }
+        }
+
+        return defaultV;
     }
 
     private static int readIntAttr(XmlPullParser parser, String attr, int defaultV) {
@@ -494,11 +510,14 @@ public class ResourcesParser {
         }
     }
 
-    private static String getAttr(String attrs, String attrName) {
+    private static String getAttr(String attrs, String... attrNames) {
         Matcher m = ATTRIBUTE_PATTERN.matcher(attrs);
         while (m.find()) {
-            if (m.group(1).equals(attrName))
-                return m.group(2);
+            for (String attrName : attrNames) {
+                if (m.group(1).equals(attrName)) {
+                    return m.group(2);
+                }
+            }
         }
         return "";
     }
