@@ -21,6 +21,8 @@ public class GitSource implements StringsSource {
     private File mWorkDir;
     private final String mGitUrl, mBranch;
     private final HashMap<String, ArrayList<File>> mLocaleFiles;
+    private GitCloneProgressCallback mCloneCallback;
+    private boolean mCancelled;
 
     private File iconFile;
 
@@ -31,7 +33,6 @@ public class GitSource implements StringsSource {
     // Match "dontranslate.xml", "do-not-translate.xml", "donottranslate.xml" and such
     private static final Pattern DO_NOT_TRANSLATE = Pattern.compile(
             "(?:do?[ _-]*no?t?|[u|i]n)[ _-]*trans(?:lat(?:e|able))?");
-
 
     public GitSource(final String gitUrl, final String branch) {
         mGitUrl = gitUrl;
@@ -49,9 +50,9 @@ public class GitSource implements StringsSource {
         mWorkDir = workDir;
 
         // 2. Clone the repository itself
+        mCloneCallback = new GitCloneProgressCallback(callback);
         if (!GitWrapper.cloneRepo(
-                mGitUrl, mWorkDir, mBranch,
-                new GitCloneProgressCallback(callback))) {
+                mGitUrl, mWorkDir, mBranch, mCloneCallback) || mCancelled) {
             // TODO These messages are still useful, show them somehow?
             //callback.showMessage(context.getString(R.string.invalid_repo));
             return false;
@@ -62,7 +63,7 @@ public class GitSource implements StringsSource {
                 GitWrapper.findUsefulResources(mWorkDir);
 
         final ArrayList<File> resourceFiles = GitWrapper.searchAndroidResources(repoResources);
-        if (resourceFiles.isEmpty()) {
+        if (resourceFiles.isEmpty() || mCancelled) {
             //callback.showMessage(context.getString(R.string.no_strings_found));
             return false;
         }
@@ -94,8 +95,15 @@ public class GitSource implements StringsSource {
         }
 
         settings.set("translation_service", GitWrapper.mayUseTranslationServices(repoResources));
+        return !mCancelled;
+    }
 
-        return true;
+    @Override
+    public void cancel() {
+        if (mCloneCallback != null) {
+            mCloneCallback.cancel();
+        }
+        mCancelled = true;
     }
 
     @Override

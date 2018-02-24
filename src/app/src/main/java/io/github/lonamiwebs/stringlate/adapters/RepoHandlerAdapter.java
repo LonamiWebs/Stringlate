@@ -1,11 +1,13 @@
 package io.github.lonamiwebs.stringlate.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.ContextMenu;
@@ -168,6 +170,21 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
             final Pair<RepoHandler, Float> repo = mSyncingRepositories.get(i);
             view.update(repo.first, mSize);
             view.updateProgress(repo.second);
+            view.root.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(mContext)
+                            .setPositiveButton(android.R.string.cancel, null)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    repo.first.cancel();
+                                }
+                            })
+                            .setTitle(R.string.cancel_sync);
+                    dialog.show();
+                }
+            });
             view.showMenu = false;
         }
     }

@@ -48,6 +48,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     private final static ReentrantLock syncingLock = new ReentrantLock();
     private final static HashSet<File> rootsInSync = new HashSet<>();
+    private StringsSource mSyncingSource;
+    private boolean wasCancelled;
 
     private final static String XML_MERGING_HEADER = "<!-- File \"%s\" -->\n";
 
@@ -237,6 +239,8 @@ public class RepoHandler implements Comparable<RepoHandler> {
             return false; // Already syncing, this won't sync
         } else {
             rootsInSync.add(mRoot);
+            mSyncingSource = source;
+            wasCancelled = false;
             syncingLock.unlock();
         }
 
@@ -245,11 +249,22 @@ public class RepoHandler implements Comparable<RepoHandler> {
         } finally {
             syncingLock.lock();
             rootsInSync.remove(mRoot);
+            mSyncingSource = null;
             syncingLock.unlock();
             source.dispose();
         }
     }
 
+    public void cancel() {
+        if (mSyncingSource != null) {
+            mSyncingSource.cancel();
+            wasCancelled = true;
+        }
+    }
+
+    public boolean wasCancelled() {
+        return wasCancelled;
+    }
 
     // Should be called from a background thread
     private boolean doSyncResources(final StringsSource source,

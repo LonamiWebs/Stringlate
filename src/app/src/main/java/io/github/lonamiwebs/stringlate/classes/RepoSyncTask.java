@@ -50,11 +50,13 @@ public class RepoSyncTask extends Thread {
                 if (okay) {
                     Messenger.notifyRepoAdded(mRepo);
                 } else {
-                    Toast.makeText(
-                            mContext,
-                            mContext.getString(R.string.sync_failed, mRepo.getProjectName()),
-                            Toast.LENGTH_SHORT
-                    ).show();
+                    if (!mRepo.wasCancelled()) {
+                        Toast.makeText(
+                                mContext,
+                                mContext.getString(R.string.sync_failed, mRepo.getProjectName()),
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
 
                     // New repository, so it cannot have old resources- delete it since it failed
                     if (newRepo)

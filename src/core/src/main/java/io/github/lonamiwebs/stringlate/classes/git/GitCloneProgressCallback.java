@@ -9,6 +9,7 @@ public class GitCloneProgressCallback implements ProgressMonitor {
     private final Messenger.OnSyncProgress mCallback;
     private int mDone, mWork;
     private boolean mStarted;
+    private boolean mCancelled;
 
     private long mLastMs;
 
@@ -57,6 +58,10 @@ public class GitCloneProgressCallback implements ProgressMonitor {
 
     @Override
     final public boolean isCancelled() {
-        return false;
+        return mCancelled;
+    }
+
+    public void cancel() {
+        mCancelled = true;
     }
 }

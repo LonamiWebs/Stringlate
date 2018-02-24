@@ -16,6 +16,9 @@ public interface StringsSource {
                   final int desiredIconDpi,
                   final Messenger.OnSyncProgress callback);
 
+    // Indicates that the setup operation should be cancelled
+    void cancel();
+
     // The name for a certain StringsSource, e.g. "git". Must be non-null
     String getName();
 
