@@ -71,7 +71,7 @@
     <string name="import_file_failed">Konnte das ausgewählte Element nicht importieren</string>
     <string name="import_file_success">Import erfolgreich</string>
     <string name="update_applications">Applikationen updaten</string>
-    <string name="apps_repo_not_downloaded">Das Anwendungs-Quelle wurde noch nicht heruntergeladen. Tippen Sie auf die Menüschaltfläche \"% s\", um den Repo-Index herunterzuladen, um alle verfügbaren Anwendungen zu erkunden.</string>
+    <string name="apps_repo_not_downloaded">Das Anwendungs-Quelle wurde noch nicht heruntergeladen. Tippen Sie auf die Menüschaltfläche \"%s\", um den Repo-Index herunterzuladen, um alle verfügbaren Anwendungen zu erkunden.</string>
     <string name="sync_failed">Synchronisation von %s fehlgeschlagen.</string>
     <string name="downloading_index_jar">Lade index.jar herunter…</string>
     <string name="downloading_index_jar_long">Die index.jar in der Anwendungsliste wird heruntergeladen ...</string>

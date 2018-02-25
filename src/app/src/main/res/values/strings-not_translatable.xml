@@ -2,6 +2,8 @@
     <string name="app_name" translatable="false">Stringlate</string>
     <string name="slash" translatable="false">/</string>
     <string name="github" translatable="false">GitHub</string>
+    <string name="gitlab">GitLab</string>
+    <string name="gitlab_dot_com_instance">GitLab (gitlab.com)</string>
     <string name="default_gist_share_description" translatable="false">strings.xml translation shared with Stringlate</string>
     <string name="added_x_translation" translatable="false">Added %s (%s) translation</string>
     <string name="added_x_translation_spam" translatable="false">Updated %s (%s) translation\n\nCommit made via Stringlate</string>

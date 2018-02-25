@@ -135,9 +135,9 @@ public class AddNewRepositoryFragment extends Fragment {
     //region UI events
 
     @OnTextChanged(callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED, value = {R.id.github_ownerEditText, R.id.github_repositoryEditText})
-    public void onGitHubRepoEditChanged(CharSequence newText){
+    public void onGitHubRepoEditChanged(CharSequence newText) {
         mUrlEditText.setText(GitHub.buildGitHubUrl(
-                mOwnerEditText.getText().toString(), mRepositoryEditText.getText().toString()));
+                mOwnerEditText.getText().toString().trim(), mRepositoryEditText.getText().toString().trim()));
     }
 
     private final View.OnClickListener onDiscoverClick = new View.OnClickListener() {
