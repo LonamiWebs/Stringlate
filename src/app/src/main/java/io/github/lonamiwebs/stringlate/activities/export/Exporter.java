@@ -34,7 +34,7 @@ class Exporter {
 
         abstract String getSuccessDescription(Context context);
 
-        abstract String call(Context context, Callback<String> progress) throws Exception;
+        abstract String call(Context context, Callback.a1<String> progress) throws Exception;
     }
 
     private static int addExporter(final CallableExporter exporter) {
@@ -66,7 +66,7 @@ class Exporter {
             }
 
             @Override
-            public String call(final Context context, final Callback<String> progress) throws Exception {
+            public String call(final Context context, final Callback.a1<String> progress) throws Exception {
                 mFailureReason = context.getString(R.string.post_gist_error);
                 JSONObject result = GitHub.createGist(description, isPublic, fileContents, token);
                 if (result == null)
@@ -92,7 +92,7 @@ class Exporter {
             }
 
             @Override
-            public String call(final Context context, final Callback<String> progress) throws Exception {
+            public String call(final Context context, final Callback.a1<String> progress) throws Exception {
                 final JSONObject result;
                 mFailureReason = context.getString(R.string.create_issue_error);
                 if (existingIssueNumber == -1) {
@@ -135,13 +135,13 @@ class Exporter {
             }
 
             @Override
-            public String call(final Context context, final Callback<String> progress) throws Exception {
+            public String call(final Context context, final Callback.a1<String> progress) throws Exception {
                 JSONObject commitResult;
                 RepoHandler repo;
                 if (needFork) {
                     // Fork the repository
                     mFailureReason = context.getString(R.string.fork_failed);
-                    progress.onCallback(context.getString(R.string.forking_repo_long));
+                    progress.callback(context.getString(R.string.forking_repo_long));
 
                     JSONObject fork = GitHub.forkRepository(token, originalRepo);
                     if (fork == null) throw new JSONException("Resulting fork is null.");
@@ -162,7 +162,7 @@ class Exporter {
                 if (result == null) throw new JSONException("Failed to create a new branch.");
 
                 // Commit the file
-                progress.onCallback(context.getString(R.string.creating_commit_long));
+                progress.callback(context.getString(R.string.creating_commit_long));
                 mFailureReason = context.getString(R.string.commit_failed);
 
                 final HashMap<String, String> remoteContents = new HashMap<>();
@@ -180,7 +180,7 @@ class Exporter {
 
                 if (needFork) {
                     // Create pull request
-                    progress.onCallback(context.getString(R.string.creating_pr_long));
+                    progress.callback(context.getString(R.string.creating_pr_long));
                     mFailureReason = context.getString(R.string.something_went_wrong);
 
                     String title, body;

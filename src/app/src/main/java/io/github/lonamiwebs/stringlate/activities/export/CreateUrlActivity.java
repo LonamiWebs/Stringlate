@@ -57,9 +57,9 @@ public class CreateUrlActivity extends AppCompatActivity {
                 @Override
                 protected String doInBackground(Void... params) {
                     try {
-                        return mPostUrlCallable.call(CreateUrlActivity.this, new Callback<String>() {
+                        return mPostUrlCallable.call(CreateUrlActivity.this, new Callback.a1<String>() {
                             @Override
-                            public void onCallback(String s) {
+                            public void callback(String s) {
                                 publishProgress(s);
                             }
                         });

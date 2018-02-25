@@ -115,18 +115,18 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
     public boolean syncRepo(final Messenger.OnSyncProgress callback) {
         // Step 1: Download the index.jar
         callback.onUpdate(1, 0f);
-        NetworkUtils.downloadFile(FDROID_INDEX_URL, getIndexFile("jar"), new Callback<Float>() {
+        NetworkUtils.downloadFile(FDROID_INDEX_URL, getIndexFile("jar"), new Callback.a1<Float>() {
             @Override
-            public void onCallback(Float progress) {
+            public void callback(Float progress) {
                 callback.onUpdate(1, progress);
             }
         });
 
         // Step 2: Extract the index.xml from the index.jar, then delete the index.jar
         callback.onUpdate(2, 0f);
-        ZipUtils.unzip(getIndexFile("jar"), mRoot, true, new Callback<Float>() {
+        ZipUtils.unzip(getIndexFile("jar"), mRoot, true, new Callback.a1<Float>() {
             @Override
-            public void onCallback(Float progress) {
+            public void callback(Float progress) {
                 callback.onUpdate(2, progress);
             }
         });
