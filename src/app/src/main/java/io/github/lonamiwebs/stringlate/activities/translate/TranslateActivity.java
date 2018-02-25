@@ -106,7 +106,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
     private RepoHandler mRepo;
 
-    private boolean loaded;
+    private boolean mLoaded;
 
     // Since the string filter (search) applies to both the original and the
     // translated strings we can't just put the same filter on different sets.
@@ -130,7 +130,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        loaded = false;
+        mLoaded = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_translate);
 
@@ -166,7 +166,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         onFilterUpdated(mRepo.settings.getStringFilter());
 
         // loadStringIDsSpinner is called too often at startup, use this flag to avoid it
-        loaded = true;
+        mLoaded = true;
         loadStringIDsSpinner();
 
         // Show the notice if this repository uses (or might use) a web translation service
@@ -1065,7 +1065,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
     }
 
     private void loadStringIDsSpinner() {
-        if (!loaded || !isLocaleSelected(false)) return;
+        if (!mLoaded || !isLocaleSelected(false)) return;
 
         ArrayList<String> spinnerArray = new ArrayList<>();
         final Iterator<ResTag> it = mDefaultResources.sortIterator(
@@ -1167,11 +1167,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
                         .setMessage(getString(R.string.next_steps,
                                 getString(R.string.export_ellipsis),
                                 getString(R.string.show_translated_strings)))
-                        .setPositiveButton(R.string.done, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                            }
-                        })
+                        .setPositiveButton(R.string.done, null)
                         .show();
             }
         }
@@ -1229,12 +1225,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             mPreviousButton.setVisibility(i == 0 ? View.INVISIBLE : View.VISIBLE);
             showDone = i == (count - 1);
         }
-
-        if (showDone) {
-            mNextButton.setText(R.string.done);
-        } else {
-            mNextButton.setText(R.string.next);
-        }
+        mNextButton.setText(showDone ? R.string.done : R.string.next);
     }
 
     // Sadly, the spinners don't provide any method to retrieve

@@ -15,8 +15,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.github.lonamiwebs.stringlate.R;
 import net.gsantner.opoc.util.Callback;
+
+import io.github.lonamiwebs.stringlate.R;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_ID;
 

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
+import net.gsantner.opoc.util.Callback;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,7 +19,6 @@ import java.util.Random;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.git.GitHub;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import net.gsantner.opoc.util.Callback;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 class Exporter {
@@ -154,8 +155,7 @@ class Exporter {
 
                 // Create a temporary branch
                 // TODO If we have write access, should we create a new branch at all?
-                @SuppressLint("DefaultLocale")
-                final String branch = String.format(
+                @SuppressLint("DefaultLocale") final String branch = String.format(
                         "stringlate-%s-%d", locale, 1000 + new Random().nextInt(8999)
                 );
                 JSONObject result = GitHub.createBranch(token, repo, branch);

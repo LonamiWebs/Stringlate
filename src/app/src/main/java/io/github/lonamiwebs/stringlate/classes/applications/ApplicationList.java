@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
+import net.gsantner.opoc.util.Callback;
 import net.gsantner.opoc.util.NetworkUtils;
 import net.gsantner.opoc.util.ZipUtils;
 
@@ -22,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import io.github.lonamiwebs.stringlate.classes.Messenger;
-import net.gsantner.opoc.util.Callback;
 
 public class ApplicationList implements Iterable<ApplicationDetails> {
     public final static String FDROID_REPO_URL = "https://f-droid.org/repo";
