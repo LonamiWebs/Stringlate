@@ -65,16 +65,16 @@
                 android:title="@string/github">
                 <menu>
                     <item
-                        android:id="@+id/exportToGist"
+                        android:id="@+id/github_export_to_pr"
+                        android:title="@string/export_pull_request" />
+                    <item
+                        android:id="@+id/export_to_gist"
                         android:title="@string/export_gist" />
 
                     <item
                         android:id="@+id/github_export_to_issue"
                         android:title="@string/export_issue" />
 
-                    <item
-                        android:id="@+id/github_export_to_pr"
-                        android:title="@string/export_pr" />
                 </menu>
             </item>
         </menu>

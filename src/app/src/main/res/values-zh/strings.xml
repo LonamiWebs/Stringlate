@@ -30,8 +30,6 @@
     <string name="export_ellipsis">导出.....</string>
     <string name="export_file_failed">无法导出 strings.xml 文件</string>
     <string name="export_file_success">文件已成功保存至 %s</string>
-    <string name="export_gist">导出至 Github Gist</string>
-    <string name="export_pr">导出至 Pull Request</string>
     <string name="export_sd_card">导出至 SD 卡</string>
     <string name="export_share">分享生成的 XML 文件</string>
     <string name="extracting_index_xml">正在从 index.jar 中提取 index.xml 文件</string>

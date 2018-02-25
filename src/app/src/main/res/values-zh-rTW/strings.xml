@@ -29,8 +29,6 @@
     <string name="export_ellipsis">匯出……</string>
     <string name="export_file_failed">無法匯出 strings.xml 檔案</string>
     <string name="export_file_success">檔案成功保存至 %s</string>
-    <string name="export_gist">匯出到 Github Gist</string>
-    <string name="export_pr">匯出為變更拉取請求(Pull Request)</string>
     <string name="export_sd_card">匯出到 SD 卡</string>
     <string name="export_share">分享產生出來的 XML 檔</string>
     <string name="extracting_index_xml">正在從 index.jar 中解開拿到 index.xml……</string>
@@ -117,14 +115,11 @@
     <string name="creating_issue_long_ellipsis">正在嘗試在 GitHub 上建檔議題……</string>
     <string name="creating_pr">正在建立變更拉取請求……</string>
     <string name="creating_pr_long">正在原版控庫中建立變更拉取請求……</string>
-    <string name="export_issue">匯出為一 GitHub 議題</string>
     <string name="fork_failed">建立分支版控庫失敗。</string>
     <string name="forking_repo">正在建立分支版控庫……</string>
     <string name="forking_repo_long">正在建立原版控庫的分支版控庫以讓您有寫入權限……</string>
-    <string name="gist_login_needed">要張貼非匿名 Gist 您必須從主畫面中於 GitHub 上授權 Stringlate 的存取。</string>
     <string name="github_not_logged_long">要提供像是張貼非匿名 Gist、建檔議題跟變更拉取請求的額外功能，您必須授權 Stringlate 存取 GitHub。請輕觸下方按鈕以開始操作。</string>
     <string name="github_yes_logged_long">您早已經登入 GitHub。沒有更多操作可以進行。如果部份功能沒辦法正常運作，您可以隨時再次輕觸按鈕以重新進行授權程序。</string>
-    <string name="is_anonymous_gist">這是個匿名 Gist</string>
     <string name="issue_description">議題描述文字（「%x」會被替換為翻譯資料）：</string>
     <string name="issue_title_colon">議題標題：</string>
     <string name="login_to_github">登入到 GitHub</string>

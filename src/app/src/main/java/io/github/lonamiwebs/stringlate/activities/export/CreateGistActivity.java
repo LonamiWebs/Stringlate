@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -34,7 +33,6 @@ public class CreateGistActivity extends AppCompatActivity {
 
     private EditText mDescriptionEditText;
     private CheckBox mIsPublicCheckBox;
-    private CheckBox mIsAnonymousCheckBox;
     private EditText mFilenameEditText;
 
     //endregion
@@ -50,7 +48,6 @@ public class CreateGistActivity extends AppCompatActivity {
 
         mDescriptionEditText = findViewById(R.id.gistDescriptionEditText);
         mIsPublicCheckBox = findViewById(R.id.gistIsPublicCheckBox);
-        mIsAnonymousCheckBox = findViewById(R.id.gistIsAnonymousCheckBox);
         mFilenameEditText = findViewById(R.id.gistFilenameEditText);
 
         // Retrieve the strings.xml content to be exported
@@ -70,18 +67,7 @@ public class CreateGistActivity extends AppCompatActivity {
             setTitle(getString(R.string.posting_gist_title, filename));
         }
 
-        // Check whether the Gist can be non-anonymous
-        boolean notAuth = !mSettings.hasGitHubAuthorization();
-        mIsAnonymousCheckBox.setChecked(notAuth);
-        if (notAuth) {
-            mIsAnonymousCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton cb, boolean b) {
-                    Toast.makeText(getApplicationContext(), R.string.gist_login_needed, Toast.LENGTH_LONG).show();
-                    mIsAnonymousCheckBox.setChecked(true);
-                }
-            });
-        }
+        checkGitHubLoginState();
     }
 
     //endregion
@@ -113,15 +99,20 @@ public class CreateGistActivity extends AppCompatActivity {
 
         final String description = mDescriptionEditText.getText().toString().trim();
         final boolean isPublic = mIsPublicCheckBox.isChecked();
-        final boolean isAnonymous = mIsAnonymousCheckBox.isChecked() ||
-                !mSettings.hasGitHubAuthorization();
 
-        final String token = isAnonymous ? "" : mSettings.getGitHubToken();
-        CreateUrlActivity.launchIntent(this, Exporter.createGistExporter(
-                description, isPublic, fileContents, token
-        ));
+        if (checkGitHubLoginState()) {
+            CreateUrlActivity.launchIntent(this, Exporter.createGistExporter(
+                    description, isPublic, fileContents, mSettings.getGitHubToken()
+            ));
+            finish();
+        }
+    }
 
-        finish();
+    private boolean checkGitHubLoginState(){
+        if (!mSettings.hasGitHubAuthorization()){
+            Toast.makeText(getApplicationContext(), getString(R.string.gist_github_login_needed, getString(R.string.login_to_github)), Toast.LENGTH_LONG).show();
+        }
+        return mSettings.hasGitHubAuthorization();
     }
 
     //endregion

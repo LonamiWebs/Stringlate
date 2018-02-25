@@ -44,8 +44,6 @@
     <string name="invalid_locale">Die Eingangs-Sprachdatei scheint nicht gültig zu sein.</string>
     <string name="export_ellipsis">Exportieren…</string>
     <string name="export_sd_card">Auf SD Karte exportieren</string>
-    <string name="export_gist">Exportiere nach GitHub Gist</string>
-    <string name="export_pr">GitHub Pull Anfrage erstellen</string>
     <string name="export_share">Generierte XML teilen</string>
     <string name="save_resources_question">Ressourcen speichern?</string>
     <string name="save_resources_question_long">Die Ressourcen der aktuellen Sprache wurden modifiziert aber nicht gespeichert. Wollen Sie sie jetzt speichern?</string>
@@ -108,16 +106,13 @@
     <string name="save_count">Speichere (%d)</string>
     <string name="not_translated">Nicht übersetzt.</string>
     <string name="search_id_content_ellipsis">Nach ID oder Inhalt suchen…</string>
-    <string name="github_not_logged_long">Damit Stringlate einige Zusatzmöglichkeiten wie das Erstellen von Problemen, Pull Requests oder Öffentlichen Gists bereitzustellen kann, müssen Sie Stringlate autorisieren. Klicken Sie auf den Button um loszulegen.</string>
+    <string name="github_not_logged_long">Damit Stringlate einige Zusatzmöglichkeiten wie das Erstellen von Problemen, Pull Requests oder Gists bereitzustellen kann, müssen Sie Stringlate autorisieren. Klicken Sie auf den Button um loszulegen.</string>
     <string name="request_auth">Autorisierung anfordern</string>
     <string name="github_yes_logged_long">Sie sind bereits bei GitHub angemeldet. Keine weitere Aktion erforderlich. Wenn etwas nicht funktioniert, können Sie immer den Button drücken, um neu zu starten.</string>
     <string name="login_to_github">Bei GitHub anmelden</string>
     <string name="auth_success">Autorisierung erfolgreich</string>
     <string name="auth_failure">Authentifizierung fehlgeschlagen</string>
     <string name="completing_auth_ellipsis">Vervollständige Autorisierung…</string>
-    <string name="is_anonymous_gist">Dies ist ein anonymer Gist</string>
-    <string name="gist_login_needed">Um nicht-anonyme Gists zu posten, müssen Sie erst Stringlate auf GitHub im Hauptmenü autorisieren (anmelden).</string>
-    <string name="export_issue">Als GitHub Problem exportieren</string>
     <string name="create_issue">Problem erstellen</string>
     <string name="creating_issue_ellipsis">Fall wird erstellt…</string>
     <string name="creating_issue_long_ellipsis">Versuche eine Problem auf GitHub zu erstellen…</string>

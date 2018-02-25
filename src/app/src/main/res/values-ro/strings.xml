@@ -42,8 +42,6 @@
     <string name="invalid_locale">Codul limbii dorite nu pare să fie valid.</string>
     <string name="export_ellipsis">Exportă…</string>
     <string name="export_sd_card">Exporta pe cardul SD</string>
-    <string name="export_gist">Exporta intr-un Gist pe GitHub</string>
-    <string name="export_pr">Exporta ca un Pull Request</string>
     <string name="export_share">Partajează fișierul xml generat</string>
     <string name="save_resources_question">Salvează resursele?</string>
     <string name="save_resources_question_long">Fișierele limbii curente au fost modificate, dar schimbările nu au fost salvate. Dorești să le salvezi acum?</string>

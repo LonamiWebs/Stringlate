@@ -44,8 +44,6 @@
     <string name="invalid_locale">Входная локаль не валидна.</string>
     <string name="export_ellipsis">Экспорт…</string>
     <string name="export_sd_card">Экспорт на SD карту</string>
-    <string name="export_gist">Экспорт в GitHub Gist</string>
-    <string name="export_pr">Экспорт в пулл-реквест</string>
     <string name="export_share">Поделиться сгенерированным xml</string>
     <string name="save_resources_question">Сохранить ресурсы?</string>
     <string name="save_resources_question_long">Ресурсы текущей локали изменены, но не сохранены. Сохранить сейчас?</string>
@@ -115,9 +113,6 @@
     <string name="auth_success">Успешная авторизация</string>
     <string name="auth_failure">Ошибка авторизации</string>
     <string name="completing_auth_ellipsis">Завершение авторизации…</string>
-    <string name="is_anonymous_gist">Это анонимный Gist</string>
-    <string name="gist_login_needed">Для публикации неанонимных Gist-ов авторизуйте Stringlate на GitHub.</string>
-    <string name="export_issue">Эспорт в GitHub issue</string>
     <string name="create_issue">Создать issue</string>
     <string name="creating_issue_ellipsis">Создание issue…</string>
     <string name="creating_issue_long_ellipsis">Попытка создания issue на GitHub…</string>

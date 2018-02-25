@@ -298,7 +298,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
             // Exporting resources
             case R.id.exportToSdcard:
-            case R.id.exportToGist:
+            case R.id.export_to_gist:
             case R.id.github_export_to_issue:
             case R.id.github_export_to_pr:
             case R.id.exportShare:
@@ -317,7 +317,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
                     case R.id.exportToSdcard:
                         exportToSd();
                         break;
-                    case R.id.exportToGist:
+                    case R.id.export_to_gist:
                         exportToGist();
                         break;
                     case R.id.github_export_to_issue:

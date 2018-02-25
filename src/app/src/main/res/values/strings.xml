@@ -44,8 +44,6 @@
     <string name="invalid_locale">The input locale does not seem valid.</string>
     <string name="export_ellipsis">Export…</string>
     <string name="export_sd_card">Export to SD card</string>
-    <string name="export_gist">Export to GitHub Gist</string>
-    <string name="export_pr">Create GitHub Pull Request</string>
     <string name="export_share">Share generated xml</string>
     <string name="save_resources_question">Save resources?</string>
     <string name="save_resources_question_long">The resources for the current locale have been modified, but the changes weren\'t saved. Do you want to save them now?</string>
@@ -108,16 +106,14 @@
     <string name="save_count">Save (%d)</string>
     <string name="not_translated">Not translated.</string>
     <string name="search_id_content_ellipsis">Search by ID or content…</string>
-    <string name="github_not_logged_long">In order to provide some extra functionality such as non-anonymous Gists, creating issues and pull requests, you need to authorize Stringlate. Click the button below to get started.</string>
+    <string name="github_not_logged_long">In order to provide some extra functionality such as Gists, creating issues and pull requests, you need to authorize Stringlate. Click the button below to get started.</string>
     <string name="request_auth">Request authorization</string>
     <string name="github_yes_logged_long">You\'re already logged in to GitHub. No further action is required. If things are not working, you can always click the button again to start over.</string>
     <string name="login_to_github">Login to GitHub</string>
     <string name="auth_success">Authorization success</string>
     <string name="auth_failure">Authorization failure</string>
     <string name="completing_auth_ellipsis">Completing authorization…</string>
-    <string name="is_anonymous_gist">This is an anonymous Gist</string>
-    <string name="gist_login_needed">To post non-anonymous Gists you need to authorize Stringlate on GitHub from the main screen.</string>
-    <string name="export_issue">Export to GitHub issue</string>
+    <string name="gist_github_login_needed">To post Gists you need to open Stringlate settings, select \'%s\' and confirm the authorization request on GitHub.</string>
     <string name="create_issue">Create issue</string>
     <string name="creating_issue_ellipsis">Creating issue…</string>
     <string name="creating_issue_long_ellipsis">Trying to create the issue on GitHub…</string>

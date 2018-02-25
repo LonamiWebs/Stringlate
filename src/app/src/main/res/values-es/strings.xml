@@ -44,8 +44,6 @@
     <string name="invalid_locale">El idioma introducido no parece válido.</string>
     <string name="export_ellipsis">Exportar…</string>
     <string name="export_sd_card">Exportar a la tarjeta SD</string>
-    <string name="export_gist">Exportar a GitHub Gist</string>
-    <string name="export_pr">Exportar a una Pull Request</string>
     <string name="export_share">Compartir el XML generado</string>
     <string name="save_resources_question">¿Guardar los recursos?</string>
     <string name="save_resources_question_long">Los recursos de la traducción actual han sido modificados pero los cambios no han sido guardados. ¿Quieres guardarlos ahora?</string>
@@ -115,9 +113,6 @@
     <string name="auth_success">Autorización completada</string>
     <string name="auth_failure">Falló la Autorización</string>
     <string name="completing_auth_ellipsis">Finalizando autorización…</string>
-    <string name="is_anonymous_gist">Este es un Gist anónimo</string>
-    <string name="gist_login_needed">Para publicar Gists no-anónimos necesita autorizar a Stringlate en GitHub desde la pantalla principal.</string>
-    <string name="export_issue">Exportar a incidencia en GitHub</string>
     <string name="create_issue">Crear incidencia</string>
     <string name="creating_issue_ellipsis">Creando incidencia…</string>
     <string name="creating_issue_long_ellipsis">Intentando crear la incidencia en GitHub…</string>

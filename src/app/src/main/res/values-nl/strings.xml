@@ -44,8 +44,6 @@
     <string name="invalid_locale">De ingegeven locale is niet juist.</string>
     <string name="export_ellipsis">Exporteer…</string>
     <string name="export_sd_card">Exporteer naar SD kaart</string>
-    <string name="export_gist">Exporteer naar GitHub Gist</string>
-    <string name="export_pr">Maak een GitHub Pull Request</string>
     <string name="export_share">Deel de aangemaakte xml</string>
     <string name="save_resources_question">Bronnen opslaan?</string>
     <string name="save_resources_question_long">De bronnen van de huidige locale zijn gewijzigd, maar de wijzigingen zijn nog niet opgeslagen. Wil je ze nu opslaan?</string>
@@ -115,9 +113,6 @@
     <string name="auth_success">Autorisatie gelukt</string>
     <string name="auth_failure">Autorisatie mislukt</string>
     <string name="completing_auth_ellipsis">Autorisatie voltooien…</string>
-    <string name="is_anonymous_gist">Dit is een anonieme Gist</string>
-    <string name="gist_login_needed">Om niet anonieme Gists te plaatsen moet je Stringlate autoriseren op het GitHub hoofdscherm.</string>
-    <string name="export_issue">Exporteer naar een GitHub melding</string>
     <string name="create_issue">Aanmaken van een melding</string>
     <string name="creating_issue_ellipsis">Aanmaken van een melding…</string>
     <string name="creating_issue_long_ellipsis">Er wordt geprobeerd om een melding aan te maken op GitHub…</string>

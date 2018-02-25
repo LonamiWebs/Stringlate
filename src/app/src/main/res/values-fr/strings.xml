@@ -44,8 +44,6 @@
     <string name="invalid_locale">La langue entrée ne paraît pas valide.</string>
     <string name="export_ellipsis">Exporter…</string>
     <string name="export_sd_card">Exporter vers la carte SD</string>
-    <string name="export_gist">Exporter vers un Gist Github</string>
-    <string name="export_pr">Exporter en une Pull Request</string>
     <string name="export_share">Partager le XML généré</string>
     <string name="save_resources_question">Enregistrer les ressources ?</string>
     <string name="save_resources_question_long">Les ressources pour la langue ont été modifiées mais les changements n’ont pas été sauvegardés. Voulez-vous les enregistrer maintenant ?</string>
@@ -115,9 +113,6 @@
     <string name="auth_success">Autorisation accordée</string>
     <string name="auth_failure">Échec de l\'autorisation</string>
     <string name="completing_auth_ellipsis">Autorisation en cours…</string>
-    <string name="is_anonymous_gist">Ceci est un Gist anonyme</string>
-    <string name="gist_login_needed">Pour publier des Gists non anonymes, vous devez autoriser Stringlate sur l’écran principal de Github.</string>
-    <string name="export_issue">Exporter en un rapport de bug sur Github</string>
     <string name="create_issue">Créer un rapport de bug</string>
     <string name="creating_issue_ellipsis">Création du rapport de bug…</string>
     <string name="creating_issue_long_ellipsis">Tentative de création du rapport de bug sur Github…</string>

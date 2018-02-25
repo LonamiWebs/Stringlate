@@ -44,8 +44,6 @@
     <string name="invalid_locale">Nie wydaje mi się żeby ten język był prawidłowy.</string>
     <string name="export_ellipsis">Eksportuj….</string>
     <string name="export_sd_card">Eksportuj do karty SD</string>
-    <string name="export_gist">Eksportuj na GitHub Gist</string>
-    <string name="export_pr">Utwórz pull request</string>
     <string name="export_share">Udostępnij wygenerowany XML</string>
     <string name="save_resources_question">Zapisać zasoby?</string>
     <string name="save_resources_question_long">Zasoby dla aktualnego języka zostały zmodyfikowane, ale zmiany nie zostały zapisane. Zapisać je teraz?</string>
@@ -115,9 +113,6 @@
     <string name="auth_success">Autoryzacja zakończona powodzeniem</string>
     <string name="auth_failure">Błąd autoryzacji</string>
     <string name="completing_auth_ellipsis">Finalizuję autoryzację…</string>
-    <string name="is_anonymous_gist">To anonimowy Gist</string>
-    <string name="gist_login_needed">Musisz autoryzować Stringlate na GitHubie aby publikować nieanonimowe gisty.</string>
-    <string name="export_issue">Eksportuj do GitHuba</string>
     <string name="create_issue">Utwórz problem</string>
     <string name="creating_issue_ellipsis">Tworzę problem…</string>
     <string name="creating_issue_long_ellipsis">Próbuje utworzyć problem na GitHubie…</string>

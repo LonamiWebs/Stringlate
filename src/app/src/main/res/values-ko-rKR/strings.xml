@@ -44,8 +44,6 @@
     <string name="invalid_locale">입력하신 지역이 올바르지 않은 듯 합니다.</string>
     <string name="export_ellipsis">내보내기…</string>
     <string name="export_sd_card">SD카드에 저장</string>
-    <string name="export_gist">깃허브 Gist 로 내보내기</string>
-    <string name="export_pr">풀 요청으로 내보내기</string>
     <string name="export_share">생성된 xml 공유</string>
     <string name="save_resources_question">리소스를 저장할까요?</string>
     <string name="save_resources_question_long">현재 지역에 대한 리소스가 일부 변경되었으나, 변경 사항이 저장되지 않았습니다. 지금 저장하시겠습니까?</string>
@@ -111,9 +109,6 @@
     <string name="login_to_github">깃허브 로그인</string>
     <string name="auth_success">인증 성공</string>
     <string name="completing_auth_ellipsis">인증 완료 중…</string>
-    <string name="is_anonymous_gist">익명 Gist 입니다.</string>
-    <string name="gist_login_needed">익명이 아닌 Gist를 포스팅하기 위해서는 메인화면을 통해 깃허브에서 Stringlate를 승인해야 합니다.</string>
-    <string name="export_issue">깃허브 이슈로 내보내기</string>
     <string name="create_issue">이슈 생성</string>
     <string name="creating_issue_ellipsis">이슈 생성 중…</string>
     <string name="creating_issue_long_ellipsis">깃허브에서 이슈 생성 시도 중…</string>

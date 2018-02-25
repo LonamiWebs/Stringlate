@@ -44,8 +44,6 @@
     <string name="invalid_locale">Masukan lokal tampaknya tidak valid.</string>
     <string name="export_ellipsis">Ekspor…</string>
     <string name="export_sd_card">Ekspor ke SD card</string>
-    <string name="export_gist">Ekspor ke GitHub Gist</string>
-    <string name="export_pr">Buat GitHub Pull Request</string>
     <string name="export_share">Bagikan xml yang dihasilkan</string>
     <string name="save_resources_question">Simpan sumber daya?</string>
     <string name="save_resources_question_long">Sumber daya untuk lokal saat ini telah dimodifikasi, namun perubahannya tidak tersimpan. Apakah Anda ingin menyimpannya sekarang?</string>
@@ -115,9 +113,6 @@
     <string name="auth_success">Otorisasi berhasil</string>
     <string name="auth_failure">Otorisasi gagal</string>
     <string name="completing_auth_ellipsis">Melengkapi otorisasi…</string>
-    <string name="is_anonymous_gist">Ini adalah Gist anonim</string>
-    <string name="gist_login_needed">Untuk mengeposkan non-anonymous Gists Anda perlu mengotorisasi Stringlate di GitHub dari layar utama.</string>
-    <string name="export_issue">Ekspor to GitHub issue</string>
     <string name="create_issue">Buat issue</string>
     <string name="creating_issue_ellipsis">Membuat issue…</string>
     <string name="creating_issue_long_ellipsis">Mencoba untuk membuat issue di GitHub…</string>

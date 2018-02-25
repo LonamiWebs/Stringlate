@@ -44,8 +44,6 @@
     <string name="invalid_locale">Il linguaggio inserito non sembra valido.</string>
     <string name="export_ellipsis">Esporta…</string>
     <string name="export_sd_card">Esporta su scheda SD</string>
-    <string name="export_gist">Esporta su GitHub Gist</string>
-    <string name="export_pr">Esporta Pull Request</string>
     <string name="export_share">Condividi l\'xml generato</string>
     <string name="save_resources_question">Salvare le risorse?</string>
     <string name="save_resources_question_long">Le risorse per il linguaggio corrente sono state modificate, ma i cambiamenti non sono stati salvati. Vuoi salvarli adesso?</string>
@@ -111,9 +109,6 @@
     <string name="login_to_github">Accedi a GitHub</string>
     <string name="auth_success">Autorizzazione effettuata con successo</string>
     <string name="completing_auth_ellipsis">Completando l\'autorizzazione…</string>
-    <string name="is_anonymous_gist">Questo è un Gist anonimo</string>
-    <string name="gist_login_needed">Per pubblicare Gist non-anonimi devi autorizzare Stringlate su GitHub dalla schermata principale.</string>
-    <string name="export_issue">Esporta su GitHub issue</string>
     <string name="create_issue">Crea una issue</string>
     <string name="creating_issue_ellipsis">Creazione issue…</string>
     <string name="creating_issue_long_ellipsis">Provando a creare l\'issue su GitHub…</string>

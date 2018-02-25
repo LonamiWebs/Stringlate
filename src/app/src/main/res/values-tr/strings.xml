@@ -44,8 +44,6 @@
     <string name="invalid_locale">Giriş dili doğru gözükmüyor.</string>
     <string name="export_ellipsis">Aktar...</string>
     <string name="export_sd_card">SD karta aktar</string>
-    <string name="export_gist">GitHub Gist\'e aktar</string>
-    <string name="export_pr">GitHub Birleştirme İsteği oluştur</string>
     <string name="export_share">Oluşturulan xml\'i paylaş</string>
     <string name="save_resources_question">Dosyaları kaydet?</string>
     <string name="save_resources_question_long">Bu dilin dosyaları değiştirildi, ancak henüz kaydedilmedi. Şimdi kaydetmek istiyor musunuz?</string>
@@ -115,9 +113,6 @@
     <string name="auth_success">Yetkilendirme başarılı</string>
     <string name="auth_failure">Yetkilendirme hatası</string>
     <string name="completing_auth_ellipsis">Yetkilendirme tamamlanıyor...</string>
-    <string name="is_anonymous_gist">Bu anonim bir Gist</string>
-    <string name="gist_login_needed">Anonim olmayan Gistler oluşturmak için Stringlate\'e ana menüden GitHub\'a erişim yetkisi vermeniz gerekmektedir.</string>
-    <string name="export_issue">Github sorununa aktar</string>
     <string name="create_issue">Sorun oluştur</string>
     <string name="creating_issue_ellipsis">Sorun oluşturulyor...</string>
     <string name="creating_issue_long_ellipsis">GitHub\'da yeni sorun oluşturulmaya çalışılıyor...</string>

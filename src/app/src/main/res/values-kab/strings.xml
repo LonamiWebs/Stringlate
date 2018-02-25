@@ -44,8 +44,6 @@
     <string name="invalid_locale">Tutlayt ikecmen tettban mačči d tameɣtut.</string>
     <string name="export_ellipsis">Sifeḍ…</string>
     <string name="export_sd_card">Sifeḍ ar tkarḍa SD</string>
-    <string name="export_gist">Sifeḍ ar Gist Github</string>
-    <string name="export_pr">Sifeḍ ar Pull Request</string>
     <string name="export_share">Bḍu XML yettwarnan</string>
     <string name="save_resources_question">Sekles tiɣbula ?</string>
     <string name="save_resources_question_long">Tiɣbula i tutlayt ttwabeddlent acu kan ibeddilen ur ttwaskelsen ara. Tebɣiḍ ad ten-teskelseḍ tura ?</string>
@@ -115,9 +113,6 @@
     <string name="auth_success">Tasiregt tettunefk</string>
     <string name="auth_failure">Tuccḍa n tsiregt</string>
     <string name="completing_auth_ellipsis">Tasiregt tetteddu…</string>
-    <string name="is_anonymous_gist">Wagi d Gist udrig</string>
-    <string name="gist_login_needed">Akken ad tessuffɣeḍ Gist udrig, yessefk ad tmuddeḍ tasiregt i Stringlate deg usebter agejdan n Github.</string>
-    <string name="export_issue">Sifeḍ ar uneqqis n ibugen di Github</string>
     <string name="create_issue">Rnu aneqqis n ibugen</string>
     <string name="creating_issue_ellipsis">Timerna n uneqqis n ibugen…</string>
     <string name="creating_issue_long_ellipsis">Aɛraḍ n timerna n uneqqis n ibugen di Github…</string>

@@ -44,8 +44,6 @@
     <string name="invalid_locale">Zdrojový jazyk zřejmě není platný.</string>
     <string name="export_ellipsis">Exportovat…</string>
     <string name="export_sd_card">Exportovat na SD kartu</string>
-    <string name="export_gist">Exportovat do GitHub Gistu</string>
-    <string name="export_pr">Exportovat jako pull request</string>
     <string name="export_share">Sdílet vytvořené xml</string>
     <string name="save_resources_question">Uložit zdroje?</string>
     <string name="save_resources_question_long">Zdroje pro stávající jazyk byly upraveny, ale změny nebyly uloženy. Chcete je nyní uložit?</string>
@@ -115,9 +113,6 @@
     <string name="auth_success">Autorizace proběhla úspěšně</string>
     <string name="auth_failure">Autorizace selhala</string>
     <string name="completing_auth_ellipsis">Probíhá autorizace…</string>
-    <string name="is_anonymous_gist">Toto je anonymní Gist</string>
-    <string name="gist_login_needed">Pro odesílání neanonymních Gistů musíte autorizovat Stringlate na hlavní stránce GitHubu.</string>
-    <string name="export_issue">Exportovat problém na GitHub</string>
     <string name="create_issue">Nahlásit problém</string>
     <string name="creating_issue_ellipsis">Vytváření hlášení…</string>
     <string name="creating_issue_long_ellipsis">Pokus o vytvoření hlášení na GitHubu…</string>

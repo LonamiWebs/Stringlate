@@ -42,8 +42,6 @@
     <string name="invalid_locale">入力したロケールは正しくないようです。</string>
     <string name="export_ellipsis">エクスポート…</string>
     <string name="export_sd_card">SD カードにエクスポート</string>
-    <string name="export_gist">GitHub Gist にエクスポート</string>
-    <string name="export_pr">プルリクエストにエクスポート</string>
     <string name="export_share">生成した xml を共有</string>
     <string name="save_resources_question">リソースを保存しますか?</string>
     <string name="save_resources_question_long">現在のロケールのリソースは更新されていますが、変更は保存されていません。 今すぐ保存しますか?</string>
@@ -105,9 +103,6 @@
     <string name="login_to_github">GitHub にログイン</string>
     <string name="auth_success">認証に成功しました</string>
     <string name="completing_auth_ellipsis">認証の完了中…</string>
-    <string name="is_anonymous_gist">これは匿名 Gist です</string>
-    <string name="gist_login_needed">匿名でない Gist を投稿するには、メイン画面から GitHub で Stringlate を認証する必要があります。</string>
-    <string name="export_issue">GitHub イシューにエクスポート</string>
     <string name="create_issue">イシューを作成</string>
     <string name="creating_issue_ellipsis">イシューの作成中…</string>
     <string name="creating_issue_long_ellipsis">GitHub にイシューを作成しようとしています…</string>

@@ -31,8 +31,6 @@
     <string name="export_ellipsis">Exportera…</string>
     <string name="export_file_failed">Kunde inte exportera strings.xml filen</string>
     <string name="export_file_success">Filen lyckades spara till %s</string>
-    <string name="export_gist">Exportera till GitHub Gist</string>
-    <string name="export_pr">Exportera till Pull Request</string>
     <string name="export_sd_card">Exportera till SD kortet</string>
     <string name="export_share">Dela genererade xml</string>
     <string name="extracting_index_xml">Extraherar index.xml från index.jar…</string>
