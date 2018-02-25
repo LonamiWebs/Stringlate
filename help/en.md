@@ -20,9 +20,9 @@ application and **start translating** all the *strings* to your own locale.
 
 ## How do I tell the developers that I translated their app? <a name="how-to-let-know"></a>
 You've finished? That was quick! From *Stringlate*, you're able to export
-the result of your hard work by tapping `Menu > Export…`. You can export
-the resulting file to the *SD card*, to a *GitHub Gist*, or simply sharing
-the content of the file by any other way (even *email*).
+the result of your hard work by tapping `Menu > Export…`.
+You can **export** the translations to the SD card, share it to any service,
+send it via email, create a GitHub Gist or simply copy its contents to the clipboard.
 
 Once this is done, get the resulting file or URL from wherever you exported it
 and head to the [issues](https://github.com/LonamiWebs/Stringlate/issues) page
