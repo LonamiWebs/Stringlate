@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import net.gsantner.opoc.util.ContextUtils;
 
+import butterknife.ButterKnife;
+import butterknife.OnTextChanged;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
@@ -51,9 +53,10 @@ public class AddNewRepositoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_new_repository, container, false);
+        ButterKnife.bind(this, rootView);
 
-        mOwnerEditText = rootView.findViewById(R.id.ownerEditText);
-        mRepositoryEditText = rootView.findViewById(R.id.repositoryEditText);
+        mOwnerEditText = rootView.findViewById(R.id.github_ownerEditText);
+        mRepositoryEditText = rootView.findViewById(R.id.github_repositoryEditText);
 
         mUrlEditText = rootView.findViewById(R.id.urlEditText);
         mProjectDetails = new ApplicationDetails();
@@ -131,6 +134,12 @@ public class AddNewRepositoryFragment extends Fragment {
 
     //region UI events
 
+    @OnTextChanged(callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED, value = {R.id.github_ownerEditText, R.id.github_repositoryEditText})
+    public void onGitHubRepoEditChanged(CharSequence newText){
+        mUrlEditText.setText(GitHub.buildGitHubUrl(
+                mOwnerEditText.getText().toString(), mRepositoryEditText.getText().toString()));
+    }
+
     private final View.OnClickListener onDiscoverClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -142,21 +151,16 @@ public class AddNewRepositoryFragment extends Fragment {
     private final View.OnClickListener onNextClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String owner, repository;
             String url;
 
             url = mUrlEditText.getText().toString().trim();
-            owner = mOwnerEditText.getText().toString().trim();
-            repository = mRepositoryEditText.getText().toString().trim();
 
-            if (url.isEmpty() && (owner.isEmpty() || repository.isEmpty())) {
+            if (url.isEmpty()) {
                 Toast.makeText(getContext(), R.string.repo_or_url_required,
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Determine whether we already have this repo or if it's a new one
-                RepoHandler repo = url.isEmpty() ?
-                        RepoHandlerHelper.fromContext(getContext(), GitHub.buildGitHubUrl(owner, repository)) :
-                        RepoHandlerHelper.fromContext(getContext(), GitWrapper.getGitUri(url));
+                RepoHandler repo = RepoHandlerHelper.fromContext(getContext(), GitWrapper.getGitUri(url));
 
                 if (!TextUtils.isEmpty(mProjectDetails.getWebUrl())) {
                     repo.settings.setProjectHomepageUrl(mProjectDetails.getWebUrl());

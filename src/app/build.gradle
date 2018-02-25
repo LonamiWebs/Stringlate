@@ -60,9 +60,21 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${version_library_appcompat}"
     implementation "com.android.support:design:${version_library_appcompat}"
     // Tool libraries
+    implementation "com.jakewharton:butterknife:${version_library_butterknife}"
     // Include core project
     implementation(project(':core')) {
         exclude(group: 'org.json', module: 'json')
         exclude(group: 'org.apache.servicemix.bundles', module: 'org.apache.servicemix.bundles.xmlpull')
     }
+
+    // Processors
+    def anpros = ["com.jakewharton:butterknife-compiler:${version_library_butterknife}"]
+    for (anpro in anpros) {
+        if (enable_plugin_kotlin) {
+            kapt anpro
+        } else {
+            annotationProcessor anpro
+        }
+    }
+
 }
