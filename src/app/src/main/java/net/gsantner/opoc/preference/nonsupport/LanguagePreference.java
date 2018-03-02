@@ -11,16 +11,16 @@
  */
 
 /*
- * A ListPreference that displays a list of available languages
  * Requires:
- *     The BuildConfig field "APPLICATION_LANGUAGES" which is a array of all available languages
- *     opoc/ContextUtils
+      The BuildConfig field "APPLICATION_LANGUAGES" which is a array of all available languages
+      opoc/ContextUtils
  * BuildConfig field can be defined by using the method below
 
-buildConfigField("String[]", "APPLICATION_LANGUAGES", '{' + getUsedAndroidLanguages().collect {"\"${it}\""}.join(",")  + '}')
+buildConfigField "String[]", "APPLICATION_LANGUAGES", "${getUsedAndroidLanguages()}"
 
 @SuppressWarnings(["UnnecessaryQualifiedReference", "SpellCheckingInspection", "GroovyUnusedDeclaration"])
-static String[] getUsedAndroidLanguages() {
+// Returns used android languages as a buildConfig array: {'de', 'it', ..}"
+static String getUsedAndroidLanguages() {
     Set<String> langs = new HashSet<>()
     new File('.').eachFileRecurse(groovy.io.FileType.DIRECTORIES) {
         final foldername = it.name
@@ -32,25 +32,25 @@ static String[] getUsedAndroidLanguages() {
             }
         }
     }
-    return langs.toArray(new String[langs.size()])
+    return '{' + langs.collect { "\"${it}\"" }.join(",") + '}'
 }
 
  * Summary: Change language of this app. Restart app for changes to take effect
 
  * Define element in Preferences-XML:
-    <net.gsantner.opoc.ui.LanguagePreference
+    <net.gsantner.opoc.preference.LanguagePreference
         android:icon="@drawable/ic_language_black_24dp"
         android:key="@string/pref_key__language"
         android:summary="@string/pref_desc__language"
         android:title="@string/pref_title__language"/>
  */
-package net.gsantner.opoc.ui;
+package net.gsantner.opoc.preference.nonsupport;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.preference.ListPreference;
 import android.support.annotation.Nullable;
+import android.preference.ListPreference;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
@@ -69,7 +69,7 @@ public class LanguagePreference extends ListPreference {
     private static final String SYSTEM_LANGUAGE_CODE = "";
 
     // The language of res/values/ -> (usually English)
-    public String _systemLanguageName = "★System★";
+    public String _systemLanguageName = "System";
     public String _defaultLanguageCode = "en";
 
     public LanguagePreference(Context context) {
@@ -95,7 +95,7 @@ public class LanguagePreference extends ListPreference {
     }
 
     @Override
-    protected boolean callChangeListener(Object newValue) {
+    public boolean callChangeListener(Object newValue) {
         if (newValue instanceof String) {
             // Does not apply to existing UI, use recreate()
             new ContextUtils(getContext()).setAppLanguage((String) newValue);
@@ -118,7 +118,7 @@ public class LanguagePreference extends ListPreference {
         if (bcof instanceof String[]) {
             for (String langId : (String[]) bcof) {
                 Locale locale = contextUtils.getLocaleByAndroidCode(langId);
-                languages.add(summarizeLocale(locale) + ";" + langId);
+                languages.add(summarizeLocale(locale, langId) + ";" + langId);
             }
         }
 
@@ -133,9 +133,9 @@ public class LanguagePreference extends ListPreference {
             entryval[i + 2] = languages.get(i).split(";")[1];
         }
         entryval[0] = SYSTEM_LANGUAGE_CODE;
-        entries[0] = _systemLanguageName + "\n[" + summarizeLocale(context.getResources().getConfiguration().locale) + "]";
+        entries[0] = _systemLanguageName + " » " + summarizeLocale(context.getResources().getConfiguration().locale, "");
         entryval[1] = _defaultLanguageCode;
-        entries[1] = summarizeLocale(contextUtils.getLocaleByAndroidCode(_defaultLanguageCode));
+        entries[1] = summarizeLocale(contextUtils.getLocaleByAndroidCode(_defaultLanguageCode), _defaultLanguageCode);
 
         setEntries(entries);
         setEntryValues(entryval);
@@ -143,13 +143,21 @@ public class LanguagePreference extends ListPreference {
 
     // Concat english and localized language name
     // Append country if country specific (e.g. Portuguese Brazil)
-    private String summarizeLocale(Locale locale) {
+    private String summarizeLocale(final Locale locale, final String localeAndroidCode) {
         String country = locale.getDisplayCountry(locale);
         String language = locale.getDisplayLanguage(locale);
-        return locale.getDisplayLanguage(Locale.ENGLISH)
+        String ret = locale.getDisplayLanguage(Locale.ENGLISH)
                 + " (" + language.substring(0, 1).toUpperCase(Locale.getDefault()) + language.substring(1)
                 + ((!country.isEmpty() && !country.toLowerCase(Locale.getDefault()).equals(language.toLowerCase(Locale.getDefault()))) ? (", " + country) : "")
                 + ")";
+
+        if (localeAndroidCode.equals("zh-rCN")) {
+            ret = ret.substring(0, ret.indexOf(" ") + 1) + "Simplified" + ret.substring(ret.indexOf(" "));
+        } else if (localeAndroidCode.equals("zh-rTW")) {
+            ret = ret.substring(0, ret.indexOf(" ") + 1) + "Traditional" + ret.substring(ret.indexOf(" "));
+        }
+
+        return ret;
     }
 
     // Add current language to summary
@@ -158,7 +166,7 @@ public class LanguagePreference extends ListPreference {
         Locale locale = new ContextUtils(getContext()).getLocaleByAndroidCode(getValue());
         String prefix = TextUtils.isEmpty(super.getSummary())
                 ? "" : super.getSummary() + "\n\n";
-        return prefix + summarizeLocale(locale);
+        return prefix + summarizeLocale(locale, getValue());
     }
 
     public String getSystemLanguageName() {
