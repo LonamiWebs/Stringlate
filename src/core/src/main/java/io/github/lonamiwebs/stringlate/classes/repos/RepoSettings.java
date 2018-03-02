@@ -21,16 +21,18 @@ public class RepoSettings {
     private JSONObject mSettings;
 
     private static final String KEY_SOURCE = "source";
-    private static final String KEY_PROJECT_HOMEPAGE_URL = "project_homepage_url";
+    private static final String KEY_PROJECT_WEB_URL = "project_homepage_url";
     private static final String KEY_LAST_LOCALE = "last_locale";
     private static final String KEY_REMOTE_PATHS = "remote_paths";
     private static final String KEY_ICON_PATH = "icon_path";
     private static final String KEY_SEARCH_FILTER = "search_filter";
     private static final String KEY_CREATED_ISSUES = "created_issues";
     private static final String KEY_PROJECT_NAME = "project_name";
+    private static final String KEY_PROJECT_MAIL = "project_mail";
 
     private static final String DEFAULT_LAST_LOCALE = "";
     private static final String DEFAULT_PROJECT_NAME = "";
+    private static final String DEFAULT_PROJECT_MAIL = "";
 
     //region Constructor
 
@@ -74,12 +76,16 @@ public class RepoSettings {
         return mSettings.optString(KEY_SOURCE, "");
     }
 
-    public String getProjectHomepageUrl() {
-        return mSettings.optString(KEY_PROJECT_HOMEPAGE_URL, getSource());
+    public String getProjectWebUrl() {
+        return mSettings.optString(KEY_PROJECT_WEB_URL, getSource());
     }
 
     public String getProjectName() {
         return mSettings.optString(KEY_PROJECT_NAME, DEFAULT_PROJECT_NAME);
+    }
+
+    public String getProjectMail() {
+        return mSettings.optString(KEY_PROJECT_MAIL, DEFAULT_PROJECT_MAIL);
     }
 
     public String getLastLocale() {
@@ -148,9 +154,9 @@ public class RepoSettings {
         save();
     }
 
-    public void setProjectHomepageUrl(final String homepageUrl) {
+    public void setProjectWebUrl(final String homepageUrl) {
         try {
-            mSettings.put(KEY_PROJECT_HOMEPAGE_URL, homepageUrl);
+            mSettings.put(KEY_PROJECT_WEB_URL, homepageUrl);
         } catch (JSONException ignored) {
         }
         save();
@@ -159,6 +165,14 @@ public class RepoSettings {
     public void setProjectName(final String projectName) {
         try {
             mSettings.put(KEY_PROJECT_NAME, projectName);
+        } catch (JSONException ignored) {
+        }
+        save();
+    }
+
+    public void setProjectMail(final String projectMail) {
+        try {
+            mSettings.put(KEY_PROJECT_MAIL, projectMail);
         } catch (JSONException ignored) {
         }
         save();

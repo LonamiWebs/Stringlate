@@ -74,6 +74,7 @@ public class AddNewRepositoryFragment extends Fragment {
             final String paramGit = data.getQueryParameter("git");
             final String paramWeb = data.getQueryParameter("web");
             final String paramName = data.getQueryParameter("name");
+            final String paramMail = data.getQueryParameter("mail");
 
             if (paramGit == null) {
                 // If no URL was found, it may just be a git repository by itself
@@ -85,18 +86,22 @@ public class AddNewRepositoryFragment extends Fragment {
                 setUrl(paramGit);
             }
             if (paramWeb != null) {
-                mProjectDetails.setWebUrl(paramWeb);
+                mProjectDetails.setProjectWebUrl(paramWeb);
             }
             if (paramName != null) {
-                mProjectDetails.setName(paramName);
+                mProjectDetails.setProjectName(paramName);
+            }
+            if (paramMail != null) {
+                mProjectDetails.setProjectMail(paramMail);
             }
         }
         // Or we were opened from the StringlateApi
         if (intent.getAction().equals(StringlateApi.ACTION_TRANSLATE) &&
                 intent.hasExtra(StringlateApi.EXTRA_GIT_URL)) {
             setUrl(intent.getStringExtra(StringlateApi.EXTRA_GIT_URL));
-            mProjectDetails.setWebUrl(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_HOMEPAGE));
-            mProjectDetails.setName(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_NAME));
+            mProjectDetails.setProjectWebUrl(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_WEB));
+            mProjectDetails.setProjectMail(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_MAIL));
+            mProjectDetails.setProjectName(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_NAME));
         }
 
         // If the user presses enter on an EditText, select the next one
@@ -162,11 +167,14 @@ public class AddNewRepositoryFragment extends Fragment {
                 // Determine whether we already have this repo or if it's a new one
                 RepoHandler repo = RepoHandlerHelper.fromContext(getContext(), GitWrapper.getGitUri(url));
 
-                if (!TextUtils.isEmpty(mProjectDetails.getWebUrl())) {
-                    repo.settings.setProjectHomepageUrl(mProjectDetails.getWebUrl());
+                if (!TextUtils.isEmpty(mProjectDetails.getProjectWebUrl())) {
+                    repo.settings.setProjectWebUrl(mProjectDetails.getProjectWebUrl());
                 }
-                if (!TextUtils.isEmpty(mProjectDetails.getName())) {
-                    repo.settings.setProjectName(mProjectDetails.getName());
+                if (!TextUtils.isEmpty(mProjectDetails.getProjectName())) {
+                    repo.settings.setProjectName(mProjectDetails.getProjectName());
+                }
+                if (!TextUtils.isEmpty(mProjectDetails.getProjectMail())) {
+                    repo.settings.setProjectMail(mProjectDetails.getProjectMail());
                 }
 
                 if (repo.isEmpty()) {
@@ -188,8 +196,9 @@ public class AddNewRepositoryFragment extends Fragment {
             switch (requestCode) {
                 case RESULT_REPO_DISCOVERED:
                     setUrl(data.getStringExtra("url"));
-                    mProjectDetails.setWebUrl(data.getStringExtra("web"));
-                    mProjectDetails.setName(data.getStringExtra("name"));
+                    mProjectDetails.setProjectWebUrl(data.getStringExtra("web"));
+                    mProjectDetails.setProjectName(data.getStringExtra("name"));
+                    mProjectDetails.setProjectMail(data.getStringExtra("mail"));
                     break;
                 default:
                     super.onActivityResult(requestCode, resultCode, data);

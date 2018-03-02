@@ -161,7 +161,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
         mRepo = RepoHandlerHelper.fromBundle(getIntent().getBundleExtra(EXTRA_REPO));
         setTitle(mRepo.getProjectName());
-
+        
         loadResources();
         onFilterUpdated(mRepo.settings.getStringFilter());
 
@@ -290,7 +290,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             case R.id.action_open_project_homepage: {
                 Intent browserIntent = new Intent(this, BrowserActivity.class);
                 browserIntent.putExtra(
-                        BrowserActivity.EXTRA_LOAD_URL, mRepo.settings.getProjectHomepageUrl()
+                        BrowserActivity.EXTRA_LOAD_URL, mRepo.settings.getProjectWebUrl()
                 );
                 startActivity(browserIntent);
                 return true;

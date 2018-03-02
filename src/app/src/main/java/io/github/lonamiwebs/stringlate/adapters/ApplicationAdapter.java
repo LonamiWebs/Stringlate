@@ -51,7 +51,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         }
 
         void update(final ApplicationDetails app) {
-            appName.setText(app.getName());
+            appName.setText(app.getProjectName());
             appDescription.setText(app.getDescription());
             installIndicator.setVisibility(app.isInstalled() ? VISIBLE : GONE);
             mImageLoader.loadImageAsync(iconView,
@@ -109,8 +109,9 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
 
                     Intent data = new Intent();
                     data.putExtra("url", app.getSourceCodeUrl());
-                    data.putExtra("web", app.getWebUrl());
-                    data.putExtra("name", app.getName());
+                    data.putExtra("web", app.getProjectWebUrl());
+                    data.putExtra("name", app.getProjectName());
+                    data.putExtra("mail", app.getProjectMail());
                     onItemClick.onClick(data);
                 }
             }

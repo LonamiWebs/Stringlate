@@ -98,7 +98,7 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
 
             for (; mLastSliceIndex < end && count > 0; mLastSliceIndex++) {
                 ApplicationDetails app = mApplications.get(mLastSliceIndex);
-                if (app.getName().toLowerCase().contains(mSliceFilter) ||
+                if (app.getProjectName().toLowerCase().contains(mSliceFilter) ||
                         app.getDescription().toLowerCase().contains(mSliceFilter)) {
                     mApplicationsSlice.add(app);
                     count--;
@@ -166,7 +166,7 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
                     @Override
                     public int compare(ApplicationDetails t1, ApplicationDetails t2) {
                         if (t1.isInstalled() == t2.isInstalled()) {
-                            return t1.getName().compareToIgnoreCase(t2.getName());
+                            return t1.getProjectName().compareToIgnoreCase(t2.getProjectName());
                         } else {
                             return t1.isInstalled() ? -1 : 1;
                         }

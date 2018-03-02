@@ -18,6 +18,7 @@ public class ApplicationDetails {
     private String mIconUrl;
     private String mSourceCodeUrl;
     private String mWebUrl;
+    private String mMail;
 
     private boolean mIsInstalled;
 
@@ -32,7 +33,7 @@ public class ApplicationDetails {
     public ApplicationDetails(String packageName, String lastUpdated,
                               String name, String description,
                               String iconUrl, String sourceCodeUrl,
-                              String webUrl) {
+                              String webUrl, String mail) {
         try {
             mLastUpdated = DATE_FORMAT.parse(lastUpdated);
         } catch (ParseException e) {
@@ -40,12 +41,13 @@ public class ApplicationDetails {
             e.printStackTrace();
         }
 
-        mPackageName = packageName;
-        mName = name;
-        mDescription = description;
-        mSourceCodeUrl = sourceCodeUrl;
-        mIconUrl = iconUrl;
-        mWebUrl = webUrl;
+        setPackageName(packageName);
+        setProjectName(name);
+        setDescription(description);
+        setSourceCodeUrl(sourceCodeUrl);
+        setIconUrl(iconUrl);
+        setProjectWebUrl(webUrl);
+        setProjectMail(mail);
     }
 
 
@@ -61,7 +63,7 @@ public class ApplicationDetails {
         return DATE_FORMAT.format(mLastUpdated);
     }
 
-    public String getName() {
+    public String getProjectName() {
         return mName;
     }
 
@@ -81,8 +83,12 @@ public class ApplicationDetails {
         return mIsInstalled;
     }
 
-    public String getWebUrl() {
+    public String getProjectWebUrl() {
         return mWebUrl;
+    }
+
+    public String getProjectMail() {
+        return mMail;
     }
 
     @Override
@@ -99,31 +105,38 @@ public class ApplicationDetails {
     }
 
     public void setLastUpdated(Date lastUpdated) {
-        this.mLastUpdated = lastUpdated;
+        mLastUpdated = lastUpdated;
     }
 
     public void setPackageName(String packageName) {
-        this.mPackageName = packageName;
+        mPackageName = packageName;
     }
 
-    public void setName(String name) {
-        this.mName = name;
+    public void setProjectName(String name) {
+        mName = name;
+    }
+
+    public void setProjectMail(String mail) {
+        if (mail != null && !mail.isEmpty() && mail.contains("@@")) {
+            mail = new StringBuilder(mail).reverse().toString().replace("@@", "@");
+        }
+        mMail = mail;
     }
 
     public void setDescription(String description) {
-        this.mDescription = description;
+        mDescription = description;
     }
 
     public void setIconUrl(String iconUrl) {
-        this.mIconUrl = iconUrl;
+        mIconUrl = iconUrl;
     }
 
     public void setSourceCodeUrl(String sourceCodeUrl) {
-        this.mSourceCodeUrl = sourceCodeUrl;
+        mSourceCodeUrl = sourceCodeUrl;
     }
 
-    public void setWebUrl(String webUrl) {
-        this.mWebUrl = webUrl;
+    public void setProjectWebUrl(String webUrl) {
+        mWebUrl = webUrl;
     }
     //endregion
 }
