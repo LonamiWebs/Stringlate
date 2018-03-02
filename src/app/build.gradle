@@ -59,6 +59,8 @@ dependencies {
     // Android standard libs
     implementation "com.android.support:appcompat-v7:${version_library_appcompat}"
     implementation "com.android.support:design:${version_library_appcompat}"
+    implementation "com.android.support:preference-v7:${version_library_appcompat}"
+    implementation "com.android.support:preference-v14:${version_library_appcompat}"
     // Tool libraries
     implementation "com.jakewharton:butterknife:${version_library_butterknife}"
     // Include core project
