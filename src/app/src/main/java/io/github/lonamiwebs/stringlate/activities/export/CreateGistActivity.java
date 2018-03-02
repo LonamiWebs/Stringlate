@@ -108,8 +108,8 @@ public class CreateGistActivity extends AppCompatActivity {
         }
     }
 
-    private boolean checkGitHubLoginState(){
-        if (!mSettings.hasGitHubAuthorization()){
+    private boolean checkGitHubLoginState() {
+        if (!mSettings.hasGitHubAuthorization()) {
             Toast.makeText(getApplicationContext(), getString(R.string.gist_github_login_needed, getString(R.string.login_to_github)), Toast.LENGTH_LONG).show();
         }
         return mSettings.hasGitHubAuthorization();
