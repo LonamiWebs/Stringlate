@@ -1,7 +1,5 @@
 package io.github.lonamiwebs.stringlate.activities.translate;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +33,7 @@ import android.widget.Toast;
 
 import net.gsantner.opoc.util.ContextUtils;
 import net.gsantner.opoc.util.GeneralUtils;
+import net.gsantner.opoc.util.ShareUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -161,7 +160,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
         mRepo = RepoHandlerHelper.fromBundle(getIntent().getBundleExtra(EXTRA_REPO));
         setTitle(mRepo.getProjectName());
-        
+
         loadResources();
         onFilterUpdated(mRepo.settings.getStringFilter());
 
@@ -302,6 +301,8 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             case R.id.github_export_to_issue:
             case R.id.github_export_to_pr:
             case R.id.exportShare:
+            case R.id.export_mail:
+            case R.id.export_hastebin:
             case R.id.exportCopy:
                 // Since all the exports check these conditions, check them here only
                 if (!isLocaleSelected(true))
@@ -331,6 +332,12 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
                         break;
                     case R.id.exportCopy:
                         exportToCopy();
+                        break;
+                    case R.id.export_hastebin:
+                        exportToHastebin();
+                        break;
+                    case R.id.export_mail:
+                        exportToEmail();
                         break;
                 }
                 return true;
@@ -696,11 +703,35 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         String filename = mSelectedLocaleResources.getFilename();
         String xml = mRepo.mergeDefaultTemplate(mSelectedLocale);
 
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        clipboard.setPrimaryClip(ClipData.newPlainText(filename, xml));
+        new ShareUtil(this).setClipboard(xml);
         Toast.makeText(this, getString(R.string.xml_copied_to_clipboard, filename),
                 Toast.LENGTH_SHORT).show();
     }
+
+    // Exports the currently selected locale resources to hastebin and sets the primary clipboard
+    private void exportToHastebin() {
+        String xml = mRepo.mergeDefaultTemplate(mSelectedLocale);
+
+        final ShareUtil shu = new ShareUtil(this);
+        shu.pasteOnHastebin(xml, (ok, url) -> {
+            if (ok) {
+                shu.setClipboard(url);
+                Toast.makeText(TranslateActivity.this, R.string.exported_to_hastebin,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Start drafting an email
+    private void exportToEmail() {
+        String xml = mRepo.mergeDefaultTemplate(mSelectedLocale);
+        String subject = mRepo.getProjectName() + " - "
+                + getString(R.string.updated_x_translation, mSelectedLocale,
+                LocaleString.getEnglishDisplay(mSelectedLocale));
+
+        new ShareUtil(this).draftEmail(subject, xml, mRepo.settings.getProjectMail());
+    }
+
 
     //endregion
 

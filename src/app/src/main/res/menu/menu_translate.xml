@@ -60,6 +60,17 @@
             <item
                 android:id="@+id/exportCopy"
                 android:title="@string/copy_to_clipboard" />
+
+
+            <item
+                android:id="@+id/export_mail"
+                android:title="@string/email" />
+
+            <item
+                android:id="@+id/export_hastebin"
+                android:title="@string/hastebin"
+                android:visible="false" />
+
             <item
                 android:id="@+id/export_github_menu"
                 android:title="@string/github">

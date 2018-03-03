@@ -55,7 +55,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
 
         mCommitMessageEditText.setText(getString(
-                R.string.added_x_translation_spam, mLocale,
+                R.string.updated_x_translation_spam, mLocale,
                 LocaleString.getEnglishDisplay(mLocale)));
 
         checkPermissions();

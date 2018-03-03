@@ -55,7 +55,7 @@ public class CreateIssueActivity extends AppCompatActivity {
 
         String display = LocaleString.getEnglishDisplay(mLocale);
         if (mExistingIssueNumber == -1) {
-            mIssueTitleEditText.setText(getString(R.string.added_x_translation, mLocale, display));
+            mIssueTitleEditText.setText(getString(R.string.updated_x_translation, mLocale, display));
             mIssueDescriptionEditText.setText(getString(R.string.new_issue_template, mLocale, display));
         } else {
             findViewById(R.id.issueTitleLayout).setVisibility(View.GONE);

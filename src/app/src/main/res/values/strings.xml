@@ -178,4 +178,5 @@
     <string name="more">More</string>
     <string name="next_steps">Once all the strings are translated, tap the three dots menu on the top right and select \"%s\" to share your work with the project maintainer so they can review and use it.\n\nIf you would like to review some of the already translated strings, enable the \"%s\" option to do so.</string>
     <string name="cancel_sync">Cancel synchronization?</string>
+    <string name="exported_to_hastebin">Successfully exported to Hastebin. URL copied to clipboard</string>
 </resources>
