@@ -716,9 +716,10 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         shu.pasteOnHastebin(xml, (ok, url) -> {
             if (ok) {
                 shu.setClipboard(url);
-                Toast.makeText(TranslateActivity.this, R.string.exported_to_hastebin,
-                        Toast.LENGTH_SHORT).show();
             }
+            Toast.makeText(TranslateActivity.this,
+                    ok ? R.string.exported_to_hastebin : R.string.export_unsuccessful,
+                    Toast.LENGTH_SHORT).show();
         });
     }
 

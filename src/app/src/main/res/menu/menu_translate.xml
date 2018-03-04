@@ -68,8 +68,7 @@
 
             <item
                 android:id="@+id/export_hastebin"
-                android:title="@string/hastebin"
-                android:visible="false" />
+                android:title="@string/hastebin" />
 
             <item
                 android:id="@+id/export_github_menu"

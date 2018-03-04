@@ -2,10 +2,10 @@
     <string name="app_name" translatable="false">Stringlate</string>
     <string name="slash" translatable="false">/</string>
     <string name="github" translatable="false">GitHub</string>
-    <string name="gitlab">GitLab</string>
+    <string name="gitlab" translatable="false">GitLab</string>
     <string name="email" translatable="false">E-Mail</string>
     <string name="hastebin" translatable="false">Hastebin</string>
-    <string name="gitlab_dot_com_instance">GitLab (gitlab.com)</string>
+    <string name="gitlab_dot_com_instance" translatable="false">GitLab (gitlab.com)</string>
     <string name="default_gist_share_description" translatable="false">strings.xml translation shared with Stringlate</string>
     <string name="updated_x_translation" translatable="false">Updated %s (%s) translation</string>
     <string name="updated_x_translation_spam" translatable="false">Updated %s (%s) translation\n\nCommit made via Stringlate</string>
