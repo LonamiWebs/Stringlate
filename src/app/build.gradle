@@ -21,8 +21,9 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String[]", "APPLICATION_LANGUAGES", "${getUsedAndroidLanguages()}"
+        buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findUsedAndroidLocales()}"
         buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
+        resValue "string", "manifest_package_id", "io.github.lonamiwebs.stringlate"
     }
 
     compileOptions {
