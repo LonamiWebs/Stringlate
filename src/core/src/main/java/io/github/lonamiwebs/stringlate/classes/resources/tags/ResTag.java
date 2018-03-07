@@ -182,8 +182,19 @@ public abstract class ResTag implements Comparable<ResTag> {
 
         // Currently we handle the following characters:
         // \n, ', \, &, <, >, "
+        //
+        // Keep track of insideAngleBrackets to escape " only if we're outside.
+        boolean insideAngleBrackets = false;
         for (int i = 0; i < length; i++) {
             c = content.charAt(i);
+            if (insideAngleBrackets) {
+                if (c == '>') {
+                    insideAngleBrackets = false;
+                }
+                sb.append(c);
+                continue;
+            }
+
             switch (c) {
                 // These should always be escaped
                 case '\'':
@@ -204,7 +215,12 @@ public abstract class ResTag implements Comparable<ResTag> {
 
                 // We might or not need to replace <>
                 case '<':
-                    sb.append(replaceLtGt ? "&lt;" : "<");
+                    if (replaceLtGt) {
+                        insideAngleBrackets = true;
+                        sb.append("&lt;");
+                    } else {
+                        sb.append(c);
+                    }
                     break;
                 case '>':
                     sb.append(replaceLtGt ? "&gt;" : ">");
