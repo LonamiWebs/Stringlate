@@ -174,6 +174,28 @@ public abstract class ResTag implements Comparable<ResTag> {
         return false;
     }
 
+    private static boolean isHtmlEntity(String where, int at) {
+        char which;
+        boolean numbers = false;
+        for (; at < where.length(); ++at) {
+            which = where.charAt(at);
+            if (which == ';') {
+                return true;
+            } else if (which == '#') {
+                numbers = true;
+            } else if (numbers) {
+                if (which < '0' || which > '9') {
+                    return false;
+                }
+            } else {
+                if ((which < 'A' || which > 'Z') && (which < 'a' || which > 'z')) {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
     // Sanitizes the content, making it ready to be written to a strings.xml file
     public static String sanitizeContent(String content) {
         char c;
@@ -229,13 +251,18 @@ public abstract class ResTag implements Comparable<ResTag> {
                         // Don't escape the \ itself if the next
                         // character belongs to a escape sequence.
                         // Also skip the next character to avoid processing it.
+                        sb.append(c);
                         i++;
                     } else {
                         sb.append("\\\\");
                     }
                     break;
                 case '&':
-                    sb.append("&amp;");
+                    if (isHtmlEntity(content, i + 1)) {
+                        sb.append(c);
+                    } else {
+                        sb.append("&amp;");
+                    }
                     break;
 
                 // We might or not need to replace <>
