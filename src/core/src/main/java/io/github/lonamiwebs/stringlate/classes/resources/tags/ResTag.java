@@ -9,6 +9,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public abstract class ResTag implements Comparable<ResTag> {
 
+    //region Static members
+
+    // Escape the backslash for the user unless they are writing a escape sequence
+    private static final char[] ESCAPE_SEQUENCES = {
+            'u', 'b', 't', 'n', 'f', 'r', '\\',
+            'U', 'B', 'T', 'N', 'F', 'R'
+    };
+
+    //endregion
+
     //region Members
 
     String mContent = "";
@@ -155,6 +165,15 @@ public abstract class ResTag implements Comparable<ResTag> {
         return sb.toString();
     }
 
+    private static boolean isEscapeSequence(char which) {
+        for (int i = 0; i < ESCAPE_SEQUENCES.length; ++i) {
+            if (ESCAPE_SEQUENCES[i] == which) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Sanitizes the content, making it ready to be written to a strings.xml file
     public static String sanitizeContent(String content) {
         char c;
@@ -205,9 +224,15 @@ public abstract class ResTag implements Comparable<ResTag> {
                     sb.append("\\n\n");
                     break;
 
-                // We can't tell whether the user intended to escape something
                 case '\\':
-                    sb.append("\\\\");
+                    if (i + 1 < length && isEscapeSequence(content.charAt(i + 1))) {
+                        // Don't escape the \ itself if the next
+                        // character belongs to a escape sequence.
+                        // Also skip the next character to avoid processing it.
+                        i++;
+                    } else {
+                        sb.append("\\\\");
+                    }
                     break;
                 case '&':
                     sb.append("&amp;");
