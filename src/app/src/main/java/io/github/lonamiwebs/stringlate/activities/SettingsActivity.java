@@ -22,11 +22,11 @@ import android.widget.Toast;
 
 import net.gsantner.opoc.preference.GsPreferenceFragmentCompat;
 import net.gsantner.opoc.util.AppSettingsBase;
-import net.gsantner.opoc.util.ContextUtils;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
+import io.github.lonamiwebs.stringlate.utilities.ContextUtils;
 
 @SuppressWarnings("WeakerAccess")
 public class SettingsActivity extends AppCompatActivity {

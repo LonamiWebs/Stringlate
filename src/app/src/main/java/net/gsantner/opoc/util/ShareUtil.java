@@ -141,15 +141,30 @@ public class ShareUtil {
     /**
      * Share the given bitmap with given format
      *
-     * @param bitmap Image
-     * @param format A {@link Bitmap.CompressFormat}, supporting JPEG,PNG, WEBP
+     * @param bitmap   Image
+     * @param format   A {@link Bitmap.CompressFormat}, supporting JPEG,PNG, WEBP
+     * @param filename Filename without ext., null or nothing supplied will default to SharedFile.
      * @return if success, true
      */
     public boolean shareImage(Bitmap bitmap, Bitmap.CompressFormat format) {
+        return shareImage(bitmap, format, 95, "SharedImage");
+    }
+
+
+    /**
+     * Share the given bitmap with given format
+     *
+     * @param bitmap    Image
+     * @param format    A {@link Bitmap.CompressFormat}, supporting JPEG,PNG, WEBP
+     * @param imageName Filename without extension
+     * @param quality   Quality of the exported image [0-100]
+     * @return if success, true
+     */
+    public boolean shareImage(Bitmap bitmap, Bitmap.CompressFormat format, int quality, String imageName) {
         try {
             String ext = format.name().toLowerCase();
-            File file = File.createTempFile("SharedFile", "." + ext.replace("jpeg", "jpg"), _context.getExternalCacheDir());
-            if (bitmap != null && new net.gsantner.opoc.util.ContextUtils(_context).writeImageToFile(file, bitmap, format, 95) != null) {
+            File file = File.createTempFile(imageName, "." + ext.replace("jpeg", "jpg"), _context.getExternalCacheDir());
+            if (bitmap != null && new net.gsantner.opoc.util.ContextUtils(_context).writeImageToFile(file, bitmap, format, quality)) {
                 shareStream(file, "image/" + ext);
                 return true;
             }
@@ -237,13 +252,22 @@ public class ShareUtil {
      * Replace (primary) clipboard contents with given text
      * @param text Text to be set
      */
-    public void setClipboard(String text) {
+    public boolean setClipboard(String text) {
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-            ((android.text.ClipboardManager) _context.getSystemService(Context.CLIPBOARD_SERVICE)).setText(text);
+            android.text.ClipboardManager cm = ((android.text.ClipboardManager) _context.getSystemService(Context.CLIPBOARD_SERVICE));
+            if (cm != null) {
+                cm.setText(text);
+                return true;
+            }
         } else {
-            ClipData clip = ClipData.newPlainText(_context.getPackageName(), text);
-            ((android.content.ClipboardManager) _context.getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(clip);
+            android.content.ClipboardManager cm = ((android.content.ClipboardManager) _context.getSystemService(Context.CLIPBOARD_SERVICE));
+            if (cm != null) {
+                ClipData clip = ClipData.newPlainText(_context.getPackageName(), text);
+                cm.setPrimaryClip(clip);
+                return true;
+            }
         }
+        return false;
     }
 
     /**

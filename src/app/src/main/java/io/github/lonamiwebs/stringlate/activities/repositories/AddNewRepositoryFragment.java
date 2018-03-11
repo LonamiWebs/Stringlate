@@ -15,8 +15,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import net.gsantner.opoc.util.ContextUtils;
-
 import butterknife.ButterKnife;
 import butterknife.OnTextChanged;
 import io.github.lonamiwebs.stringlate.R;
@@ -28,6 +26,7 @@ import io.github.lonamiwebs.stringlate.classes.git.GitHub;
 import io.github.lonamiwebs.stringlate.classes.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
+import io.github.lonamiwebs.stringlate.utilities.ContextUtils;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 

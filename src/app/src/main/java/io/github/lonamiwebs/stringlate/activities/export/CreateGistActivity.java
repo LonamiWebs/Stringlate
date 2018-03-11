@@ -8,14 +8,13 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import net.gsantner.opoc.util.ContextUtils;
-
 import java.io.File;
 import java.util.HashMap;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
+import io.github.lonamiwebs.stringlate.utilities.ContextUtils;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 import static android.view.View.GONE;
