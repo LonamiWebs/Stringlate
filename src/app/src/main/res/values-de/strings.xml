@@ -113,6 +113,7 @@
     <string name="auth_success">Autorisierung erfolgreich</string>
     <string name="auth_failure">Authentifizierung fehlgeschlagen</string>
     <string name="completing_auth_ellipsis">Vervollständige Autorisierung…</string>
+    <string name="gist_github_login_needed">Um Gists zu posten, öffne Stringlate Einstellungen, wähle \'%s\' und bestätigen die Anfrage auf GitHub.</string>
     <string name="create_issue">Problem erstellen</string>
     <string name="creating_issue_ellipsis">Fall wird erstellt…</string>
     <string name="creating_issue_long_ellipsis">Versuche eine Problem auf GitHub zu erstellen…</string>
@@ -175,4 +176,8 @@
     <string name="language">Sprache</string>
     <string name="country">Land</string>
     <string name="more">Mehr</string>
+    <string name="next_steps">Sobald alls Strings übersetzt wurden, drücken das drei Punkte Menü oben rechts und wähle \"%s\" um deine Arbeit mit dem Projektverwalter zum prüfen und nutzen zu teilen.\n\nWenn du einige der bereits übersetzten Strings prüfen willst, aktiviere die \"%s\" Option.</string>
+    <string name="cancel_sync">Synchronisieren abbrechen?</string>
+    <string name="exported_to_hastebin">Erfolgreich zu Hastebin exportiert. URL in die Zwischenablage kopiert</string>
+    <string name="export_unsuccessful">Exportieren fehlgeschlagen</string>
 </resources>
