@@ -113,6 +113,7 @@
     <string name="auth_success">Autorisation accordée</string>
     <string name="auth_failure">Échec de l\'autorisation</string>
     <string name="completing_auth_ellipsis">Autorisation en cours…</string>
+    <string name="gist_github_login_needed">Pour poster des Gists, vous devez ouvrir les paramètres de stringlate, choisir « %s » et confirmer la demande d\'autorisation sur GitHub.</string>
     <string name="create_issue">Créer un rapport de bug</string>
     <string name="creating_issue_ellipsis">Création du rapport de bug…</string>
     <string name="creating_issue_long_ellipsis">Tentative de création du rapport de bug sur Github…</string>
@@ -175,4 +176,10 @@
     <string name="language">Langue</string>
     <string name="country">Pays</string>
     <string name="more">Plus</string>
+    <string name="next_steps">Une fois que toutes les chaînes sont traduites, appuyez sur les trois points en haut à droite et choisissez « %s » pour partager votre travail avec le mainteneur du projet pour qu\'il puisse le vérifier et l\'utiliser.\n
+    \n
+    Si vous voulez relire certaines des chaînes déjà traduites, activez l\'option « %s ».</string>
+    <string name="cancel_sync">Annuler la synchronisation ?</string>
+    <string name="exported_to_hastebin">Export vers Hastebin réussi. L\'URL a été copiée dans le presse-papier.</string>
+    <string name="export_unsuccessful">Échec de l\'export</string>
 </resources>
