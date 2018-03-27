@@ -338,8 +338,7 @@ public class GitHub {
     }
 
     public static String buildGitHubUrl(String owner, String repository) {
-        return GitWrapper.getGitUri(String.format(GITHUB_REPO_URL_TEMPLATE, owner, repository))
-                .replace("//", "/");
+        return GitWrapper.getGitUri(String.format(GITHUB_REPO_URL_TEMPLATE, owner, repository));
     }
 
     public static String getGitHubOwnerRepo(final String url)
