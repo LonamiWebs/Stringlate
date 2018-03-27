@@ -594,13 +594,22 @@ public class ResourcesParser {
             // Also, we obviously have this string translated (xml was cleaned, right?),
             // thus there is no need to ensure whether we need to delete the line or not
             Matcher mItem;
+            ResTag tag = resources.getTag(id);
             switch (mTag.group(1)) {
                 case STRING:
                     holders.add(new ReplaceHolder(contentStart, contentEnd,
-                            resources.getContent(id)));
+                            tag.getContent() == null ? "" : tag.getContent()));
                     break;
                 case STRING_ARRAY:
-                    ResStringArray array = ((ResStringArray.Item) resources.getTag(id)).getParent();
+                    // See issue #184. Some strings have normal strings where an array is needed.
+                    ResStringArray array;
+                    if (tag instanceof ResStringArray.Item) {
+                        array = ((ResStringArray.Item) tag).getParent();
+                    } else {
+                        array = new ResStringArray(tag.getId());
+                        array.addItem(tag.getContent(), true, 0);
+                    }
+
                     int i = 0;
                     mItem = RES_TAG_PATTERN.matcher(mTag.group(3));
                     while (mItem.find()) {
@@ -611,14 +620,22 @@ public class ResourcesParser {
 
                             // We might not have this content, but we wish to keep the order
                             ResStringArray.Item item = array.getItem(i);
-                            String content = item == null ? "" : item.getContent();
-                            holders.add(new ReplaceHolder(cs, ce, content));
+                            String content = item == null ? null : item.getContent();
+                            holders.add(new ReplaceHolder(cs, ce,
+                                    content == null ? "" : content));
                             i++;
                         }
                     }
                     break;
                 case PLURALS:
-                    ResPlurals plurals = ((ResPlurals.Item) resources.getTag(id)).getParent();
+                    ResPlurals plurals;
+                    if (tag instanceof ResPlurals.Item) {
+                        plurals = ((ResPlurals.Item) tag).getParent();
+                    } else {
+                        plurals = new ResPlurals(tag.getId());
+                        plurals.addItem("other",
+                                tag.getContent() == null ? "" : tag.getContent(), true);
+                    }
                     mItem = RES_TAG_PATTERN.matcher(mTag.group(3));
                     while (mItem.find()) {
                         if (mItem.group(1).equals(ITEM)) {
