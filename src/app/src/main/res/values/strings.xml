@@ -180,4 +180,5 @@
     <string name="cancel_sync">Cancel synchronization?</string>
     <string name="exported_to_hastebin">Successfully exported to Hastebin. URL copied to clipboard</string>
     <string name="export_unsuccessful">Export unsuccessful</string>
+    <string name="base_branch_colon">Base branch:</string>
 </resources>
