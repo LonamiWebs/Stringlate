@@ -26,6 +26,7 @@ import io.github.lonamiwebs.stringlate.classes.resources.tags.ResPlurals;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResString;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResStringArray;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
+import io.github.lonamiwebs.stringlate.classes.resources.tags.ResType;
 
 // Class used to parse strings.xml files into Resources objects
 // Please NOTE that strings with `translatable="false"` will NOT be parsed
@@ -38,11 +39,6 @@ public class ResourcesParser {
     private final static String ns = null;
 
     private final static String RESOURCES = "resources";
-
-    private final static String STRING = "string";
-    private final static String STRING_ARRAY = "string-array";
-    private final static String PLURALS = "plurals";
-    private final static String ITEM = "item";
 
     private final static String ID = "name";
     private final static String QUANTITY = "quantity";
@@ -89,7 +85,7 @@ public class ResourcesParser {
                 continue;
 
             String name = parser.getName();
-            switch (name) {
+            switch (ResType.fromTagName(name)) {
                 case STRING:
                     ResTag rt = readResourceString(parser);
                     if (rt != null)
@@ -118,7 +114,7 @@ public class ResourcesParser {
         String id, content;
         boolean modified;
 
-        parser.require(XmlPullParser.START_TAG, ns, STRING);
+        parser.require(XmlPullParser.START_TAG, ns, ResType.STRING.toString());
 
         id = parser.getAttributeValue(null, ID);
 
@@ -128,7 +124,7 @@ public class ResourcesParser {
         // The content must be read last, since it also consumes the tag
         content = ResTag.desanitizeContent(getInnerXml(parser));
 
-        parser.require(XmlPullParser.END_TAG, ns, STRING);
+        parser.require(XmlPullParser.END_TAG, ns, ResType.STRING.toString());
 
         if (id == null || content.isEmpty())
             return null;
@@ -143,12 +139,12 @@ public class ResourcesParser {
         ResStringArray result;
         String id;
 
-        parser.require(XmlPullParser.START_TAG, ns, STRING_ARRAY);
+        parser.require(XmlPullParser.START_TAG, ns, ResType.STRING_ARRAY.toString());
 
         if (!readFirstBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE)) {
             // We don't care about not-translatable strings
             skipInnerXml(parser);
-            parser.require(XmlPullParser.END_TAG, ns, STRING_ARRAY);
+            parser.require(XmlPullParser.END_TAG, ns, ResType.STRING_ARRAY.toString());
             return new ArrayList<>();
         } else {
             id = parser.getAttributeValue(null, ID);
@@ -159,8 +155,8 @@ public class ResourcesParser {
                     continue;
 
                 String name = parser.getName();
-                if (name.equals(ITEM)) {
-                    parser.require(XmlPullParser.START_TAG, ns, ITEM);
+                if (ResType.fromTagName(name) == ResType.ITEM) {
+                    parser.require(XmlPullParser.START_TAG, ns, name);
                     boolean modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
                     int index = readIntAttr(parser, INDEX, DEFAULT_INDEX);
 
@@ -183,12 +179,12 @@ public class ResourcesParser {
         ResPlurals result;
         String id;
 
-        parser.require(XmlPullParser.START_TAG, ns, PLURALS);
+        parser.require(XmlPullParser.START_TAG, ns, ResType.PLURALS.toString());
 
         if (!readFirstBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE)) {
             // We don't care about not-translatable strings
             skipInnerXml(parser);
-            parser.require(XmlPullParser.END_TAG, ns, PLURALS);
+            parser.require(XmlPullParser.END_TAG, ns, ResType.PLURALS.toString());
             return new ArrayList<>();
         } else {
             id = parser.getAttributeValue(null, ID);
@@ -199,8 +195,8 @@ public class ResourcesParser {
                     continue;
 
                 String name = parser.getName();
-                if (name.equals(ITEM)) {
-                    parser.require(XmlPullParser.START_TAG, ns, ITEM);
+                if (ResType.fromTagName(name) == ResType.ITEM) {
+                    parser.require(XmlPullParser.START_TAG, ns, name);
                     String quantity = parser.getAttributeValue(null, QUANTITY);
                     boolean modified = readBooleanAttr(parser, MODIFIED, DEFAULT_MODIFIED);
                     String content = ResTag.desanitizeContent(getInnerXml(parser));
@@ -362,7 +358,7 @@ public class ResourcesParser {
 
     private static void parseString(XmlSerializer serializer, ResString string)
             throws IOException {
-        serializer.startTag(ns, STRING);
+        serializer.startTag(ns, ResType.STRING.toString());
         serializer.attribute(ns, ID, string.getId());
 
         // Only save changes that differ from the default, to save space
@@ -370,16 +366,16 @@ public class ResourcesParser {
             serializer.attribute(ns, MODIFIED, Boolean.toString(string.wasModified()));
 
         serializer.text(ResTag.sanitizeContent(string.getContent()));
-        serializer.endTag(ns, STRING);
+        serializer.endTag(ns, ResType.STRING.toString());
     }
 
     private static void parseStringArray(XmlSerializer serializer, ResStringArray array)
             throws IOException {
-        serializer.startTag(ns, STRING_ARRAY);
+        serializer.startTag(ns, ResType.STRING_ARRAY.toString());
         serializer.attribute(ns, ID, array.getId());
 
         for (ResStringArray.Item item : array.expand()) {
-            serializer.startTag(ns, ITEM);
+            serializer.startTag(ns, ResType.ITEM.toString());
             if (item.wasModified() != DEFAULT_MODIFIED)
                 serializer.attribute(ns, MODIFIED, Boolean.toString(item.wasModified()));
 
@@ -387,29 +383,29 @@ public class ResourcesParser {
             // translated first the non-first item from the array. Darn it!
             serializer.attribute(ns, INDEX, Integer.toString(item.getIndex()));
             serializer.text(ResTag.sanitizeContent(item.getContent()));
-            serializer.endTag(ns, ITEM);
+            serializer.endTag(ns, ResType.ITEM.toString());
         }
 
-        serializer.endTag(ns, STRING_ARRAY);
+        serializer.endTag(ns, ResType.STRING_ARRAY.toString());
     }
 
     private static void parsePlurals(XmlSerializer serializer, ResPlurals plurals)
             throws IOException {
-        serializer.startTag(ns, PLURALS);
+        serializer.startTag(ns, ResType.PLURALS.toString());
         serializer.attribute(ns, ID, plurals.getId());
 
         for (ResPlurals.Item item : plurals.expand()) {
-            serializer.startTag(ns, ITEM);
+            serializer.startTag(ns, ResType.ITEM.toString());
             serializer.attribute(ns, QUANTITY, item.getQuantity());
 
             if (item.wasModified() != DEFAULT_MODIFIED)
                 serializer.attribute(ns, MODIFIED, Boolean.toString(item.wasModified()));
 
             serializer.text(ResTag.sanitizeContent(item.getContent()));
-            serializer.endTag(ns, ITEM);
+            serializer.endTag(ns, ResType.ITEM.toString());
         }
 
-        serializer.endTag(ns, PLURALS);
+        serializer.endTag(ns, ResType.PLURALS.toString());
     }
 
     //endregion
@@ -595,7 +591,7 @@ public class ResourcesParser {
             // thus there is no need to ensure whether we need to delete the line or not
             Matcher mItem;
             ResTag tag = resources.getTag(id);
-            switch (mTag.group(1)) {
+            switch (ResType.fromTagName(mTag.group(1))) {
                 case STRING:
                     holders.add(new ReplaceHolder(contentStart, contentEnd,
                             tag.getContent() == null ? "" : tag.getContent()));
@@ -613,7 +609,7 @@ public class ResourcesParser {
                     int i = 0;
                     mItem = RES_TAG_PATTERN.matcher(mTag.group(3));
                     while (mItem.find()) {
-                        if (mItem.group(1).equals(ITEM)) {
+                        if (ResType.fromTagName(mItem.group(1)) == ResType.ITEM) {
                             // We must take the base offset (contentStart) into account…
                             int cs = contentStart + mItem.start(3);
                             int ce = cs + mItem.group(3).length();
@@ -638,7 +634,7 @@ public class ResourcesParser {
                     }
                     mItem = RES_TAG_PATTERN.matcher(mTag.group(3));
                     while (mItem.find()) {
-                        if (mItem.group(1).equals(ITEM)) {
+                        if (ResType.fromTagName(mItem.group(1)) == ResType.ITEM) {
                             String quantity = getAttr(mItem.group(2), QUANTITY);
                             int cs = contentStart + mItem.start(3);
                             int ce = cs + mItem.group(3).length();
@@ -650,7 +646,7 @@ public class ResourcesParser {
                         }
                     }
                     break;
-                // case ITEM: break; // Should not be on the wild though
+                // case ResType.ITEM: break; // Should not be on the wild though
             }
         }
 
