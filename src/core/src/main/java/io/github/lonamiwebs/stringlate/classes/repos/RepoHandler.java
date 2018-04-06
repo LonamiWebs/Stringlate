@@ -449,8 +449,11 @@ public class RepoHandler implements Comparable<RepoHandler> {
         File[] files = getDefaultResourcesFiles();
         if (files.length > 1) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
+            HashMap<String, String> paths = settings.getRemotePaths();
             for (File template : files) {
-                final String header = String.format(XML_MERGING_HEADER, template.getName());
+                String path = paths.get(template.getName());
+                final String header = String.format(XML_MERGING_HEADER,
+                        path == null ? template.getName() : path);
                 try {
                     out.write(header.getBytes());
                     applyTemplate(template, locale, out);
