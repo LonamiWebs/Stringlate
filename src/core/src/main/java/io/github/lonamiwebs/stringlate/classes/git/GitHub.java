@@ -170,6 +170,17 @@ public class GitHub {
         }
     }
 
+    public static String getDefaultBranch(final RepoHandler repo) {
+        try {
+            JSONObject result = new JSONObject(NetworkUtils.performCall(getUrl(
+                    "repos/%s", repo.toOwnerRepo()), NetworkUtils.GET));
+            return result.getString("default_branch");
+        } catch (JSONException | InvalidObjectException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private static JSONArray getCommits(final String token, final RepoHandler repo)
             throws InvalidObjectException {
         try {

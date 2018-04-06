@@ -113,6 +113,14 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                 if (result.isEmpty()) {
                     result.add("master");
                 }
+                if (result.size() > 1) {
+                    String defaultBranch = GitHub.getDefaultBranch(mRepo);
+                    if (defaultBranch != null && result.contains(defaultBranch)) {
+                        result.remove(defaultBranch);
+                        result.add(0, defaultBranch);
+                    }
+                }
+
                 return result;
             }
 
