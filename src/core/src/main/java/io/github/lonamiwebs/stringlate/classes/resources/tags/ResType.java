@@ -42,4 +42,26 @@ public enum ResType {
                 return "unknown";
         }
     }
+
+    // Marks the ID so that it can't be confused with others based on a type.
+    // See issue #184, where a "<string>" and a "<string-array>" have the same name.
+    //
+    // This identifier is only used internally by the application.
+    // The '#' character is currently used for types while ':' for indices.
+    public String markID(String id) {
+        switch (this) {
+            case STRING_ARRAY:
+                return id + "#a";
+            case PLURALS:
+                return id + "#p";
+            default:
+                return id;
+        }
+    }
+
+    // Inverse operation to markID.
+    public static String resolveID(String id) {
+        int index = id.indexOf('#');
+        return index == -1 ? id : id.substring(0, index);
+    }
 }

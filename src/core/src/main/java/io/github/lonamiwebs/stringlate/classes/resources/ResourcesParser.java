@@ -129,7 +129,7 @@ public class ResourcesParser {
         if (id == null || content.isEmpty())
             return null;
         else
-            return new ResString(id, content, modified);
+            return new ResString(ResType.STRING.markID(id), content, modified);
     }
 
     // Reads a <string-array name="...">...</string-array> tag from the xml.
@@ -148,7 +148,7 @@ public class ResourcesParser {
             return new ArrayList<>();
         } else {
             id = parser.getAttributeValue(null, ID);
-            result = new ResStringArray(id);
+            result = new ResStringArray(ResType.STRING_ARRAY.markID(id));
 
             while (parser.next() != XmlPullParser.END_TAG) {
                 if (parser.getEventType() != XmlPullParser.START_TAG)
@@ -188,7 +188,7 @@ public class ResourcesParser {
             return new ArrayList<>();
         } else {
             id = parser.getAttributeValue(null, ID);
-            result = new ResPlurals(id);
+            result = new ResPlurals(ResType.PLURALS.markID(id));
 
             while (parser.next() != XmlPullParser.END_TAG) {
                 if (parser.getEventType() != XmlPullParser.START_TAG)
@@ -359,7 +359,7 @@ public class ResourcesParser {
     private static void parseString(XmlSerializer serializer, ResString string)
             throws IOException {
         serializer.startTag(ns, ResType.STRING.toString());
-        serializer.attribute(ns, ID, string.getId());
+        serializer.attribute(ns, ID, ResType.resolveID(string.getId()));
 
         // Only save changes that differ from the default, to save space
         if (string.wasModified() != DEFAULT_MODIFIED)
@@ -372,7 +372,7 @@ public class ResourcesParser {
     private static void parseStringArray(XmlSerializer serializer, ResStringArray array)
             throws IOException {
         serializer.startTag(ns, ResType.STRING_ARRAY.toString());
-        serializer.attribute(ns, ID, array.getId());
+        serializer.attribute(ns, ID, ResType.resolveID(array.getId()));
 
         for (ResStringArray.Item item : array.expand()) {
             serializer.startTag(ns, ResType.ITEM.toString());
@@ -392,7 +392,7 @@ public class ResourcesParser {
     private static void parsePlurals(XmlSerializer serializer, ResPlurals plurals)
             throws IOException {
         serializer.startTag(ns, ResType.PLURALS.toString());
-        serializer.attribute(ns, ID, plurals.getId());
+        serializer.attribute(ns, ID, ResType.resolveID(plurals.getId()));
 
         for (ResPlurals.Item item : plurals.expand()) {
             serializer.startTag(ns, ResType.ITEM.toString());
@@ -589,23 +589,16 @@ public class ResourcesParser {
             // Should never fail - plus do we even care it's empty? No resource would be found
             // Also, we obviously have this string translated (xml was cleaned, right?),
             // thus there is no need to ensure whether we need to delete the line or not
+            ResType type = ResType.fromTagName(mTag.group(1));
+            ResTag tag = resources.getTag(type.markID(id));
             Matcher mItem;
-            ResTag tag = resources.getTag(id);
-            switch (ResType.fromTagName(mTag.group(1))) {
+            switch (type) {
                 case STRING:
                     holders.add(new ReplaceHolder(contentStart, contentEnd,
                             tag.getContent() == null ? "" : tag.getContent()));
                     break;
                 case STRING_ARRAY:
-                    // See issue #184. Some strings have normal strings where an array is needed.
-                    ResStringArray array;
-                    if (tag instanceof ResStringArray.Item) {
-                        array = ((ResStringArray.Item) tag).getParent();
-                    } else {
-                        array = new ResStringArray(tag.getId());
-                        array.addItem(tag.getContent(), true, 0);
-                    }
-
+                    ResStringArray array = ((ResStringArray.Item) tag).getParent();
                     int i = 0;
                     mItem = RES_TAG_PATTERN.matcher(mTag.group(3));
                     while (mItem.find()) {
@@ -624,14 +617,7 @@ public class ResourcesParser {
                     }
                     break;
                 case PLURALS:
-                    ResPlurals plurals;
-                    if (tag instanceof ResPlurals.Item) {
-                        plurals = ((ResPlurals.Item) tag).getParent();
-                    } else {
-                        plurals = new ResPlurals(tag.getId());
-                        plurals.addItem("other",
-                                tag.getContent() == null ? "" : tag.getContent(), true);
-                    }
+                    ResPlurals plurals = ((ResPlurals.Item) tag).getParent();
                     mItem = RES_TAG_PATTERN.matcher(mTag.group(3));
                     while (mItem.find()) {
                         if (ResType.fromTagName(mItem.group(1)) == ResType.ITEM) {
