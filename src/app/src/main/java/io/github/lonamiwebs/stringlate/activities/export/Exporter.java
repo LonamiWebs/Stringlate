@@ -125,7 +125,7 @@ class Exporter {
 
     static int createPullRequestExporter(
             final RepoHandler originalRepo, final boolean needFork,
-            final String locale, final String commitMessage,
+            final String locale, final String baseBranch, final String commitMessage,
             final String username, final String token) {
         return addExporter(new CallableExporter() {
 
@@ -197,7 +197,7 @@ class Exporter {
 
                     // This may throw another InvalidObjectException
                     commitResult = GitHub.createPullRequest(
-                            token, originalRepo, title, username + ":" + branch, branch, body
+                            token, originalRepo, title, username + ":" + branch, baseBranch, body
                     );
                 }
 
