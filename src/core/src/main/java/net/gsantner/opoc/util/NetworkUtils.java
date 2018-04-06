@@ -59,7 +59,11 @@ public class NetworkUtils {
         try {
             connection = (HttpURLConnection) url.openConnection();
             connection.connect();
-            input = connection.getInputStream();
+            if (connection.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST) {
+                input = connection.getInputStream();
+            } else {
+                input = connection.getErrorStream();
+            }
 
             if (!outFile.getParentFile().isDirectory())
                 if (!outFile.getParentFile().mkdirs())
@@ -153,7 +157,13 @@ public class NetworkUtils {
                 output.close();
             }
 
-            return FileUtils.readCloseTextStream(conn.getInputStream());
+            InputStream input;
+            if (conn.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST) {
+                input = conn.getInputStream();
+            } else {
+                input = conn.getErrorStream();
+            }
+            return FileUtils.readCloseTextStream(input);
         } catch (Exception e) {
             e.printStackTrace();
         }

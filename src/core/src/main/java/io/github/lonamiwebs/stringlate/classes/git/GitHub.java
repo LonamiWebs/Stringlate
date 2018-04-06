@@ -120,6 +120,11 @@ public class GitHub {
             return new JSONArray(NetworkUtils.performCall(getUrl(
                     "repos/%s/collaborators?access_token=%s", repo.toOwnerRepo(), token), NetworkUtils.GET));
         } catch (JSONException e) {
+            // We might not have permission so the response isn't an array, rather an object:
+            // {
+            //   "message": "Must have push access to view repository collaborators.",
+            //   "documentation_url": "https://developer.github.com/v3/repos/collaborators/#list-collaborators"
+            // }
             e.printStackTrace();
             return null;
         }
