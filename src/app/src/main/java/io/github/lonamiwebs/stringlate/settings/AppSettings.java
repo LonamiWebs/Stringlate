@@ -3,14 +3,14 @@ package io.github.lonamiwebs.stringlate.settings;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import net.gsantner.opoc.util.AppSettingsBase;
+import net.gsantner.opoc.preference.SharedPreferencesPropertyBackend;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.interfaces.SlAppSettings;
 
 import static io.github.lonamiwebs.stringlate.classes.git.GitHub.GITHUB_WANTED_SCOPES;
 
-public class AppSettings extends AppSettingsBase implements SlAppSettings {
+public class AppSettings extends SharedPreferencesPropertyBackend implements SlAppSettings {
     //region Constructor
 
     public AppSettings(final Context context) {

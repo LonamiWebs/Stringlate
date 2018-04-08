@@ -59,7 +59,6 @@ import android.support.v7.preference.PreferenceScreen;
 import android.text.TextUtils;
 import android.view.View;
 
-import net.gsantner.opoc.util.AppSettingsBase;
 import net.gsantner.opoc.util.Callback;
 import net.gsantner.opoc.util.ContextUtils;
 
@@ -83,7 +82,7 @@ public abstract class GsPreferenceFragmentCompat extends PreferenceFragmentCompa
 
     public abstract String getFragmentTag();
 
-    protected abstract AppSettingsBase getAppSettings(Context context);
+    protected abstract SharedPreferencesPropertyBackend getAppSettings(Context context);
 
     //
     // Virtual
@@ -126,7 +125,7 @@ public abstract class GsPreferenceFragmentCompat extends PreferenceFragmentCompa
     //
 
     private final List<PreferenceScreen> _prefScreenBackstack = new ArrayList<>();
-    private AppSettingsBase _asb;
+    private SharedPreferencesPropertyBackend _asb;
     protected ContextUtils _cu;
 
     @Override
@@ -145,7 +144,7 @@ public abstract class GsPreferenceFragmentCompat extends PreferenceFragmentCompa
             final Integer color = getIconTintColor();
             if (view != null && color != null) {
                 Runnable r = () -> tintAllPrefIcons(frag, color);
-                for (int delayFactor : new int[]{1, 10, 50, 100, 500}) {
+                for (long delayFactor : new int[]{1, 10, 50, 100, 500}) {
                     view.postDelayed(r, delayFactor * DEFAULT_ICON_TINT_DELAY);
                 }
             }

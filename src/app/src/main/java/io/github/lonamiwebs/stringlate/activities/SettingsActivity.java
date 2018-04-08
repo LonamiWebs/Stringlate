@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.gsantner.opoc.preference.GsPreferenceFragmentCompat;
-import net.gsantner.opoc.util.AppSettingsBase;
+import net.gsantner.opoc.preference.SharedPreferencesPropertyBackend;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.git.GitHub;
@@ -86,7 +86,7 @@ public class SettingsActivity extends AppCompatActivity {
         protected AppSettings _as;
 
         @Override
-        protected AppSettingsBase getAppSettings(Context context) {
+        protected SharedPreferencesPropertyBackend getAppSettings(Context context) {
             if (_as == null) {
                 _as = new AppSettings(context);
             }
