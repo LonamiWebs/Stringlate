@@ -82,7 +82,7 @@ public class ResourcesParser {
             throws XmlPullParserException, IOException {
 
         parser.require(XmlPullParser.START_TAG, ns, RESOURCES);
-        if (MISSING_TRANSLATION.equals( parser.getAttributeValue(null, TOOLS_IGNORE))) {
+        if (MISSING_TRANSLATION.equals(parser.getAttributeValue(null, TOOLS_IGNORE))) {
             // tools:ignore="MissingTranslation"
             // Since missing translations can be ignored, they don't need a translation
             return;
@@ -123,7 +123,7 @@ public class ResourcesParser {
         boolean modified;
 
         parser.require(XmlPullParser.START_TAG, ns, ResType.STRING.toString());
-        if (MISSING_TRANSLATION.equals( parser.getAttributeValue(null, TOOLS_IGNORE))) {
+        if (MISSING_TRANSLATION.equals(parser.getAttributeValue(null, TOOLS_IGNORE))) {
             return null;
         }
 
@@ -151,7 +151,7 @@ public class ResourcesParser {
         String id;
 
         parser.require(XmlPullParser.START_TAG, ns, ResType.STRING_ARRAY.toString());
-        if (MISSING_TRANSLATION.equals( parser.getAttributeValue(null, TOOLS_IGNORE))) {
+        if (MISSING_TRANSLATION.equals(parser.getAttributeValue(null, TOOLS_IGNORE))) {
             return null;
         }
 
@@ -194,7 +194,7 @@ public class ResourcesParser {
         String id;
 
         parser.require(XmlPullParser.START_TAG, ns, ResType.PLURALS.toString());
-        if (MISSING_TRANSLATION.equals( parser.getAttributeValue(null, TOOLS_IGNORE))) {
+        if (MISSING_TRANSLATION.equals(parser.getAttributeValue(null, TOOLS_IGNORE))) {
             return null;
         }
 
