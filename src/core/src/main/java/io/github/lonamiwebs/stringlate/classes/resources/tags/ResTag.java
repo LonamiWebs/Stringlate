@@ -271,7 +271,8 @@ public abstract class ResTag implements Comparable<ResTag> {
 
                 // Quotes are a bit special
                 case '"':
-                    if (i == 0 || i == length - 1)
+                    if ((i == 0 && content.charAt(length - 1) == '"') ||
+                            (i == length - 1 && content.charAt(0) == '"'))
                         sb.append('"');
                     else
                         sb.append("\\\"");
