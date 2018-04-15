@@ -82,20 +82,13 @@ public class SettingsActivity extends AppCompatActivity {
         t.replace(R.id.settings__activity__fragment_placeholder, fragment, tag).commit();
     }
 
-    public static abstract class StringlateSettingsFragment extends GsPreferenceFragmentCompat {
-        protected AppSettings _as;
-
+    public static abstract class StringlateSettingsFragment extends GsPreferenceFragmentCompat<AppSettings> {
         @Override
-        protected SharedPreferencesPropertyBackend getAppSettings(Context context) {
-            if (_as == null) {
-                _as = new AppSettings(context);
+        protected AppSettings getAppSettings(Context context) {
+            if (_appSettings != null) {
+                return _appSettings;
             }
-            return _as;
-        }
-
-        @Override
-        public Integer getIconTintColor() {
-            return Color.BLACK;
+            return new AppSettings(context);
         }
 
         @Override
@@ -125,6 +118,11 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         @Override
+        protected AppSettings getAppSettings(Context context) {
+            return super.getAppSettings(context);
+        }
+
+        @Override
         public Boolean onPreferenceClicked(Preference preference) {
             if (isAdded() && preference.hasKey()) {
                 String key = preference.getKey();
@@ -142,9 +140,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         @Override
-        public void updateSummaries() {
+        public synchronized void doUpdatePreferences() {
             if (isAdded() && !isDetached()) {
-                updateSummary(R.string.pref_key__github_authentication_request, getString(_as.hasGitHubAuthorization()
+                updateSummary(R.string.pref_key__github_authentication_request, getString(_appSettings.hasGitHubAuthorization()
                         ? R.string.github_yes_logged_long : R.string.github_not_logged_long)
                 );
             }
@@ -152,7 +150,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         protected void onPreferenceChanged(SharedPreferences prefs, String key) {
-            updateSummaries();
+            doUpdatePreferences();
             activityRetVal = activityRetVal != RESULT.CHANGE_RESTART ? RESULT.CHANGE : activityRetVal;
         }
     }
