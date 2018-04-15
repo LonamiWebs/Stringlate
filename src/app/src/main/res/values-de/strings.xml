@@ -56,7 +56,7 @@
     <string name="import_file_failed">Konnte das ausgewählte Element nicht importieren</string>
     <string name="import_file_success">Import erfolgreich</string>
     <string name="update_applications">Applikationen updaten</string>
-    <string name="apps_repo_not_downloaded">Das Anwendungs-Repo wurde noch nicht heruntergeladen. Tippen auf die Menüschaltfläche \"%s\", um den Repo-Index herunterzuladen und verfügbaren Anwendungen zu erkunden.</string>
+    <string name="apps_repo_not_downloaded">Anwendungs-Informationen aus der F-Droid Repo wurden noch nicht heruntergeladen. Drücke den Button \"%s\", um den Repo-Index herunterzuladen und Anwendungen zu finden.</string>
     <string name="sync_failed">Synchronisation von %s fehlgeschlagen.</string>
     <string name="done">Fertig!</string>
     <string name="search">Suche</string>

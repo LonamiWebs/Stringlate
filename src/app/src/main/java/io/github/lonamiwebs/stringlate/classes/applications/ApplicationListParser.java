@@ -195,7 +195,12 @@ class ApplicationListParser {
     private static void writeTag(XmlSerializer serializer, String tag, String content)
             throws IOException {
         serializer.startTag(ns, tag);
-        serializer.text(content);
+        try {
+            serializer.text(content);
+        } catch (IllegalArgumentException exception){
+            // XML Parser internal broken on pre LL
+            serializer.text("");
+        }
         serializer.endTag(ns, tag);
     }
 
