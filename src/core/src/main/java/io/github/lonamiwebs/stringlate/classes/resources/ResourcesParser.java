@@ -50,6 +50,9 @@ public class ResourcesParser {
             "translatable", "translate", "translateable"
     };
 
+    // Nor they use "translatable" instead ignoring missing
+    private final static String TOOLS_IGNORE = "tools:ignore";
+    private final static String MISSING_TRANSLATION = "MissingTranslation";
 
     private final static boolean DEFAULT_TRANSLATABLE = true;
     private final static boolean DEFAULT_MODIFIED = false;
@@ -79,6 +82,11 @@ public class ResourcesParser {
             throws XmlPullParserException, IOException {
 
         parser.require(XmlPullParser.START_TAG, ns, RESOURCES);
+        if (MISSING_TRANSLATION.equals( parser.getAttributeValue(null, TOOLS_IGNORE))) {
+            // tools:ignore="MissingTranslation"
+            // Since missing translations can be ignored, they don't need a translation
+            return;
+        }
 
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG)
@@ -115,6 +123,9 @@ public class ResourcesParser {
         boolean modified;
 
         parser.require(XmlPullParser.START_TAG, ns, ResType.STRING.toString());
+        if (MISSING_TRANSLATION.equals( parser.getAttributeValue(null, TOOLS_IGNORE))) {
+            return null;
+        }
 
         id = parser.getAttributeValue(null, ID);
 
@@ -140,6 +151,9 @@ public class ResourcesParser {
         String id;
 
         parser.require(XmlPullParser.START_TAG, ns, ResType.STRING_ARRAY.toString());
+        if (MISSING_TRANSLATION.equals( parser.getAttributeValue(null, TOOLS_IGNORE))) {
+            return null;
+        }
 
         if (!readFirstBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE)) {
             // We don't care about not-translatable strings
@@ -180,6 +194,9 @@ public class ResourcesParser {
         String id;
 
         parser.require(XmlPullParser.START_TAG, ns, ResType.PLURALS.toString());
+        if (MISSING_TRANSLATION.equals( parser.getAttributeValue(null, TOOLS_IGNORE))) {
+            return null;
+        }
 
         if (!readFirstBooleanAttr(parser, TRANSLATABLE, DEFAULT_TRANSLATABLE)) {
             // We don't care about not-translatable strings
