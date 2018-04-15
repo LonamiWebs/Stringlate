@@ -259,9 +259,9 @@ public abstract class ResTag implements Comparable<ResTag> {
                 // We might or not need to replace <>
                 case '<':
                     if (replaceLtGt) {
-                        insideAngleBrackets = true;
                         sb.append("&lt;");
                     } else {
+                        insideAngleBrackets = true;
                         sb.append(c);
                     }
                     break;
