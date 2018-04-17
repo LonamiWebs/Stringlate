@@ -80,8 +80,15 @@ public class CreateIssueActivity extends AppCompatActivity {
             mIssueDescriptionEditText.setError(getString(R.string.issue_desc_x));
             return;
         } else {
-            String xml = mRepo.mergeDefaultTemplate(mLocale);
-            description = description.replace("%x", String.format("```xml\n%s\n```", xml));
+            // GitHub seems to need two empty newlines after HTML tags if we want Markdown again.
+            // It doesn't seem to be necessary for the closing tag, but keep it for safety.
+            String xml = mRepo.mergeDefaultTemplate(
+                    mLocale,
+                    "<details><summary>",
+                    "</summary>\n\n```xml\n",
+                    "\n```\n\n</details>\n"
+            );
+            description = description.replace("%x", xml);
         }
         if (!new ContextUtils(this).isConnectedToInternet(R.string.no_internet_connection))
             return;

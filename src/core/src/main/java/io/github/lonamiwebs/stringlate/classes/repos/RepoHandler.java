@@ -51,8 +51,6 @@ public class RepoHandler implements Comparable<RepoHandler> {
     private StringsSource mSyncingSource;
     private boolean wasCancelled;
 
-    private final static String XML_MERGING_HEADER = "<!-- File \"%s\" -->\n";
-
     //endregion
 
     //region Constructors
@@ -445,26 +443,29 @@ public class RepoHandler implements Comparable<RepoHandler> {
 
     // Never returns null
     public String mergeDefaultTemplate(final String locale) {
+        return mergeDefaultTemplate(locale,
+                "<!-- File \"", "\" -->\n", "\n");
+    }
+
+    public String mergeDefaultTemplate(
+            final String locale,
+            final String beforeName, final String betweenNameXml, final String afterXml) {
         // TODO What should we do if any fails? How can it even fail? No translations for a file?
         File[] files = getDefaultResourcesFiles();
-        if (files.length > 1) {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            HashMap<String, String> paths = settings.getRemotePaths();
-            for (File template : files) {
-                String path = paths.get(template.getName());
-                final String header = String.format(XML_MERGING_HEADER,
-                        path == null ? template.getName() : path);
-                try {
-                    out.write(header.getBytes());
-                    applyTemplate(template, locale, out);
-                    out.write("\n".getBytes());
-                } catch (IOException ignored) {
-                }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        HashMap<String, String> paths = settings.getRemotePaths();
+        for (File template : files) {
+            String path = paths.get(template.getName());
+            try {
+                out.write(beforeName.getBytes());
+                out.write((path == null ? template.getName() : path).getBytes());
+                out.write(betweenNameXml.getBytes());
+                applyTemplate(template, locale, out);
+                out.write(afterXml.getBytes());
+            } catch (IOException ignored) {
             }
-            return out.toString();
-        } else {
-            return applyTemplate(files[0], locale);
         }
+        return out.toString();
     }
 
     //endregion
