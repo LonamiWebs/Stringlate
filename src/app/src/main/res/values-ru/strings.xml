@@ -83,6 +83,7 @@
     <string name="auth_success">Успешная авторизация</string>
     <string name="auth_failure">Ошибка авторизации</string>
     <string name="completing_auth_ellipsis">Завершение авторизации…</string>
+    <string name="gist_github_login_needed">Для публикации Gist\'ов вам необходимо открыть настройки Stringlate, выбрать \'%s\' и  подтвердить запрос авторизации на GitHub.</string>
     <string name="create_issue">Создать issue</string>
     <string name="creating_issue_long_ellipsis">Попытка создания issue на GitHub…</string>
     <string name="issue_description">Примечание к issue (%x заменится переводом):</string>
@@ -109,7 +110,7 @@
     <string name="title_empty">Название не может быть пустым.</string>
     <string name="issue_desc_x">Описание issue должно содержать \"%x\".</string>
     <string name="no_strings_to_export">Нет строк для экспорта</string>
-    <string name="filtering_strings_with">Фильтрация строк с \"%s"</string>
+    <string name="filtering_strings_with">Фильтрация строк с \"%s\"</string>
     <string name="clear_filter">Очистить фильтр</string>
     <string name="sort_by_ellipsis">Сортировка…</string>
     <string name="sort_alphabetically">По алфавиту</string>
@@ -131,4 +132,11 @@
     <string name="appearance">Оформление</string>
     <string name="user_accounts">Учетные записи</string>
     <string name="more">Больше</string>
+    <string name="next_steps">После того, как вы переведете все строки, нажмите на иконку с тремя точками справа сверху и выберите \"%s\", чтобы поделиться вашей работой с разработчиком, чтобы он мог рассмотреть и использовать её.\n
+   \n
+   Если вы хотите рассмотреть уже переведенные строки, включите опцию \"%s\".</string>
+    <string name="cancel_sync">Отменить синхронизацию?</string>
+    <string name="exported_to_hastebin">Экспорт на Hastebin прошёл успешно. URL скопирован в буфер обмена</string>
+    <string name="export_unsuccessful">Экспортирование не удалось</string>
+    <string name="base_branch_colon">Экспорт на Hastebin прошёл успешно. URL скопирован в</string>
 </resources>
