@@ -138,9 +138,14 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
     public void setFilter(@NonNull String filter) {
         mFilteredLocales.clear();
         filter = filter.toLowerCase();
-        for (Locale locale : mLocales)
-            if (locale.getDisplayLanguage().toLowerCase().contains(filter))
+        for (Locale locale : mLocales) {
+            if (locale.getDisplayLanguage().toLowerCase().contains(filter)) {
                 mFilteredLocales.add(locale);
+            } else if (LocaleString.getFullCode(locale).toLowerCase().equals(filter)) {
+                // Insert at the beginning since these exact matches have priority
+                mFilteredLocales.add(0, locale);
+            }
+        }
 
         notifyDataSetChanged();
     }
