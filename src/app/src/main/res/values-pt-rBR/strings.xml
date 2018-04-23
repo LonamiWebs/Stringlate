@@ -83,6 +83,7 @@
     <string name="auth_success">Sucesso na autorização</string>
     <string name="auth_failure">Falha na autorização</string>
     <string name="completing_auth_ellipsis">Completando autorização...</string>
+    <string name="gist_github_login_needed">Para postar Gists é necessário ir às definições do Stringlate, selecionar \'%s\' e confirmar o pedido de autorização no GitHub.</string>
     <string name="create_issue">Criar tarefa</string>
     <string name="creating_issue_long_ellipsis">Tentando criar a tarefa no GitHub</string>
     <string name="issue_description">Descrição da tarefa (% será substituída pela tradução):</string>
@@ -109,7 +110,7 @@
     <string name="title_empty">O título não pode ser vazio.</string>
     <string name="issue_desc_x">A descrição da tarefa deve conter \"%x\".</string>
     <string name="no_strings_to_export">Não há strings para exportar.</string>
-    <string name="filtering_strings_with">Filtrando strings com \"%s"</string>
+    <string name="filtering_strings_with">Filtrando strings com \"%s\"</string>
     <string name="clear_filter">Limpar filtro</string>
     <string name="sort_by_ellipsis">Ordenar por...</string>
     <string name="sort_alphabetically">Alfabeticamente</string>
@@ -131,4 +132,11 @@
     <string name="appearance">Aparência</string>
     <string name="user_accounts">Contas de usuário</string>
     <string name="more">Mais</string>
+    <string name="next_steps">Assim que todas as strings tiverem sido traduzidas, pressione o menú de três pontos no canto superior direito e selecione \"%s\" para partilhar o seu trabalho com o responsável do projeto para que possa rever e usar.\n
+ \n
+ Caso pretenda rever algumas strings já traduzidas, ative a opção \"%s\".</string>
+    <string name="cancel_sync">Cancelar sincronização?</string>
+    <string name="exported_to_hastebin">Exportado para Hastebin com sucesso. URL copiado para o clipboard</string>
+    <string name="export_unsuccessful">Exportação sem sucesso</string>
+    <string name="base_branch_colon">Ramo base:</string>
 </resources>
