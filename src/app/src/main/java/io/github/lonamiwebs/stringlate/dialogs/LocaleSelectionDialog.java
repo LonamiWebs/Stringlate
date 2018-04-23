@@ -1,6 +1,7 @@
 package io.github.lonamiwebs.stringlate.dialogs;
 
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -163,6 +164,19 @@ public class LocaleSelectionDialog extends DialogFragment {
             onLocaleSelected = (OnLocaleSelected) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
+                    + " must implement OnLocaleSelected");
+        }
+    }
+
+    // Old devices don't have onAttach(Context), so onLocaleSelected remains null.
+    // We can implement both methods (since this is "deprecated") to avoid #195.
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            onLocaleSelected = (OnLocaleSelected) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
                     + " must implement OnLocaleSelected");
         }
     }
