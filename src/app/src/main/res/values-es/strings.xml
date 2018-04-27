@@ -83,6 +83,7 @@
     <string name="auth_success">Autorización completada</string>
     <string name="auth_failure">Falló la Autorización</string>
     <string name="completing_auth_ellipsis">Finalizando autorización…</string>
+    <string name="gist_github_login_needed">Para publicar Gists necesitas abrir la configuración de Stringlate, seleccionar \'% s\' y confirmar la solicitud de autorización en GitHub.</string>
     <string name="create_issue">Crear incidencia</string>
     <string name="creating_issue_long_ellipsis">Intentando crear la incidencia en GitHub…</string>
     <string name="issue_description">Descripción de la incidencia (se reemplazará %x con la traducción):</string>
@@ -109,7 +110,7 @@
     <string name="title_empty">El título no puede estar vacío.</string>
     <string name="issue_desc_x">La descripción debe contener \"%x\".</string>
     <string name="no_strings_to_export">No hay cadenas para exportar.</string>
-    <string name="filtering_strings_with">Filtrando cadenas por \"%s"</string>
+    <string name="filtering_strings_with">Filtrando cadenas por \"%s\"</string>
     <string name="clear_filter">Borrar filtro</string>
     <string name="sort_by_ellipsis">Ordenar por…</string>
     <string name="sort_alphabetically">Alfabéticamente</string>
@@ -131,5 +132,11 @@
     <string name="appearance">Apariencia</string>
     <string name="user_accounts">Cuentas de Usuario</string>
     <string name="more">Más</string>
-    <string name="next_steps">Una vez has traducido todo el texto, abre el menú (los tres puntos arriba a la derecha) y selecciona \"%s\" para compartir tu trabajo con el dueño del proyecto para que revise y use tu trabajo.\n\nSi te gustaría volver a revisar algún texto que ya está traducido, activa la opción de \"%s\" para ello.</string>
+    <string name="next_steps">Una vez has traducido todo el texto, abre el menú (los tres puntos arriba a la derecha) y selecciona \"%s\" para compartir tu trabajo con el dueño del proyecto para que revise y use tu trabajo.\n
+  \n
+  Si te gustaría volver a revisar algún texto que ya está traducido, activa la opción de \"%s\" para ello.</string>
+    <string name="cancel_sync">¿Cancelar la sincronización?</string>
+    <string name="exported_to_hastebin">Exportado satisfactoriamente a Hastebin. URL copiada al portapapeles</string>
+    <string name="export_unsuccessful">Exportación sin éxito</string>
+    <string name="base_branch_colon">Rama base:</string>
 </resources>
