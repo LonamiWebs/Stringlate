@@ -18,7 +18,7 @@
     <string name="no_strings_left">Er zijn geen strings meer beschikbaar.</string>
     <string name="save_error">Wijzigingen konden niet worden opgeslagen.</string>
     <string name="add_locale_to_start">Voeg een nieuwe locale toe om te beginnen.</string>
-    <string name="cancel">Annulier</string>
+    <string name="cancel">Annuleren</string>
     <string name="create_locale_error">De nieuw lokale bestand kon niet worden aangemaakt.</string>
     <string name="show_translated_strings">Toon de vertaalde strings</string>
     <string name="show_identical_strings_only">Toon alleen dezelfde strings</string>
@@ -83,6 +83,7 @@
     <string name="auth_success">Autorisatie gelukt</string>
     <string name="auth_failure">Autorisatie mislukt</string>
     <string name="completing_auth_ellipsis">Autorisatie voltooien…</string>
+    <string name="gist_github_login_needed">Om Gists te plaatsen, moet je Stringlate-instellingen openen, \'% s\' selecteren en het autorisatieverzoek op GitHub bevestigen.</string>
     <string name="create_issue">Aanmaken van een melding</string>
     <string name="creating_issue_long_ellipsis">Er wordt geprobeerd om een melding aan te maken op GitHub…</string>
     <string name="issue_description">Melding omschrijving (%x zal worden vervangen door de vertaling):</string>
@@ -131,4 +132,11 @@
     <string name="appearance">Uiterlijk</string>
     <string name="user_accounts">Gebruiker accounts</string>
     <string name="more">Meer</string>
+    <string name="next_steps">Zodra alle strings zijn vertaald, tik je rechtsboven op het menu met de drie stippen en selecteer je \"% s\" om je werk met de project-maintainer te delen, zodat ze deze kunnen bekijken en gebruiken.\n
+ \n
+ Als u enkele van de reeds vertaalde tekenreeksen wilt bekijken, schakel dan de \"% s\" -optie in om dit te doen.</string>
+    <string name="cancel_sync">Synchronisatie annuleren?</string>
+    <string name="exported_to_hastebin">Succesvol geëxporteerd naar Hastebin. URL gekopieerd naar klembord</string>
+    <string name="export_unsuccessful">Export mislukt</string>
+    <string name="base_branch_colon">Base branch:</string>
 </resources>
