@@ -3,6 +3,7 @@ package io.github.lonamiwebs.stringlate.activities.translate;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
@@ -233,6 +234,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
         mShowTranslated = mShowTranslatedMenuItem.isChecked();
         mShowIdentical = mShowIdenticalMenuItem.isChecked();
+
         return true;
     }
 
