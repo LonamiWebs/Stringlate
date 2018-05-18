@@ -1,9 +1,12 @@
 package io.github.lonamiwebs.stringlate.activities.repositories;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -49,6 +52,10 @@ public class RepositoriesActivity extends AppCompatActivity {
         mBottomNavigationView = findViewById(R.id.navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        if (getSupportActionBar()!= null) {
+            getSupportActionBar().hide();
+        }
+
         // Check if we opened the application because a GitHub link was clicked
         // If this is the case then we should show the "Add repository" fragment
         final Intent intent = getIntent();
@@ -90,39 +97,6 @@ public class RepositoriesActivity extends AppCompatActivity {
         if (SettingsActivity.activityRetVal == SettingsActivity.RESULT.CHANGE_RESTART) {
             SettingsActivity.activityRetVal = SettingsActivity.RESULT.NOCHANGE;
             recreate();
-        }
-    }
-
-    //endregion
-
-    //region Menu
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_repositories, menu);
-        return true;
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Online help
-            case R.id.action_help:
-                // Avoid the "Remove unused resources" from removing these files…
-                if (R.raw.en != 0 && R.raw.es != 0) {
-                    Intent intent = new Intent(this, BrowserActivity.class);
-                    intent.putExtra(BrowserActivity.EXTRA_DO_SHOW_STRINGLATE_HELP, true);
-                    startActivity(intent);
-                }
-                return true;
-            // Login to GitHub
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 

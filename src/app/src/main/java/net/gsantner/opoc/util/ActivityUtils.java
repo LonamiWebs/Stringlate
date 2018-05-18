@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
@@ -161,6 +162,13 @@ public class ActivityUtils extends net.gsantner.opoc.util.ContextUtils {
         } catch (ActivityNotFoundException e) {
             _activity.startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http://play.google.com/store/apps/" + pkgId)));
+        }
+    }
+
+    public void setStatusbarColor(int color, boolean... fromRes) {
+        color = (fromRes != null && fromRes.length > 0 && fromRes[0]) ? ContextCompat.getColor(_context, color) : color;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            _activity.getWindow().setStatusBarColor(color);
         }
     }
 }
