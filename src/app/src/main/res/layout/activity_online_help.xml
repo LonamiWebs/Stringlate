@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/zero"
-    tools:context="io.github.lonamiwebs.stringlate.activities.BrowserActivity">
+    tools:context="io.github.lonamiwebs.stringlate.activities.info.BrowserActivity">
 
     <WebView
         android:id="@+id/webview"

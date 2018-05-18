@@ -46,7 +46,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
+import io.github.lonamiwebs.stringlate.activities.info.BrowserActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity;
