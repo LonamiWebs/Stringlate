@@ -25,7 +25,7 @@
     <string name="delete_ellipsis">Löschen…</string>
     <string name="delete_string">Zeichenkette löschen</string>
     <string name="delete_locale">Sprachdatei löschen</string>
-    <string name="delete_repository">Repo löschen</string>
+    <string name="delete_repository">Repo löschen (lokal)</string>
     <string name="no_locale_selected">Es wurde keine Sprachdatei ausgewählt.</string>
     <string name="sure_question">Bist du sicher?</string>
     <string name="delete_locale_confirm_long">Bist du sicher, dass du die Sprachdatei \"%s\" löschen möchtest? Alle Zeichenketten gehen dadurch verloren.</string>
@@ -139,4 +139,5 @@
     <string name="exported_to_hastebin">Erfolgreich zu Hastebin exportiert. URL in die Zwischenablage kopiert</string>
     <string name="export_unsuccessful">Exportieren fehlgeschlagen</string>
     <string name="base_branch_colon">Ausgangs-Branch:</string>
+    <string name="repository_plural">Repositories</string>
 </resources>

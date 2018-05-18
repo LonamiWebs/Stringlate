@@ -25,7 +25,7 @@
     <string name="delete_ellipsis">Delete…</string>
     <string name="delete_string">Delete string</string>
     <string name="delete_locale">Delete locale</string>
-    <string name="delete_repository">Delete repository</string>
+    <string name="delete_repository">Delete repository (locally)</string>
     <string name="no_locale_selected">There is no locale selected.</string>
     <string name="sure_question">Are you sure?</string>
     <string name="delete_locale_confirm_long">Do you really wish to delete the locale \"%s\"? All its strings will be lost.</string>
@@ -66,6 +66,7 @@
     <string name="pulling_strings_long">Pulling new strings will keep your translation intact while possibly adding new untranslated strings. You should do this before uploading your translations to make sure you\'ve translated everything. Do you wish to continue?</string>
     <string name="history">History</string>
     <string name="add_project">Add project</string>
+    <string name="repository_plural">Repositories</string>
     <string name="start_translating">Start translating</string>
     <string name="history_no_repos_hint">New here? Head to the \"%s\" tab to get started!</string>
     <string name="history_contains_repos_hint">These are your previously synchronized repositories. Select one below or add a new one to continue.</string>
