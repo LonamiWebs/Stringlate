@@ -22,6 +22,7 @@ import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_REPO_DISCOVERED;
 
+// aka MainActivity
 public class RepositoriesActivity extends AppCompatActivity {
 
     //region Members
@@ -144,6 +145,9 @@ public class RepositoriesActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_add_repository:
                     mViewPager.setCurrentItem(1, true);
+                    return true;
+                case R.id.navigation_more:
+                    mViewPager.setCurrentItem(2, true);
                     return true;
             }
             return false;
