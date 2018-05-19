@@ -89,7 +89,6 @@
         <Preference
             android:icon="@drawable/ic_info_black_24dp"
             android:key="@string/pref_key__more_info__contributors_public_info"
-            android:summary="@string/contributors_public_info"
             android:title="@string/contributors" />
 
     </PreferenceCategory>
