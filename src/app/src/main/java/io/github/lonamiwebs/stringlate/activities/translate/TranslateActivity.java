@@ -3,7 +3,6 @@ package io.github.lonamiwebs.stringlate.activities.translate;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
@@ -26,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -78,7 +78,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
     private AppSettings mSettings;
 
-    private EditText mOriginalStringEditText;
+    private TextView mOriginalStringEditText;
     private EditText mTranslatedStringEditText;
     private TextView mCopyStringTextView;
 
@@ -90,7 +90,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
     private ProgressBar mProgressProgressBar;
     private TextView mProgressTextView;
 
-    private LinearLayout mFilterAppliedLayout;
+    private FrameLayout mFilterAppliedLayout;
     private TextView mFilterAppliedTextView;
     private TextView mUsesTranslationServiceTextView;
 
@@ -152,7 +152,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         mProgressProgressBar = findViewById(R.id.progressProgressBar);
         mProgressTextView = findViewById(R.id.progressTextView);
 
-        mFilterAppliedLayout = findViewById(R.id.filterAppliedLayout);
+        mFilterAppliedLayout = findViewById(R.id.filter_applied_overlay_layout);
         mFilterAppliedTextView = findViewById(R.id.filterAppliedTextView);
         mUsesTranslationServiceTextView = findViewById(R.id.usesTranslationServiceTextView);
 
@@ -161,6 +161,8 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
         mRepo = RepoHandlerHelper.fromBundle(getIntent().getBundleExtra(EXTRA_REPO));
         setTitle(mRepo.getProjectName());
+
+        mTranslatedStringEditText.postDelayed(() -> mTranslatedStringEditText.requestFocus(), 200);
 
         loadResources();
         onFilterUpdated(mRepo.settings.getStringFilter());
@@ -1013,9 +1015,9 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
     private void checkTranslationVisibility() {
         if (mLocaleSpinner.getCount() == 0) {
             Toast.makeText(this, R.string.add_locale_to_start, Toast.LENGTH_SHORT).show();
-            findViewById(R.id.translationLayout).setVisibility(View.GONE);
+            //findViewById(R.id.translationLayout).setVisibility(View.GONE);
         } else {
-            findViewById(R.id.translationLayout).setVisibility(View.VISIBLE);
+            //findViewById(R.id.translationLayout).setVisibility(View.VISIBLE);
         }
     }
 

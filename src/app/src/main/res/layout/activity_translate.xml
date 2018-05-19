@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_translate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingBottom="8dp"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingTop="4dp"
     tools:context="io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity">
 
-    <LinearLayout
+
+    <FrameLayout
+        android:id="@+id/filter_applied_overlay_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <LinearLayout
-            android:id="@+id/filterAppliedLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <LinearLayout
@@ -52,134 +53,145 @@
                 android:background="@color/colorDivider" />
 
         </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/topPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/previousButton"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/selected_locale" />
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:nextFocusForward="@+id/searchStrings"
+                android:onClick="onPreviousClick"
+                android:text="@string/previous" />
 
-            <Spinner
-                android:id="@+id/localeSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/copyString"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:nextFocusForward="@+id/searchStrings"
+                android:onClick="onPreviousClick"
+                android:text="@string/copy" />
 
+            <Button
+                android:id="@+id/nextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:nextFocusForward="@+id/previousButton"
+                android:onClick="onNextClick"
+                android:text="@string/next" />
         </LinearLayout>
+    </LinearLayout>
+
+    <net.gsantner.opoc.ui.LinearSplitLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/activity_translate__bottom"
+        android:layout_below="@+id/topPanel"
+        android:weightSum="100">
+
+        <TextView
+            android:id="@+id/originalStringEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="36"
+            android:background="#f3f3f3"
+            android:gravity="top|start"
+            android:hint="@string/original_string"
+            android:inputType="none"
+            android:nextFocusForward="@+id/nextButton"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:textIsSelectable="true"
+            android:textSize="16sp"
+            tools:ignore="Deprecated,RtlHardcoded,RtlSymmetry" />
+
 
         <LinearLayout
-            android:id="@+id/translationLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/current_string_id" />
-
-                <Spinner
-                    android:id="@+id/stringIdSpinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_weight="64"
+            android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/original_string" />
-
-            <EditText
-                android:id="@+id/originalStringEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
-                android:textIsSelectable="true" />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/translated_string_colon" />
-
-                <TextView
-                    android:id="@+id/copyString"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="@string/copy"
-                    android:textColor="@android:color/holo_blue_dark" />
-
-            </LinearLayout>
+                android:layout_marginBottom="0dp"
+                android:includeFontPadding="false"
+                android:paddingBottom="0dp"
+                android:paddingTop="8dp"
+                android:text="@string/translated_string_colon"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/translatedStringEditText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="top|start"
                 android:hint="@string/translated_string"
                 android:inputType="textCapSentences|textMultiLine"
                 android:nextFocusForward="@+id/nextButton" />
+        </LinearLayout>
+    </net.gsantner.opoc.ui.LinearSplitLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/previousButton"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_weight="1"
-                    android:nextFocusForward="@+id/searchStrings"
-                    android:onClick="onPreviousClick"
-                    android:text="@string/previous"
-                    android:textAlignment="textStart" />
+    <!-- Bottom -->
+    <LinearLayout
+        android:id="@+id/activity_translate__bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/nextButton"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_weight="1"
-                    android:nextFocusForward="@+id/previousButton"
-                    android:onClick="onNextClick"
-                    android:text="@string/next"
-                    android:textAlignment="textEnd" />
-            </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <ProgressBar
-                android:id="@+id/progressProgressBar"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="4dp"
-                android:progressDrawable="@drawable/drawable_progress_bar" />
+            <Spinner
+                android:id="@+id/stringIdSpinner"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="60" />
 
-            <TextView
-                android:id="@+id/progressTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            <Spinner
+                android:id="@+id/localeSpinner"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="40" />
 
         </LinearLayout>
+
+
+        <ProgressBar
+            android:id="@+id/progressProgressBar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:progressDrawable="@drawable/drawable_progress_bar" />
+
+        <TextView
+            android:id="@+id/progressTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            tools:text="150/177 strings translated (72.5%)" />
+
 
         <TextView
             android:id="@+id/usesTranslationServiceTextView"
@@ -188,4 +200,4 @@
             android:textStyle="italic"
             android:visibility="gone" />
     </LinearLayout>
-</ScrollView>
+</RelativeLayout>
