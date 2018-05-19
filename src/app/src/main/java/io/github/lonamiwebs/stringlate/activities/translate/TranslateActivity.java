@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,7 +27,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -78,7 +78,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
     private AppSettings mSettings;
 
-    private TextView mOriginalStringEditText;
+    private TextView mOriginalStringTextView;
     private EditText mTranslatedStringEditText;
     private TextView mCopyStringTextView;
 
@@ -136,7 +136,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
         mSettings = new AppSettings(this);
 
-        mOriginalStringEditText = findViewById(R.id.originalStringEditText);
+        mOriginalStringTextView = findViewById(R.id.originalStringEditText);
         mTranslatedStringEditText = findViewById(R.id.translatedStringEditText);
         mTranslatedStringEditText.addTextChangedListener(onTranslationChanged);
 
@@ -162,6 +162,10 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         mRepo = RepoHandlerHelper.fromBundle(getIntent().getBundleExtra(EXTRA_REPO));
         setTitle(mRepo.getProjectName());
 
+        String a = mSettings.getEditingFont();
+        Typeface font = Typeface.create(mSettings.getEditingFont(), Typeface.NORMAL);
+        mOriginalStringTextView.setTypeface(font);
+        mTranslatedStringEditText.setTypeface(font);
         mTranslatedStringEditText.postDelayed(() -> mTranslatedStringEditText.requestFocus(), 200);
 
         loadResources();
@@ -1154,7 +1158,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             return;
 
         // Clear the previous EditText fields
-        mOriginalStringEditText.setText("");
+        mOriginalStringTextView.setText("");
         mTranslatedStringEditText.setText("");
 
         // Update the selected locale
@@ -1228,7 +1232,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
     private final View.OnClickListener copyStringListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            mTranslatedStringEditText.setText(mOriginalStringEditText.getText());
+            mTranslatedStringEditText.setText(mOriginalStringTextView.getText());
         }
     };
 
@@ -1236,11 +1240,11 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
     private void updateSelectedResourceId(@NonNull String resourceId) {
         if (resourceId.isEmpty()) {
             mSelectedResource = null;
-            mOriginalStringEditText.setText("");
+            mOriginalStringTextView.setText("");
             mTranslatedStringEditText.setText("");
         } else {
             mSelectedResource = mDefaultResources.getTag(resourceId);
-            mOriginalStringEditText.setText(mSelectedResource.getContent());
+            mOriginalStringTextView.setText(mSelectedResource.getContent());
             mTranslatedStringEditText.setText(mSelectedLocaleResources.getContent(resourceId));
         }
         checkPreviousNextVisibility();
@@ -1253,7 +1257,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         if (count == 0) {
             mPreviousButton.setVisibility(View.INVISIBLE);
             showDone = true;
-            mOriginalStringEditText.setText("");
+            mOriginalStringTextView.setText("");
             if (mSelectedResource == null) // Ensure it's null
                 mTranslatedStringEditText.setText("");
         } else {

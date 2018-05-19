@@ -14,7 +14,7 @@ public class AppSettings extends SharedPreferencesPropertyBackend implements SlA
     //region Constructor
 
     public AppSettings(final Context context) {
-        super(context, null);
+        super(context);
     }
 
     //endregion
@@ -86,6 +86,11 @@ public class AppSettings extends SharedPreferencesPropertyBackend implements SlA
     public String getLanguage() {
         return getString(R.string.pref_key__language, "");
     }
+
+    public String getEditingFont() {
+        return getString(R.string.pref_key__editing_font, rstr(R.string.default_font_family));
+    }
+
 
     //endregion
 }

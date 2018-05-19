@@ -27,6 +27,9 @@
     <string name="export_gist" translatable="false">Gist</string>
     <string name="export_issue" translatable="false">Issue</string>
 
+    <string name="default_font_family" translatable="false">sans-serif-regular</string>
+
+    <string name="pref_key__editing_font" translatable="false">pref_key__editing_font</string>
     <string name="pref_key__github_authentication_request" translatable="false">pref_key__github_authentication_request</string>
     <string name="pref_key__language" translatable="false">pref_key__language</string>
     <string name="pref_key__download_icons" translatable="false">download_icons</string>

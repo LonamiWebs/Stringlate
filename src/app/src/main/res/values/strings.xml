@@ -163,4 +163,6 @@
     <string name="donate">Donate</string>
     <string name="contribute">Contribute</string>
     <string name="view">View</string>
+    <string name="editing_font">Editing font</string>
+
 </resources>

@@ -109,15 +109,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="36"
-            android:background="#f3f3f3"
+            android:background="?attr/editTextBackground"
             android:gravity="top|start"
-            android:hint="@string/original_string"
-            android:inputType="none"
-            android:nextFocusForward="@+id/nextButton"
-            android:paddingLeft="16dp"
-            android:paddingTop="16dp"
             android:textIsSelectable="true"
-            android:textSize="16sp"
+            android:hint="@string/original_string"
+            android:nextFocusForward="@+id/nextButton"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+            android:textColor="?attr/editTextColor"
             tools:ignore="Deprecated,RtlHardcoded,RtlSymmetry" />
 
 
