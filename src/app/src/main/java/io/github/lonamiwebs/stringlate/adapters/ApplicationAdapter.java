@@ -105,8 +105,12 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             @Override
             public void onClick(View v) {
                 if (onItemClick != null) {
-                    final ApplicationDetails app = appsSlice.get(view.getAdapterPosition());
+                    int i = view.getAdapterPosition();
+                    if (i >= appsSlice.size()) {
+                        return;
+                    }
 
+                    final ApplicationDetails app = appsSlice.get(i);
                     Intent data = new Intent();
                     data.putExtra("url", app.getSourceCodeUrl());
                     data.putExtra("web", app.getProjectWebUrl());
