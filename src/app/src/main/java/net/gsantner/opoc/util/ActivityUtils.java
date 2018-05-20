@@ -166,8 +166,11 @@ public class ActivityUtils extends net.gsantner.opoc.util.ContextUtils {
     }
 
     public void setStatusbarColor(int color, boolean... fromRes) {
-        color = (fromRes != null && fromRes.length > 0 && fromRes[0]) ? ContextCompat.getColor(_context, color) : color;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (fromRes != null && fromRes.length > 0 && fromRes[0]) {
+                color = ContextCompat.getColor(_context, color);
+            }
+
             _activity.getWindow().setStatusBarColor(color);
         }
     }
