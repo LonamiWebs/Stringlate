@@ -4,7 +4,7 @@
     <string name="app_community_url" translatable="false">https://github.com/LonamiWebs/stringlate</string>
     <string name="app_bugreport_url" translatable="false">https://github.com/LonamiWebs/stringlate/issues</string>
     <string name="app_translate_url" translatable="false"><![CDATA[https://lonamiwebs.github.io/stringlate/translate?git=https%3A%2F%2Fgithub.com%2Flonamiwebs%2Fstringlate.git&project=stringlate]]></string>
-    <string name="app_web_url" translatable="false">@string/app_community_url</string>
+    <string name="app_web_url" translatable="false">https://lonamiwebs.github.io/stringlate/</string>
     <string name="app_source_code_url" translatable="false">https://github.com/LonamiWebs/stringlate</string>
     <string name="app_donate_url" translatable="false"><![CDATA[https://github.com/LonamiWebs/Stringlate#donations]]></string>
     <string name="app_contribution_info_url" translatable="false">https://github.com/lonamiwebs/stringlate/blob/master/README.md#contributions</string>
