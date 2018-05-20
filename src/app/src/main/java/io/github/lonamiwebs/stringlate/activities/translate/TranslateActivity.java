@@ -141,7 +141,6 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         mTranslatedStringEditText.addTextChangedListener(onTranslationChanged);
 
         mCopyStringTextView = findViewById(R.id.copyString);
-        mCopyStringTextView.setPaintFlags(mCopyStringTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         mCopyStringTextView.setOnClickListener(copyStringListener);
 
         mLocaleSpinner = findViewById(R.id.localeSpinner);
