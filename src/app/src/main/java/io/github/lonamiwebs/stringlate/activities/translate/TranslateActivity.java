@@ -450,7 +450,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
                     .setPositiveButton(getString(R.string.ignore), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            updateStrings("");
+                            updateStrings("HEAD");
                         }
                     })
                     .setItems(branches, new DialogInterface.OnClickListener() {
@@ -460,7 +460,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
                     })
                     .show();
         } else {
-            updateStrings("");
+            updateStrings("HEAD");
         }
     }
 

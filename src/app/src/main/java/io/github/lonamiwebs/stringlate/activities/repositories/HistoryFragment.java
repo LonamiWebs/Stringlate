@@ -134,7 +134,7 @@ public class HistoryFragment extends Fragment {
             case R.id.syncRepo:
                 // TODO Don't assume GitSource, neither empty branch
                 new RepoSyncTask(getContext(), mLastSelectedRepo,
-                        new GitSource(mLastSelectedRepo.settings.getSource(), ""), false).start();
+                        new GitSource(mLastSelectedRepo.settings.getSource(), "HEAD"), false).start();
                 return true;
             case R.id.importRepo:
                 importFromSd();
