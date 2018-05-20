@@ -140,8 +140,11 @@ public class AddNewRepositoryFragment extends Fragment {
 
     @OnTextChanged(callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED, value = {R.id.github_ownerEditText, R.id.github_repositoryEditText})
     public void onGitHubRepoEditChanged(CharSequence newText) {
-        mUrlEditText.setText(GitHub.buildGitHubUrl(
-                mOwnerEditText.getText().toString().trim(), mRepositoryEditText.getText().toString().trim()));
+        final String owner = mOwnerEditText.getText().toString().trim();
+        final String repository = mRepositoryEditText.getText().toString().trim();
+        if (!owner.isEmpty() || !repository.isEmpty()) {
+            mUrlEditText.setText(GitHub.buildGitHubUrl(owner, repository));
+        }
     }
 
     private final View.OnClickListener onDiscoverClick = new View.OnClickListener() {
