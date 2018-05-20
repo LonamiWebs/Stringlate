@@ -144,6 +144,8 @@ public class AddNewRepositoryFragment extends Fragment {
         final String repository = mRepositoryEditText.getText().toString().trim();
         if (!owner.isEmpty() || !repository.isEmpty()) {
             mUrlEditText.setText(GitHub.buildGitHubUrl(owner, repository));
+        } else {
+            mUrlEditText.setText("");
         }
     }
 
