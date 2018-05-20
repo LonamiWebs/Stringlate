@@ -37,6 +37,7 @@
     <string name="pref_key__string_sorting" translatable="false">string_sorting</string>
     <string name="pref_key__github_client_id" translatable="false">pref_key__github_client_id</string>
     <string name="pref_key__github_client_secret" translatable="false">pref_key__github_client_secret</string>
+    <string name="pref_key__default_locale" translatable="false">pref_key__default_locale</string>
 
     <string name="pref_key__more_info__settings" translatable="false">pref_key__more_info__settings</string>
     <string name="pref_key__more_info__source_code" translatable="false">pref_key__more_info__source_code</string>

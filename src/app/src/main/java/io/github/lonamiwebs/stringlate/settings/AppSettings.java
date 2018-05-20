@@ -11,6 +11,7 @@ import io.github.lonamiwebs.stringlate.interfaces.SlAppSettings;
 import static io.github.lonamiwebs.stringlate.classes.git.GitHub.GITHUB_WANTED_SCOPES;
 
 public class AppSettings extends SharedPreferencesPropertyBackend implements SlAppSettings {
+
     //region Constructor
 
     public AppSettings(final Context context) {
@@ -66,6 +67,18 @@ public class AppSettings extends SharedPreferencesPropertyBackend implements SlA
         return getInt(rstr(R.string.pref_key__string_sorting), DEFAULT_STRING_SORTING);
     }
 
+    public String getLanguage() {
+        return getString(R.string.pref_key__language, "");
+    }
+
+    public String getEditingFont() {
+        return getString(R.string.pref_key__editing_font, rstr(R.string.default_font_family));
+    }
+
+    public String getDefaultLocale() {
+        return getString(R.string.pref_key__default_locale, "");
+    }
+
     //endregion
 
     //region Setters
@@ -83,14 +96,9 @@ public class AppSettings extends SharedPreferencesPropertyBackend implements SlA
         setInt(rstr(R.string.pref_key__string_sorting), value);
     }
 
-    public String getLanguage() {
-        return getString(R.string.pref_key__language, "");
+    public void setDefaultLocale(String locale) {
+        setString(rstr(R.string.pref_key__default_locale), locale);
     }
-
-    public String getEditingFont() {
-        return getString(R.string.pref_key__editing_font, rstr(R.string.default_font_family));
-    }
-
 
     //endregion
 }

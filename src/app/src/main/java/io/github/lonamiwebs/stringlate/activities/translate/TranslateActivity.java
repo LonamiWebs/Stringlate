@@ -1153,8 +1153,13 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
     // Sets the current locale also updating the spinner selection
     private void setCurrentLocale(String locale) {
-        if (TextUtils.equals(mSelectedLocale, locale))
+        if (TextUtils.equals(mSelectedLocale, locale)) {
             return;
+        }
+
+        if (!TextUtils.equals(mSettings.getDefaultLocale(), locale)) {
+            mSettings.setDefaultLocale(locale);
+        }
 
         // Clear the previous EditText fields
         mOriginalStringTextView.setText("");
