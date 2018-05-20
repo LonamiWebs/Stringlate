@@ -41,7 +41,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/github_repo_url_hint"
-                android:inputType="textUri" />
+                android:inputType="textUri"
+                android:imeOptions="actionDone" />
 
             <TextView
                 style="@style/TextAppearance.AppCompat.Caption"
@@ -64,7 +65,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="@string/owner_hint"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:imeOptions="actionNext"
+                    android:nextFocusRight="@id/github_repositoryEditText" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -77,7 +80,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="@string/repository_hint"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:imeOptions="actionDone" />
             </LinearLayout>
 
             <!-- Overscroll -->
