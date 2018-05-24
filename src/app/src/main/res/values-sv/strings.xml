@@ -8,7 +8,6 @@
     <string name="copy">Kopiera</string>
     <string name="copy_to_clipboard">Kopiera till urklipp</string>
     <string name="create_locale_error">Kunde inte skapa ett nytt språk.</string>
-    <string name="current_string_id">Nuvarande sträng ID</string>
     <string name="delete_ellipsis">Ta bort…</string>
     <string name="delete_locale">Ta bort språk</string>
     <string name="delete_locale_confirm_long">Är du säker på att du vill ta bort språket \"%s\"? Alla dess strängar kommer att tas bort.</string>
@@ -57,7 +56,6 @@
     <string name="search">Sök</string>
     <string name="search_apps_ellipsis">Sök i applikationer…</string>
     <string name="search_id_content_ellipsis">Sök på ID eller innehåll…</string>
-    <string name="selected_locale">Valt språk:</string>
     <string name="share">Dela</string>
     <string name="show_translated_strings">Visa översatta strängar</string>
     <string name="sure_question">Är du säker?</string>

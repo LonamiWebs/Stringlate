@@ -2,8 +2,6 @@
     <string name="original_string">Originale Zeichenkette:</string>
     <string name="translated_string_colon">Übersetzte Zeichenkette:</string>
     <string name="next">Weiter</string>
-    <string name="current_string_id">Aktuelle Zeichenketten-ID:</string>
-    <string name="selected_locale">Gewählte Sprache:</string>
     <string name="welcome">Willkommen zu Stringlate! Gib bitte einen GitHub Projektnamen sowie den Eigentümer in. Gib alternative die URL des Git Repos ein.</string>
     <string name="owner_hint">Eigentümer</string>
     <string name="repository_hint">Repo</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">Jetzt übersetzen</string>
     <string name="history_no_repos_hint">Neu hier? Wechsel zu dem \"%s\" Reiter um zu beginnen!</string>
     <string name="history_contains_repos_hint">Repositories wurden bereits synchronisiert. Wähle eines der unteren aus oder füge ein neues hinzu.</string>
-    <string name="projects_colon">Projekte:</string>
     <string name="clear_icons_cache">Bild-Zwischenspeicher leeren</string>
     <string name="help">Hilfe</string>
     <string name="open_online_help">Onlinehilfe öffnen</string>

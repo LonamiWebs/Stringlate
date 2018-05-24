@@ -2,8 +2,6 @@
     <string name="original_string">Chaîne d’origine :</string>
     <string name="translated_string_colon">Chaîne traduite :</string>
     <string name="next">Suivante</string>
-    <string name="current_string_id">ID de la chaîne en cours :</string>
-    <string name="selected_locale">Langue sélectionnée :</string>
     <string name="welcome">Bienvenue dans Stringlate ! Entrer un nom de projet et son propriétaire ou coller l’adresse du dépôt ci-dessous pour continuer.</string>
     <string name="owner_hint">propriétaire</string>
     <string name="repository_hint">dépôt</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">Commencer à traduire</string>
     <string name="history_no_repos_hint">Nouveau ? Allez voir l’onglet « %s » pour commencer !</string>
     <string name="history_contains_repos_hint">Voilà vos dépôts précédemment synchronisés. Choisissez en un ci-dessous ou ajoutez en un nouveau pour continuer.</string>
-    <string name="projects_colon">Projets :</string>
     <string name="clear_icons_cache">Vider le cache d’icônes</string>
     <string name="help">Aide</string>
     <string name="open_online_help">Ouvrir l’aide en ligne</string>

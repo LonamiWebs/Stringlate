@@ -2,8 +2,6 @@
     <string name="original_string">Stringa originale:</string>
     <string name="translated_string_colon">Stringa tradotta:</string>
     <string name="next">Prossimo</string>
-    <string name="current_string_id">ID stringa corrente:</string>
-    <string name="selected_locale">Linguaggio selezionato:</string>
     <string name="welcome">Benvenuto su Stringlate! Inserisci il nome e il proprietario di un progetto oppure incolla qui sotto l\'URL di un repository su Git per continuare.</string>
     <string name="owner_hint">proprietario</string>
     <string name="repository_hint">repository</string>

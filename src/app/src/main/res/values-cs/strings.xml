@@ -2,8 +2,6 @@
     <string name="original_string">Zdrojový řetězec:</string>
     <string name="translated_string_colon">Přeložený řetězec:</string>
     <string name="next">Další</string>
-    <string name="current_string_id">Stávající ID řetězce:</string>
-    <string name="selected_locale">Vybraný jazyk:</string>
     <string name="welcome">Vítá vás Stringlate! Pro pokračování zadejte název projektu a jeho vlastníka, nebo vložte URL repozitáře z Git.</string>
     <string name="owner_hint">vlastník</string>
     <string name="repository_hint">repozitář</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">Začít překládat</string>
     <string name="history_no_repos_hint">Jste tady poprvé? Začněte na záložce \"%s\"!</string>
     <string name="history_contains_repos_hint">Tyto repozitáře již máte synchronizovány. Vyberte jeden ze seznamu níže, nebo přidejte nový.</string>
-    <string name="projects_colon">Projekty:</string>
     <string name="clear_icons_cache">Vyčistit dočasnou paměť ikon</string>
     <string name="help">Nápověda</string>
     <string name="open_online_help">Otevřít nápovědu on-line</string>

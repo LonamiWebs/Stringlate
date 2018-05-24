@@ -2,8 +2,6 @@
     <string name="original_string">Istringa originale:</string>
     <string name="translated_string_colon">Istringa traduida:</string>
     <string name="next">Imbeniente</string>
-    <string name="current_string_id">ID de s\'istringa atuale</string>
-    <string name="selected_locale">Limba ischertada:</string>
     <string name="welcome">Bene bènnidu in Stringlate! Inserta su nùmene e su proprietàriu de unu progetu de GitHub o incolla s\'URL de su depòsitu inoghe in suta pro sighire.</string>
     <string name="owner_hint">proprietàriu</string>
     <string name="repository_hint">depòsitu</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">Incumintza a traduire</string>
     <string name="history_no_repos_hint">Ses nou inoghe? Bae a s\'ischeda \"%s\" pro incumintzare!</string>
     <string name="history_contains_repos_hint">Custos sunt sos depòsitos chi as giai sincronizadu in antis. Ischerta·nde unu o agiunghe·nde unu pro sighire.</string>
-    <string name="projects_colon">Progetos:</string>
     <string name="clear_icons_cache">Inneta sa cache de sas iconas</string>
     <string name="help">Agiudu</string>
     <string name="open_online_help">Aberi s\'agiudu in lìnia</string>

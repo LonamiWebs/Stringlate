@@ -2,8 +2,6 @@
     <string name="original_string">Оригинал:</string>
     <string name="translated_string_colon">Переведенная строка:</string>
     <string name="next">След.</string>
-    <string name="current_string_id">Текущий ID строки:</string>
-    <string name="selected_locale">Выбранная локаль:</string>
     <string name="welcome">Добро пожаловать в Stringlate! Введите владельца и имя проекта или вставьте Git URL репозитория для продолжения.</string>
     <string name="owner_hint">владелец</string>
     <string name="repository_hint">репозиторий</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">Начать перевод</string>
     <string name="history_no_repos_hint">Новичок? Вперёд на вкладку \"%s\" для старта!</string>
     <string name="history_contains_repos_hint">Это предыдущие синхронизированные репозитории. Выберите или добавьте один для продолжения.</string>
-    <string name="projects_colon">Проекты:</string>
     <string name="clear_icons_cache">Очистить кэш значков</string>
     <string name="help">Помощь</string>
     <string name="open_online_help">Открыть онлайн помощь</string>

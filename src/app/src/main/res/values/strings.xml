@@ -2,8 +2,6 @@
     <string name="original_string">Original string:</string>
     <string name="translated_string_colon">Translated string:</string>
     <string name="next">Next</string>
-    <string name="current_string_id">Current string ID:</string>
-    <string name="selected_locale">Selected locale:</string>
     <string name="welcome">Welcome to Stringlate! Enter a GitHub project name and its owner or paste the repository\'s Git URL below to continue.</string>
     <string name="owner_hint">owner</string>
     <string name="repository_hint">repository</string>
@@ -70,7 +68,6 @@
     <string name="start_translating">Start translating</string>
     <string name="history_no_repos_hint">New here? Head to the \"%s\" tab to get started!</string>
     <string name="history_contains_repos_hint">These are your previously synchronized repositories. Select one below or add a new one to continue.</string>
-    <string name="projects_colon">Projects:</string>
     <string name="clear_icons_cache">Clear icons cache</string>
     <string name="help">Help</string>
     <string name="open_online_help">Open online help</string>
@@ -141,7 +138,6 @@
 
 
     <string name="open_source_licenses">Open Source Licenses</string>
-    <string name="rate_the_app">Rate this app</string>
     <string name="translate">Translate</string>
     <string name="help_this_app">More info and help</string>
     <string name="bug_reports">Report bugs</string>

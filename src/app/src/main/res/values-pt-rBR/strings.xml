@@ -2,8 +2,6 @@
     <string name="original_string">String original</string>
     <string name="translated_string_colon">String traduzida:</string>
     <string name="next">Próximo</string>
-    <string name="current_string_id">ID da string atual:</string>
-    <string name="selected_locale">Idioma selecionado:</string>
     <string name="welcome">Bem vindo ao Stringlate! Digite um nome de projeto no GitHub e seu proprietário ou cole a URL do repositório Git abaixo para continuar.</string>
     <string name="owner_hint">proprietário</string>
     <string name="repository_hint">repositório</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">Iniciar tradução</string>
     <string name="history_no_repos_hint">Novo aqui? Siga para a aba \"%s\" para começar.</string>
     <string name="history_contains_repos_hint">Estes são seus repositórios previamente sincronizados. Selecione um abaixo ou adicione um novo para continuar.</string>
-    <string name="projects_colon">Projetos:</string>
     <string name="clear_icons_cache">Limpar cache de ícones</string>
     <string name="help">Ajuda</string>
     <string name="open_online_help">Abrir ajuda online</string>

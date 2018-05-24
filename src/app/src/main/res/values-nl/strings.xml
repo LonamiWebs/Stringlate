@@ -2,8 +2,6 @@
     <string name="original_string">Originele string:</string>
     <string name="translated_string_colon">Vertaalde string:</string>
     <string name="next">Volgende</string>
-    <string name="current_string_id">Huidige string ID:</string>
-    <string name="selected_locale">Geselecteerde locale:</string>
     <string name="welcome">Welkom bij Stringlate! Voer een GitHub project naam en zijn eigenaar in of plak de repositories Git URL hieronder om verder te gaan.</string>
     <string name="owner_hint">eigenaar</string>
     <string name="repository_hint">repository</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">Start vertalen</string>
     <string name="history_no_repos_hint">Nieuw hier? Ga naar de \"%s\" tab om te beginnen!</string>
     <string name="history_contains_repos_hint">Dit zijn je vorige gesynchroniseerde repositories. Selecteer een van de onderstaande of voeg een nieuwe toe om verder te gaan.</string>
-    <string name="projects_colon">Projecten:</string>
     <string name="clear_icons_cache">Verwijder iconen cache</string>
     <string name="help">Help</string>
     <string name="open_online_help">Open online help</string>

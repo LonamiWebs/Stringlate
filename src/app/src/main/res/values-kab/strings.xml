@@ -2,8 +2,6 @@
     <string name="original_string">Azrir aɣbalu :</string>
     <string name="translated_string_colon">Azrir n tsuqilt :</string>
     <string name="next">Ar zdat</string>
-    <string name="current_string_id">ID n uzrir amiran :</string>
-    <string name="selected_locale">Tutlayt yettwafernen :</string>
     <string name="welcome">Anṣuf ar Stringlate ! sekcem isem n usenfaṛ akked bab-is neɣ sekcem tansa n ukufi ddaw-a akken ad tkemmleḍ.</string>
     <string name="owner_hint">bab</string>
     <string name="repository_hint">akufi</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">Bdu tasuqilt</string>
     <string name="history_no_repos_hint">Amaynut ? Ddu ar yiccer '%s'akken ad tebduḍ !</string>
     <string name="history_contains_repos_hint">Haten-ay ikifiyen-ik yemtawin yakan. Fren yiwen ddaw-a neɣ rnu wayeḍ akken ad tkemmleḍ.</string>
-    <string name="projects_colon">Isenfaṛen :</string>
     <string name="clear_icons_cache">Sfeḍ tuffirt n tignitin</string>
     <string name="help">Tallelt</string>
     <string name="open_online_help">Ldi tallelt srid</string>
