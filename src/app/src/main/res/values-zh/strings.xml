@@ -2,8 +2,6 @@
     <string name="original_string">原字符串:</string>
     <string name="translated_string_colon">翻译后的字符串：</string>
     <string name="next">下一个</string>
-    <string name="current_string_id">当前字符编号：</string>
-    <string name="selected_locale">选中的语言：</string>
     <string name="welcome">欢迎使用 Stringlate ! 请输入项目名称及其所有者或将其 Git 版本仓库地址粘贴至下方以继续</string>
     <string name="owner_hint">所有者</string>
     <string name="repository_hint">版本仓库</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">开始翻译</string>
     <string name="history_no_repos_hint">您是新手吗？去 “%s” 看看如何使用吧!</string>
     <string name="history_contains_repos_hint">这是您之前同步过的版本仓库。请从中选择或添加新的版本库以继续。</string>
-    <string name="projects_colon">项目：</string>
     <string name="clear_icons_cache">清理图标缓存</string>
     <string name="help">帮助</string>
     <string name="open_online_help">打开在线帮助</string>

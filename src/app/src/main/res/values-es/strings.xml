@@ -2,8 +2,6 @@
     <string name="original_string">Texto original:</string>
     <string name="translated_string_colon">Texto traducido:</string>
     <string name="next">Siguiente</string>
-    <string name="current_string_id">ID del texto:</string>
-    <string name="selected_locale">Idioma elegido:</string>
     <string name="welcome">¡Bienvenido/a a Stringlate! Introduce el nombre del proyecto y su dueño o copia la URL del repositorio antes de continuar.</string>
     <string name="owner_hint">propietario/a</string>
     <string name="repository_hint">repositorio</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">Empezar a traducir</string>
     <string name="history_no_repos_hint">¿Nuevo/a por aquí? Ve a la pestaña \"%s\" para comenzar.</string>
     <string name="history_contains_repos_hint">Estos son tus repositorios previamente sincronizados. Elige uno abajo o añade uno nuevo para continuar.</string>
-    <string name="projects_colon">Proyectos:</string>
     <string name="clear_icons_cache">Limpiar caché</string>
     <string name="help">Ayuda</string>
     <string name="open_online_help">Abrir ayuda online</string>
