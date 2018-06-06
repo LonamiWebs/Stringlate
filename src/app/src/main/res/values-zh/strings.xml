@@ -2,8 +2,6 @@
     <string name="original_string">原字符串:</string>
     <string name="translated_string_colon">翻译后的字符串：</string>
     <string name="next">下一个</string>
-    <string name="current_string_id">当前字符编号：</string>
-    <string name="selected_locale">选中的语言：</string>
     <string name="welcome">欢迎使用 Stringlate ! 请输入项目名称及其所有者或将其 Git 版本仓库地址粘贴至下方以继续</string>
     <string name="owner_hint">所有者</string>
     <string name="repository_hint">版本仓库</string>
@@ -66,10 +64,10 @@
     <string name="pulling_strings_long">拉动新字符串可以保持翻译完整，同时可能会添加新的未翻译字符串。你应该在上传你的翻译之前做到这一点，以确保你已全部翻译完成。你想继续吗？</string>
     <string name="history">历史</string>
     <string name="add_project">添加项目</string>
+    <string name="repository_plural">仓库</string>
     <string name="start_translating">开始翻译</string>
     <string name="history_no_repos_hint">您是新手吗？去 “%s” 看看如何使用吧!</string>
     <string name="history_contains_repos_hint">这是您之前同步过的版本仓库。请从中选择或添加新的版本库以继续。</string>
-    <string name="projects_colon">项目：</string>
     <string name="clear_icons_cache">清理图标缓存</string>
     <string name="help">帮助</string>
     <string name="open_online_help">打开在线帮助</string>
@@ -133,9 +131,35 @@
     <string name="user_accounts">用户帐户</string>
     <string name="more">更多</string>
     <string name="next_steps">一旦所有字符串翻译完成后，点击右上角的三点菜单并选择“％s”与项目维护人员分享您的工作，以便他们可以查看和使用它。\n
-  \n
-  如果您想查看一些已翻译的字符串，请启用“％s”选项。</string>
+      \n
+      如果您想查看一些已翻译的字符串，请启用“％s”选项。</string>
     <string name="cancel_sync">取消同步？</string>
     <string name="exported_to_hastebin">成功导出至 Hastebin。URL 已复制到剪贴板</string>
     <string name="export_unsuccessful">成功导出</string>
+    <string name="base_branch_colon">基础分支：</string>
+
+
+    <string name="open_source_licenses">开源许可证</string>
+    <string name="translate">翻译</string>
+    <string name="help_this_app">更多信息和帮助</string>
+    <string name="bug_reports">报告Bug</string>
+    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">有关如何为此项目做出捐赠、帮助的更多信息</string>
+    <string name="android_contribution_guide">Android贡献指南</string>
+    <string name="more_info_on_how_to_contribute_to_foss_android_projects">有关对开源项目进行贡献的更多信息——尤其是Android应用程序</string>
+    <string name="join_community">加入社区</string>
+    <string name="bug_reports_suggest_improvements">反馈、报告或建议</string>
+    <string name="help_translating_this_app">把这个软件翻译到其他语言</string>
+    <string name="source_code">源代码</string>
+    <string name="project_license">项目许可证</string>
+    <string name="project_contribution_info">项目贡献信息</string>
+    <string name="more_info_on_how_to_contribute_to_this_project">有关如何为此项目做出贡献的更多信息</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">给这个项目施以帮助吧。所有人都可以，新手都行</string>
+    <string name="project_team">项目团队</string>
+    <string name="licenses">许可证</string>
+    <string name="contributors">贡献者</string>
+    <string name="donate">捐赠</string>
+    <string name="contribute">帮助</string>
+    <string name="view">查看</string>
+    <string name="editing_font">编辑器字体</string>
+
 </resources>

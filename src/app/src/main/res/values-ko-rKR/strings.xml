@@ -2,8 +2,6 @@
     <string name="original_string">원래 스트링:</string>
     <string name="translated_string_colon">번역된 스트링:</string>
     <string name="next">다음</string>
-    <string name="current_string_id">현재 스트링 ID:</string>
-    <string name="selected_locale">선택 지역:</string>
     <string name="welcome">Stringlate에 오신 것을 환영합니다! 아래에 프로젝트 이름과 관리자를 입력하시거나, 저장소의 깃허브 링크를 붙여넣어 다음 단계로 진행하세요.</string>
     <string name="owner_hint">주인</string>
     <string name="repository_hint">저장소</string>

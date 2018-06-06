@@ -137,8 +137,6 @@
     <string name="exported_to_hastebin">Esportatzione in Hastebin resissida. URL copiadu in punta de billete</string>
     <string name="export_unsuccessful">Esportatzione fallida</string>
     <string name="base_branch_colon">Camba base:</string>
-
-
     <string name="open_source_licenses">Litzèntzias a Mitza Aberta</string>
     <string name="translate">Tradui</string>
     <string name="help_this_app">Àteras informatziones e agiudu</string>
@@ -161,5 +159,4 @@
     <string name="contribute">Contribui</string>
     <string name="view">Abbàida</string>
     <string name="editing_font">Caràtere de modìfica</string>
-
 </resources>

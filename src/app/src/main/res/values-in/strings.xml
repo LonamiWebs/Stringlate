@@ -2,8 +2,6 @@
     <string name="original_string">String asli:</string>
     <string name="translated_string_colon">String diterjemahkan:</string>
     <string name="next">Selanjutnya</string>
-    <string name="current_string_id">ID String sekarang:</string>
-    <string name="selected_locale">Lokal pilihan:</string>
     <string name="welcome">Selamat datang di Stringlate! Masukkan nama proyek GitHub dan pemiliknya atau sisipkan URL Git repositori di bawah ini untuk melanjutkan.</string>
     <string name="owner_hint">pemilik</string>
     <string name="repository_hint">repositori</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">Mulai menerjemahkan</string>
     <string name="history_no_repos_hint">Baru disini? Pergilah ke tab \"%s\" untuk memulai!</string>
     <string name="history_contains_repos_hint">Ini adalah repositori yang sebelumnya diselaraskan. Pilih satu di bawah atau tambahkan yang baru untuk melanjutkan.</string>
-    <string name="projects_colon">Proyek:</string>
     <string name="clear_icons_cache">Bersihkan tembolok ikon</string>
     <string name="help">Bantuan</string>
     <string name="open_online_help">Buka bantuan daring</string>

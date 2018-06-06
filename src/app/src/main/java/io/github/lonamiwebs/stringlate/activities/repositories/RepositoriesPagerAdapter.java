@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.activities.info.MoreInfoFragment;
 
 class RepositoriesPagerAdapter extends FragmentPagerAdapter {
 
@@ -33,13 +34,15 @@ class RepositoriesPagerAdapter extends FragmentPagerAdapter {
                 return new HistoryFragment();
             case 1:
                 return new AddNewRepositoryFragment();
+            case 2:
+                return new MoreInfoFragment();
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -49,6 +52,8 @@ class RepositoriesPagerAdapter extends FragmentPagerAdapter {
                 return mContext.getString(R.string.history);
             case 1:
                 return mContext.getString(R.string.add_project);
+            case 2:
+                return mContext.getString(R.string.more);
         }
         return null;
     }

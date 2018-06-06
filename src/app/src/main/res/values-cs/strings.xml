@@ -2,8 +2,6 @@
     <string name="original_string">Zdrojový řetězec:</string>
     <string name="translated_string_colon">Přeložený řetězec:</string>
     <string name="next">Další</string>
-    <string name="current_string_id">Stávající ID řetězce:</string>
-    <string name="selected_locale">Vybraný jazyk:</string>
     <string name="welcome">Vítá vás Stringlate! Pro pokračování zadejte název projektu a jeho vlastníka, nebo vložte URL repozitáře z Git.</string>
     <string name="owner_hint">vlastník</string>
     <string name="repository_hint">repozitář</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">Začít překládat</string>
     <string name="history_no_repos_hint">Jste tady poprvé? Začněte na záložce \"%s\"!</string>
     <string name="history_contains_repos_hint">Tyto repozitáře již máte synchronizovány. Vyberte jeden ze seznamu níže, nebo přidejte nový.</string>
-    <string name="projects_colon">Projekty:</string>
     <string name="clear_icons_cache">Vyčistit dočasnou paměť ikon</string>
     <string name="help">Nápověda</string>
     <string name="open_online_help">Otevřít nápovědu on-line</string>
@@ -109,7 +106,7 @@
     <string name="title_empty">Titulek nemůže být prázdný</string>
     <string name="issue_desc_x">Popis problému musí obsahovat \"%x\".</string>
     <string name="no_strings_to_export">Nejsou dostupné žádné řetězce k překladu.</string>
-    <string name="filtering_strings_with">Filtrování řetězců s \"%s"</string>
+    <string name="filtering_strings_with">Filtrování řetězců s \"%s\"</string>
     <string name="clear_filter">Vymazat filtr</string>
     <string name="sort_by_ellipsis">Seřadit podle…</string>
     <string name="sort_alphabetically">Abecedně</string>
@@ -130,4 +127,12 @@
     <string name="pref_title__language">Jazyk</string>
     <string name="appearance">Vzhled</string>
     <string name="user_accounts">Uživatelské účty</string>
+    <string name="more">Více</string>
+    <string name="next_steps">Po dokončení překladu všech řetězců klikněte na tlačítko se třemi tečkami vpravo nahoře a nasdílejte jej správci projektu. Ten jej poté bude moci zkontrolovat a použít.\n
+ \n
+ Pokud chcete zkontrolovat některé z již přeložených řetězců, povolte volbu \"%s\".</string>
+    <string name="cancel_sync">Zrušit synchronizaci?</string>
+    <string name="exported_to_hastebin">Úspěšně exportováno na Hastebin. URL byla zkopírována do paměti</string>
+    <string name="export_unsuccessful">Exportovat neúspěšné</string>
+    <string name="base_branch_colon">Hlavní větev:</string>
 </resources>

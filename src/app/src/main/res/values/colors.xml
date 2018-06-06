@@ -6,4 +6,5 @@
     <color name="colorPrimaryLight">#B2DFDB</color>
     <color name="colorAccent">#cc9900</color>
     <color name="colorDivider">#BDBDBD</color>
+    <color name="bottomnav_bgcolor">#202020</color>
 </resources>

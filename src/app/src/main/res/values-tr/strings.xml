@@ -2,8 +2,6 @@
     <string name="original_string">Orijinal metin:</string>
     <string name="translated_string_colon">Çevirilen metin:</string>
     <string name="next">Sonraki</string>
-    <string name="current_string_id">Şu anki çeviri ID:</string>
-    <string name="selected_locale">Seçilen dil:</string>
     <string name="welcome">Stringlate\'e hoşgeldiniz! Bir GitHub proje ismi ve sahibini girerek veya kaynağın Git URL\'sini yapıştırarak devam edin.</string>
     <string name="owner_hint">sahip</string>
     <string name="repository_hint">kaynak</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">Çevirmeye başla</string>
     <string name="history_no_repos_hint">Burada yeni misiniz? \"%s\" sekmesine geçerek başlayın!</string>
     <string name="history_contains_repos_hint">Bunlar sizin önceden senkronize olan kaynaklarınızdır. Devam etmek için birini seçin veya yeni bir tane ekleyin.</string>
-    <string name="projects_colon">Projeler:</string>
     <string name="clear_icons_cache">Logo önbelleğini temizle</string>
     <string name="help">Yardım</string>
     <string name="open_online_help">Online yardımı aç</string>

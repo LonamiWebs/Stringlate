@@ -52,8 +52,10 @@ this is the case, please let me know, or create a new pull request with a fix.
 for the tidy screenshots*)
 
 ## Donations
-Please refer to https://lonamiwebs.github.io/donate/. Remember that not only
-you can donate money, but also appreciation. Both are very welcome!
+Remember that not only you can donate money, but also appreciation. Both are very welcome!
+
+* @Lonami: Please refer to https://lonamiwebs.github.io/donate/
+* @gsantner: [Web](https://gsantner.net/supportme?source=readme&project=openlauncher) | [LiberaPay](https://liberapay.com/gsantner/donate)
 
 ## License
 The project is licensed under the

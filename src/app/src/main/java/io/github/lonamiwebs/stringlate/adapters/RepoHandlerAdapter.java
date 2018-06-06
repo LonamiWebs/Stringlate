@@ -302,7 +302,11 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
             }
         }
         if (first == null) {
-            name = String.valueOf(name.charAt(0)).toUpperCase();
+            if (name.isEmpty()) {
+                name = "";
+            } else {
+                name = String.valueOf(name.charAt(0)).toUpperCase();
+            }
         } else {
             name = String.valueOf(first);
             if (last != null)
