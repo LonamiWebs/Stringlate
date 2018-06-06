@@ -127,7 +127,7 @@
     <string name="post_gist_error">Gist-en kunne ikke bli lagt ut.</string>
     <string name="posting_gist_ellipsis_long">Forsøker å legge ut strings.xml-filen som en GitHub-Gist …</string>
     <string name="pulling_strings">Hent nye strenger</string>
-    <string name="pulling_strings_long">Å hente nye strenger vil holde oversettelse din intakt, og muligens også legge til nye og uoversatte strenger. Du burde gjøre dette før du laster opp oversettelsene dine for å sikre at du har oversatt alt. Vil du gjøre dette?</string>
+    <string name="pulling_strings_long">Å hente nye strenger vil holde oversettelsen din intakt, og muligens også legge til nye og uoversatte strenger. Du burde gjøre dette før du laster opp oversettelsene dine for å sikre at du har oversatt alt. Vil du gjøre dette?</string>
     <string name="select_branch">Velg grenen som skal brukes</string>
     <string name="sync_failed">Mislyktes i å synkronisere %s.</string>
     <string name="url_copied">Nettadressen har blitt kopiert til utklippstavlen.</string>
@@ -149,7 +149,7 @@
     <string name="help_translating_this_app">Oversett denne appen til andre språl</string>
     <string name="source_code">Kildekoden</string>
     <string name="project_license">Prosjektets lisens</string>
-    <string name="project_contribution_info">Prosjekts bidragsveiviser</string>
+    <string name="project_contribution_info">Prosjektets bidragsveiviser</string>
     <string name="more_info_on_how_to_contribute_to_this_project">Mere info om å bidra til dette prosjektet</string>
     <string name="contribute_code_to_this_project_anybody_welcome">Bidra med kode til prosjektet. Alle er velkomne til å gjøre det, selv nybegynnere</string>
     <string name="project_team">Prosjektets lag</string>
