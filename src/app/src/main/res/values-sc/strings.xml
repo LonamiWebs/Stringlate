@@ -64,6 +64,7 @@
     <string name="pulling_strings_long">Iscarrighende sas istringas noas as a mantènnere chene tocadas sas tradutziones tuas e possibilmente as a annànghere istringas non traduidas noas. Lu dias dèpere fàghere in antis de carrigare sas tradutziones tuas, pro èssere seguru de àere traduidu totu. Cheres sighire?</string>
     <string name="history">Istòria</string>
     <string name="add_project">Annanghe unu progetu</string>
+    <string name="repository_plural">Depòsitos</string>
     <string name="start_translating">Incumintza a traduire</string>
     <string name="history_no_repos_hint">Ses nou inoghe? Bae a s\'ischeda \"%s\" pro incumintzare!</string>
     <string name="history_contains_repos_hint">Custos sunt sos depòsitos chi as giai sincronizadu in antis. Ischerta·nde unu o agiunghe·nde unu pro sighire.</string>
@@ -130,10 +131,32 @@
     <string name="user_accounts">Contos impreadore</string>
     <string name="more">Àteru</string>
     <string name="next_steps">A pustis de àere traduidu totu sas istringas incarca su menù a tres puntigheddos in artu a destra e ischerta \"%s\" pro cumpartzire su traballu tuo cun su responsàbile de su progetu pro li permìtere de lu revisionare e impreare.\n
-   \n
-   Si cheres revisionare carchi istringa giai traduida abìlita s\'optzione \"%s\" pro lu fàghere.</string>
+            \n
+            Si cheres revisionare carchi istringa giai traduida abìlita s\'optzione \"%s\" pro lu fàghere.</string>
     <string name="cancel_sync">Annullare sa sincronizatzione?</string>
     <string name="exported_to_hastebin">Esportatzione in Hastebin resissida. URL copiadu in punta de billete</string>
     <string name="export_unsuccessful">Esportatzione fallida</string>
     <string name="base_branch_colon">Camba base:</string>
+    <string name="open_source_licenses">Litzèntzias a Mitza Aberta</string>
+    <string name="translate">Tradui</string>
+    <string name="help_this_app">Àteras informatziones e agiudu</string>
+    <string name="bug_reports">Sinnala problemas (bugs)</string>
+    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">Àteras informatziones a pitzu de comente donare o suportare custu progetu</string>
+    <string name="android_contribution_guide">Ghia a sa contributzione a Android</string>
+    <string name="more_info_on_how_to_contribute_to_foss_android_projects">Àteras informatziones a pitzu de comente contribuire a progetos a Mitza Aberta, aplicatziones pro Android in particulare</string>
+    <string name="join_community">Intra a fàghere parte de sa Comunidade</string>
+    <string name="bug_reports_suggest_improvements">Dae s\'opinione tua, sinnala problemas o cussìgia megiorias</string>
+    <string name="help_translating_this_app">Borta custa aplicatzione in àteras limbas</string>
+    <string name="source_code">Còdighe mitza</string>
+    <string name="project_license">Litzèntzia de su progetu</string>
+    <string name="project_contribution_info">Informatziones pro contribuire a su progetu</string>
+    <string name="more_info_on_how_to_contribute_to_this_project">Àteras informatziones a pitzu de comente contribuire a custu progetu</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">Contribui cun còdighe a su progetu. Totus sunt invitados a lu fàghere, fintzas sos ùrtimos arribbados.</string>
+    <string name="project_team">Grupu de su progetu</string>
+    <string name="licenses">Litzèntzias</string>
+    <string name="contributors">Contribuidores</string>
+    <string name="donate">Dona</string>
+    <string name="contribute">Contribui</string>
+    <string name="view">Abbàida</string>
+    <string name="editing_font">Caràtere de modìfica</string>
 </resources>
