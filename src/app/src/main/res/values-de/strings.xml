@@ -64,6 +64,7 @@
     <string name="pulling_strings_long">Wenn du neue Zeichenketten herunterlädst, bleibt deine Übersetzung intakt, jedoch werden möglicherweise neue nicht übersetzte Zeichenketten hinzukommen. Bevor du deine Übersetzung hochlädst wird empfohlen dies zu tun, um sicherzustellen, dass alles übersetzt wurde. Möchtest du fortfahren?</string>
     <string name="history">Verlauf</string>
     <string name="add_project">Projekt hinzufügen</string>
+    <string name="repository_plural">Repositories</string>
     <string name="start_translating">Jetzt übersetzen</string>
     <string name="history_no_repos_hint">Neu hier? Wechsel zu dem \"%s\" Reiter um zu beginnen!</string>
     <string name="history_contains_repos_hint">Repositories wurden bereits synchronisiert. Wähle eines der unteren aus oder füge ein neues hinzu.</string>
@@ -130,11 +131,35 @@
     <string name="user_accounts">Benutzerkonten</string>
     <string name="more">Mehr</string>
     <string name="next_steps">Sobald alle Zeichenketten übersetzt wurden, drücken das Drei-Punkte-Menü oben rechts und wähle \"%s\" um deine Arbeit mit dem Projektverwalter zum prüfen und nutzen zu teilen.\n
-      \n
-   Wenn du einige der bereits übersetzten Zeichenketten prüfen willst, aktiviere die \"%s\" Option.</string>
+         \n
+      Wenn du einige der bereits übersetzten Zeichenketten prüfen willst, aktiviere die \"%s\" Option.</string>
     <string name="cancel_sync">Synchronisieren abbrechen?</string>
     <string name="exported_to_hastebin">Erfolgreich zu Hastebin exportiert. URL in die Zwischenablage kopiert</string>
     <string name="export_unsuccessful">Exportieren fehlgeschlagen</string>
     <string name="base_branch_colon">Ausgangs-Branch:</string>
-    <string name="repository_plural">Repositories</string>
+
+
+    <string name="open_source_licenses">Open Source Lizenzen</string>
+    <string name="translate">Übersetzen</string>
+    <string name="help_this_app">Mehr Informationen und Hilfe</string>
+    <string name="bug_reports">Fehler melden</string>
+    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">Mehr Informationen wie man dieses Projekt unterstützt oder spendet</string>
+    <string name="android_contribution_guide">Android Beitragsanleitung</string>
+    <string name="more_info_on_how_to_contribute_to_foss_android_projects">Mehr Informationen wie man einen Beitrag zu Open Source Projekten macht. Speziell für Android apps</string>
+    <string name="join_community">Trete der Community bei</string>
+    <string name="bug_reports_suggest_improvements">Feedback geben, Bugs melden oder Verbesserungen vorschlagen</string>
+    <string name="help_translating_this_app">Übersetze diese App andere Sprachen</string>
+    <string name="source_code">Source Code</string>
+    <string name="project_license">Projektlizenz</string>
+    <string name="project_contribution_info">Projektbeitragsinformationen</string>
+    <string name="more_info_on_how_to_contribute_to_this_project">Mehr Informationen wie man zu diesem Projekt etwas beiträgt</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">Trage code zu dem Projekt bei. Jeder ist dazu eingeladen das zu tun; auch Anfänger</string>
+    <string name="project_team">Projektteam</string>
+    <string name="licenses">Lizenzen</string>
+    <string name="contributors">Beitragende</string>
+    <string name="donate">Spenden</string>
+    <string name="contribute">Beitragen</string>
+    <string name="view">Ansicht</string>
+    <string name="editing_font">Bearbeitungsschriftart</string>
+
 </resources>
