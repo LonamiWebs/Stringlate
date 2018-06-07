@@ -1,0 +1,51 @@
+<resources>
+    <string name="original_string">Oprindelig streng:</string>
+    <string name="translated_string_colon">Oversat streng:</string>
+    <string name="next">Næste</string>
+    <string name="owner_hint">ejer</string>
+    <string name="update_strings">Opdatér strings.xml</string>
+    <string name="previous">Forrige</string>
+    <string name="no_strings_left">Der er ikke flere strenge tilbage.</string>
+    <string name="cancel">Annuller</string>
+    <string name="show_translated_strings">Vis kun oversatte strenge</string>
+    <string name="show_identical_strings_only">Vis kun identiske strenge</string>
+    <string name="delete_ellipsis">Slet…</string>
+    <string name="delete_string">Slet streng</string>
+    <string name="sure_question">Er du sikker?</string>
+    <string name="export_ellipsis">Eksportér…</string>
+    <string name="discover">Opdag projekter</string>
+    <string name="open">Åben</string>
+    <string name="copy">Kopiér</string>
+    <string name="share">Del</string>
+    <string name="exit">Afslut</string>
+    <string name="no_internet_connection">Du er ikke forbundet til internettet.</string>
+    <string name="search">Søg</string>
+    <string name="history">Historik</string>
+    <string name="add_project">Tilføj projekt</string>
+    <string name="start_translating">Start oversætning</string>
+    <string name="help">Hjælp</string>
+    <string name="open_online_help">Åben online hjælp</string>
+    <string name="translation_progress">%1$d/%2$d strenge oversat (%3$.1f%%).</string>
+    <string name="not_translated">Ikke oversat.</string>
+    <string name="something_went_wrong">Noget gik galt.</string>
+    <string name="sort_by_ellipsis">Sortér efter…</string>
+    <string name="sort_alphabetically">Alfabetisk</string>
+    <string name="ignore">Ignorér</string>
+    <string name="open_project_homepage">Åben projekthjemmeside</string>
+    <string name="open_in_external_browser">Åben i ekstern browser</string>
+    <string name="syncing_now">Synkroniserer:</string>
+    <string name="settings">Indstillinger</string>
+    <string name="pref_title__language">Sprog</string>
+    <string name="appearance">Udseende</string>
+    <string name="user_accounts">Brugerkonti</string>
+    <string name="more">Mere</string>
+    <string name="cancel_sync">Annuller synkronisering?</string>
+
+
+    <string name="open_source_licenses">Open Source-licenser</string>
+    <string name="translate">Oversæt</string>
+    <string name="licenses">Licenser</string>
+    <string name="donate">Donér</string>
+    <string name="view">Vis</string>
+
+</resources>
