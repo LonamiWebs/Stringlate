@@ -11,7 +11,7 @@
     <string name="loading_ellipsis">Chargement…</string>
     <string name="no_strings_found_update">Aucun fichier strings.xml n’a été trouvé, veuillez le mettre à jour.</string>
     <string name="repo_or_url_required">Entrer un propriétaire et un nom de dépôt ou une adresse.</string>
-    <string name="translated_string">Chaîne traduite</string>
+    <string name="translated_string">Chaîne traduite.</string>
     <string name="previous">Précédente</string>
     <string name="no_strings_left">Aucune chaîne restante.</string>
     <string name="save_error">Impossible d’enregistrer les changements.</string>
@@ -19,11 +19,11 @@
     <string name="cancel">Annuler</string>
     <string name="create_locale_error">Impossible de créer le nouveau fichier local.</string>
     <string name="show_translated_strings">Montrer les chaînes déjà traduites</string>
-    <string name="show_identical_strings_only">Ne montrer que les branches identiques</string>
+    <string name="show_identical_strings_only">Ne montrer que les chaînes identiques</string>
     <string name="delete_ellipsis">Supprimer…</string>
     <string name="delete_string">Supprimer la chaîne</string>
     <string name="delete_locale">Supprimer la langue</string>
-    <string name="delete_repository">Supprimer le dépôt</string>
+    <string name="delete_repository">Supprimer le dépôt (localement)</string>
     <string name="no_locale_selected">Aucune langue sélectionnée.</string>
     <string name="sure_question">Êtes-vous sûr ?</string>
     <string name="delete_locale_confirm_long">Voulez-vous vraiment supprimer la langue « %s » ? Toutes ses chaînes seront perdues.</string>
@@ -64,6 +64,7 @@
     <string name="pulling_strings_long">Récupérer de nouvelles chaînes préservera vos traductions tout en ajoutant éventuellement de nouvelles chaînes non traduites. Vous devriez le faire avant d\'envoyer vos traductions pour vous assurer que vous avez bien tout traduit. Souhaitez vous continuer ?</string>
     <string name="history">Historique</string>
     <string name="add_project">Ajouter un projet</string>
+    <string name="repository_plural">Dépôts</string>
     <string name="start_translating">Commencer à traduire</string>
     <string name="history_no_repos_hint">Nouveau ? Allez voir l’onglet « %s » pour commencer !</string>
     <string name="history_contains_repos_hint">Voilà vos dépôts précédemment synchronisés. Choisissez en un ci-dessous ou ajoutez en un nouveau pour continuer.</string>
@@ -130,9 +131,35 @@
     <string name="user_accounts">Comptes utilisateur</string>
     <string name="more">Plus</string>
     <string name="next_steps">Une fois que toutes les chaînes sont traduites, appuyez sur les trois points en haut à droite et choisissez « %s » pour partager votre travail avec le mainteneur du projet pour qu\'il puisse le vérifier et l\'utiliser.\n
-    \n
-    Si vous voulez relire certaines des chaînes déjà traduites, activez l\'option « %s ».</string>
+        \n
+        Si vous voulez relire certaines des chaînes déjà traduites, activez l\'option « %s ».</string>
     <string name="cancel_sync">Annuler la synchronisation ?</string>
     <string name="exported_to_hastebin">Export vers Hastebin réussi. L\'URL a été copiée dans le presse-papier.</string>
     <string name="export_unsuccessful">Échec de l\'export</string>
+    <string name="base_branch_colon">Branche d\'origine</string>
+
+
+    <string name="open_source_licenses">Licences Open Source</string>
+    <string name="translate">Traduire</string>
+    <string name="help_this_app">Informations et aide</string>
+    <string name="bug_reports">Signaler des bogues</string>
+    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">Plus d\'infos sur les dons ou les contributions financières à ce projet</string>
+    <string name="android_contribution_guide">Guide de contribution Android</string>
+    <string name="more_info_on_how_to_contribute_to_foss_android_projects">Plus d\'infos sur la contribution à des projets Open Source, particulièrement à des apps Android</string>
+    <string name="join_community">Rejoignez la communauté</string>
+    <string name="bug_reports_suggest_improvements">Nous envoyer des commentaires, signaler des bugs, ou suggérer des améliorations</string>
+    <string name="help_translating_this_app">Traduire cette app dans d\'autres langues</string>
+    <string name="source_code">Code source</string>
+    <string name="project_license">Licence du projet</string>
+    <string name="project_contribution_info">Infos sur la contribution au projet</string>
+    <string name="more_info_on_how_to_contribute_to_this_project">Plus d\'infos sur les façons de contribuer au projet</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">Contribuer au projet avec du code. Tout le monde est bienvenu, même les débutants.</string>
+    <string name="project_team">Équipe du projet</string>
+    <string name="licenses">Licences</string>
+    <string name="contributors">Contributeurs</string>
+    <string name="donate">Faire un don</string>
+    <string name="contribute">Contribuer</string>
+    <string name="view">Voir</string>
+    <string name="editing_font">Police d\'édition</string>
+
 </resources>

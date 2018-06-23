@@ -64,6 +64,7 @@
     <string name="pulling_strings_long">Yeni metinleri almak sizin çevirilerinizi değiştirmez ve varsa çevirilmemiş yeni metinler ekler. Çevirilerinizi yüklemeden önce tüm metinleri çevirdiğinizden emin olmak için bunu yapmalısınız. Devam etmek istiyor musunuz?</string>
     <string name="history">Geçmiş</string>
     <string name="add_project">Proje ekle</string>
+    <string name="repository_plural">Repolar</string>
     <string name="start_translating">Çevirmeye başla</string>
     <string name="history_no_repos_hint">Burada yeni misiniz? \"%s\" sekmesine geçerek başlayın!</string>
     <string name="history_contains_repos_hint">Bunlar sizin önceden senkronize olan kaynaklarınızdır. Devam etmek için birini seçin veya yeni bir tane ekleyin.</string>
@@ -80,6 +81,7 @@
     <string name="auth_success">Yetkilendirme başarılı</string>
     <string name="auth_failure">Yetkilendirme hatası</string>
     <string name="completing_auth_ellipsis">Yetkilendirme tamamlanıyor...</string>
+    <string name="gist_github_login_needed">Gists\'i yüklemek için Stringlate ayarlarını açmanız, \'%s\' i seçmeniz ve GitHub\'da yetkilendirme isteğini onaylamanız gerekir.</string>
     <string name="create_issue">Sorun oluştur</string>
     <string name="creating_issue_long_ellipsis">GitHub\'da yeni sorun oluşturulmaya çalışılıyor...</string>
     <string name="issue_description">Sorun açıklaması (%x çeviri ile değiştirilecektir):</string>
@@ -128,4 +130,36 @@
     <string name="appearance">Görünüm</string>
     <string name="user_accounts">Kullanıcı hesapları</string>
     <string name="more">Daha fazla</string>
+    <string name="next_steps">Tüm dizeler çevrildikten sonra sağ üstteki üç nokta menüsüne dokunun ve çalışmanızı proje yöneticisi ile birlikte inceleyip kullanabilmesi için \"%s\" öğesini seçin.\n
+ \n
+ Önceden çevrilmiş dizelerden bazılarını incelemek isterseniz, bunu yapmak için \"%s\" seçeneğini etkinleştirin.</string>
+    <string name="cancel_sync">Senkronizasyonu iptal et mi istiyorsunuz?</string>
+    <string name="exported_to_hastebin">Hastebin\'e başarıyla aktarıldı. URL panoya kopyalandı</string>
+    <string name="export_unsuccessful">Dışa aktarma başarısız</string>
+    <string name="base_branch_colon">Ana dal:</string>
+
+
+    <string name="open_source_licenses">Açık Kaynak Lisanslar</string>
+    <string name="translate">Çeviri</string>
+    <string name="help_this_app">Daha fazla bilgi ve yardım</string>
+    <string name="bug_reports">Hata bildir</string>
+    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">Bu projeye bağış yapmak veya desteklemek için daha fazla bilgi</string>
+    <string name="android_contribution_guide">Android katkı rehberi</string>
+    <string name="more_info_on_how_to_contribute_to_foss_android_projects">Açık Kaynak projelerine, özellikle Android uygulamalarına katkıda bulunmakla ilgili daha fazla bilgi</string>
+    <string name="join_community">Topluluğa katıl</string>
+    <string name="bug_reports_suggest_improvements">Geri bildirim, hata bildirimi veya iyileştirmeler önerebilirsiniz</string>
+    <string name="help_translating_this_app">Bu uygulamayı diğer dillere çevir</string>
+    <string name="source_code">Kaynak kod</string>
+    <string name="project_license">Proje lisansı</string>
+    <string name="project_contribution_info">Proje katkı bilgisi</string>
+    <string name="more_info_on_how_to_contribute_to_this_project">Bu projeye nasıl katkıda bulunacağına dair daha fazla bilgi</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">Projeye kod katkısında bulun. Yeni gelenler de dahil olmak üzere herkes hoş karşılanır</string>
+    <string name="project_team">Proje takımı</string>
+    <string name="licenses">Lisanslar</string>
+    <string name="contributors">Katkıcılar</string>
+    <string name="donate">Bağış</string>
+    <string name="contribute">Katkıda bulun</string>
+    <string name="view">Görünüm</string>
+    <string name="editing_font">Yazı tipini düzenle</string>
+
 </resources>
