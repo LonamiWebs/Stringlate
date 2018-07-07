@@ -2,7 +2,7 @@
     <string name="original_string">Oorspronklike frase:</string>
     <string name="translated_string_colon">Vertaalde frase:</string>
     <string name="next">Volgende</string>
-    <string name="welcome">Welkom by Stringlate! Voer \'n GitHub projeknaam en eienaar in of plak die kodebestuursgids se Git URL hieronder om voort te gaan.</string>
+    <string name="welcome">Welkom by Stringlate! Voer \'n GitHub projeknaam en eienaar in op plak die kodebedtuursgids se Git URL hieronder om voort te gaan.</string>
     <string name="owner_hint">eienaar</string>
     <string name="repository_hint">kodebestuursgids</string>
     <string name="github_repo_url_hint">https://github.com/eienaar/kodebestuursgids</string>
@@ -15,7 +15,7 @@
     <string name="previous">Vorige</string>
     <string name="no_strings_left">Daar is geen meer frases oor nie.</string>
     <string name="save_error">Kon nie veranderinge stoor nie.</string>
-    <string name="add_locale_to_start">Voeg \'n nuwe streektaal by om te begin.</string>
+    <string name="add_locale_to_start">Voeg \'n nuwe streektaal by om te begin</string>
     <string name="cancel">Kanseleer</string>
     <string name="create_locale_error">Konnie die nuwe streektaaldokument skep nie.</string>
     <string name="show_translated_strings">Toon vertaalde frases</string>
@@ -27,7 +27,7 @@
     <string name="no_locale_selected">Daar is geen taalstreek verkies nie.</string>
     <string name="sure_question">Is u seker?</string>
     <string name="delete_locale_confirm_long">Is u seker dat u die streektaal \"%s\" wil uitwis? Al die frases sal verlore gaan.</string>
-    <string name="delete_repository_confirm_long">Bedoel u werklik om die kodebestuursgids \"%s\" uit te wis? Die tuiskloon sal van die toestel se geheue geskrap word, maar dit kan weer bygevoeg word.</string>
+    <string name="delete_repository_confirm_long">Is dit u intensie om die kodebestuurgids \"%s\" uit te wis? Die tuiskloon sal van die toestel se geheue geskrap word, maar dit kan weer bygevoeg word.</string>
     <string name="export_ellipsis">Voer uit…</string>
     <string name="export_sd_card">Voer uit na SD-kaart</string>
     <string name="export_share">Deel gegenereerde xml</string>
@@ -89,8 +89,8 @@
     <string name="share_url">Deel URL</string>
     <string name="create_issue_success">U besprekingspunt is gelug, baie geluk!</string>
     <string name="create_issue_error">Die besprekingspunt kon nie gelug word nie.</string>
-    <string name="can_push_no_pr">Dit wil voorkom asof u nie skryftoegang het tot hierdie kodebestuursgids nie. Geen intrekversoek sal geloods word nie.</string>
-    <string name="cannot_push_will_pr">Dit wil voorkom asof u nie skryftoegang het tot hierdie kodebestuursgids nie. Stringlate sal dit vurk na u rekening (of \'n bestaande vurk nuttig) u vertaling inskakel en die intrekversoek loods.</string>
+    <string name="can_push_no_pr">Dit wil voorkom asof u nie skryftoegang het tot hierdie kodebestuurgids nie. Geen intrekversoek sal geloods word nie.</string>
+    <string name="cannot_push_will_pr">Dit wil voorkom asof u nie skryftoegang het tot hierdie kodebestuurgids nie. Stringlate sal dit vurk na u rekening (of \'n bestaande vurk nuttig) u vertaling inskakel en die intrekversoek loods.</string>
     <string name="create_pr">Skep intrekversoek</string>
     <string name="commit_message">Inskakel boodskap</string>
     <string name="commit_changes">Skakel veranderinge in</string>
@@ -102,7 +102,7 @@
     <string name="creating_commit_long">Laai tans die nuwe lêer om ingevoeg te word by inskakel…</string>
     <string name="commit_failed">Inskakel-skepping het gefaal.</string>
     <string name="creating_pr_long">Skep tans \'n intrekversoek op die oorspronklike kodebestuursgids…</string>
-    <string name="something_went_wrong">Iets het verkeerd geloop.</string>
+    <string name="something_went_wrong">Iets het fout gegaan.</string>
     <string name="issue_title_colon">Besprekingspunt titel:</string>
     <string name="issue_title">Besprekingspunt titel</string>
     <string name="title_empty">Die titel kannie leeg wees nie.</string>
@@ -131,8 +131,8 @@
     <string name="user_accounts">Gebruikersrekeninge</string>
     <string name="more">Meer</string>
     <string name="next_steps">Sodra al die frases vertaal is, tik die drie kolle menu bo-regs en kies \"%s\" om u werk met die projek onderhouer te deel sodat hul dit kan hersien en gebruik.\n
-    \n
- Indien u graag sommige van die reeds vertaalde frases wil hersien, aktiveer die \"%s\" opsie.</string>
+   \n
+   Indien u graag sommige van die reeds vertaalde frases wil hersien, aktiveer die \"%s\" opsie.</string>
     <string name="cancel_sync">Kanseleer sinkronisasie?</string>
     <string name="exported_to_hastebin">Suksesvol uitgevoer na Hastebin. URL is na klipbord afgetas</string>
     <string name="export_unsuccessful">Uitvoer onsuksesvol</string>
@@ -146,7 +146,7 @@
     <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">Meer inligting rondom donasies en ondersteuning van hierdie projek</string>
     <string name="android_contribution_guide">Android bydra-gids</string>
     <string name="more_info_on_how_to_contribute_to_foss_android_projects">Meer inligting aangaande die bydra tot Oopbron projekte, veral Android toeps</string>
-    <string name="join_community">Sluit by die Gemeenskap aan</string>
+    <string name="join_community">Sluit by Gemeenskap aan</string>
     <string name="bug_reports_suggest_improvements">Gee terugvoer, rapporteer goggas en stel verbeterings voor</string>
     <string name="help_translating_this_app">Vertaal hierdie toep na ander tale</string>
     <string name="source_code">Bronkode</string>
