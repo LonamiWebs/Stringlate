@@ -1,8 +1,15 @@
 apply plugin: 'java'
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Tool libraries
+    implementation 'org.eclipse.jgit:org.eclipse.jgit:3.5.2.201411120430-r'
+
+    // Drop-in replacements for android libraries
+    implementation 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xmlpull:1.1.3.4a_1'
+    implementation group: 'org.json', name: 'json', version: '20170516'
 }
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"

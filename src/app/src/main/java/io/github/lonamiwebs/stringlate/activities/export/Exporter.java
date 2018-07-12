@@ -1,8 +1,11 @@
 package io.github.lonamiwebs.stringlate.activities.export;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
+
+import net.gsantner.opoc.util.Callback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,10 +17,9 @@ import java.util.Map;
 import java.util.Random;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.git.GitHub;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.git.GitHub;
-import io.github.lonamiwebs.stringlate.git.GitWrapper;
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 class Exporter {
 
@@ -32,7 +34,7 @@ class Exporter {
 
         abstract String getSuccessDescription(Context context);
 
-        abstract String call(Context context, Callback<String> progress) throws Exception;
+        abstract String call(Context context, Callback.a1<String> progress) throws Exception;
     }
 
     private static int addExporter(final CallableExporter exporter) {
@@ -64,9 +66,9 @@ class Exporter {
             }
 
             @Override
-            public String call(final Context context, final Callback<String> progress) throws Exception {
+            public String call(final Context context, final Callback.a1<String> progress) throws Exception {
                 mFailureReason = context.getString(R.string.post_gist_error);
-                JSONObject result = GitHub.gCreateGist(description, isPublic, fileContents, token);
+                JSONObject result = GitHub.createGist(description, isPublic, fileContents, token);
                 if (result == null)
                     throw new JSONException("Null JSON");
 
@@ -90,15 +92,15 @@ class Exporter {
             }
 
             @Override
-            public String call(final Context context, final Callback<String> progress) throws Exception {
+            public String call(final Context context, final Callback.a1<String> progress) throws Exception {
                 final JSONObject result;
                 mFailureReason = context.getString(R.string.create_issue_error);
                 if (existingIssueNumber == -1) {
-                    result = GitHub.gCreateIssue(
+                    result = GitHub.createIssue(
                             repo, issueTitle, issueDesc, token
                     );
                 } else {
-                    result = GitHub.gCommentIssue(
+                    result = GitHub.commentIssue(
                             repo, existingIssueNumber, issueDesc, token
                     );
                 }
@@ -123,7 +125,7 @@ class Exporter {
 
     static int createPullRequestExporter(
             final RepoHandler originalRepo, final boolean needFork,
-            final String locale, final String branch, final String commitMessage,
+            final String locale, final String baseBranch, final String commitMessage,
             final String username, final String token) {
         return addExporter(new CallableExporter() {
 
@@ -133,26 +135,34 @@ class Exporter {
             }
 
             @Override
-            public String call(final Context context, final Callback<String> progress) throws Exception {
+            public String call(final Context context, final Callback.a1<String> progress) throws Exception {
                 JSONObject commitResult;
                 RepoHandler repo;
                 if (needFork) {
                     // Fork the repository
                     mFailureReason = context.getString(R.string.fork_failed);
-                    progress.onCallback(context.getString(R.string.forking_repo_long));
+                    progress.callback(context.getString(R.string.forking_repo_long));
 
-                    JSONObject fork = GitHub.gForkRepository(token, originalRepo);
+                    JSONObject fork = GitHub.forkRepository(token, originalRepo);
                     if (fork == null) throw new JSONException("Resulting fork is null.");
 
                     String owner = fork.getJSONObject("owner").getString("login");
                     String repoName = fork.getString("name");
-                    repo = new RepoHandler(context, GitWrapper.buildGitHubUrl(owner, repoName));
+                    repo = RepoHandlerHelper.fromContext(context, GitHub.buildGitHubUrl(owner, repoName));
                 } else {
                     repo = originalRepo;
                 }
 
+                // Create a temporary branch
+                // TODO If we have write access, should we create a new branch at all?
+                @SuppressLint("DefaultLocale") final String branch = String.format(
+                        "stringlate-%s-%d", locale, 1000 + new Random().nextInt(8999)
+                );
+                JSONObject result = GitHub.createBranch(token, repo, branch);
+                if (result == null) throw new JSONException("Failed to create a new branch.");
+
                 // Commit the file
-                progress.onCallback(context.getString(R.string.creating_commit_long));
+                progress.callback(context.getString(R.string.creating_commit_long));
                 mFailureReason = context.getString(R.string.commit_failed);
 
                 final HashMap<String, String> remoteContents = new HashMap<>();
@@ -164,13 +174,13 @@ class Exporter {
                         remoteContents.put(templateRemote.getValue(), content);
                     }
                 }
-                commitResult = GitHub.gCreateCommitFile(
+                commitResult = GitHub.createCommitFile(
                         token, repo, branch, remoteContents, commitMessage
                 );
 
                 if (needFork) {
                     // Create pull request
-                    progress.onCallback(context.getString(R.string.creating_pr_long));
+                    progress.callback(context.getString(R.string.creating_pr_long));
                     mFailureReason = context.getString(R.string.something_went_wrong);
 
                     String title, body;
@@ -186,8 +196,8 @@ class Exporter {
                     }
 
                     // This may throw another InvalidObjectException
-                    commitResult = GitHub.gCreatePullRequest(
-                            token, originalRepo, title, username + ":" + branch, branch, body
+                    commitResult = GitHub.createPullRequest(
+                            token, originalRepo, title, username + ":" + branch, baseBranch, body
                     );
                 }
 

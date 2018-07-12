@@ -11,6 +11,8 @@ import android.os.Handler;
 import android.util.Pair;
 import android.widget.ImageView;
 
+import net.gsantner.opoc.util.NetworkUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,7 +23,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.utilities.FileDownloader;
 
 // Original code at https://github.com/thest1/LazyList (http://stackoverflow.com/a/3068012/4759433)
 public class ImageLoader {
@@ -126,7 +127,7 @@ public class ImageLoader {
             }
         }
         if (!f.isFile() && mAllowInternetDownload) {
-            if (!FileDownloader.downloadFile(url, f))
+            if (!NetworkUtils.downloadFile(url, f))
                 mMemoryCache.clear();
         }
 

@@ -11,17 +11,17 @@ applications in an easy way. Perhaps your family doesn't know enough English
 and you might want to translate a FOSS application for them, then this is
 application is the right way to go.
 
-Its purpose is **fetching** a GitHub repository containing the **source code**
-for an Android application, and once the `strings.xml` files in it are
+Its purpose is **fetching** a Git repository containing the **source code**
+for an Android application, and once the string resources (`strings.xml` files) in it are
 downloaded, you'll be able to **translate it** whenever you want.
 
 Some applications have a large amount of `strings` waiting to be translated.
 This is the reason why it's not a desktop application, so it could be done
-anywhere (*no internet connection is required* once the `strings` are saved).
-Once you're done, create a *Gist*, **export** the file to the SD card or simply
-copy its contents to the clipboard.
+anywhere (*no internet connection is required* once the `strings` are downloaded).
+Once you're done,you can **export** the translations to the SD card, share it to any service,
+send it via email, create a GitHub Gist or simply copy its contents to the clipboard.
 
-Of course, once you have the final `strings.xml`, drop the author an issue and
+Of course, once you have completed the translation, drop the author a Pull-Request and
 let them know you've translated their application. They'll be really happy!
 
 ## Help
@@ -41,19 +41,21 @@ This application has not yet been tested on pre-Lollipop devices and it
 this is the case, please let me know, or create a new pull request with a fix.
 
 ## Screenshots
-![Screenshot 1](./resources/screenshots/s1.png)
-![Screenshot 2](./resources/screenshots/s2.png)
-![Screenshot 3](./resources/screenshots/s3.png)
-![Screenshot 4](./resources/screenshots/s4.png)
-![Screenshot 4](./resources/screenshots/s5.png)
+![Screenshot 1](https://github.com/XyLoNaMiyX/Stringlate-metadata/raw/HEAD/en-GB/phoneScreenshots/01.png)
+![Screenshot 2](https://github.com/XyLoNaMiyX/Stringlate-metadata/raw/HEAD/en-GB/phoneScreenshots/02.png)
+![Screenshot 3](https://github.com/XyLoNaMiyX/Stringlate-metadata/raw/HEAD/en-GB/phoneScreenshots/03.png)
+![Screenshot 4](https://github.com/XyLoNaMiyX/Stringlate-metadata/raw/HEAD/en-GB/phoneScreenshots/04.png)
+![Screenshot 4](https://github.com/XyLoNaMiyX/Stringlate-metadata/raw/HEAD/en-GB/phoneScreenshots/05.png)
+
 
 (*Thanks to [Clean Status Bar](https://f-droid.org/app/com.emmaguy.cleanstatusbar)
 for the tidy screenshots*)
 
 ## Donations
-At the moment I don't have any donating system. However, if you really are
-interested, please drop an issue on GitHub and I'll take a look at it. You
-would be my first donor!
+Remember that not only you can donate money, but also appreciation. Both are very welcome!
+
+* @Lonami: Please refer to https://lonamiwebs.github.io/donate/
+* @gsantner: [Web](https://gsantner.net/supportme?source=readme&project=openlauncher) | [LiberaPay](https://liberapay.com/gsantner/donate)
 
 ## License
 The project is licensed under the

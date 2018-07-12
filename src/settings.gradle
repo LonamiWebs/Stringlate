@@ -1,1 +1,2 @@
-include ':app', ':core'
+rootProject.name = "stringlate"
+include ':app', ':core', ':cli'

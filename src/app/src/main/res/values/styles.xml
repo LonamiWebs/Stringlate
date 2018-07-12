@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="preferenceTheme">@style/AppTheme.PreferenceTheme</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -16,5 +17,13 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.PreferenceTheme" parent="PreferenceThemeOverlay.v14.Material">
+        <item name="preferenceCategoryStyle">@style/AppTheme.PreferenceTheme.CategoryStyle</item>
+    </style>
+
+    <style name="AppTheme.PreferenceTheme.CategoryStyle" parent="Preference.Category">
+        <item name="android:layout">@layout/pref_category_text</item>
+    </style>
 
 </resources>

@@ -15,8 +15,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.gsantner.opoc.util.Callback;
+
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_ID;
 
@@ -56,9 +57,9 @@ public class CreateUrlActivity extends AppCompatActivity {
                 @Override
                 protected String doInBackground(Void... params) {
                     try {
-                        return mPostUrlCallable.call(CreateUrlActivity.this, new Callback<String>() {
+                        return mPostUrlCallable.call(CreateUrlActivity.this, new Callback.a1<String>() {
                             @Override
-                            public void onCallback(String s) {
+                            public void callback(String s) {
                                 publishProgress(s);
                             }
                         });

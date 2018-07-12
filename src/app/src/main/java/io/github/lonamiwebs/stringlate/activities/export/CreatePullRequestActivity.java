@@ -18,10 +18,11 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.classes.LocaleString;
+import io.github.lonamiwebs.stringlate.classes.git.GitHub;
+import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.git.GitHub;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -58,11 +59,11 @@ public class CreatePullRequestActivity extends AppCompatActivity {
         mSettings = new AppSettings(this);
 
         Intent intent = getIntent();
-        mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
+        mRepo = RepoHandlerHelper.fromBundle(intent.getBundleExtra(EXTRA_REPO));
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
 
         mCommitMessageEditText.setText(getString(
-                R.string.added_x_translation_spam, mLocale,
+                R.string.updated_x_translation_spam, mLocale,
                 LocaleString.getEnglishDisplay(mLocale)));
 
         checkPermissions();
@@ -77,7 +78,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
         new AsyncTask<Void, Void, AbstractMap.SimpleImmutableEntry<String, Boolean>>() {
             @Override
             protected AbstractMap.SimpleImmutableEntry<String, Boolean> doInBackground(Void... params) {
-                return GitHub.gCanPush(mSettings.getGitHubToken(), mRepo);
+                return GitHub.canPush(mSettings.getGitHubToken(), mRepo);
             }
 
             @Override
@@ -99,7 +100,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
             protected ArrayList<String> doInBackground(Void... params) {
                 ArrayList<String> result = new ArrayList<>();
 
-                JSONArray branches = GitHub.gGetBranches(mRepo);
+                JSONArray branches = GitHub.getBranches(mRepo);
                 if (branches != null) {
                     try {
                         for (int i = 0; i < branches.length(); i++) {
@@ -107,6 +108,16 @@ public class CreatePullRequestActivity extends AppCompatActivity {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    }
+                }
+                if (result.isEmpty()) {
+                    result.add("master");
+                }
+                if (result.size() > 1) {
+                    String defaultBranch = GitHub.getDefaultBranch(mRepo);
+                    if (defaultBranch != null && result.contains(defaultBranch)) {
+                        result.remove(defaultBranch);
+                        result.add(0, defaultBranch);
                     }
                 }
 
@@ -130,6 +141,10 @@ public class CreatePullRequestActivity extends AppCompatActivity {
 
         idAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mBranchesSpinner.setAdapter(idAdapter);
+        if (branches.size() == 1) {
+            // No need to let the user select a BASE branch if there's only one
+            findViewById(R.id.branchesLayout).setVisibility(View.GONE);
+        }
     }
 
     //endregion
@@ -137,8 +152,9 @@ public class CreatePullRequestActivity extends AppCompatActivity {
     //region Button events
 
     public void commitChanges(View view) {
-        final String branch = (String) mBranchesSpinner.getSelectedItem();
-        if (mNeedFork == null || branch == null) {
+        final String baseBranch = (String) mBranchesSpinner.getSelectedItem();
+        if (mNeedFork == null || baseBranch == null) {
+            // Not ready yet
             Toast.makeText(this, R.string.loading_ellipsis, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -150,7 +166,7 @@ public class CreatePullRequestActivity extends AppCompatActivity {
         }
 
         CreateUrlActivity.launchIntent(this, Exporter.createPullRequestExporter(
-                mRepo, mNeedFork, mLocale, branch, commitMessage,
+                mRepo, mNeedFork, mLocale, baseBranch, commitMessage,
                 mUsername, mSettings.getGitHubToken()
         ));
 

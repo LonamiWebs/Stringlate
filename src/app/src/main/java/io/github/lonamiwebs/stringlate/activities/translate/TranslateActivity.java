@@ -1,10 +1,10 @@
 package io.github.lonamiwebs.stringlate.activities.translate;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,11 +26,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import net.gsantner.opoc.util.GeneralUtils;
+import net.gsantner.opoc.util.ShareUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,23 +41,29 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Set;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
+import io.github.lonamiwebs.stringlate.activities.info.BrowserActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity;
-import io.github.lonamiwebs.stringlate.classes.LocaleString;
+import io.github.lonamiwebs.stringlate.classes.RepoSyncTask;
+import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoProgress;
-import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
+import io.github.lonamiwebs.stringlate.classes.resources.ResourceStringComparator;
 import io.github.lonamiwebs.stringlate.classes.resources.Resources;
+import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslation;
 import io.github.lonamiwebs.stringlate.classes.resources.tags.ResTag;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
+import io.github.lonamiwebs.stringlate.dialogs.LocaleSelectionDialog;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.utilities.Helpers;
+import io.github.lonamiwebs.stringlate.utilities.ContextUtils;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_ID;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
@@ -63,14 +72,15 @@ import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_CREATE_
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_OPEN_TREE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_STRING_SELECTED;
 
-public class TranslateActivity extends AppCompatActivity {
+public class TranslateActivity extends AppCompatActivity implements LocaleSelectionDialog.OnLocaleSelected {
 
     //region Members
 
     private AppSettings mSettings;
 
-    private EditText mOriginalStringEditText;
+    private TextView mOriginalStringTextView;
     private EditText mTranslatedStringEditText;
+    private TextView mCopyStringTextView;
 
     private Spinner mLocaleSpinner;
     private Spinner mStringIdSpinner;
@@ -80,7 +90,7 @@ public class TranslateActivity extends AppCompatActivity {
     private ProgressBar mProgressProgressBar;
     private TextView mProgressTextView;
 
-    private LinearLayout mFilterAppliedLayout;
+    private FrameLayout mFilterAppliedLayout;
     private TextView mFilterAppliedTextView;
     private TextView mUsesTranslationServiceTextView;
 
@@ -96,7 +106,13 @@ public class TranslateActivity extends AppCompatActivity {
 
     private RepoHandler mRepo;
 
-    private boolean loaded;
+    private boolean mLoaded;
+
+    // Since the string filter (search) applies to both the original and the
+    // translated strings we can't just put the same filter on different sets.
+    // Instead, find the matching strings and save their IDs (so this new ID
+    // filter can be applied to any language indeed).
+    private Set<String> mFilteredIDs = new HashSet<>();
 
     //endregion
 
@@ -107,22 +123,25 @@ public class TranslateActivity extends AppCompatActivity {
             Toast.makeText(ctx, R.string.wait_until_sync, Toast.LENGTH_LONG).show();
         } else {
             Intent intent = new Intent(ctx, TranslateActivity.class);
-            intent.putExtra(EXTRA_REPO, repo.toBundle());
+            intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(repo));
             ctx.startActivity(intent);
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        loaded = false;
+        mLoaded = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_translate);
 
         mSettings = new AppSettings(this);
 
-        mOriginalStringEditText = findViewById(R.id.originalStringEditText);
+        mOriginalStringTextView = findViewById(R.id.originalStringEditText);
         mTranslatedStringEditText = findViewById(R.id.translatedStringEditText);
         mTranslatedStringEditText.addTextChangedListener(onTranslationChanged);
+
+        mCopyStringTextView = findViewById(R.id.copyString);
+        mCopyStringTextView.setOnClickListener(copyStringListener);
 
         mLocaleSpinner = findViewById(R.id.localeSpinner);
         mStringIdSpinner = findViewById(R.id.stringIdSpinner);
@@ -132,21 +151,27 @@ public class TranslateActivity extends AppCompatActivity {
         mProgressProgressBar = findViewById(R.id.progressProgressBar);
         mProgressTextView = findViewById(R.id.progressTextView);
 
-        mFilterAppliedLayout = findViewById(R.id.filterAppliedLayout);
+        mFilterAppliedLayout = findViewById(R.id.filter_applied_overlay_layout);
         mFilterAppliedTextView = findViewById(R.id.filterAppliedTextView);
         mUsesTranslationServiceTextView = findViewById(R.id.usesTranslationServiceTextView);
 
         mLocaleSpinner.setOnItemSelectedListener(eOnLocaleSelected);
         mStringIdSpinner.setOnItemSelectedListener(eOnStringIdSelected);
 
-        mRepo = RepoHandler.fromBundle(this, getIntent().getBundleExtra(EXTRA_REPO));
+        mRepo = RepoHandlerHelper.fromBundle(getIntent().getBundleExtra(EXTRA_REPO));
         setTitle(mRepo.getProjectName());
+
+        String a = mSettings.getEditingFont();
+        Typeface font = Typeface.create(mSettings.getEditingFont(), Typeface.NORMAL);
+        mOriginalStringTextView.setTypeface(font);
+        mTranslatedStringEditText.setTypeface(font);
+        mTranslatedStringEditText.postDelayed(() -> mTranslatedStringEditText.requestFocus(), 200);
 
         loadResources();
         onFilterUpdated(mRepo.settings.getStringFilter());
 
         // loadStringIDsSpinner is called too often at startup, use this flag to avoid it
-        loaded = true;
+        mLoaded = true;
         loadStringIDsSpinner();
 
         // Show the notice if this repository uses (or might use) a web translation service
@@ -156,7 +181,7 @@ public class TranslateActivity extends AppCompatActivity {
             mUsesTranslationServiceTextView.setVisibility(View.VISIBLE);
             mUsesTranslationServiceTextView.setText(getString(
                     R.string.application_may_use_translation_platform,
-                    Helpers.toTitleCase(mRepo.getUsedTranslationService())
+                    GeneralUtils.toTitleCase(mRepo.getUsedTranslationService())
             ));
         }
     }
@@ -186,9 +211,6 @@ public class TranslateActivity extends AppCompatActivity {
     private void loadResources() {
         if (mRepo.hasDefaultLocale()) {
             mDefaultResources = mRepo.loadDefaultResources();
-            // TODO Better way to handle the filters? But mRepo might need it unfiltered internally
-            mDefaultResources.setFilter(mRepo.settings.getStringFilter());
-
             loadLocalesSpinner();
             checkTranslationVisibility();
         } else {
@@ -217,6 +239,7 @@ public class TranslateActivity extends AppCompatActivity {
 
         mShowTranslated = mShowTranslatedMenuItem.isChecked();
         mShowIdentical = mShowIdenticalMenuItem.isChecked();
+
         return true;
     }
 
@@ -261,19 +284,19 @@ public class TranslateActivity extends AppCompatActivity {
 
             // Sorting modes
             case R.id.sortAlphabetically:
-                mSettings.setStringSortMode(AppSettings.SORT_ALPHABETICALLY);
+                mSettings.setStringSortMode(ResourceStringComparator.SORT_ALPHABETICALLY);
                 loadStringIDsSpinner();
                 return true;
 
             case R.id.sortLength:
-                mSettings.setStringSortMode(AppSettings.SORT_STRING_LENGTH);
+                mSettings.setStringSortMode(ResourceStringComparator.SORT_STRING_LENGTH);
                 loadStringIDsSpinner();
                 return true;
 
             case R.id.action_open_project_homepage: {
                 Intent browserIntent = new Intent(this, BrowserActivity.class);
                 browserIntent.putExtra(
-                        BrowserActivity.EXTRA_LOAD_URL, mRepo.settings.getProjectHomepageUrl()
+                        BrowserActivity.EXTRA_LOAD_URL, mRepo.settings.getProjectWebUrl()
                 );
                 startActivity(browserIntent);
                 return true;
@@ -281,10 +304,12 @@ public class TranslateActivity extends AppCompatActivity {
 
             // Exporting resources
             case R.id.exportToSdcard:
-            case R.id.exportToGist:
+            case R.id.export_to_gist:
             case R.id.github_export_to_issue:
             case R.id.github_export_to_pr:
             case R.id.exportShare:
+            case R.id.export_mail:
+            case R.id.export_hastebin:
             case R.id.exportCopy:
                 // Since all the exports check these conditions, check them here only
                 if (!isLocaleSelected(true))
@@ -300,7 +325,7 @@ public class TranslateActivity extends AppCompatActivity {
                     case R.id.exportToSdcard:
                         exportToSd();
                         break;
-                    case R.id.exportToGist:
+                    case R.id.export_to_gist:
                         exportToGist();
                         break;
                     case R.id.github_export_to_issue:
@@ -314,6 +339,12 @@ public class TranslateActivity extends AppCompatActivity {
                         break;
                     case R.id.exportCopy:
                         exportToCopy();
+                        break;
+                    case R.id.export_hastebin:
+                        exportToHastebin();
+                        break;
+                    case R.id.export_mail:
+                        exportToEmail();
                         break;
                 }
                 return true;
@@ -419,7 +450,7 @@ public class TranslateActivity extends AppCompatActivity {
                     .setPositiveButton(getString(R.string.ignore), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            updateStrings("");
+                            updateStrings("HEAD");
                         }
                     })
                     .setItems(branches, new DialogInterface.OnClickListener() {
@@ -429,13 +460,13 @@ public class TranslateActivity extends AppCompatActivity {
                     })
                     .show();
         } else {
-            updateStrings("");
+            updateStrings("HEAD");
         }
     }
 
     // Synchronize our local strings.xml files with the remote GitHub repository
     private void updateStrings(@NonNull final String branch) {
-        if (new Helpers(this).isDisconnectedFromInternet(R.string.no_internet_connection))
+        if (!new ContextUtils(this).isConnectedToInternet(R.string.no_internet_connection))
             return;
 
         // Don't let the users stay while we're synchronizing resources.
@@ -463,7 +494,7 @@ public class TranslateActivity extends AppCompatActivity {
     private void launchStringSearchActivity() {
         if (isLocaleSelected(true)) {
             Intent intent = new Intent(this, SearchStringActivity.class);
-            intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+            intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(mRepo));
             intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
             startActivityForResult(intent, RESULT_STRING_SELECTED);
         }
@@ -472,7 +503,7 @@ public class TranslateActivity extends AppCompatActivity {
     private void launchPeekTranslationsActivity() {
         if (isLocaleSelected(true) && mSelectedResource != null) {
             Intent intent = new Intent(this, PeekTranslationsActivity.class);
-            intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+            intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(mRepo));
             intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
             intent.putExtra(EXTRA_ID, mSelectedResource.getId());
             startActivity(intent);
@@ -483,57 +514,25 @@ public class TranslateActivity extends AppCompatActivity {
 
     //region Adding locales menu events
 
-    private void promptAddLocale() {
-        promptAddLocale("");
-    }
-
     // Prompts the user to add a new locale. If it exists,
     // no new file is created but the entered locale is selected.
-    private void promptAddLocale(final String presetLocaleCode) {
+    private void promptAddLocale() {
+        final LocaleSelectionDialog dialog = LocaleSelectionDialog.newInstance();
+        dialog.show(getFragmentManager(), LocaleSelectionDialog.TAG);
+    }
 
-        final LocaleListBuilder localeList = new LocaleListBuilder(this,
-                new LocaleListBuilder.LocalePickCallback() {
-                    @Override
-                    public void onChoice(final String localeCode) {
-                        promptAddLocale(localeCode);
-                    }
-                });
+    @Override
+    public void onLocaleSelected(final Locale which) {
+        if (which == null)
+            return;
 
-        final EditText et = new EditText(this);
-        et.setText(presetLocaleCode);
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.enter_locale)
-                .setMessage(getString(R.string.enter_locale_long, Locale.getDefault().getLanguage()))
-                .setView(et)
-                .setNeutralButton(R.string.choose_locale_from_list, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        localeList.show();
-                    }
-                })
-                .setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        String locale = LocaleString.sanitizeLocale(et.getText().toString());
-                        if (LocaleString.isValid(locale)) {
-                            if (mRepo.createLocale(locale)) {
-                                loadLocalesSpinner();
-                                setCurrentLocale(locale);
-                            } else {
-                                Toast.makeText(getApplicationContext(),
-                                        R.string.create_locale_error,
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            // The input locale is not a valid locale
-                            Toast.makeText(getApplicationContext(),
-                                    R.string.invalid_locale,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .show();
+        final String locale = LocaleString.getFullCode(which);
+        if (mRepo.createLocale(locale)) {
+            loadLocalesSpinner();
+            setCurrentLocale(locale);
+        } else {
+            Toast.makeText(TranslateActivity.this, R.string.create_locale_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     //endregion
@@ -659,7 +658,7 @@ public class TranslateActivity extends AppCompatActivity {
     // Exports the currently selected locale resources to a GitHub Gist
     private void exportToGist() {
         Intent intent = new Intent(this, CreateGistActivity.class);
-        intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+        intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(mRepo));
         intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
         startActivity(intent);
     }
@@ -671,7 +670,7 @@ public class TranslateActivity extends AppCompatActivity {
             return;
         }
         Intent intent = new Intent(this, CreateIssueActivity.class);
-        intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+        intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(mRepo));
         intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
         startActivity(intent);
     }
@@ -687,11 +686,11 @@ public class TranslateActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.login_required, Toast.LENGTH_LONG).show();
             return;
         }
-        if (new Helpers(this).isDisconnectedFromInternet(R.string.no_internet_connection))
+        if (!new ContextUtils(this).isConnectedToInternet(R.string.no_internet_connection))
             return;
 
         Intent intent = new Intent(this, CreatePullRequestActivity.class);
-        intent.putExtra(EXTRA_REPO, mRepo.toBundle());
+        intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(mRepo));
         intent.putExtra(EXTRA_LOCALE, mSelectedLocale);
         startActivity(intent);
     }
@@ -711,11 +710,36 @@ public class TranslateActivity extends AppCompatActivity {
         String filename = mSelectedLocaleResources.getFilename();
         String xml = mRepo.mergeDefaultTemplate(mSelectedLocale);
 
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        clipboard.setPrimaryClip(ClipData.newPlainText(filename, xml));
+        new ShareUtil(this).setClipboard(xml);
         Toast.makeText(this, getString(R.string.xml_copied_to_clipboard, filename),
                 Toast.LENGTH_SHORT).show();
     }
+
+    // Exports the currently selected locale resources to hastebin and sets the primary clipboard
+    private void exportToHastebin() {
+        String xml = mRepo.mergeDefaultTemplate(mSelectedLocale);
+
+        final ShareUtil shu = new ShareUtil(this);
+        shu.pasteOnHastebin(xml, (ok, url) -> {
+            if (ok) {
+                shu.setClipboard(url);
+            }
+            Toast.makeText(TranslateActivity.this,
+                    ok ? R.string.exported_to_hastebin : R.string.export_unsuccessful,
+                    Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    // Start drafting an email
+    private void exportToEmail() {
+        String xml = mRepo.mergeDefaultTemplate(mSelectedLocale);
+        String subject = mRepo.getProjectName() + " - "
+                + getString(R.string.updated_x_translation, mSelectedLocale,
+                LocaleString.getEnglishDisplay(mSelectedLocale));
+
+        new ShareUtil(this).draftEmail(subject, xml, mRepo.settings.getProjectMail());
+    }
+
 
     //endregion
 
@@ -736,23 +760,38 @@ public class TranslateActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.delete_no_locale_bad_joke, Toast.LENGTH_LONG).show();
             return;
         }
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.sure_question)
-                .setMessage(getString(R.string.delete_locale_confirm_long, mSelectedLocale))
-                .setPositiveButton(getString(R.string.delete_locale), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        mRepo.deleteLocale(mSelectedLocale);
-                        loadLocalesSpinner();
-                        checkTranslationVisibility();
+        if (mSelectedLocaleResources.count() == 0) {
+            // No translation, no need to confirm
+            deleteCurrentLocale();
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.sure_question)
+                    .setMessage(getString(R.string.delete_locale_confirm_long, mSelectedLocale))
+                    .setPositiveButton(getString(R.string.delete_locale), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            mRepo.deleteLocale(mSelectedLocale);
+                            loadLocalesSpinner();
+                            checkTranslationVisibility();
 
-                        // We need to clear the selected locale if it's now empty
-                        if (mLocaleSpinner.getCount() == 0)
-                            setCurrentLocale(null);
-                    }
-                })
-                .setNegativeButton(getString(R.string.cancel), null)
-                .show();
+                            // We need to clear the selected locale if it's now empty
+                            if (mLocaleSpinner.getCount() == 0)
+                                setCurrentLocale(null);
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.cancel), null)
+                    .show();
+        }
+    }
+
+    private void deleteCurrentLocale() {
+        mRepo.deleteLocale(mSelectedLocale);
+        loadLocalesSpinner();
+        checkTranslationVisibility();
+
+        // We need to clear the selected locale if it's now empty
+        if (mLocaleSpinner.getCount() == 0)
+            setCurrentLocale(null);
     }
 
     // Prompts the user whether they want to delete the current "repository" clone or not
@@ -979,9 +1018,9 @@ public class TranslateActivity extends AppCompatActivity {
     private void checkTranslationVisibility() {
         if (mLocaleSpinner.getCount() == 0) {
             Toast.makeText(this, R.string.add_locale_to_start, Toast.LENGTH_SHORT).show();
-            findViewById(R.id.translationLayout).setVisibility(View.GONE);
+            //findViewById(R.id.translationLayout).setVisibility(View.GONE);
         } else {
-            findViewById(R.id.translationLayout).setVisibility(View.VISIBLE);
+            //findViewById(R.id.translationLayout).setVisibility(View.VISIBLE);
         }
     }
 
@@ -1024,15 +1063,15 @@ public class TranslateActivity extends AppCompatActivity {
 
     private void onFilterUpdated(@NonNull final String filter) {
         // Update the filter, it might have been changed from the Search activity
-        // and JSON doesn't load the changes from the file but rather keeps a copy
+        // and JSON doesn't load the changes from the file but rather keeps a copyFile
         mRepo.settings.setStringFilter(filter);
-
-        if (mDefaultResources != null)
-            mDefaultResources.setFilter(filter);
+        mFilteredIDs.clear();
+        for (ResourcesTranslation translation :
+                ResourcesTranslation.fromPairs(mDefaultResources, mSelectedLocaleResources, filter)) {
+            mFilteredIDs.add(translation.getId());
+        }
 
         if (mSelectedLocaleResources != null) {
-            mSelectedLocaleResources.setFilter(filter);
-
             String lastId = mSelectedResource == null ? null : mSelectedResource.getId();
             loadStringIDsSpinner();
             setStringId(lastId);
@@ -1065,10 +1104,13 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     private void loadStringIDsSpinner() {
-        if (!loaded || !isLocaleSelected(false)) return;
+        if (!mLoaded || !isLocaleSelected(false)) return;
 
         ArrayList<String> spinnerArray = new ArrayList<>();
-        final Iterator<ResTag> it = mDefaultResources.sortIterator(mSettings.getStringsComparator());
+        final Iterator<ResTag> it = mDefaultResources.sortIterator(
+                ResourceStringComparator.getStringsComparator(mSettings.getStringSortMode()),
+                mFilteredIDs
+        );
         if (mShowIdentical) {
             // Only show those which translation is identical to the original text
             while (it.hasNext()) {
@@ -1111,11 +1153,16 @@ public class TranslateActivity extends AppCompatActivity {
 
     // Sets the current locale also updating the spinner selection
     private void setCurrentLocale(String locale) {
-        if (TextUtils.equals(mSelectedLocale, locale))
+        if (TextUtils.equals(mSelectedLocale, locale)) {
             return;
+        }
+
+        if (!TextUtils.equals(mSettings.getDefaultLocale(), locale)) {
+            mSettings.setDefaultLocale(locale);
+        }
 
         // Clear the previous EditText fields
-        mOriginalStringEditText.setText("");
+        mOriginalStringTextView.setText("");
         mTranslatedStringEditText.setText("");
 
         // Update the selected locale
@@ -1126,7 +1173,6 @@ public class TranslateActivity extends AppCompatActivity {
             int i = getItemIndex(mLocaleSpinner, LocaleString.getDisplay(locale));
             mLocaleSpinner.setSelection(i);
             mSelectedLocaleResources = mRepo.loadResources(locale);
-            mSelectedLocaleResources.setFilter(mRepo.settings.getStringFilter());
         } else {
             mSelectedLocaleResources = null;
         }
@@ -1154,15 +1200,22 @@ public class TranslateActivity extends AppCompatActivity {
     // Increments the mStringIdSpinner index by delta i (di),
     // clamping the value if it's less than 0 or value ≥ IDs count.
     private void incrementStringIdIndex(int di) {
+        save(); // Save every time the user changes to a new string for safety reasons
         int i = mStringIdSpinner.getSelectedItemPosition() + di;
         if (i > -1) {
             if (i < mStringIdSpinner.getCount()) {
                 mStringIdSpinner.setSelection(i);
                 updateSelectedResourceId((String) mStringIdSpinner.getSelectedItem());
             } else {
-                Toast.makeText(this, R.string.no_strings_left, Toast.LENGTH_SHORT).show();
+                new AlertDialog.Builder(this)
+                        .setMessage(getString(R.string.next_steps,
+                                getString(R.string.export_ellipsis),
+                                getString(R.string.show_translated_strings)))
+                        .setPositiveButton(R.string.done, null)
+                        .show();
             }
         }
+        mTranslatedStringEditText.requestFocus();
     }
 
     private void setStringId(String id) {
@@ -1171,6 +1224,7 @@ public class TranslateActivity extends AppCompatActivity {
 
         int i = getItemIndex(mStringIdSpinner, id);
         if (i > -1) {
+            save(); // Save every time the user changes to a new string for safety reasons
             mStringIdSpinner.setSelection(i);
             updateSelectedResourceId((String) mStringIdSpinner.getSelectedItem());
         } else if (!mShowTranslated) {
@@ -1179,15 +1233,22 @@ public class TranslateActivity extends AppCompatActivity {
         }
     }
 
+    private final View.OnClickListener copyStringListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mTranslatedStringEditText.setText(mOriginalStringTextView.getText());
+        }
+    };
+
     // Updates the selected resource ID and also the EditTexts for its contents
     private void updateSelectedResourceId(@NonNull String resourceId) {
         if (resourceId.isEmpty()) {
             mSelectedResource = null;
-            mOriginalStringEditText.setText("");
+            mOriginalStringTextView.setText("");
             mTranslatedStringEditText.setText("");
         } else {
             mSelectedResource = mDefaultResources.getTag(resourceId);
-            mOriginalStringEditText.setText(mSelectedResource.getContent());
+            mOriginalStringTextView.setText(mSelectedResource.getContent());
             mTranslatedStringEditText.setText(mSelectedLocaleResources.getContent(resourceId));
         }
         checkPreviousNextVisibility();
@@ -1196,17 +1257,19 @@ public class TranslateActivity extends AppCompatActivity {
 
     private void checkPreviousNextVisibility() {
         int count = mStringIdSpinner.getCount();
+        boolean showDone;
         if (count == 0) {
             mPreviousButton.setVisibility(View.INVISIBLE);
-            mNextButton.setVisibility(View.INVISIBLE);
-            mOriginalStringEditText.setText("");
+            showDone = true;
+            mOriginalStringTextView.setText("");
             if (mSelectedResource == null) // Ensure it's null
                 mTranslatedStringEditText.setText("");
         } else {
             int i = mStringIdSpinner.getSelectedItemPosition();
             mPreviousButton.setVisibility(i == 0 ? View.INVISIBLE : View.VISIBLE);
-            mNextButton.setVisibility(i == (count - 1) ? View.INVISIBLE : View.VISIBLE);
+            showDone = i == (count - 1);
         }
+        mNextButton.setText(showDone ? R.string.done : R.string.next);
     }
 
     // Sadly, the spinners don't provide any method to retrieve
