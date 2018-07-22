@@ -9,7 +9,7 @@
     <string name="update_strings">更新 strings.xml</string>
     <string name="add_locale">添加语言</string>
     <string name="loading_ellipsis">加载中……</string>
-    <string name="no_strings_found_update">未找到 strings.xml 文件, 请更新 strings.xml。</string>
+    <string name="no_strings_found_update">未找到 strings.xml 文件, 请尝试更新 strings.xml。</string>
     <string name="repo_or_url_required">请输入项目所有者及名称或版本仓库 URL。</string>
     <string name="translated_string">翻译后的字符串</string>
     <string name="previous">上一个</string>
@@ -31,7 +31,7 @@
     <string name="export_ellipsis">导出……</string>
     <string name="export_sd_card">导出至 SD 卡</string>
     <string name="export_share">分享生成的 XML 文件</string>
-    <string name="delete_no_locale_bad_joke">您必须要添加一个语言才能将它从星球上抹杀喔 ;-)</string>
+    <string name="delete_no_locale_bad_joke">您必须要添加一个语言才能将它从这个星球上抹杀喔 ;-)</string>
     <string name="discover">探索版本仓库</string>
     <string name="gist_description">Gist 描述（可选）：</string>
     <string name="gist_filename">Gist 文件名：</string>
@@ -61,7 +61,7 @@
     <string name="search_apps_ellipsis">搜索应用程序中……</string>
     <string name="icon_cache_cleared">已清空图标缓存(清除了 %s 个)。</string>
     <string name="pulling_strings">拉取新的字符串</string>
-    <string name="pulling_strings_long">拉动新字符串可以保持翻译完整，同时可能会添加新的未翻译字符串。你应该在上传你的翻译之前做到这一点，以确保你已全部翻译完成。你想继续吗？</string>
+    <string name="pulling_strings_long">更新字符串可以保持翻译完整，同时可能会添加新的未翻译字符串。你应该在上传你的翻译之前做到这一点，以确保你已全部翻译完成。你想继续吗？</string>
     <string name="history">历史</string>
     <string name="add_project">添加项目</string>
     <string name="repository_plural">仓库</string>
@@ -76,14 +76,14 @@
     <string name="not_translated">未翻译。</string>
     <string name="search_id_content_ellipsis">使用ID或内容搜索……</string>
     <string name="github_not_logged_long">为了提供一些额外的功能，如 Gist，创建 issue 和拉取请求，您需要授权 Stringlate。点击下面的按钮开始。</string>
-    <string name="github_yes_logged_long">您已经登录到GitHub。不需要采取进一步行动。如果仍有问题，您可以再次点击该按钮重新开始。</string>
+    <string name="github_yes_logged_long">您已经登录到GitHub，不需要采取进一步行动。如果仍有问题，您可以再次点击该按钮重新开始。</string>
     <string name="login_to_github">登录到 GitHub</string>
     <string name="auth_success">授权成功</string>
     <string name="auth_failure">授权失败</string>
     <string name="completing_auth_ellipsis">完成授权中……</string>
     <string name="gist_github_login_needed">要发布 Gists，您需要打开 Stringlate 设置，选择“%s”并在 GitHub 上确认授权请求。</string>
     <string name="create_issue">创建 issue</string>
-    <string name="creating_issue_long_ellipsis">尝试在 GitHub 中创建此 issue 中……</string>
+    <string name="creating_issue_long_ellipsis">正在尝试在 GitHub 中创建此 issue ……</string>
     <string name="issue_description">Issue描述（%x 将会被翻译所替换）</string>
     <string name="url_copied">此链接已复制到剪贴板。</string>
     <string name="share_url">分享链接</string>
@@ -95,7 +95,7 @@
     <string name="commit_message">提交信息</string>
     <string name="commit_changes">提交更改</string>
     <string name="sync_required">请同步再试。</string>
-    <string name="login_required">你需要登录到 GitHub 才能这样做。</string>
+    <string name="login_required">你需要登录到 GitHub 才能执行此操作。</string>
     <string name="commit_msg_empty">提交信息不能为空</string>
     <string name="forking_repo_long">为使您拥有写权限，原始版本仓库正被分叉中……</string>
     <string name="fork_failed">分叉失败。</string>
@@ -125,14 +125,14 @@
     <string name="syncing_now">同步中：</string>
     <string name="wait_until_sync">请等待此版本仓库同步完成。</string>
     <string name="settings">设置</string>
-    <string name="pref_desc__language">改变此应用程序的语言。重新启动应用程序以使更改生效</string>
+    <string name="pref_desc__language">可以改变此应用程序的语言。重新启动应用程序以使更改生效</string>
     <string name="pref_title__language">语言</string>
     <string name="appearance">外观</string>
     <string name="user_accounts">用户帐户</string>
     <string name="more">更多</string>
-    <string name="next_steps">一旦所有字符串翻译完成后，点击右上角的三点菜单并选择“％s”与项目维护人员分享您的工作，以便他们可以查看和使用它。\n
-      \n
-      如果您想查看一些已翻译的字符串，请启用“％s”选项。</string>
+    <string name="next_steps">一旦所有字符串翻译完成后，点击右上角的三点菜单并选择“%s”与项目维护人员分享您的工作，以便他们可以查看和使用它。\n
+        \n
+        如果您想查看一些已翻译的字符串，请启用“%s”选项。</string>
     <string name="cancel_sync">取消同步？</string>
     <string name="exported_to_hastebin">成功导出至 Hastebin。URL 已复制到剪贴板</string>
     <string name="export_unsuccessful">成功导出</string>
@@ -148,7 +148,7 @@
     <string name="more_info_on_how_to_contribute_to_foss_android_projects">有关对开源项目进行贡献的更多信息——尤其是Android应用程序</string>
     <string name="join_community">加入社区</string>
     <string name="bug_reports_suggest_improvements">反馈、报告或建议</string>
-    <string name="help_translating_this_app">把这个软件翻译到其他语言</string>
+    <string name="help_translating_this_app">翻译这个软件到其他语言</string>
     <string name="source_code">源代码</string>
     <string name="project_license">项目许可证</string>
     <string name="project_contribution_info">项目贡献信息</string>
