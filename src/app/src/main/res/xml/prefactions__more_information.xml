@@ -114,7 +114,7 @@
         <Preference
             android:icon="@drawable/ic_code_black_24dp"
             android:key="@string/pref_key__more_info__copy_build_information"
-            android:title="Copy build information" />
+            android:title="@string/copy_build_information" />
 
     </PreferenceCategory>
 
