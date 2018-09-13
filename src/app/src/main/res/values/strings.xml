@@ -160,5 +160,6 @@
     <string name="contribute">Contribute</string>
     <string name="view">View</string>
     <string name="editing_font">Editing font</string>
+    <string name="copy_build_information">Copy build information</string>
 
 </resources>
