@@ -153,11 +153,13 @@
     <string name="more_info_on_how_to_contribute_to_this_project">Больше информации о том как внести свой вклад в этот проект</string>
     <string name="contribute_code_to_this_project_anybody_welcome">Вкладывайте свой код в проект. Все желающие приветствуются, включая новичков</string>
     <string name="project_team">Команда проекта</string>
+    <string name="community">Сообщество</string>
     <string name="licenses">Лицензии</string>
     <string name="contributors">Авторы</string>
     <string name="donate">Поддержать</string>
     <string name="contribute">Внести вклад</string>
     <string name="view">Просмотр</string>
     <string name="editing_font">Шрифт редактора</string>
+    <string name="copy_build_information">Копировать информацию о сборке</string>
 
 </resources>
