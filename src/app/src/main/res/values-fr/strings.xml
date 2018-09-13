@@ -131,8 +131,8 @@
     <string name="user_accounts">Comptes utilisateur</string>
     <string name="more">Plus</string>
     <string name="next_steps">Une fois que toutes les chaînes sont traduites, appuyez sur les trois points en haut à droite et choisissez « %s » pour partager votre travail avec le mainteneur du projet pour qu\'il puisse le vérifier et l\'utiliser.\n
-        \n
-        Si vous voulez relire certaines des chaînes déjà traduites, activez l\'option « %s ».</string>
+           \n
+           Si vous voulez relire certaines des chaînes déjà traduites, activez l\'option « %s ».</string>
     <string name="cancel_sync">Annuler la synchronisation ?</string>
     <string name="exported_to_hastebin">Export vers Hastebin réussi. L\'URL a été copiée dans le presse-papier.</string>
     <string name="export_unsuccessful">Échec de l\'export</string>
@@ -155,11 +155,13 @@
     <string name="more_info_on_how_to_contribute_to_this_project">Plus d\'infos sur les façons de contribuer au projet</string>
     <string name="contribute_code_to_this_project_anybody_welcome">Contribuer au projet avec du code. Tout le monde est bienvenu, même les débutants.</string>
     <string name="project_team">Équipe du projet</string>
+    <string name="community">Communauté</string>
     <string name="licenses">Licences</string>
     <string name="contributors">Contributeurs</string>
     <string name="donate">Faire un don</string>
     <string name="contribute">Contribuer</string>
     <string name="view">Voir</string>
     <string name="editing_font">Police d\'édition</string>
+    <string name="copy_build_information">Copier les informations de Build</string>
 
 </resources>
