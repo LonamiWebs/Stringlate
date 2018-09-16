@@ -63,6 +63,9 @@
     <string name="pulling_strings">Scarica nuove stringhe</string>
     <string name="pulling_strings_long">Scaricare nuove stringhe lascerà la tua traduzione intatta aggiungendo possibilmente nuove stringhe non tradotte. Dovresti fare questo prima di pubblicare le tue traduzioni per assicurarti di aver tradotto tutto. Vuoi continuare?</string>
     <string name="history">Storia</string>
+    <string name="add_project">Aggiungi progetto</string>
+    <string name="repository_plural">Repository</string>
+    <string name="start_translating">Comincia a tradurre</string>
     <string name="history_no_repos_hint">Sei nuovo? Vai alla scheda \"%s\" per iniziare!</string>
     <string name="history_contains_repos_hint">Questi sono i repository che hai sincronizzato precedentemente. Selezionane uno qui sotto o aggiungine uno nuovo per continuare.</string>
     <string name="clear_icons_cache">Pulisci la cache delle icone</string>
@@ -76,7 +79,9 @@
     <string name="github_yes_logged_long">Hai già effettuato l\'accesso su GitHub. Non sono richieste ulteriori azioni. Se qualcosa non dovesse funzionare, puoi sempre premere nuovamente il pulsante per ricominciare.</string>
     <string name="login_to_github">Accedi a GitHub</string>
     <string name="auth_success">Autorizzazione effettuata con successo</string>
+    <string name="auth_failure">Autorizzazione fallita</string>
     <string name="completing_auth_ellipsis">Completando l\'autorizzazione…</string>
+    <string name="gist_github_login_needed">Per inviare un Gist è necessario aprire le impostazioni di Stringlate, selezionare \'%s\' e confermare la richiesta di autorizzazione su GitHub.</string>
     <string name="create_issue">Crea una issue</string>
     <string name="creating_issue_long_ellipsis">Provando a creare l\'issue su GitHub…</string>
     <string name="issue_description">Descrizione issue (%x sarà sostituito con la traduzione):</string>
@@ -103,7 +108,7 @@
     <string name="title_empty">Il titolo non può essere vuoto.</string>
     <string name="issue_desc_x">La descrizione dell\'issue deve contenere \"%x\".</string>
     <string name="no_strings_to_export">Non ci sono stringhe da esportare.</string>
-    <string name="filtering_strings_with">Filtrando le stringhe con \"%s"</string>
+    <string name="filtering_strings_with">Filtrando le stringhe con \"%s\"</string>
     <string name="clear_filter">Pulisci filtro</string>
     <string name="sort_by_ellipsis">Ordina per…</string>
     <string name="sort_alphabetically">Alfabeticamente</string>
@@ -125,4 +130,37 @@
     <string name="appearance">Aspetto</string>
     <string name="user_accounts">Account utente</string>
     <string name="more">Mostra di più</string>
+    <string name="next_steps">Una volta che tutte le stringhe sono tradotte, premi il menu con i tre pallini in alto a destra e seleziona \"%s\" per condividere il tuo lavoro con il gestore del progetto in modo che lo possa controllare e usare.\n
+        \n
+        Se vuoi rivedere alcune stringhe già tradotte, abilita l\'opzione \"%s\".</string>
+    <string name="cancel_sync">Annullare sincronizzazione?</string>
+    <string name="exported_to_hastebin">Esportato con successo su Hastebin. L\'URL è stato copiato negli appunti</string>
+    <string name="export_unsuccessful">Esportazione non riuscita</string>
+    <string name="base_branch_colon">Ramo base:</string>
+
+
+    <string name="open_source_licenses">Licenze Open Source</string>
+    <string name="translate">Traduci</string>
+    <string name="help_this_app">Più info e aiuto</string>
+    <string name="bug_reports">Segnala problema</string>
+    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">Più info su donazioni o su come supportare questo progetto</string>
+    <string name="android_contribution_guide">Guida di Android per contribuire</string>
+    <string name="more_info_on_how_to_contribute_to_foss_android_projects">Più info su come contribuire in progetti Open Source, in particolare app Android</string>
+    <string name="join_community">Unisciti alla comunità</string>
+    <string name="bug_reports_suggest_improvements">Dai un feedback, segnala problemi o suggerisci miglioramenti</string>
+    <string name="help_translating_this_app">Traduci questa app in altre lingue</string>
+    <string name="source_code">Codice Sorgente</string>
+    <string name="project_license">Licenza del Progetto</string>
+    <string name="project_contribution_info">Info per contribuire al progetto</string>
+    <string name="more_info_on_how_to_contribute_to_this_project">Più info su come contribuire a questo progetti</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">Contribuisci al codice del progetto.\n
+                                                     Tutti sono benvenuti, anche gli ultimi utenti</string>
+    <string name="project_team">Squadra del Progetto</string>
+    <string name="licenses">Licenze</string>
+    <string name="contributors">Collaboratori</string>
+    <string name="donate">Dona</string>
+    <string name="contribute">Contribuisci</string>
+    <string name="view">Vedi</string>
+    <string name="editing_font">Font di modifica</string>
+
 </resources>
