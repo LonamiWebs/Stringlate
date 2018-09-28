@@ -2,7 +2,7 @@
     <string name="original_string">Zdrojový řetězec:</string>
     <string name="translated_string_colon">Přeložený řetězec:</string>
     <string name="next">Další</string>
-    <string name="welcome">Vítá vás Stringlate! Pro pokračování zadejte název projektu a jeho vlastníka, nebo vložte URL repozitáře z Git.</string>
+    <string name="welcome">Vítá vás Stringlate! Pro pokračování zadejte název projektu a jeho vlastníka, nebo vložte URL repozitáře Git.</string>
     <string name="owner_hint">vlastník</string>
     <string name="repository_hint">repozitář</string>
     <string name="github_repo_url_hint">https://github.com/owner/repository</string>
@@ -11,7 +11,7 @@
     <string name="loading_ellipsis">Načítání…</string>
     <string name="no_strings_found_update">Nebyly nalezeny žádné soubory strings.xml, prosím aktualizujte strings.xml.</string>
     <string name="repo_or_url_required">Prosím zadejte vlastníka projektu a jméno nebo URL.</string>
-    <string name="translated_string">Přeložený řetězec</string>
+    <string name="translated_string">Přeložený řetězec. Pokud zdroj obsahuje více slov či speciální znaky, je lepší originální text nejprve zkopírovat.</string>
     <string name="previous">Předchozí</string>
     <string name="no_strings_left">Již nezbývají žádné další řetězce.</string>
     <string name="save_error">Změny nelze uložit.</string>
@@ -64,6 +64,7 @@
     <string name="pulling_strings_long">Stažení nových řetězců nepoškodí váš překlad, ale mohly by být přidány nové nepřeložené položky. Stažení byste měli provést ještě před odesláním vašeho překladu, abyste se ujistili, že je přeloženo vše. Opravdu chcete pokračovat?</string>
     <string name="history">Historie</string>
     <string name="add_project">Přidat projekt</string>
+    <string name="repository_plural">Repozitáře</string>
     <string name="start_translating">Začít překládat</string>
     <string name="history_no_repos_hint">Jste tady poprvé? Začněte na záložce \"%s\"!</string>
     <string name="history_contains_repos_hint">Tyto repozitáře již máte synchronizovány. Vyberte jeden ze seznamu níže, nebo přidejte nový.</string>
@@ -80,6 +81,7 @@
     <string name="auth_success">Autorizace proběhla úspěšně</string>
     <string name="auth_failure">Autorizace selhala</string>
     <string name="completing_auth_ellipsis">Probíhá autorizace…</string>
+    <string name="gist_github_login_needed">Pro odeslání Gistů musíte otevřít nastavení Stringlate, zvolit \'%s\' a potvrdit autorizační požadavek na GitHubu.</string>
     <string name="create_issue">Nahlásit problém</string>
     <string name="creating_issue_long_ellipsis">Pokus o vytvoření hlášení na GitHubu…</string>
     <string name="issue_description">Popis problému (%x bude nahrazeno překladem):</string>
@@ -128,11 +130,36 @@
     <string name="appearance">Vzhled</string>
     <string name="user_accounts">Uživatelské účty</string>
     <string name="more">Více</string>
-    <string name="next_steps">Po dokončení překladu všech řetězců klikněte na tlačítko se třemi tečkami vpravo nahoře a nasdílejte jej správci projektu. Ten jej poté bude moci zkontrolovat a použít.\n
+    <string name="next_steps">Po dokončení překladu všech řetězců klikněte na tlačítko se třemi tečkami vpravo nahoře a pomocí volby \"%s\" jej nasdílejte správci projektu. Ten jej poté bude moci zrevidovat a použít.\n
  \n
- Pokud chcete zkontrolovat některé z již přeložených řetězců, povolte volbu \"%s\".</string>
+ Pokud chcete zrevidovat některé z již přeložených řetězců, povolte volbu \"%s\".</string>
     <string name="cancel_sync">Zrušit synchronizaci?</string>
-    <string name="exported_to_hastebin">Úspěšně exportováno na Hastebin. URL byla zkopírována do paměti</string>
+    <string name="exported_to_hastebin">Úspěšně exportováno na Hastebin. URL byla zkopírována do schránky</string>
     <string name="export_unsuccessful">Exportovat neúspěšné</string>
     <string name="base_branch_colon">Hlavní větev:</string>
+
+
+    <string name="open_source_licenses">Open Source Licence</string>
+    <string name="translate">Přeložit</string>
+    <string name="help_this_app">Více informací a nápověda</string>
+    <string name="bug_reports">Reportovat chyby</string>
+    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">Více informací, jak obdarovat či jinak podpořit tento projekt</string>
+    <string name="android_contribution_guide">Průvodce přispíváním do Androidu</string>
+    <string name="more_info_on_how_to_contribute_to_foss_android_projects">Více informací o přispívání do Open Source projektů, zvláště do aplikací pro Android</string>
+    <string name="join_community">Připojit se ke komunitě</string>
+    <string name="bug_reports_suggest_improvements">Předat zpětnou vazbu, reportovat chyby nebo navrhnout vylepšení</string>
+    <string name="help_translating_this_app">Přeložit tuto aplikaci do dalších jazyků</string>
+    <string name="source_code">Zdrojový kód</string>
+    <string name="project_license">Licence projektu</string>
+    <string name="project_contribution_info">Informace o příspěvcích do projektu</string>
+    <string name="more_info_on_how_to_contribute_to_this_project">Více informací jak přispět do tohoto projektu</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">Přispět kódem do projektu. Vítáni jsou všichni včetně nováčků</string>
+    <string name="project_team">Projektový tým</string>
+    <string name="licenses">Licence</string>
+    <string name="contributors">Přispěvatelé</string>
+    <string name="donate">Obdarovat</string>
+    <string name="contribute">Přispět</string>
+    <string name="view">Zobrazit</string>
+    <string name="editing_font">Font pro editaci</string>
+
 </resources>

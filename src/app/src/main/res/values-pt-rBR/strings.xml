@@ -64,6 +64,7 @@
     <string name="pulling_strings_long">Baixar novas strings manterá sua tradução intacta enquanto possibilita adicionar novas strings não traduzidas. Você deveria fazer isto antes de enviar suas traduções para ter certeza que você traduziu tudo. Você deseja continuar?</string>
     <string name="history">Histórico</string>
     <string name="add_project">Adicionar projeto</string>
+    <string name="repository_plural">Repositórios</string>
     <string name="start_translating">Iniciar tradução</string>
     <string name="history_no_repos_hint">Novo aqui? Siga para a aba \"%s\" para começar.</string>
     <string name="history_contains_repos_hint">Estes são seus repositórios previamente sincronizados. Selecione um abaixo ou adicione um novo para continuar.</string>
@@ -130,10 +131,35 @@
     <string name="user_accounts">Contas de usuário</string>
     <string name="more">Mais</string>
     <string name="next_steps">Assim que todas as strings tiverem sido traduzidas, pressione o menú de três pontos no canto superior direito e selecione \"%s\" para partilhar o seu trabalho com o responsável do projeto para que possa rever e usar.\n
- \n
- Caso pretenda rever algumas strings já traduzidas, ative a opção \"%s\".</string>
+                        \n
+                        Caso pretenda rever algumas strings já traduzidas, ative a opção \"%s\".</string>
     <string name="cancel_sync">Cancelar sincronização?</string>
     <string name="exported_to_hastebin">Exportado para Hastebin com sucesso. URL copiado para o clipboard</string>
     <string name="export_unsuccessful">Exportação sem sucesso</string>
     <string name="base_branch_colon">Ramo base:</string>
+
+
+    <string name="open_source_licenses">Licenças de código aberto</string>
+    <string name="translate">Traduzir</string>
+    <string name="help_this_app">Mais informações e ajuda</string>
+    <string name="bug_reports">Reportar erros</string>
+    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">Mais informações sobre como doar ou apoiar este projeto</string>
+    <string name="android_contribution_guide">Guia de contribuição do Android</string>
+    <string name="more_info_on_how_to_contribute_to_foss_android_projects">Mais informações sobre como contribuir com projetos de código aberto, especialmente para aplicativos Android</string>
+    <string name="join_community">Junte-se à comunidade</string>
+    <string name="bug_reports_suggest_improvements">Dar feedback, reportar erros ou sugerir melhorias</string>
+    <string name="help_translating_this_app">Traduzir este aplicativo em outros idiomas</string>
+    <string name="source_code">Código Aberto</string>
+    <string name="project_license">Licença do projeto</string>
+    <string name="project_contribution_info">Informação de contribuição do projeto</string>
+    <string name="more_info_on_how_to_contribute_to_this_project">Mais informações sobre como contribuir para este projeto</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">Contribuir com o código para o projeto. Todos são bem-vindos, incluindo recém-chegados</string>
+    <string name="project_team">Equipe do projeto</string>
+    <string name="licenses">Licenças</string>
+    <string name="contributors">Contributors</string>
+    <string name="donate">Doar</string>
+    <string name="contribute">Contribuir</string>
+    <string name="view">Visualizar</string>
+    <string name="editing_font">Editar fonte</string>
+
 </resources>

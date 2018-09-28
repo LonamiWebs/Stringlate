@@ -1,8 +1,8 @@
 <resources>
-    <string name="original_string">Originella strängen:</string>
+    <string name="original_string">Originalsträng:</string>
     <string name="translated_string_colon">Översatt sträng:</string>
     <string name="next">Nästa</string>
-    <string name="welcome">Välkommen till Stringlate! Fyll i ett projekts namn och ägare eller klistra in repots GitHub URL nedan för att fortsätta.</string>
+    <string name="welcome">Välkommen till Stringlate! Fyll i ett projekts namn och ägare eller klistra in arkivets-GitHub URL nedan för att fortsätta.</string>
     <string name="owner_hint">ägare</string>
     <string name="repository_hint">arkiv</string>
     <string name="github_repo_url_hint">https://github.com/ägare/repo</string>
@@ -27,12 +27,12 @@
     <string name="no_locale_selected">Inget språk är valt.</string>
     <string name="sure_question">Är du säker?</string>
     <string name="delete_locale_confirm_long">Är du säker på att du vill ta bort språket \"%s\"? Alla dess strängar kommer att tas bort.</string>
-    <string name="delete_repository_confirm_long">Är du säker på att du vill ta bort repot \"%s\"? Språk-klonen kommer att tas bort från din telefon, men du kommer kunna lägga till den igen.</string>
+    <string name="delete_repository_confirm_long">Är du säker på att du vill ta bort arkivet \"%s\"? Språk-klonen kommer att tas bort från din telefon, men du kommer kunna lägga till den igen.</string>
     <string name="export_ellipsis">Exportera…</string>
     <string name="export_sd_card">Exportera till SD kortet</string>
     <string name="export_share">Dela genererade xml</string>
     <string name="delete_no_locale_bad_joke">Kan inte ta bort språket för att det inte finns.</string>
-    <string name="discover">Utforska repon</string>
+    <string name="discover">Utforska fler projekt</string>
     <string name="gist_description">Gist beskrivning (Inte obligatoriskt)</string>
     <string name="gist_filename">Gist filnamn</string>
     <string name="is_public_gist">Det här är en publik Gist</string>
@@ -54,7 +54,7 @@
     <string name="import_file_failed">Det gick inte att importera det valda objektet</string>
     <string name="import_file_success">Importen lyckades</string>
     <string name="update_applications">Uppdatera applikationerna</string>
-    <string name="apps_repo_not_downloaded">App listan har inte laddats ner än. Tryck på \"%s\" meny knappen för att ladda ner repo-index och kunna utforska alla apparna.</string>
+    <string name="apps_repo_not_downloaded">App-listan har inte laddats ner än. Tryck på \"%s\" meny knappen för att ladda ner arkiv-index och kunna utforska alla apparna.</string>
     <string name="sync_failed">Synkronisering misslyckades: %s.</string>
     <string name="done">Klar!</string>
     <string name="search">Sök</string>
@@ -75,14 +75,14 @@
     <string name="allow_download_icons">Tillåt nedladdning av ikoner</string>
     <string name="not_translated">Inte översatt.</string>
     <string name="search_id_content_ellipsis">Sök på ID eller innehåll…</string>
-    <string name="github_not_logged_long">För att ge ytterligare funktioner som Gists, skapa xx och dra önskemål, måste du godkänna Stringlate. Klicka på knappen nedan för att komma igång.</string>
+    <string name="github_not_logged_long">För att ge ytterligare funktioner som Gists, skapa ärenden och pull requests, måste du godkänna Stringlate. Klicka på knappen nedan för att komma igång.</string>
     <string name="github_yes_logged_long">Du är redan inloggad på GitHub. Inga ytterligare åtgärder krävs. Om sakerna inte fungerar kan du alltid klicka på knappen igen för att börja om.</string>
     <string name="login_to_github">Logga in på GitHub</string>
     <string name="auth_success">Behörighetskontroll lyckades</string>
     <string name="auth_failure">Behörighetskontroll misslyckades</string>
     <string name="completing_auth_ellipsis">Färdigställer behörigheten...</string>
     <string name="gist_github_login_needed">För att posta Gists måste du öppna Stringlate-inställningar, välj \'%s\' och bekräfta auktoriseringsbegäran på GitHub.</string>
-    <string name="create_issue">Rapportera problem</string>
+    <string name="create_issue">Skapa ärende</string>
     <string name="creating_issue_long_ellipsis">Försöker skapa rapporten på GitHub ...</string>
     <string name="issue_description">Problembeskrivning (%x kommer att ersättas med översättningen):</string>
     <string name="url_copied">URL kopierades till ditt urklipp.</string>
@@ -103,8 +103,8 @@
     <string name="commit_failed">Begäran misslyckades.</string>
     <string name="creating_pr_long">Skapa en ryckbegäran i originalförvaret ...</string>
     <string name="something_went_wrong">Något gick fel.</string>
-    <string name="issue_title_colon">Rapportens titel:</string>
-    <string name="issue_title">Rapportens titel</string>
+    <string name="issue_title_colon">Ärendetitel:</string>
+    <string name="issue_title">Ärendetitel</string>
     <string name="title_empty">Titeln kan inte vara tom.</string>
     <string name="issue_desc_x">Frågebeskrivningen måste innehålla \"%x\".</string>
     <string name="no_strings_to_export">Det finns inga strängar att exportera.</string>
@@ -121,7 +121,7 @@
     <string name="ignore">Ignorera</string>
     <string name="open_project_homepage">Öppna projektets webbsida</string>
     <string name="open_in_external_browser">Öppna i extern webbläsare</string>
-    <string name="peek_translations">Peek översättningar</string>
+    <string name="peek_translations">Visa översättningar</string>
     <string name="syncing_now">Synkronisering:</string>
     <string name="wait_until_sync">Vänta tills förvaringen har synkroniserats.</string>
     <string name="settings">Inställningar</string>
@@ -131,8 +131,8 @@
     <string name="user_accounts">Användarkonton</string>
     <string name="more">Mer</string>
     <string name="next_steps">När alla strängar är översatta, tryck på menyn med tre punkter längst upp till höger och välj \"% s\" för att dela ditt arbete med projektansvarig så att de kan granska och använda den.\n
-      \n
-      Om du vill granska några av de redan översatta strängarna, aktivera alternativet \"% s\" för att göra det.</string>
+         \n
+         Om du vill granska några av de redan översatta strängarna, aktivera alternativet \"% s\" för att göra det.</string>
     <string name="cancel_sync">Avbryta synkronisering?</string>
     <string name="exported_to_hastebin">Export utfördes framgångsrikt till Hastebin. URL kopierades till urklipp</string>
     <string name="export_unsuccessful">Exportering misslyckades</string>
