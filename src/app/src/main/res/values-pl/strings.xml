@@ -81,6 +81,7 @@
     <string name="auth_success">Autoryzacja zakończona powodzeniem</string>
     <string name="auth_failure">Błąd autoryzacji</string>
     <string name="completing_auth_ellipsis">Finalizuję autoryzację…</string>
+    <string name="gist_github_login_needed">Aby publikować wycinki musisz otworzyć ustawienia Stringlate, wybrać \'%s\' i potwierdzić żądanie autentykacji GitHub.</string>
     <string name="create_issue">Utwórz problem</string>
     <string name="creating_issue_long_ellipsis">Próbuje utworzyć problem na GitHubie…</string>
     <string name="issue_description">Opis problemu (%x zostanie zastąpione tłumaczeniem)</string>
@@ -129,7 +130,9 @@
     <string name="appearance">Wygląd</string>
     <string name="user_accounts">Konta użytkowników</string>
     <string name="more">Więcej</string>
-    <string name="next_steps">Kiedy wszystkie napisy zostaną przetłumaczone, kliknij w menu w trzy kropki w prawym górnym rogu i wybierz \"%s\" aby udostępnić twój wkład z opiekunem projektu, aby mógł go przejrzeć i użyć.\n\nJeśli chciałbyś przejrzeć kilka z przetłumaczonych napisów, włącz opcje \"%s\" aby to zrobić.</string>
+    <string name="next_steps">Kiedy wszystkie napisy zostaną przetłumaczone, kliknij w menu w trzy kropki w prawym górnym rogu i wybierz \"%s\" aby udostępnić twój wkład z opiekunem projektu, aby mógł go przejrzeć i użyć.\n
+  \n
+  Jeśli chciałbyś przejrzeć kilka z przetłumaczonych napisów, włącz opcje \"%s\" aby to zrobić.</string>
     <string name="cancel_sync">Anulować synchronizacje?</string>
     <string name="exported_to_hastebin">Pomyślnie wyeksportowano do Hastebin. URL został skopiowany do schowka</string>
     <string name="export_unsuccessful">Eksportowanie nie powiodło się</string>
@@ -141,6 +144,7 @@
     <string name="help_this_app">Więcej informacji i pomoc</string>
     <string name="bug_reports">Zgłoś błędy</string>
     <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">Więcej informacji na temat dotowaniu lub wspierania tego projektu</string>
+    <string name="android_contribution_guide">Poradnik udzielania się dla Androida</string>
     <string name="more_info_on_how_to_contribute_to_foss_android_projects">Więcej informacji na temat współtworzeniu Otwarto Źródłowych projektów, szególnie aplikacji Androida</string>
     <string name="join_community">Dołącz do Społeczności</string>
     <string name="bug_reports_suggest_improvements">Zostaw ocenę, zgłoś błędy lub zaproponuj poprawki</string>
@@ -150,13 +154,14 @@
     <string name="project_contribution_info">Informacje o współtworzeniu projektu</string>
     <string name="more_info_on_how_to_contribute_to_this_project">Więcej informacji o tym, jak współtworzyć projekt</string>
     <string name="contribute_code_to_this_project_anybody_welcome">Współtwórz kod projektu. Każdy jest mile widziany w tym nowicjusze</string>
-	<string name="project_team">Zespół Projektu</string>
-	<string name="donate">Dotuj</string>
+    <string name="project_team">Zespół Projektu</string>
+    <string name="community">Społeczność</string>
     <string name="licenses">Licencje</string>
     <string name="contributors">Współtwórcy</string>
+    <string name="donate">Dotuj</string>
     <string name="contribute">Współtwórz</string>
     <string name="view">Widok</string>
     <string name="editing_font">Czcionka edytora</string>
+    <string name="copy_build_information">Skopiuj informacje o wydaniu</string>
 
 </resources>
-
