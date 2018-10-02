@@ -155,11 +155,13 @@
     <string name="more_info_on_how_to_contribute_to_this_project">Mehr Informationen wie man zu diesem Projekt etwas beiträgt</string>
     <string name="contribute_code_to_this_project_anybody_welcome">Trage code zu dem Projekt bei. Jeder ist dazu eingeladen das zu tun; auch Anfänger</string>
     <string name="project_team">Projektteam</string>
+    <string name="community">Community</string>
     <string name="licenses">Lizenzen</string>
     <string name="contributors">Beitragende</string>
     <string name="donate">Spenden</string>
     <string name="contribute">Beitragen</string>
     <string name="view">Ansicht</string>
     <string name="editing_font">Bearbeitungsschriftart</string>
+    <string name="copy_build_information">Build Informationen kopieren</string>
 
 </resources>
