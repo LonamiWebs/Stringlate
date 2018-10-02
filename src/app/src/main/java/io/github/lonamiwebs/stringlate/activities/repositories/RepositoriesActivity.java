@@ -1,26 +1,31 @@
 package io.github.lonamiwebs.stringlate.activities.repositories;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import io.github.gsantner.opoc.util.Helpers;
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.activities.BrowserActivity;
+import io.github.lonamiwebs.stringlate.activities.info.BrowserActivity;
 import io.github.lonamiwebs.stringlate.activities.SettingsActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
+import io.github.lonamiwebs.stringlate.utilities.ContextUtils;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_REPO_DISCOVERED;
 
+// aka MainActivity
 public class RepositoriesActivity extends AppCompatActivity {
 
     //region Members
@@ -36,7 +41,7 @@ public class RepositoriesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new Helpers(this).setAppLanguage(new AppSettings(this).getLanguage());
+        new ContextUtils(this).setAppLanguage(new AppSettings(this).getLanguage());
         setContentView(R.layout.activity_repositories);
 
         mRepositoriesPagerAdapter = new RepositoriesPagerAdapter(getSupportFragmentManager(), this);
@@ -46,6 +51,10 @@ public class RepositoriesActivity extends AppCompatActivity {
 
         mBottomNavigationView = findViewById(R.id.navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         // Check if we opened the application because a GitHub link was clicked
         // If this is the case then we should show the "Add repository" fragment
@@ -59,7 +68,7 @@ public class RepositoriesActivity extends AppCompatActivity {
             // Opened via our custom StringlateApi, ensure we have the required extras
             if (intent.hasExtra(StringlateApi.EXTRA_GIT_URL)) {
                 final String gitUrl = intent.getStringExtra(StringlateApi.EXTRA_GIT_URL);
-                RepoHandler repo = new RepoHandler(this, gitUrl);
+                RepoHandler repo = RepoHandlerHelper.fromContext(this, gitUrl);
                 if (repo.isEmpty()) {
                     // This repository is empty, clean any created
                     // garbage and show the "Add repository" fragment
@@ -93,39 +102,6 @@ public class RepositoriesActivity extends AppCompatActivity {
 
     //endregion
 
-    //region Menu
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_repositories, menu);
-        return true;
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Online help
-            case R.id.action_help:
-                // Avoid the "Remove unused resources" from removing these files…
-                if (R.raw.en != 0 && R.raw.es != 0) {
-                    Intent intent = new Intent(this, BrowserActivity.class);
-                    intent.putExtra(BrowserActivity.EXTRA_DO_SHOW_STRINGLATE_HELP, true);
-                    startActivity(intent);
-                }
-                return true;
-            // Login to GitHub
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    //endregion
-
     //region Navigation
 
     public void goToHistory() {
@@ -144,6 +120,9 @@ public class RepositoriesActivity extends AppCompatActivity {
                 case R.id.navigation_add_repository:
                     mViewPager.setCurrentItem(1, true);
                     return true;
+                case R.id.navigation_more:
+                    mViewPager.setCurrentItem(2, true);
+                    return true;
             }
             return false;
         }
@@ -156,7 +135,7 @@ public class RepositoriesActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onPageSelected(int position) {
+        public void onPageSelected(final int position) {
             mBottomNavigationView.getMenu().getItem(position).setChecked(true);
         }
 

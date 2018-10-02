@@ -1,17 +1,18 @@
 package io.github.lonamiwebs.stringlate.activities;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -19,16 +20,16 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.github.gsantner.opoc.util.Helpers;
-import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.git.GitHub;
-import io.github.lonamiwebs.stringlate.settings.AppSettings;
+import net.gsantner.opoc.preference.GsPreferenceFragmentCompat;
+import net.gsantner.opoc.preference.SharedPreferencesPropertyBackend;
 
-import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_CLIENT_ID;
-import static io.github.lonamiwebs.stringlate.utilities.Constants.GITHUB_CLIENT_SECRET;
+import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.classes.git.GitHub;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
+import io.github.lonamiwebs.stringlate.utilities.ContextUtils;
 
 @SuppressWarnings("WeakerAccess")
-public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsActivity extends AppCompatActivity {
     public static class RESULT {
         public static final int NOCHANGE = -1;
         public static final int CHANGE = 1;
@@ -36,7 +37,6 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     }
 
     //region Members
-    protected AppSettings mSettings;
     protected Toolbar toolbar;
     public static int activityRetVal = RESULT.NOCHANGE;
 
@@ -49,14 +49,9 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        mSettings = new AppSettings(this);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                SettingsActivity.this.onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
         activityRetVal = RESULT.NOCHANGE;
         showFragment(SettingsFragmentMaster.TAG, false);
 
@@ -70,7 +65,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
 
 
     protected void showFragment(String tag, boolean addToBackStack) {
-        PreferenceFragment fragment = (PreferenceFragment) getFragmentManager().findFragmentByTag(tag);
+        GsPreferenceFragmentCompat fragment = (GsPreferenceFragmentCompat) getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment == null) {
             switch (tag) {
                 case SettingsFragmentMaster.TAG:
@@ -80,69 +75,60 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     break;
             }
         }
-        FragmentTransaction t = getFragmentManager().beginTransaction();
+        FragmentTransaction t = getSupportFragmentManager().beginTransaction();
         if (addToBackStack) {
             t.addToBackStack(tag);
         }
-        t.replace(R.id.settings__fragment_container, fragment, tag).commit();
+        t.replace(R.id.settings__activity__fragment_placeholder, fragment, tag).commit();
     }
 
-    @Override
-    protected void onResume() {
-        mSettings.registerPreferenceChangedListener(this);
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        mSettings.unregisterPreferenceChangedListener(this);
-        super.onPause();
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if (activityRetVal == RESULT.NOCHANGE) {
-            activityRetVal = RESULT.CHANGE;
-        }
-    }
-
-
-    public static class SettingsFragmentMaster extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
-        public static final String TAG = "SettingsFragmentMaster";
-        private AppSettings mSettings;
-
-        public void onCreate(Bundle savedInstances) {
-            super.onCreate(savedInstances);
-            mSettings = new AppSettings(getActivity());
-            getPreferenceManager().setSharedPreferencesName(mSettings.getDefaultPreferencesName());
-            addPreferencesFromResource(R.xml.preferences_master);
-            SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
-            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-
-            // UpdateSummaries may not work immediately
-            final Activity activity = getActivity();
-            new Thread() {
-                public void run() {
-                    try {
-                        Thread.sleep(150);
-                        activity.runOnUiThread(new Runnable() {
-                            public void run() {
-                                updateSummaries();
-                            }
-                        });
-                    } catch (Exception ignored) {
-                    }
-                }
-            }.start();
+    public static abstract class StringlateSettingsFragment extends GsPreferenceFragmentCompat<AppSettings> {
+        @Override
+        protected AppSettings getAppSettings(Context context) {
+            if (_appSettings != null) {
+                return _appSettings;
+            }
+            return new AppSettings(context);
         }
 
         @Override
-        public boolean onPreferenceTreeClick(PreferenceScreen screen, Preference preference) {
+        protected void onPreferenceScreenChanged(PreferenceFragmentCompat preferenceFragmentCompat, PreferenceScreen preferenceScreen) {
+            super.onPreferenceScreenChanged(preferenceFragmentCompat, preferenceScreen);
+            if (!TextUtils.isEmpty(preferenceScreen.getTitle())) {
+                SettingsActivity a = (SettingsActivity) getActivity();
+                if (a != null) {
+                    a.toolbar.setTitle(preferenceScreen.getTitle());
+                }
+            }
+        }
+    }
+
+
+    public static class SettingsFragmentMaster extends StringlateSettingsFragment {
+        public static final String TAG = "SettingsFragmentMaster";
+
+        @Override
+        public int getPreferenceResourceForInflation() {
+            return R.xml.preferences_master;
+        }
+
+        @Override
+        public String getFragmentTag() {
+            return TAG;
+        }
+
+        @Override
+        protected AppSettings getAppSettings(Context context) {
+            return super.getAppSettings(context);
+        }
+
+        @Override
+        public Boolean onPreferenceClicked(Preference preference) {
             if (isAdded() && preference.hasKey()) {
                 String key = preference.getKey();
 
                 if (key.equals(getString(R.string.pref_key__github_authentication_request))) {
-                    Uri url = Uri.parse(GitHub.Authentication.gGetAuthRequestUrl());
+                    Uri url = Uri.parse(GitHub.Authentication.getAuthRequestUrl());
                     startActivity(new Intent(Intent.ACTION_VIEW, url));
                 }
 
@@ -150,46 +136,50 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     activityRetVal = RESULT.CHANGE_RESTART;
                 }
             }
-            return super.onPreferenceTreeClick(screen, preference);
+            return false;
         }
 
-        private void updateSummaries() {
+        @Override
+        public synchronized void doUpdatePreferences() {
             if (isAdded() && !isDetached()) {
-                findPreference(getString(R.string.pref_key__github_authentication_request)).setSummary(
-                        mSettings.hasGitHubAuthorization()
-                                ? R.string.github_yes_logged_long
-                                : R.string.github_not_logged_long
+                updateSummary(R.string.pref_key__github_authentication_request, getString(_appSettings.hasGitHubAuthorization()
+                        ? R.string.github_yes_logged_long : R.string.github_not_logged_long)
                 );
             }
         }
 
         @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-            updateSummaries();
+        protected void onPreferenceChanged(SharedPreferences prefs, String key) {
+            doUpdatePreferences();
+            activityRetVal = activityRetVal != RESULT.CHANGE_RESTART ? RESULT.CHANGE : activityRetVal;
         }
     }
 }
 
 class GitHubCompleteAuthTask extends AsyncTask<Void, Void, GitHub.Authentication.CompleteAuthenticationResult> {
     private final View mViewRoot;
+    private final Context mContext;
     private final String mCode;
 
     GitHubCompleteAuthTask(View viewRoot, String code) {
         mCode = code;
         mViewRoot = viewRoot;
+        mContext = viewRoot.getContext();
     }
 
     @Override
     protected GitHub.Authentication.CompleteAuthenticationResult doInBackground(Void... params) {
-        return GitHub.Authentication.gCompleteGitHubAuth(
-                new AppSettings(mViewRoot.getContext()), GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, mCode
+        AppSettings appSettings = new AppSettings(mContext);
+        return GitHub.Authentication.completeGitHubAuth(
+                appSettings, appSettings.getGitHubClientId(),
+                appSettings.getGitHubClientSecret(), mCode
         );
     }
 
     @Override
     protected void onPostExecute(GitHub.Authentication.CompleteAuthenticationResult result) {
         // NOTE: Preference Summary UI gets updated by preference changed event
-        Spanned message = new Helpers(mViewRoot.getContext()).htmlToSpanned("<strong>GitHub " +
+        Spanned message = new ContextUtils(mViewRoot.getContext()).htmlToSpanned("<strong>GitHub " +
                 mViewRoot.getContext().getString(result.ok ? R.string.auth_success : R.string.auth_failure)
                 + "</strong>" + (result.message != null ? ("<br/>" + result.message) : "")
         );

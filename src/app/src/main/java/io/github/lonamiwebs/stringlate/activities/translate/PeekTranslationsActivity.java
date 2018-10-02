@@ -10,8 +10,9 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.classes.TranslationPeekAdapter;
+import io.github.lonamiwebs.stringlate.adapters.TranslationPeekAdapter;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_ID;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
@@ -39,7 +40,7 @@ public class PeekTranslationsActivity extends AppCompatActivity {
         mTranslationsListView = findViewById(R.id.translationsListView);
 
         Intent intent = getIntent();
-        mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
+        mRepo = RepoHandlerHelper.fromBundle(intent.getBundleExtra(EXTRA_REPO));
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
         mResourceId = intent.getStringExtra(EXTRA_ID);
 

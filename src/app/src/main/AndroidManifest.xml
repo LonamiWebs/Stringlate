@@ -16,7 +16,8 @@
     <application
         android:allowBackup="true"
         android:fullBackupContent="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher"
+        android:roundIcon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -65,7 +66,7 @@
             android:name=".activities.translate.TranslateActivity" />
         <activity
             android:name=".activities.export.CreateGistActivity" />
-        <activity android:name=".activities.BrowserActivity" />
+        <activity android:name=".activities.info.BrowserActivity" />
         <activity android:name=".activities.translate.SearchStringActivity" />
         <activity
             android:name=".activities.SettingsActivity"

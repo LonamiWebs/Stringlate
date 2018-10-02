@@ -13,9 +13,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import io.github.lonamiwebs.stringlate.utilities.Constants;
-
-import static io.github.lonamiwebs.stringlate.utilities.Constants.FDROID_REPO_URL;
+import static io.github.lonamiwebs.stringlate.classes.applications.ApplicationList.FDROID_REPO_URL;
 
 class ApplicationListParser {
     // parser ids
@@ -27,6 +25,7 @@ class ApplicationListParser {
     private static final String ICON_URL = "sl_iconurl";
     private static final String SOURCE_URL = "source";
     private static final String WEB = "web";
+    private static final String MAIL = "email";
 
     // We don't use namespaces
     private static final String ns = null;
@@ -83,10 +82,8 @@ class ApplicationListParser {
     private static ApplicationDetails readApplication(XmlPullParser parser)
             throws XmlPullParserException, IOException {
 
-        String packageName, lastUpdated, name, description, iconUrl, sourceCodeUrl, webUrl;
-        packageName = lastUpdated = name = description = iconUrl = sourceCodeUrl = webUrl = "";
-        iconUrl = "";
-        sourceCodeUrl = "";
+        String packageName, lastUpdated, name, description, iconUrl, sourceCodeUrl, webUrl, email;
+        packageName = lastUpdated = name = description = iconUrl = sourceCodeUrl = webUrl = email = "";
 
         parser.require(XmlPullParser.START_TAG, ns, "application");
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -120,6 +117,9 @@ class ApplicationListParser {
                 case SOURCE_URL:
                     sourceCodeUrl = readText(parser);
                     break;
+                case MAIL:
+                    email = readText(parser);
+                    break;
                 default:
                     skip(parser);
                     break;
@@ -128,7 +128,7 @@ class ApplicationListParser {
         parser.require(XmlPullParser.END_TAG, ns, "application");
 
         return new ApplicationDetails(packageName, lastUpdated,
-                name, description, iconUrl, sourceCodeUrl, webUrl);
+                name, description, iconUrl, sourceCodeUrl, webUrl, email);
     }
 
     // Reads the text from an xml tag
@@ -174,11 +174,12 @@ class ApplicationListParser {
 
                 writeTag(serializer, ID, app.getPackageName());
                 writeTag(serializer, LAST_UPDATED, app.getLastUpdatedDateString());
-                writeTag(serializer, NAME, app.getName());
+                writeTag(serializer, NAME, app.getProjectName());
                 writeTag(serializer, DESCRIPTION, app.getDescription());
                 writeTag(serializer, ICON_URL, app.getIconUrl());
                 writeTag(serializer, SOURCE_URL, app.getSourceCodeUrl());
-                writeTag(serializer, WEB, app.getWebUrl());
+                writeTag(serializer, WEB, app.getProjectWebUrl());
+                writeTag(serializer, MAIL, app.getProjectMail());
 
                 serializer.endTag(ns, "application");
             }
@@ -194,7 +195,12 @@ class ApplicationListParser {
     private static void writeTag(XmlSerializer serializer, String tag, String content)
             throws IOException {
         serializer.startTag(ns, tag);
-        serializer.text(content);
+        try {
+            serializer.text(content);
+        } catch (IllegalArgumentException exception){
+            // XML Parser internal broken on pre LL
+            serializer.text("");
+        }
         serializer.endTag(ns, tag);
     }
 
@@ -202,7 +208,7 @@ class ApplicationListParser {
 
     public static void loadFDroidIconPath(Context context) {
         final double dpi = context.getResources().getDisplayMetrics().densityDpi;
-        String iconDir = Constants.FALLBACK_FDROID_ICONS_DIR;
+        String iconDir = ApplicationList.FDROID_ICONS_DIR_FALLBACK;
         if (dpi >= 120) iconDir = "/icons-120/";
         if (dpi >= 160) iconDir = "/icons-160/";
         if (dpi >= 240) iconDir = "/icons-240/";

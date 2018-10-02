@@ -5,6 +5,10 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
+import net.gsantner.opoc.util.Callback;
+import net.gsantner.opoc.util.NetworkUtils;
+import net.gsantner.opoc.util.ZipUtils;
+
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
@@ -19,12 +23,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import io.github.lonamiwebs.stringlate.classes.Messenger;
-import io.github.lonamiwebs.stringlate.interfaces.Callback;
-import io.github.lonamiwebs.stringlate.utilities.Constants;
-import io.github.lonamiwebs.stringlate.utilities.FileDownloader;
-import io.github.lonamiwebs.stringlate.utilities.FileExtractor;
 
 public class ApplicationList implements Iterable<ApplicationDetails> {
+    public final static String FDROID_REPO_URL = "https://f-droid.org/repo";
+    public final static String FDROID_INDEX_URL = FDROID_REPO_URL + "/index.jar";
+    public final static String FDROID_ICONS_DIR_FALLBACK = "/icons/";
 
     //region Members
     private final File mRoot;
@@ -95,7 +98,7 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
 
             for (; mLastSliceIndex < end && count > 0; mLastSliceIndex++) {
                 ApplicationDetails app = mApplications.get(mLastSliceIndex);
-                if (app.getName().toLowerCase().contains(mSliceFilter) ||
+                if (app.getProjectName().toLowerCase().contains(mSliceFilter) ||
                         app.getDescription().toLowerCase().contains(mSliceFilter)) {
                     mApplicationsSlice.add(app);
                     count--;
@@ -112,18 +115,18 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
     public boolean syncRepo(final Messenger.OnSyncProgress callback) {
         // Step 1: Download the index.jar
         callback.onUpdate(1, 0f);
-        FileDownloader.downloadFile(Constants.FDROID_INDEX_URL, getIndexFile("jar"), new Callback<Float>() {
+        NetworkUtils.downloadFile(FDROID_INDEX_URL, getIndexFile("jar"), new Callback.a1<Float>() {
             @Override
-            public void onCallback(Float progress) {
+            public void callback(Float progress) {
                 callback.onUpdate(1, progress);
             }
         });
 
         // Step 2: Extract the index.xml from the index.jar, then delete the index.jar
         callback.onUpdate(2, 0f);
-        FileExtractor.unpackZip(getIndexFile("jar"), mRoot, false, new Callback<Float>() {
+        ZipUtils.unzip(getIndexFile("jar"), mRoot, true, new Callback.a1<Float>() {
             @Override
-            public void onCallback(Float progress) {
+            public void callback(Float progress) {
                 callback.onUpdate(2, progress);
             }
         });
@@ -163,7 +166,7 @@ public class ApplicationList implements Iterable<ApplicationDetails> {
                     @Override
                     public int compare(ApplicationDetails t1, ApplicationDetails t2) {
                         if (t1.isInstalled() == t2.isInstalled()) {
-                            return t1.getName().compareToIgnoreCase(t2.getName());
+                            return t1.getProjectName().compareToIgnoreCase(t2.getProjectName());
                         } else {
                             return t1.isInstalled() ? -1 : 1;
                         }

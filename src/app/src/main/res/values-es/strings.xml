@@ -137,8 +137,6 @@
     <string name="exported_to_hastebin">Exportado satisfactoriamente a Hastebin. URL copiada al portapapeles</string>
     <string name="export_unsuccessful">Exportación sin éxito</string>
     <string name="base_branch_colon">Rama base:</string>
-
-
     <string name="open_source_licenses">Licencias de software libre</string>
     <string name="translate">Traducir</string>
     <string name="help_this_app">Más información y ayuda</string>
@@ -163,5 +161,4 @@
     <string name="view">Ver</string>
     <string name="editing_font">Tipo de letra para edición</string>
     <string name="copy_build_information">Copiar información de compilación</string>
-
 </resources>

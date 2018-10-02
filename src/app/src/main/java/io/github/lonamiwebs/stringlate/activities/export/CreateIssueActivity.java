@@ -10,7 +10,8 @@ import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.settings.AppSettings;
-import io.github.lonamiwebs.stringlate.utilities.Helpers;
+import io.github.lonamiwebs.stringlate.utilities.ContextUtils;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -45,7 +46,7 @@ public class CreateIssueActivity extends AppCompatActivity {
 
         // Retrieve the strings.xml content to be exported
         Intent intent = getIntent();
-        mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
+        mRepo = RepoHandlerHelper.fromBundle(intent.getBundleExtra(EXTRA_REPO));
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
 
         Integer issue = mRepo.settings.getCreatedIssues().get(mLocale);
@@ -53,7 +54,7 @@ public class CreateIssueActivity extends AppCompatActivity {
 
         String display = LocaleString.getEnglishDisplay(mLocale);
         if (mExistingIssueNumber == -1) {
-            mIssueTitleEditText.setText(getString(R.string.added_x_translation, mLocale, display));
+            mIssueTitleEditText.setText(getString(R.string.updated_x_translation, mLocale, display));
             mIssueDescriptionEditText.setText(getString(R.string.new_issue_template, mLocale, display));
         } else {
             findViewById(R.id.issueTitleLayout).setVisibility(View.GONE);
@@ -79,10 +80,17 @@ public class CreateIssueActivity extends AppCompatActivity {
             mIssueDescriptionEditText.setError(getString(R.string.issue_desc_x));
             return;
         } else {
-            String xml = mRepo.mergeDefaultTemplate(mLocale);
-            description = description.replace("%x", String.format("```xml\n%s\n```", xml));
+            // GitHub seems to need two empty newlines after HTML tags if we want Markdown again.
+            // It doesn't seem to be necessary for the closing tag, but keep it for safety.
+            String xml = mRepo.mergeDefaultTemplate(
+                    mLocale,
+                    "<details><summary>",
+                    "</summary>\n\n```xml\n",
+                    "\n```\n\n</details>\n"
+            );
+            description = description.replace("%x", xml);
         }
-        if (new Helpers(this).isDisconnectedFromInternet(R.string.no_internet_connection))
+        if (!new ContextUtils(this).isConnectedToInternet(R.string.no_internet_connection))
             return;
 
         CreateUrlActivity.launchIntent(this, Exporter.createIssueExporter(

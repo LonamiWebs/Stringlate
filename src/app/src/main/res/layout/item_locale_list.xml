@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:baselineAligned="false"
-              android:orientation="vertical"
-              android:paddingEnd="?attr/listPreferredItemPaddingRight"
-              android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-              android:paddingRight="?attr/listPreferredItemPaddingRight"
-              android:paddingStart="?attr/listPreferredItemPaddingLeft"
-              android:paddingTop="8dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="vertical"
+    android:paddingEnd="?attr/listPreferredItemPaddingRight"
+    android:paddingLeft="?attr/listPreferredItemPaddingLeft"
+    android:paddingRight="?attr/listPreferredItemPaddingRight"
+    android:paddingStart="?attr/listPreferredItemPaddingLeft"
+    android:paddingTop="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textStyle="bold"
-                tools:text="Deutsch"/>
+                tools:text="Deutsch" />
 
             <TextView
                 android:id="@+id/language_country"
@@ -40,7 +40,7 @@
                 android:layout_marginTop="8dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                tools:text="Deutschland"/>
+                tools:text="Deutschland" />
 
 
         </LinearLayout>
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="serif-monospace"
                 tools:targetApi="jelly_bean"
-                tools:text="de-rDE"/>
+                tools:text="de-rDE" />
 
             <ImageView
                 android:id="@+id/expand"
@@ -67,7 +67,7 @@
                 android:layout_marginTop="8dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:src="@drawable/ic_expand_more_gray_24dp"/>
+                android:src="@drawable/ic_expand_more_gray_24dp" />
 
         </LinearLayout>
 

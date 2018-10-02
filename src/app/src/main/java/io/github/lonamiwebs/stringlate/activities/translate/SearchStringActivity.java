@@ -14,10 +14,12 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.adapters.ResourcesTranslationAdapter;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
+import io.github.lonamiwebs.stringlate.classes.resources.Resources;
 import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslation;
-import io.github.lonamiwebs.stringlate.classes.resources.ResourcesTranslationAdapter;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_LOCALE;
 import static io.github.lonamiwebs.stringlate.utilities.Constants.EXTRA_REPO;
@@ -31,6 +33,9 @@ public class SearchStringActivity extends AppCompatActivity {
 
     private EditText mSearchEditText;
     private ListView mResourcesListView;
+
+    private Resources defaultLocaleResources;
+    private Resources secondLocaleResources;
 
     //endregion
 
@@ -46,11 +51,14 @@ public class SearchStringActivity extends AppCompatActivity {
         final ImageButton clearFilterButton = findViewById(R.id.clearFilterButton);
 
         Intent intent = getIntent();
-        mRepo = RepoHandler.fromBundle(this, intent.getBundleExtra(EXTRA_REPO));
+        mRepo = RepoHandlerHelper.fromBundle(intent.getBundleExtra(EXTRA_REPO));
         mLocale = intent.getStringExtra(EXTRA_LOCALE);
 
         setTitle(String.format("%s/%s (%s)", mRepo.getProjectName(),
                 LocaleString.getDisplay(mLocale), mLocale));
+
+        defaultLocaleResources = mRepo.loadDefaultResources();
+        secondLocaleResources = mRepo.loadResources(mLocale);
 
         refreshResourcesListView(null);
         mSearchEditText.addTextChangedListener(new TextWatcher() {
@@ -77,13 +85,7 @@ public class SearchStringActivity extends AppCompatActivity {
         mResourcesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                // Save the current search, although we also need to pass it
-                // with the intent because the json is not reloaded from the
-                // file when we're asked for the updated string (on Translate)
                 final String filter = mSearchEditText.getText().toString();
-                mRepo.settings.setStringFilter(filter);
-
-                // Return the selected string to the parent activity
                 ResourcesTranslation rt = (ResourcesTranslation) mResourcesListView.getItemAtPosition(i);
                 Intent data = new Intent();
                 data.putExtra("id", rt.getId());
@@ -110,7 +112,7 @@ public class SearchStringActivity extends AppCompatActivity {
 
     private void refreshResourcesListView(String filter) {
         ArrayList<ResourcesTranslation> rts = ResourcesTranslation.fromPairs(
-                mRepo.loadDefaultResources(), mRepo.loadResources(mLocale), filter);
+                defaultLocaleResources, secondLocaleResources, filter);
 
         mResourcesListView.setAdapter(new ResourcesTranslationAdapter(this, rts));
     }

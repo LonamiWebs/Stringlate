@@ -15,15 +15,19 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import butterknife.ButterKnife;
+import butterknife.OnTextChanged;
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.activities.DiscoverActivity;
 import io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity;
+import io.github.lonamiwebs.stringlate.classes.RepoSyncTask;
 import io.github.lonamiwebs.stringlate.classes.applications.ApplicationDetails;
+import io.github.lonamiwebs.stringlate.classes.git.GitHub;
+import io.github.lonamiwebs.stringlate.classes.git.GitWrapper;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
-import io.github.lonamiwebs.stringlate.classes.repos.RepoSyncTask;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
-import io.github.lonamiwebs.stringlate.git.GitWrapper;
-import io.github.lonamiwebs.stringlate.utilities.Helpers;
+import io.github.lonamiwebs.stringlate.utilities.ContextUtils;
+import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 import io.github.lonamiwebs.stringlate.utilities.StringlateApi;
 
 import static android.app.Activity.RESULT_OK;
@@ -48,9 +52,10 @@ public class AddNewRepositoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_new_repository, container, false);
+        ButterKnife.bind(this, rootView);
 
-        mOwnerEditText = rootView.findViewById(R.id.ownerEditText);
-        mRepositoryEditText = rootView.findViewById(R.id.repositoryEditText);
+        mOwnerEditText = rootView.findViewById(R.id.github_ownerEditText);
+        mRepositoryEditText = rootView.findViewById(R.id.github_repositoryEditText);
 
         mUrlEditText = rootView.findViewById(R.id.urlEditText);
         mProjectDetails = new ApplicationDetails();
@@ -68,6 +73,7 @@ public class AddNewRepositoryFragment extends Fragment {
             final String paramGit = data.getQueryParameter("git");
             final String paramWeb = data.getQueryParameter("web");
             final String paramName = data.getQueryParameter("name");
+            final String paramMail = data.getQueryParameter("mail");
 
             if (paramGit == null) {
                 // If no URL was found, it may just be a git repository by itself
@@ -79,18 +85,22 @@ public class AddNewRepositoryFragment extends Fragment {
                 setUrl(paramGit);
             }
             if (paramWeb != null) {
-                mProjectDetails.setWebUrl(paramWeb);
+                mProjectDetails.setProjectWebUrl(paramWeb);
             }
             if (paramName != null) {
-                mProjectDetails.setName(paramName);
+                mProjectDetails.setProjectName(paramName);
+            }
+            if (paramMail != null) {
+                mProjectDetails.setProjectMail(paramMail);
             }
         }
         // Or we were opened from the StringlateApi
         if (intent.getAction().equals(StringlateApi.ACTION_TRANSLATE) &&
                 intent.hasExtra(StringlateApi.EXTRA_GIT_URL)) {
             setUrl(intent.getStringExtra(StringlateApi.EXTRA_GIT_URL));
-            mProjectDetails.setWebUrl(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_HOMEPAGE));
-            mProjectDetails.setName(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_NAME));
+            mProjectDetails.setProjectWebUrl(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_WEB));
+            mProjectDetails.setProjectMail(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_MAIL));
+            mProjectDetails.setProjectName(intent.getStringExtra(StringlateApi.EXTRA_PROJECT_NAME));
         }
 
         // If the user presses enter on an EditText, select the next one
@@ -128,6 +138,17 @@ public class AddNewRepositoryFragment extends Fragment {
 
     //region UI events
 
+    @OnTextChanged(callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED, value = {R.id.github_ownerEditText, R.id.github_repositoryEditText})
+    public void onGitHubRepoEditChanged(CharSequence newText) {
+        final String owner = mOwnerEditText.getText().toString().trim();
+        final String repository = mRepositoryEditText.getText().toString().trim();
+        if (!owner.isEmpty() || !repository.isEmpty()) {
+            mUrlEditText.setText(GitHub.buildGitHubUrl(owner, repository));
+        } else {
+            mUrlEditText.setText("");
+        }
+    }
+
     private final View.OnClickListener onDiscoverClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -139,27 +160,25 @@ public class AddNewRepositoryFragment extends Fragment {
     private final View.OnClickListener onNextClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String owner, repository;
             String url;
 
             url = mUrlEditText.getText().toString().trim();
-            owner = mOwnerEditText.getText().toString().trim();
-            repository = mRepositoryEditText.getText().toString().trim();
 
-            if (url.isEmpty() && (owner.isEmpty() || repository.isEmpty())) {
+            if (url.isEmpty()) {
                 Toast.makeText(getContext(), R.string.repo_or_url_required,
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Determine whether we already have this repo or if it's a new one
-                RepoHandler repo = url.isEmpty() ?
-                        new RepoHandler(getContext(), GitWrapper.buildGitHubUrl(owner, repository)) :
-                        new RepoHandler(getContext(), GitWrapper.getGitUri(url));
+                RepoHandler repo = RepoHandlerHelper.fromContext(getContext(), GitWrapper.getGitUri(url));
 
-                if (!TextUtils.isEmpty(mProjectDetails.getWebUrl())) {
-                    repo.settings.setProjectHomepageUrl(mProjectDetails.getWebUrl());
+                if (!TextUtils.isEmpty(mProjectDetails.getProjectWebUrl())) {
+                    repo.settings.setProjectWebUrl(mProjectDetails.getProjectWebUrl());
                 }
-                if (!TextUtils.isEmpty(mProjectDetails.getName())) {
-                    repo.settings.setProjectName(mProjectDetails.getName());
+                if (!TextUtils.isEmpty(mProjectDetails.getProjectName())) {
+                    repo.settings.setProjectName(mProjectDetails.getProjectName());
+                }
+                if (!TextUtils.isEmpty(mProjectDetails.getProjectMail())) {
+                    repo.settings.setProjectMail(mProjectDetails.getProjectMail());
                 }
 
                 if (repo.isEmpty()) {
@@ -181,8 +200,9 @@ public class AddNewRepositoryFragment extends Fragment {
             switch (requestCode) {
                 case RESULT_REPO_DISCOVERED:
                     setUrl(data.getStringExtra("url"));
-                    mProjectDetails.setWebUrl(data.getStringExtra("web"));
-                    mProjectDetails.setName(data.getStringExtra("name"));
+                    mProjectDetails.setProjectWebUrl(data.getStringExtra("web"));
+                    mProjectDetails.setProjectName(data.getStringExtra("name"));
+                    mProjectDetails.setProjectMail(data.getStringExtra("mail"));
                     break;
                 default:
                     super.onActivityResult(requestCode, resultCode, data);
@@ -197,11 +217,11 @@ public class AddNewRepositoryFragment extends Fragment {
     //region Checking and adding a new local "repository"
 
     private void scanDownloadStrings(final RepoHandler repo) {
-        if (new Helpers(getContext()).isDisconnectedFromInternet(R.string.no_internet_connection))
+        if (!new ContextUtils(getContext()).isConnectedToInternet(R.string.no_internet_connection))
             return;
 
         new RepoSyncTask(getContext(), repo,
-                new GitSource(repo.settings.getSource(), ""), true).start();
+                new GitSource(repo.settings.getSource(), "HEAD"), true).start();
 
         if (getActivity() instanceof RepositoriesActivity) {
             // Take the user to the repositories history if the parent activity matches
@@ -214,15 +234,15 @@ public class AddNewRepositoryFragment extends Fragment {
     //region Utilities
 
     // Sets the URL EditText, clearing any value on the owner and repo fields
-    private void setUrl(String url) {
+    private void setUrl(final String url) {
         mOwnerEditText.setText("");
         mRepositoryEditText.setText("");
         mUrlEditText.setText(url);
     }
 
-    private void launchTranslateActivity(RepoHandler repo) {
+    private void launchTranslateActivity(final RepoHandler repo) {
         Intent intent = new Intent(getContext(), TranslateActivity.class);
-        intent.putExtra(EXTRA_REPO, repo.toBundle());
+        intent.putExtra(EXTRA_REPO, RepoHandlerHelper.toBundle(repo));
         startActivity(intent);
     }
 
