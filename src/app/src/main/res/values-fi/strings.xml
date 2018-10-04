@@ -131,14 +131,12 @@
     <string name="user_accounts">Käyttäjätilit</string>
     <string name="more">Lisää</string>
     <string name="next_steps">Kun kaikki merkkijonot on käännetty, napauta kolmen pisteen valikkoa yläoikealla ja valitse \"%s\" jakaaksesi työsi projektin ylläpitäjälle, jotta hän voi arvioida ja käyttää sitä.\n
-     \n
-  Jos haluat arvioida jo käännettyjä merkkijonoja, ota käyttöön \"%s\"-asetus.</string>
+      \n
+   Jos haluat arvioida jo käännettyjä merkkijonoja, ota käyttöön \"%s\"-asetus.</string>
     <string name="cancel_sync">Perutaanko synkronointi?</string>
     <string name="exported_to_hastebin">Vienti onnistui Hastebiniin. Osoite kopioitu leikepöydälle</string>
     <string name="export_unsuccessful">Vienti epäonnistui</string>
     <string name="base_branch_colon">Perushaara:</string>
-
-
     <string name="open_source_licenses">Avoimen lähdekoodin lisenssit</string>
     <string name="translate">Käännä</string>
     <string name="help_this_app">Lisätietoa ja apua</string>
@@ -155,11 +153,12 @@
     <string name="more_info_on_how_to_contribute_to_this_project">Lisätietoa tämän projektin avustamisesta</string>
     <string name="contribute_code_to_this_project_anybody_welcome">Edistä koodia projektille. Kaikki ovat tervetulleita avustamaan, myös uudet tulijat</string>
     <string name="project_team">Projektin tiimi</string>
+    <string name="community">Yhteisö</string>
     <string name="licenses">Lisenssit</string>
     <string name="contributors">Avustajat</string>
     <string name="donate">Lahjoita</string>
     <string name="contribute">Avusta</string>
     <string name="view">Näytä</string>
     <string name="editing_font">Muokkausfontti</string>
-
+    <string name="copy_build_information">Kopioi koontiversiotiedot</string>
 </resources>
