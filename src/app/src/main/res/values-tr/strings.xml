@@ -2,7 +2,7 @@
     <string name="original_string">Orijinal metin:</string>
     <string name="translated_string_colon">Çevirilen metin:</string>
     <string name="next">Sonraki</string>
-    <string name="welcome">Stringlate\'e hoşgeldiniz! Bir GitHub proje ismi ve sahibini girerek veya kaynağın Git URL\'sini yapıştırarak devam edin.</string>
+    <string name="welcome">Stringlate\'e hoş geldiniz! Devam etmek için bir GitHub proje adı ve sahibini girin veya havuzun Git URL\'sini aşağıya yapıştırın.</string>
     <string name="owner_hint">sahip</string>
     <string name="repository_hint">kaynak</string>
     <string name="github_repo_url_hint">https://github.com/sahip/kaynak</string>
@@ -11,7 +11,7 @@
     <string name="loading_ellipsis">Yükleniyor...</string>
     <string name="no_strings_found_update">Herhangi bir strings.xml dosyası bulunamadı, lütfen strings.xml\'i güncelleyin.</string>
     <string name="repo_or_url_required">Lütfen bir proje sahibi ve ismi, ya da bir URL girin.</string>
-    <string name="translated_string">Çevirilen metin</string>
+    <string name="translated_string">Translated string. For multiple words or special characters it is recommended to start with a copy  of original text</string>
     <string name="previous">Önceki</string>
     <string name="no_strings_left">Çevirilecek metin kalmadı.</string>
     <string name="save_error">Değişiklikler kaydedilemedi.</string>
@@ -23,7 +23,7 @@
     <string name="delete_ellipsis">Sil...</string>
     <string name="delete_string">Çeviriyi sil</string>
     <string name="delete_locale">Dili sil</string>
-    <string name="delete_repository">Kaynağı sil</string>
+    <string name="delete_repository">Kaynağı sil (yerel)</string>
     <string name="no_locale_selected">Dil seçilmedi.</string>
     <string name="sure_question">Emin misiniz?</string>
     <string name="delete_locale_confirm_long">Gerçekten \"%s\" dilini silmek istiyor musunuz? Bütün çeviriler kaybolacaktır.</string>
@@ -47,10 +47,10 @@
     <string name="posting_gist_ellipsis_long">strings.xml GitHub Gist olarak yayımlanmaya çalışılıyor...</string>
     <string name="post_gist_error">Gist yayımlanamadı.</string>
     <string name="copy_to_clipboard">Panoya kopyala</string>
-    <string name="xml_copied_to_clipboard">The %s dosya içeriği panonuza kopyalandı</string>
+    <string name="xml_copied_to_clipboard">%s dosya içeriği panonuza kopyalandı</string>
     <string name="no_internet_connection">Internet\'e bağlı değilsiniz.</string>
     <string name="export_file_failed">strings.xml dosyası aktarılamadı</string>
-    <string name="export_file_success">Dosya %s başarıyla kaydedildi</string>
+    <string name="export_file_success">%s başarıyla kaydedildi</string>
     <string name="import_file_failed">Seçilen nesne içeri aktarılamadı</string>
     <string name="import_file_success">İçeri aktarma başarılı</string>
     <string name="update_applications">Uygulamaları güncelle</string>
@@ -59,7 +59,7 @@
     <string name="done">Bitti!</string>
     <string name="search">Ara</string>
     <string name="search_apps_ellipsis">Uygulamaları ara...</string>
-    <string name="icon_cache_cleared">Logo önbelleği temizlendi (%s kazanıldı).</string>
+    <string name="icon_cache_cleared">İcon önbelleği temizlendi (%s kazanıldı).</string>
     <string name="pulling_strings">Yeni metinler alınıyor</string>
     <string name="pulling_strings_long">Yeni metinleri almak sizin çevirilerinizi değiştirmez ve varsa çevirilmemiş yeni metinler ekler. Çevirilerinizi yüklemeden önce tüm metinleri çevirdiğinizden emin olmak için bunu yapmalısınız. Devam etmek istiyor musunuz?</string>
     <string name="history">Geçmiş</string>
@@ -68,7 +68,7 @@
     <string name="start_translating">Çevirmeye başla</string>
     <string name="history_no_repos_hint">Burada yeni misiniz? \"%s\" sekmesine geçerek başlayın!</string>
     <string name="history_contains_repos_hint">Bunlar sizin önceden senkronize olan kaynaklarınızdır. Devam etmek için birini seçin veya yeni bir tane ekleyin.</string>
-    <string name="clear_icons_cache">Logo önbelleğini temizle</string>
+    <string name="clear_icons_cache">İcon önbelleğini temizle</string>
     <string name="help">Yardım</string>
     <string name="open_online_help">Online yardımı aç</string>
     <string name="translation_progress">%1$d/%2$d metin çevrildi (%3$.1f%%).</string>
@@ -87,15 +87,15 @@
     <string name="issue_description">Sorun açıklaması (%x çeviri ile değiştirilecektir):</string>
     <string name="url_copied">URL panoya kopyalandı.</string>
     <string name="share_url">URL Paylaş</string>
-    <string name="create_issue_success">Sorununuz oluşturuldu, aferin!</string>
+    <string name="create_issue_success">Sorununuz oluşturuldu, Bravo!</string>
     <string name="create_issue_error">Sorun oluşturulamadı.</string>
     <string name="can_push_no_pr">Bu kaynağa yazma erişiminiz var gibi gözüküyor. Birleştirme isteği oluşturulmayacak.</string>
-    <string name="cannot_push_will_pr">Bu kaynağa yazma erişiminiz yok gibi gözüküyor. Stringlate projeyi hesabınıza forklayacak (ya da varolan bir forku kullanacak), yaptığınız çeviriyi yükleyecek ve birleşme isteği oluşturacak.</string>
+    <string name="cannot_push_will_pr">Bu kaynağa yazma erişiminiz yok gibi görünüyor. Stringlate projeyi hesabınıza forklayacak (ya da varolan bir forku kullanacak), yaptığınız çeviriyi yükleyecek ve birleşme isteği oluşturacak.</string>
     <string name="create_pr">Birleştirme isteği oluştur</string>
     <string name="commit_message">Kaydetme mesajı</string>
     <string name="commit_changes">Değişiklikleri kaydet</string>
     <string name="sync_required">Lütfen senkronize edip tekrar deneyin.</string>
-    <string name="login_required">Bunu yapmak için GitHub\'a giriş yapmalısınız.</string>
+    <string name="login_required">Bunun için GitHub\'a giriş yapmalısınız.</string>
     <string name="commit_msg_empty">Kaydetme mesajı boş olamaz.</string>
     <string name="forking_repo_long">Orijinal kaynak yazma erişiminiz olması için forklanıyor...</string>
     <string name="fork_failed">Fork başarısız.</string>
@@ -125,15 +125,15 @@
     <string name="syncing_now">Senkronize ediliyor:</string>
     <string name="wait_until_sync">Lütfen kaynak senkronize olana kadar bekleyin.</string>
     <string name="settings">Ayarlar</string>
-    <string name="pref_desc__language">Uygulamanın dilini değiştirir. Çalışması için yeniden başlatın</string>
+    <string name="pref_desc__language">Uygulamanın dilini değiştirir. Geçerli olması için yeniden başlatın</string>
     <string name="pref_title__language">Dil</string>
     <string name="appearance">Görünüm</string>
     <string name="user_accounts">Kullanıcı hesapları</string>
     <string name="more">Daha fazla</string>
     <string name="next_steps">Tüm dizeler çevrildikten sonra sağ üstteki üç nokta menüsüne dokunun ve çalışmanızı proje yöneticisi ile birlikte inceleyip kullanabilmesi için \"%s\" öğesini seçin.\n
- \n
- Önceden çevrilmiş dizelerden bazılarını incelemek isterseniz, bunu yapmak için \"%s\" seçeneğini etkinleştirin.</string>
-    <string name="cancel_sync">Senkronizasyonu iptal et mi istiyorsunuz?</string>
+     \n
+     Önceden çevrilmiş dizelerden bazılarını incelemek isterseniz, bunu yapmak için \"%s\" seçeneğini etkinleştirin.</string>
+    <string name="cancel_sync">Senkronizasyonu iptal etmek mi istiyorsunuz?</string>
     <string name="exported_to_hastebin">Hastebin\'e başarıyla aktarıldı. URL panoya kopyalandı</string>
     <string name="export_unsuccessful">Dışa aktarma başarısız</string>
     <string name="base_branch_colon">Ana dal:</string>
@@ -149,17 +149,19 @@
     <string name="join_community">Topluluğa katıl</string>
     <string name="bug_reports_suggest_improvements">Geri bildirim, hata bildirimi veya iyileştirmeler önerebilirsiniz</string>
     <string name="help_translating_this_app">Bu uygulamayı diğer dillere çevir</string>
-    <string name="source_code">Kaynak kod</string>
+    <string name="source_code">Kaynak Kod</string>
     <string name="project_license">Proje lisansı</string>
     <string name="project_contribution_info">Proje katkı bilgisi</string>
     <string name="more_info_on_how_to_contribute_to_this_project">Bu projeye nasıl katkıda bulunacağına dair daha fazla bilgi</string>
     <string name="contribute_code_to_this_project_anybody_welcome">Projeye kod katkısında bulun. Yeni gelenler de dahil olmak üzere herkes hoş karşılanır</string>
     <string name="project_team">Proje takımı</string>
+    <string name="community">Topluluk</string>
     <string name="licenses">Lisanslar</string>
     <string name="contributors">Katkıcılar</string>
     <string name="donate">Bağış</string>
     <string name="contribute">Katkıda bulun</string>
     <string name="view">Görünüm</string>
     <string name="editing_font">Yazı tipini düzenle</string>
+    <string name="copy_build_information">İnşa bilgisini kopyala</string>
 
 </resources>

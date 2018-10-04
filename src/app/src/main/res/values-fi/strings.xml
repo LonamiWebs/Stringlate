@@ -137,8 +137,6 @@
     <string name="exported_to_hastebin">Vienti onnistui Hastebiniin. Osoite kopioitu leikepöydälle</string>
     <string name="export_unsuccessful">Vienti epäonnistui</string>
     <string name="base_branch_colon">Perushaara:</string>
-
-
     <string name="open_source_licenses">Avoimen lähdekoodin lisenssit</string>
     <string name="translate">Käännä</string>
     <string name="help_this_app">Lisätietoa ja apua</string>
@@ -163,5 +161,4 @@
     <string name="view">Näytä</string>
     <string name="editing_font">Muokkausfontti</string>
     <string name="copy_build_information">Kopioi koontiversiotiedot</string>
-
 </resources>

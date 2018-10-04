@@ -131,8 +131,8 @@
     <string name="user_accounts">Account utente</string>
     <string name="more">Mostra di più</string>
     <string name="next_steps">Una volta che tutte le stringhe sono tradotte, premi il menu con i tre pallini in alto a destra e seleziona \"%s\" per condividere il tuo lavoro con il gestore del progetto in modo che lo possa controllare e usare.\n
-        \n
-        Se vuoi rivedere alcune stringhe già tradotte, abilita l\'opzione \"%s\".</string>
+             \n
+             Se vuoi rivedere alcune stringhe già tradotte, abilita l\'opzione \"%s\".</string>
     <string name="cancel_sync">Annullare sincronizzazione?</string>
     <string name="exported_to_hastebin">Esportato con successo su Hastebin. L\'URL è stato copiato negli appunti</string>
     <string name="export_unsuccessful">Esportazione non riuscita</string>
@@ -154,13 +154,15 @@
     <string name="project_contribution_info">Info per contribuire al progetto</string>
     <string name="more_info_on_how_to_contribute_to_this_project">Più info su come contribuire a questo progetti</string>
     <string name="contribute_code_to_this_project_anybody_welcome">Contribuisci al codice del progetto.\n
-                                                     Tutti sono benvenuti, anche gli ultimi utenti</string>
+                                                          Tutti sono benvenuti, anche gli ultimi utenti</string>
     <string name="project_team">Squadra del Progetto</string>
+    <string name="community">Comunità</string>
     <string name="licenses">Licenze</string>
     <string name="contributors">Collaboratori</string>
     <string name="donate">Dona</string>
     <string name="contribute">Contribuisci</string>
     <string name="view">Vedi</string>
     <string name="editing_font">Font di modifica</string>
+    <string name="copy_build_information">Copia informazioni di build</string>
 
 </resources>
