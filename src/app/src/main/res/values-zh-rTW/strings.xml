@@ -130,10 +130,35 @@
     <string name="user_accounts">使用者帳號</string>
     <string name="more">更多</string>
     <string name="next_steps">當所有的字串都已被翻譯，輕觸右上角的三點選單紐並選擇「%s」以跟專案維護者分享您的翻譯成果以讓他們審閱並使用之。\n
-    \n
-    如果您要審閱一些已翻譯的字串可以啟用「%s」選項。</string>
+        \n
+        如果您要審閱一些已翻譯的字串可以啟用「%s」選項。</string>
     <string name="cancel_sync">要取消同步嗎？</string>
     <string name="exported_to_hastebin">成功匯出到 Hastebin。URL 已複製到剪貼簿</string>
     <string name="export_unsuccessful">匯出失敗</string>
     <string name="base_branch_colon">基底分支：</string>
+
+
+    <string name="open_source_licenses">開放原始碼條款</string>
+    <string name="translate">翻譯</string>
+    <string name="help_this_app">更多資訊和幫助</string>
+    <string name="bug_reports">回報錯誤</string>
+    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">更多關於捐助或支持這個專案的資訊</string>
+    <string name="more_info_on_how_to_contribute_to_foss_android_projects">更多關於貢獻開放原始碼專案的資訊，特別是Android應用程式</string>
+    <string name="join_community">加入社群</string>
+    <string name="bug_reports_suggest_improvements">給予回饋，回報錯誤或建議改善</string>
+    <string name="help_translating_this_app">將這個應用程式翻譯成其他語言</string>
+    <string name="source_code">原始碼</string>
+    <string name="project_license">專案條款</string>
+    <string name="project_contribution_info">專案貢獻資訊</string>
+    <string name="more_info_on_how_to_contribute_to_this_project">更多關於如何貢獻這個專案的資訊</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">為專案貢獻程式碼。\n
+ 歡迎每個人，包括新手</string>
+    <string name="project_team">專案團隊</string>
+    <string name="community">社群</string>
+    <string name="licenses">條款</string>
+    <string name="contributors">貢獻者</string>
+    <string name="donate">捐獻</string>
+    <string name="contribute">貢獻</string>
+    <string name="editing_font">修改字體</string>
+
 </resources>
