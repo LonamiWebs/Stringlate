@@ -2,7 +2,7 @@
     <string name="original_string">Frase original:</string>
     <string name="translated_string_colon">Frase traduzida:</string>
     <string name="next">Seguinte</string>
-    <string name="welcome">Bem vindo ao Stringlate! Introduza o nome de um projecto do GitHub e o seu dono ou cole o URL do repositório Git para continuar.</string>
+    <string name="welcome">Bem vindo ao Stringlate! Introduza o nome de um projeto do GitHub e o seu dono ou cole o URL do repositório Git para continuar.</string>
     <string name="owner_hint">dono</string>
     <string name="repository_hint">repositório</string>
     <string name="github_repo_url_hint">https://github.com/dono/repositório</string>
@@ -10,7 +10,7 @@
     <string name="add_locale">Adicionar novo idioma</string>
     <string name="loading_ellipsis">A carregar...</string>
     <string name="no_strings_found_update">Nenhum ficheiro strings.xml encontrado, por favor atualize o strings.xml.</string>
-    <string name="repo_or_url_required">Introduza por favor o nome do projecto e do dono deste ou um URL.</string>
+    <string name="repo_or_url_required">Introduza por favor o nome do projeto e do dono deste ou um URL.</string>
     <string name="translated_string">Frase traduzida. Em frases com múltiplas palavras ou com símbolos especiais, recomenda-se começar com uma cópia do texto original</string>
     <string name="previous">Anterior</string>
     <string name="no_strings_left">Não existem mais frases.</string>
@@ -32,7 +32,7 @@
     <string name="export_sd_card">Exportar para cartão SD</string>
     <string name="export_share">Partilhar o XML gerado</string>
     <string name="delete_no_locale_bad_joke">Primeiro é necessário que exista um idioma antes que possa remover a sua existência deste planeta ;-)</string>
-    <string name="discover">Descobrir projectos</string>
+    <string name="discover">Descobrir projetos</string>
     <string name="gist_description">Descrição do Gist (Opcional):</string>
     <string name="gist_filename">Nome do Gist:</string>
     <string name="is_public_gist">Este \"Gist\" é público</string>
@@ -64,7 +64,7 @@
     <string name="pulling_strings_long">Transferir novas frases irá manter as suas traduções intactas mas poderá adicionar novas frases ainda por traduzir. Deve fazer isto antes de partilhar as suas traduções para ter a certeza de que tudo está traduzido.\n
      Pretende continuar?</string>
     <string name="history">Histórico</string>
-    <string name="add_project">Adicionar projecto</string>
+    <string name="add_project">Adicionar projeto</string>
     <string name="repository_plural">Repositórios</string>
     <string name="start_translating">Iniciar tradução</string>
     <string name="history_no_repos_hint">Primeira vez? Selecione a tab \"%s\" para começar!</string>
@@ -120,7 +120,7 @@
     <string name="application_may_use_translation_platform">Esta aplicação pode usar %s para gerir as traduções. Consulte a Ajuda para mais informações.</string>
     <string name="select_branch">Selecione o ramo a usar</string>
     <string name="ignore">Ignorar</string>
-    <string name="open_project_homepage">Abrir página do projecto</string>
+    <string name="open_project_homepage">Abrir página do projeto</string>
     <string name="open_in_external_browser">Abrir em navegador externo</string>
     <string name="peek_translations">Espreitar traduções</string>
     <string name="syncing_now">A sincronizar:</string>
@@ -131,7 +131,7 @@
     <string name="appearance">Aparência</string>
     <string name="user_accounts">Contas de utilizador</string>
     <string name="more">Mais</string>
-    <string name="next_steps">Assim que todas as frases estejam traduzidas, toque nos três pontos no canto superior direito do ecrã e selecione \"%s\" para partilhar o seu trabalho com o responsável do projecto, para que este o possa rever e usar.</string>
+    <string name="next_steps">Assim que todas as frases estejam traduzidas, toque nos três pontos no canto superior direito do ecrã e selecione \"%s\" para partilhar o seu trabalho com o responsável do projeto, para que este o possa rever e usar.</string>
     <string name="cancel_sync">Cancelar a sincronização?</string>
     <string name="exported_to_hastebin">Exportação para o \"Hastebin\" concluída. Endereço copiado para a área de transferência</string>
     <string name="export_unsuccessful">Incapaz de exportar</string>
@@ -142,18 +142,18 @@
     <string name="translate">Traduzir</string>
     <string name="help_this_app">Mais informações e ajuda</string>
     <string name="bug_reports">Reportar problemas</string>
-    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">Mais informações sobre contribuir e suportar este projecto</string>
+    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">Mais informações sobre contribuir e suportar este projeto</string>
     <string name="android_contribution_guide">Guia de contribuições do Android</string>
-    <string name="more_info_on_how_to_contribute_to_foss_android_projects">Mais informações relacionadas com como contribuir para projectos de Código Livre (\"Open Source\"), em especial para aplicações Android</string>
+    <string name="more_info_on_how_to_contribute_to_foss_android_projects">Mais informações relacionadas com como contribuir para projetos de Código Livre (\"Open Source\"), em especial para aplicações Android</string>
     <string name="join_community">Aderir à comunidade</string>
     <string name="bug_reports_suggest_improvements">Comentar, reportar problemas ou sugerir melhorias</string>
     <string name="help_translating_this_app">Traduzir esta aplicação noutros idiomas</string>
     <string name="source_code">Código-fonte</string>
-    <string name="project_license">Licença do projecto</string>
-    <string name="project_contribution_info">Informações de contribuições do projecto</string>
-    <string name="more_info_on_how_to_contribute_to_this_project">Mais informações sobre como contribuir para este projecto</string>
-    <string name="contribute_code_to_this_project_anybody_welcome">Contribua código para o projecto. Todos são bem-vindos, incluindo iniciantes</string>
-    <string name="project_team">Equipa do projecto</string>
+    <string name="project_license">Licença do projeto</string>
+    <string name="project_contribution_info">Informações de contribuições do projeto</string>
+    <string name="more_info_on_how_to_contribute_to_this_project">Mais informações sobre como contribuir para este projeto</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">Contribua código para o projeto. Todos são bem-vindos, incluindo iniciantes</string>
+    <string name="project_team">Equipa do projeto</string>
     <string name="licenses">Licenças</string>
     <string name="contributors">Contribuidores</string>
     <string name="donate">Doar</string>
