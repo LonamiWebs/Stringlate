@@ -48,7 +48,7 @@
     <string name="post_gist_error">O Gist não pode ser submetido.</string>
     <string name="copy_to_clipboard">Copiar para área de transferência</string>
     <string name="xml_copied_to_clipboard">O conteúdo do ficheiro %s foi copiado para a área de transferência</string>
-    <string name="no_internet_connection">Não está ligado à internet.</string>
+    <string name="no_internet_connection">Não está ligado à Internet.</string>
     <string name="export_file_failed">Incapaz de exportar o ficheiro strings.xml</string>
     <string name="export_file_success">Ficheiro guardado com sucesso para %s</string>
     <string name="import_file_failed">Incapaz de importar o item selecionado</string>
@@ -60,7 +60,7 @@
     <string name="search">Pesquisar</string>
     <string name="search_apps_ellipsis">Pesquisar aplicações...</string>
     <string name="icon_cache_cleared">Cache dos ícones limpa (%s recuperados).</string>
-    <string name="pulling_strings">Tranferir novas frases</string>
+    <string name="pulling_strings">Transferir novas frases</string>
     <string name="pulling_strings_long">Transferir novas frases irá manter as suas traduções intactas mas poderá adicionar novas frases ainda por traduzir. Deve fazer isto antes de partilhar as suas traduções para ter a certeza de que tudo está traduzido.\n
      Pretende continuar?</string>
     <string name="history">Histórico</string>
