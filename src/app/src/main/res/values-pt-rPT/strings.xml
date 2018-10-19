@@ -136,8 +136,6 @@
     <string name="exported_to_hastebin">Exportação para o \"Hastebin\" concluída. Endereço copiado para a área de transferência</string>
     <string name="export_unsuccessful">Incapaz de exportar</string>
     <string name="base_branch_colon">Ramo base:</string>
-
-
     <string name="open_source_licenses">Licenças de Código Livre</string>
     <string name="translate">Traduzir</string>
     <string name="help_this_app">Mais informações e ajuda</string>
@@ -162,4 +160,3 @@
     <string name="editing_font">Editar tipo de letra</string>
 
 </resources>
-
