@@ -1,0 +1,11 @@
+<resources>
+    <string name="welcome">Willkommen bei Stringlate! Trage einen GitHub Projektnamen und den Besitzer ein oder füge die Repository URL unten ein, um fortzufahren.</string>
+    <string name="add_locale">Neue locale hinzufügen</string>
+    <string name="add_locale_to_start">Zum Beginnen eine neue locale hinzufügen.</string>
+    <string name="xml_copied_to_clipboard">Die %s Dateiinhalte wurden in die Zwischenablage kopiert.</string>
+    <string name="url_copied">Die URL wurde in die Zwischenablage kopiert.</string>
+    <string name="wait_until_sync">Bitte warten, bis das Repository synchronisiert wurde.</string>
+
+
+
+</resources>
