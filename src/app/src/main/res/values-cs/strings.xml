@@ -131,8 +131,8 @@
     <string name="user_accounts">Uživatelské účty</string>
     <string name="more">Více</string>
     <string name="next_steps">Po dokončení překladu všech řetězců klikněte na tlačítko se třemi tečkami vpravo nahoře a pomocí volby \"%s\" jej nasdílejte správci projektu. Ten jej poté bude moci zrevidovat a použít.\n
- \n
- Pokud chcete zrevidovat některé z již přeložených řetězců, povolte volbu \"%s\".</string>
+    \n
+    Pokud chcete zrevidovat některé z již přeložených řetězců, povolte volbu \"%s\".</string>
     <string name="cancel_sync">Zrušit synchronizaci?</string>
     <string name="exported_to_hastebin">Úspěšně exportováno na Hastebin. URL byla zkopírována do schránky</string>
     <string name="export_unsuccessful">Exportovat neúspěšné</string>
@@ -155,11 +155,13 @@
     <string name="more_info_on_how_to_contribute_to_this_project">Více informací jak přispět do tohoto projektu</string>
     <string name="contribute_code_to_this_project_anybody_welcome">Přispět kódem do projektu. Vítáni jsou všichni včetně nováčků</string>
     <string name="project_team">Projektový tým</string>
+    <string name="community">Komunita</string>
     <string name="licenses">Licence</string>
     <string name="contributors">Přispěvatelé</string>
     <string name="donate">Obdarovat</string>
     <string name="contribute">Přispět</string>
     <string name="view">Zobrazit</string>
     <string name="editing_font">Font pro editaci</string>
+    <string name="copy_build_information">Zkopírovat informace o sestavení</string>
 
 </resources>
