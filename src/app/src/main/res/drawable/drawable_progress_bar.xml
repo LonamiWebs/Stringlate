@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- How to on stackoverflow.com/q/5745814 -->
+<?xml version="1.0" encoding="utf-8"?><!-- How to on stackoverflow.com/q/5745814 -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background">
         <shape>

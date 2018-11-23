@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="108dp" android:layout_width="108dp">
-    <background android:drawable="@drawable/ic_launcher_background"/>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="108dp"
+    android:layout_height="108dp">
+    <background android:drawable="@drawable/ic_launcher_background" />
     <foreground>
-    <inset
-        android:inset="16%"
-        android:drawable="@drawable/ic_launcher_foreground" />
+        <inset
+            android:drawable="@drawable/ic_launcher_foreground"
+            android:inset="16%" />
     </foreground>
 </adaptive-icon>

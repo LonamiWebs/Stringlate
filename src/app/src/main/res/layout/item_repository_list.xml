@@ -10,10 +10,10 @@
         android:layout_height="?attr/listPreferredItemHeight"
         android:baselineAligned="false"
         android:orientation="horizontal"
-        android:paddingEnd="?attr/listPreferredItemPaddingRight"
+        android:paddingStart="?attr/listPreferredItemPaddingLeft"
         android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-        android:paddingRight="?attr/listPreferredItemPaddingRight"
-        android:paddingStart="?attr/listPreferredItemPaddingLeft">
+        android:paddingEnd="?attr/listPreferredItemPaddingRight"
+        android:paddingRight="?attr/listPreferredItemPaddingRight">
 
         <ImageView
             android:id="@+id/repositoryIcon"
@@ -86,8 +86,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/syncing_now"
-        android:textStyle="bold"
         android:textAppearance="?android:textAppearanceMedium"
+        android:textStyle="bold"
         android:visibility="gone" />
 
 </LinearLayout>
