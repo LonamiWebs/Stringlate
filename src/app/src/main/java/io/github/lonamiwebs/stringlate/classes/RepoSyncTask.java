@@ -31,37 +31,26 @@ public class RepoSyncTask extends Thread {
     @Override
     public void run() {
         final boolean okay =
-                RepoHandlerHelper.syncResources(mContext, mRepo, mSource, new Messenger.OnSyncProgress() {
-                    @Override
-                    public void onUpdate(final int stage, final float progress) {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                onProgressUpdate(stage, progress);
-                            }
-                        });
-                    }
-                });
+                RepoHandlerHelper.syncResources(mContext, mRepo, mSource, (stage, progress) ->
+                        mHandler.post(() ->
+                                onProgressUpdate(stage, progress)));
 
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Messenger.notifyRepoSyncFinished(mRepo, okay);
-                if (okay) {
-                    Messenger.notifyRepoAdded(mRepo);
-                } else {
-                    if (!mRepo.wasCancelled()) {
-                        Toast.makeText(
-                                mContext,
-                                mContext.getString(R.string.sync_failed, mRepo.getProjectName()),
-                                Toast.LENGTH_SHORT
-                        ).show();
-                    }
-
-                    // New repository, so it cannot have old resources- delete it since it failed
-                    if (newRepo)
-                        mRepo.delete();
+        mHandler.post(() -> {
+            Messenger.notifyRepoSyncFinished(mRepo, okay);
+            if (okay) {
+                Messenger.notifyRepoAdded(mRepo);
+            } else {
+                if (!mRepo.wasCancelled()) {
+                    Toast.makeText(
+                            mContext,
+                            mContext.getString(R.string.sync_failed, mRepo.getProjectName()),
+                            Toast.LENGTH_SHORT
+                    ).show();
                 }
+
+                // New repository, so it cannot have old resources- delete it since it failed
+                if (newRepo)
+                    mRepo.delete();
             }
         });
     }

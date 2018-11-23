@@ -3,7 +3,6 @@ package io.github.lonamiwebs.stringlate.activities.translate;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -47,10 +46,10 @@ import java.util.Locale;
 import java.util.Set;
 
 import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.activities.info.BrowserActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateGistActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreateIssueActivity;
 import io.github.lonamiwebs.stringlate.activities.export.CreatePullRequestActivity;
+import io.github.lonamiwebs.stringlate.activities.info.BrowserActivity;
 import io.github.lonamiwebs.stringlate.classes.RepoSyncTask;
 import io.github.lonamiwebs.stringlate.classes.locales.LocaleString;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
@@ -420,12 +419,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             new AlertDialog.Builder(this)
                     .setTitle(R.string.pulling_strings)
                     .setMessage(R.string.pulling_strings_long)
-                    .setPositiveButton(R.string.pulling_strings, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            askBranchUpdateStrings();
-                        }
-                    })
+                    .setPositiveButton(R.string.pulling_strings, (dialogInterface, i) -> askBranchUpdateStrings())
                     .setNegativeButton(R.string.cancel, null)
                     .show();
         } else {
@@ -447,17 +441,8 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         if (branches.length > 1) {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.select_branch)
-                    .setPositiveButton(getString(R.string.ignore), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            updateStrings("HEAD");
-                        }
-                    })
-                    .setItems(branches, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int item) {
-                            updateStrings(branches[item].toString());
-                        }
-                    })
+                    .setPositiveButton(getString(R.string.ignore), (dialogInterface, i) -> updateStrings("HEAD"))
+                    .setItems(branches, (dialog, item) -> updateStrings(branches[item].toString()))
                     .show();
         } else {
             updateStrings("HEAD");
@@ -466,7 +451,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
     // Synchronize our local strings.xml files with the remote GitHub repository
     private void updateStrings(@NonNull final String branch) {
-        if (!new ContextUtils(this).isConnectedToInternet(R.string.no_internet_connection))
+        if (new ContextUtils(this).isConnectedToInternet(R.string.no_internet_connection))
             return;
 
         // Don't let the users stay while we're synchronizing resources.
@@ -686,7 +671,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             Toast.makeText(this, R.string.login_required, Toast.LENGTH_LONG).show();
             return;
         }
-        if (!new ContextUtils(this).isConnectedToInternet(R.string.no_internet_connection))
+        if (new ContextUtils(this).isConnectedToInternet(R.string.no_internet_connection))
             return;
 
         Intent intent = new Intent(this, CreatePullRequestActivity.class);
@@ -767,17 +752,14 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             new AlertDialog.Builder(this)
                     .setTitle(R.string.sure_question)
                     .setMessage(getString(R.string.delete_locale_confirm_long, mSelectedLocale))
-                    .setPositiveButton(getString(R.string.delete_locale), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            mRepo.deleteLocale(mSelectedLocale);
-                            loadLocalesSpinner();
-                            checkTranslationVisibility();
+                    .setPositiveButton(getString(R.string.delete_locale), (dialogInterface, i) -> {
+                        mRepo.deleteLocale(mSelectedLocale);
+                        loadLocalesSpinner();
+                        checkTranslationVisibility();
 
-                            // We need to clear the selected locale if it's now empty
-                            if (mLocaleSpinner.getCount() == 0)
-                                setCurrentLocale(null);
-                        }
+                        // We need to clear the selected locale if it's now empty
+                        if (mLocaleSpinner.getCount() == 0)
+                            setCurrentLocale(null);
                     })
                     .setNegativeButton(getString(R.string.cancel), null)
                     .show();
@@ -800,12 +782,9 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
         new AlertDialog.Builder(this)
                 .setTitle(R.string.sure_question)
                 .setMessage(getString(R.string.delete_repository_confirm_long, mRepo.toString()))
-                .setPositiveButton(getString(R.string.delete_repository), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        mRepo.delete();
-                        finish();
-                    }
+                .setPositiveButton(getString(R.string.delete_repository), (dialogInterface, i) -> {
+                    mRepo.delete();
+                    finish();
                 })
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show();

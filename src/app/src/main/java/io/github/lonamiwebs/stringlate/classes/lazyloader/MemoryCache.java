@@ -35,7 +35,7 @@ class MemoryCache {
         setLimit((long) (Runtime.getRuntime().maxMemory() * MAXIMUM_MEMORY_PERCENTAGE));
 
         // Last argument true for Least Recently Used ordering
-        mCache = Collections.synchronizedMap(new LinkedHashMap<String, Bitmap>(
+        mCache = Collections.synchronizedMap(new LinkedHashMap<>(
                 INITIAL_CAPACITY, LOAD_FACTOR, true));
     }
 

@@ -21,16 +21,16 @@ import android.net.Uri;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceGroup;
 
-import io.github.lonamiwebs.stringlate.R;
-import io.github.lonamiwebs.stringlate.activities.SettingsActivity;
-import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import net.gsantner.opoc.format.markdown.SimpleMarkdownParser;
 import net.gsantner.opoc.preference.GsPreferenceFragmentCompat;
 import net.gsantner.opoc.util.ActivityUtils;
-import net.gsantner.opoc.util.ShareUtil;
 
 import java.io.IOException;
 import java.util.Locale;
+
+import io.github.lonamiwebs.stringlate.R;
+import io.github.lonamiwebs.stringlate.activities.SettingsActivity;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
 
 public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
     public static final String TAG = "MoreInfoFragment";
@@ -190,7 +190,6 @@ public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
                 }
                 appendPreference(person, (PreferenceGroup) pref);
             }
-
         }
     }
 }

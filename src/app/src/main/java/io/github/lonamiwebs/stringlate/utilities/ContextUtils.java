@@ -25,6 +25,6 @@ public class ContextUtils extends net.gsantner.opoc.util.ContextUtils {
         if (!result && warnMessageStringRes != null)
             Toast.makeText(_context, _context.getString(warnMessageStringRes), Toast.LENGTH_SHORT).show();
 
-        return result;
+        return !result;
     }
 }

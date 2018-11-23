@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -28,9 +27,6 @@ public class SearchStringActivity extends AppCompatActivity {
 
     //region Members
 
-    private RepoHandler mRepo;
-    private String mLocale;
-
     private EditText mSearchEditText;
     private ListView mResourcesListView;
 
@@ -51,8 +47,8 @@ public class SearchStringActivity extends AppCompatActivity {
         final ImageButton clearFilterButton = findViewById(R.id.clearFilterButton);
 
         Intent intent = getIntent();
-        mRepo = RepoHandlerHelper.fromBundle(intent.getBundleExtra(EXTRA_REPO));
-        mLocale = intent.getStringExtra(EXTRA_LOCALE);
+        RepoHandler mRepo = RepoHandlerHelper.fromBundle(intent.getBundleExtra(EXTRA_REPO));
+        String mLocale = intent.getStringExtra(EXTRA_LOCALE);
 
         setTitle(String.format("%s/%s (%s)", mRepo.getProjectName(),
                 LocaleString.getDisplay(mLocale), mLocale));
@@ -82,17 +78,14 @@ public class SearchStringActivity extends AppCompatActivity {
             }
         });
 
-        mResourcesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final String filter = mSearchEditText.getText().toString();
-                ResourcesTranslation rt = (ResourcesTranslation) mResourcesListView.getItemAtPosition(i);
-                Intent data = new Intent();
-                data.putExtra("id", rt.getId());
-                data.putExtra("filter", filter);
-                setResult(RESULT_OK, data);
-                finish();
-            }
+        mResourcesListView.setOnItemClickListener((adapterView, view, i, l) -> {
+            final String filter = mSearchEditText.getText().toString();
+            ResourcesTranslation rt = (ResourcesTranslation) mResourcesListView.getItemAtPosition(i);
+            Intent data = new Intent();
+            data.putExtra("id", rt.getId());
+            data.putExtra("filter", filter);
+            setResult(RESULT_OK, data);
+            finish();
         });
 
         mSearchEditText.setText(mRepo.settings.getStringFilter());

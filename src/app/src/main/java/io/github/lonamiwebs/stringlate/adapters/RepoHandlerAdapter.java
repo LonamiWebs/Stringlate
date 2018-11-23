@@ -1,7 +1,6 @@
 package io.github.lonamiwebs.stringlate.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -146,21 +145,13 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
             view.updateProgress(progress == null ? null : progress.getProgress());
             view.showMenu = true;
 
-            view.root.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TranslateActivity.launch(mContext, mRepositories.get(
-                            view.getAdapterPosition())
-                    );
-                }
-            });
+            view.root.setOnClickListener(v -> TranslateActivity.launch(mContext, mRepositories.get(
+                    view.getAdapterPosition())
+            ));
 
-            view.root.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    mContextMenuRepo = mRepositories.get(view.getAdapterPosition());
-                    return false;
-                }
+            view.root.setOnLongClickListener(v -> {
+                mContextMenuRepo = mRepositories.get(view.getAdapterPosition());
+                return false;
             });
         } else if (i == mRepositories.size()) {
             // Separator view on the edge case
@@ -170,20 +161,12 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
             final Pair<RepoHandler, Float> repo = mSyncingRepositories.get(i);
             view.update(repo.first, mSize);
             view.updateProgress(repo.second);
-            view.root.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(mContext)
-                            .setPositiveButton(android.R.string.cancel, null)
-                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    repo.first.cancel();
-                                }
-                            })
-                            .setTitle(R.string.cancel_sync);
-                    dialog.show();
-                }
+            view.root.setOnClickListener(view1 -> {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(mContext)
+                        .setPositiveButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.ok, (dialogInterface, i1) -> repo.first.cancel())
+                        .setTitle(R.string.cancel_sync);
+                dialog.show();
             });
             view.showMenu = false;
         }
@@ -213,8 +196,7 @@ public class RepoHandlerAdapter extends RecyclerView.Adapter<RepoHandlerAdapter.
     // Returns true if there are items left, or false otherwise
     public boolean notifyDataSetChanged(final ArrayList<RepoHandler> repositories) {
         mRepositories.clear();
-        for (RepoHandler repo : repositories)
-            mRepositories.add(repo);
+        mRepositories.addAll(repositories);
 
         Collections.sort(mRepositories);
         notifyDataSetChanged();

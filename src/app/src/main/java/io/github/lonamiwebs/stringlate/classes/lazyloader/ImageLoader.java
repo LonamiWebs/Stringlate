@@ -56,7 +56,7 @@ public class ImageLoader {
 
         mMemoryCache = new MemoryCache();
         mFileCache = new FileCache(context, "icons");
-        mImageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
+        mImageViews = Collections.synchronizedMap(new WeakHashMap<>());
 
         mExecutorService = Executors.newFixedThreadPool(MAX_THREADS);
         mHandler = new Handler();
@@ -190,15 +190,12 @@ public class ImageLoader {
                 if (isImageViewReused(mImageToLoad))
                     return;
 
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!isImageViewReused(mImageToLoad)) {
-                            if (bmp != null)
-                                mImageToLoad.first.setImageBitmap(bmp);
-                            else
-                                mImageToLoad.first.setImageResource(STUB_ID);
-                        }
+                mHandler.post(() -> {
+                    if (!isImageViewReused(mImageToLoad)) {
+                        if (bmp != null)
+                            mImageToLoad.first.setImageBitmap(bmp);
+                        else
+                            mImageToLoad.first.setImageResource(STUB_ID);
                     }
                 });
             } catch (Exception e) {

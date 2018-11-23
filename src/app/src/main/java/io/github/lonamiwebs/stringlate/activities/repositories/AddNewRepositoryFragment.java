@@ -104,29 +104,24 @@ public class AddNewRepositoryFragment extends Fragment {
         }
 
         // If the user presses enter on an EditText, select the next one
-        mOwnerEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int kc, KeyEvent e) {
-                if (e.getAction() == KeyEvent.ACTION_DOWN && kc == KeyEvent.KEYCODE_ENTER) {
-                    mRepositoryEditText.requestFocus();
-                    return true;
-                }
-                return false;
+        mOwnerEditText.setOnKeyListener((v, kc, e) -> {
+            if (e.getAction() == KeyEvent.ACTION_DOWN && kc == KeyEvent.KEYCODE_ENTER) {
+                mRepositoryEditText.requestFocus();
+                return true;
             }
+            return false;
         });
 
         // Or, if we're on the repository EditText, hide the keyboard
-        mRepositoryEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int kc, KeyEvent e) {
-                if (e.getAction() == KeyEvent.ACTION_DOWN && kc == KeyEvent.KEYCODE_ENTER) {
-                    InputMethodManager imm = (InputMethodManager)
-                            getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        mRepositoryEditText.setOnKeyListener((v, kc, e) -> {
+            if (e.getAction() == KeyEvent.ACTION_DOWN && kc == KeyEvent.KEYCODE_ENTER) {
+                InputMethodManager imm = (InputMethodManager)
+                        getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                    imm.hideSoftInputFromWindow(mRepositoryEditText.getWindowToken(), 0);
-                    return true;
-                }
-                return false;
+                imm.hideSoftInputFromWindow(mRepositoryEditText.getWindowToken(), 0);
+                return true;
             }
+            return false;
         });
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -138,7 +133,8 @@ public class AddNewRepositoryFragment extends Fragment {
 
     //region UI events
 
-    @OnTextChanged(callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED, value = {R.id.github_ownerEditText, R.id.github_repositoryEditText})
+    @OnTextChanged(callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED, value =
+            {R.id.github_ownerEditText, R.id.github_repositoryEditText})
     public void onGitHubRepoEditChanged(CharSequence newText) {
         final String owner = mOwnerEditText.getText().toString().trim();
         final String repository = mRepositoryEditText.getText().toString().trim();
@@ -149,13 +145,8 @@ public class AddNewRepositoryFragment extends Fragment {
         }
     }
 
-    private final View.OnClickListener onDiscoverClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            startActivityForResult(new Intent(getContext(),
-                    DiscoverActivity.class), RESULT_REPO_DISCOVERED);
-        }
-    };
+    private final View.OnClickListener onDiscoverClick = view -> startActivityForResult(new Intent(getContext(),
+            DiscoverActivity.class), RESULT_REPO_DISCOVERED);
 
     private final View.OnClickListener onNextClick = new View.OnClickListener() {
         @Override
@@ -217,7 +208,7 @@ public class AddNewRepositoryFragment extends Fragment {
     //region Checking and adding a new local "repository"
 
     private void scanDownloadStrings(final RepoHandler repo) {
-        if (!new ContextUtils(getContext()).isConnectedToInternet(R.string.no_internet_connection))
+        if (new ContextUtils(getContext()).isConnectedToInternet(R.string.no_internet_connection))
             return;
 
         new RepoSyncTask(getContext(), repo,

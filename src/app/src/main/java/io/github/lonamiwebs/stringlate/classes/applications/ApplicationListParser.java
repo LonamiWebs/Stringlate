@@ -197,7 +197,7 @@ class ApplicationListParser {
         serializer.startTag(ns, tag);
         try {
             serializer.text(content);
-        } catch (IllegalArgumentException exception){
+        } catch (IllegalArgumentException exception) {
             // XML Parser internal broken on pre LL
             serializer.text("");
         }
