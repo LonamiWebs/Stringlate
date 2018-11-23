@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 # Requires imagemagick's convert
 #
 # Tints the drawables under 'drawable' by changing their white color
@@ -7,7 +8,6 @@
 # to the 'drawable' folder used by the application. Run this if you add
 # new drawables on the folder. Icons from https://material.io/icons
 import re
-import os
 import subprocess
 
 # http://www.imagemagick.org/Usage/color_mods/#diy_levels
@@ -34,4 +34,3 @@ for dpi in os.listdir('drawable'):
         ipng = os.path.join('drawable', dpi, png)
         opng = os.path.join(outdir, dpi, png.replace('_white', ''))
         subprocess.run(command.format(ipng, color, opng), shell=True)
-
