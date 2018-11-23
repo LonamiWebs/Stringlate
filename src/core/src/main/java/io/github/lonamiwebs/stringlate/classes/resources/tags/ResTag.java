@@ -88,8 +88,8 @@ public abstract class ResTag implements Comparable<ResTag> {
     //region De/sanitize Content
 
     private static boolean isEscapeSequence(char which) {
-        for (int i = 0; i < ESCAPE_SEQUENCES.length; ++i) {
-            if (ESCAPE_SEQUENCES[i] == which) {
+        for (char ESCAPE_SEQUENCE : ESCAPE_SEQUENCES) {
+            if (ESCAPE_SEQUENCE == which) {
                 return true;
             }
         }
@@ -169,7 +169,7 @@ public abstract class ResTag implements Comparable<ResTag> {
                                 sb.append('&');
                                 break;
                             default:
-                                sb.append(content.substring(i, semicolon)).append(';');
+                                sb.append(content, i, semicolon).append(';');
                                 break;
                         }
                         i = semicolon;

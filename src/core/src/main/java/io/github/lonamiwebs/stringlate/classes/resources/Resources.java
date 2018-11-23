@@ -11,7 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,20 +44,12 @@ public class Resources implements Iterable<ResTag> {
         Resources result = new Resources(file);
 
         if (file.isFile()) {
-            InputStream is = null;
-            try {
-                is = new FileInputStream(file);
+            try (InputStream is = new FileInputStream(file)) {
                 // Load the resources from the XML into our resulting Resources
                 final XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
                 ResourcesParser.loadFromXml(is, result, parser);
             } catch (IOException | XmlPullParserException e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    if (is != null)
-                        is.close();
-                } catch (IOException ignored) {
-                }
             }
         }
 
@@ -297,7 +288,7 @@ public class Resources implements Iterable<ResTag> {
             }
         }
         if (comparator != null)
-            Collections.sort(strings, comparator);
+            strings.sort(comparator);
 
         return strings.iterator();
     }
