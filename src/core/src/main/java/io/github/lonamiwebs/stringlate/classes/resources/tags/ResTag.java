@@ -88,8 +88,8 @@ public abstract class ResTag implements Comparable<ResTag> {
     //region De/sanitize Content
 
     private static boolean isEscapeSequence(char which) {
-        for (char ESCAPE_SEQUENCE : ESCAPE_SEQUENCES) {
-            if (ESCAPE_SEQUENCE == which) {
+        for (char escapeSequence : ESCAPE_SEQUENCES) {
+            if (escapeSequence == which) {
                 return true;
             }
         }

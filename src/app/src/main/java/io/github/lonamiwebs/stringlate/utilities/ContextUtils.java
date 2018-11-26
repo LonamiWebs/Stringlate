@@ -20,7 +20,7 @@ public class ContextUtils extends net.gsantner.opoc.util.ContextUtils {
         super(context);
     }
 
-    public boolean isConnectedToInternet(@Nullable @StringRes Integer warnMessageStringRes) {
+    public boolean isOffline(@Nullable @StringRes Integer warnMessageStringRes) {
         final boolean result = isConnectedToInternet();
         if (!result && warnMessageStringRes != null)
             Toast.makeText(_context, _context.getString(warnMessageStringRes), Toast.LENGTH_SHORT).show();

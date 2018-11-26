@@ -208,7 +208,7 @@ public class AddNewRepositoryFragment extends Fragment {
     //region Checking and adding a new local "repository"
 
     private void scanDownloadStrings(final RepoHandler repo) {
-        if (new ContextUtils(getContext()).isConnectedToInternet(R.string.no_internet_connection))
+        if (new ContextUtils(getContext()).isOffline(R.string.no_internet_connection))
             return;
 
         new RepoSyncTask(getContext(), repo,

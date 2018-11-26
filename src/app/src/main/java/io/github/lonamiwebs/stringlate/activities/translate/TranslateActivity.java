@@ -451,7 +451,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
 
     // Synchronize our local strings.xml files with the remote GitHub repository
     private void updateStrings(@NonNull final String branch) {
-        if (new ContextUtils(this).isConnectedToInternet(R.string.no_internet_connection))
+        if (new ContextUtils(this).isOffline(R.string.no_internet_connection))
             return;
 
         // Don't let the users stay while we're synchronizing resources.
@@ -671,7 +671,7 @@ public class TranslateActivity extends AppCompatActivity implements LocaleSelect
             Toast.makeText(this, R.string.login_required, Toast.LENGTH_LONG).show();
             return;
         }
-        if (new ContextUtils(this).isConnectedToInternet(R.string.no_internet_connection))
+        if (new ContextUtils(this).isOffline(R.string.no_internet_connection))
             return;
 
         Intent intent = new Intent(this, CreatePullRequestActivity.class);

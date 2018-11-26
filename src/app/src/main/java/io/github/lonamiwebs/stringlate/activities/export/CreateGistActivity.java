@@ -93,7 +93,7 @@ public class CreateGistActivity extends AppCompatActivity {
                         mRepo.applyTemplate(defaultResources[0], mLocale));
             }
         }
-        if (new ContextUtils(this).isConnectedToInternet(R.string.no_internet_connection))
+        if (new ContextUtils(this).isOffline(R.string.no_internet_connection))
             return;
 
         final String description = mDescriptionEditText.getText().toString().trim();
