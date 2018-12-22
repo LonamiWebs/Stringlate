@@ -130,15 +130,13 @@
     <string name="appearance">Apparence</string>
     <string name="user_accounts">Comptes utilisateur</string>
     <string name="more">Plus</string>
-    <string name="next_steps">Une fois que toutes les chaînes sont traduites, appuyez sur les trois points reliés en haut à droite puis sélectionnez  « %s » pour partager votre travail avec le mainteneur du projet afin qu\'il puisse le vérifier et l\'utiliser.\n
-   \n
- Si vous souhaitez relire certaines des chaînes déjà traduites, activez l\'option « %s ».</string>
+    <string name="next_steps">Une fois toutes les chaînes traduites, appuyez sur les trois points reliés en haut à droite puis sélectionnez  « %s » pour envoyer votre traduction au mainteneur du projet afin qu\'il puisse le vérifier et l\'utiliser.\n
+\n
+Si vous souhaitez relire certaines des chaînes déjà traduites, activez l\'option « %s ».</string>
     <string name="cancel_sync">Annuler la synchronisation ?</string>
     <string name="exported_to_hastebin">Export vers Hastebin réussi. L\'URL a été copiée dans le presse-papier.</string>
     <string name="export_unsuccessful">Échec de l\'export</string>
     <string name="base_branch_colon">Branche d\'origine :</string>
-
-
     <string name="open_source_licenses">Licences Open Source</string>
     <string name="translate">Traduire</string>
     <string name="help_this_app">Informations et aide</string>
@@ -163,5 +161,4 @@
     <string name="view">Afficher</string>
     <string name="editing_font">Police de caractères</string>
     <string name="copy_build_information">Copier les informations de Build</string>
-
 </resources>
