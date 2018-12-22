@@ -122,7 +122,7 @@
     <string name="open_project_homepage">Visiter le site du projet</string>
     <string name="open_in_external_browser">Ouvrir dans le navigateur externe</string>
     <string name="peek_translations">Sélectionner une traduction</string>
-    <string name="syncing_now">Synchronisation :</string>
+    <string name="syncing_now">Synchronisation en cours</string>
     <string name="wait_until_sync">Merci de patienter le temps que le dépôt soit synchronisé.</string>
     <string name="settings">Paramètres</string>
     <string name="pref_desc__language">Changer la langue de l\'interface. Redémarrer l\'application pour que le changement soit pris en compte</string>
@@ -131,8 +131,8 @@
     <string name="user_accounts">Comptes utilisateur</string>
     <string name="more">Plus</string>
     <string name="next_steps">Une fois que toutes les chaînes sont traduites, appuyez sur les trois points reliés en haut à droite et choisissez « %s » pour partager votre travail avec le mainteneur du projet et qu\'il puisse le vérifier et l\'utiliser.\n
- \n
- Si vous voulez relire certaines des chaînes déjà traduites, activez l\'option « %s ».</string>
+  \n
+  Si vous voulez relire certaines des chaînes déjà traduites, activez l\'option « %s ».</string>
     <string name="cancel_sync">Annuler la synchronisation ?</string>
     <string name="exported_to_hastebin">Export vers Hastebin réussi. L\'URL a été copiée dans le presse-papier.</string>
     <string name="export_unsuccessful">Échec de l\'export</string>
