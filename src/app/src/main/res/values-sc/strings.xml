@@ -125,14 +125,14 @@
     <string name="syncing_now">Sincronizende:</string>
     <string name="wait_until_sync">Pro praghere iseta finas a cando su depòsitu no at a èssere istadu sincronizadu.</string>
     <string name="settings">Impostatziones</string>
-    <string name="pref_desc__language">Càmbia sa limba de custa aplicatzione. Torra·la a allùghere pro aplicare sas modìficas</string>
+    <string name="pref_desc__language">Muda sa limba de custa aplicatzione. Torra·la a allùghere pro aplicare sas modìficas</string>
     <string name="pref_title__language">Limba</string>
     <string name="appearance">Aparèntzia</string>
     <string name="user_accounts">Contos impreadore</string>
     <string name="more">Àteru</string>
     <string name="next_steps">A pustis de àere traduidu totu sas istringas incarca su menù a tres puntigheddos in artu a destra e ischerta \"%s\" pro cumpartzire su traballu tuo cun su responsàbile de su progetu pro li permìtere de lu revisionare e impreare.\n
-            \n
-            Si cheres revisionare carchi istringa giai traduida abìlita s\'optzione \"%s\" pro lu fàghere.</string>
+                \n
+                Si cheres revisionare carchi istringa giai traduida abìlita s\'optzione \"%s\" pro lu fàghere.</string>
     <string name="cancel_sync">Annullare sa sincronizatzione?</string>
     <string name="exported_to_hastebin">Esportatzione in Hastebin resissida. URL copiadu in punta de billete</string>
     <string name="export_unsuccessful">Esportatzione fallida</string>
@@ -153,10 +153,12 @@
     <string name="more_info_on_how_to_contribute_to_this_project">Àteras informatziones a pitzu de comente contribuire a custu progetu</string>
     <string name="contribute_code_to_this_project_anybody_welcome">Contribui cun còdighe a su progetu. Totus sunt invitados a lu fàghere, fintzas sos ùrtimos arribbados.</string>
     <string name="project_team">Grupu de su progetu</string>
+    <string name="community">Comunidade</string>
     <string name="licenses">Litzèntzias</string>
     <string name="contributors">Contribuidores</string>
     <string name="donate">Dona</string>
     <string name="contribute">Contribui</string>
     <string name="view">Abbàida</string>
     <string name="editing_font">Caràtere de modìfica</string>
+    <string name="copy_build_information">Còpia sas informatziones de build</string>
 </resources>
