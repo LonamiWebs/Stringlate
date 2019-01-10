@@ -140,8 +140,13 @@ public class AddNewRepositoryFragment extends Fragment {
 
     @OnTextChanged(callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED, value = {R.id.github_ownerEditText, R.id.github_repositoryEditText})
     public void onGitHubRepoEditChanged(CharSequence newText) {
-        mUrlEditText.setText(GitHub.buildGitHubUrl(
-                mOwnerEditText.getText().toString().trim(), mRepositoryEditText.getText().toString().trim()));
+        final String owner = mOwnerEditText.getText().toString().trim();
+        final String repository = mRepositoryEditText.getText().toString().trim();
+        if (!owner.isEmpty() || !repository.isEmpty()) {
+            mUrlEditText.setText(GitHub.buildGitHubUrl(owner, repository));
+        } else {
+            mUrlEditText.setText("");
+        }
     }
 
     private final View.OnClickListener onDiscoverClick = new View.OnClickListener() {
@@ -216,7 +221,7 @@ public class AddNewRepositoryFragment extends Fragment {
             return;
 
         new RepoSyncTask(getContext(), repo,
-                new GitSource(repo.settings.getSource(), ""), true).start();
+                new GitSource(repo.settings.getSource(), "HEAD"), true).start();
 
         if (getActivity() instanceof RepositoriesActivity) {
             // Take the user to the repositories history if the parent activity matches

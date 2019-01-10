@@ -2,8 +2,6 @@
     <string name="original_string">Оригінал:</string>
     <string name="translated_string_colon">Перекладений рядок:</string>
     <string name="next">Наст.</string>
-    <string name="current_string_id">Поточний ID рядка:</string>
-    <string name="selected_locale">Обрана локаль:</string>
     <string name="welcome">Вітаємо в Stringlate! Введіть власника та ім’я проекту або вставте Git URL репозиторію для продовженная.</string>
     <string name="owner_hint">власник</string>
     <string name="repository_hint">репозиторій</string>
@@ -69,7 +67,6 @@
     <string name="start_translating">Почати перелад</string>
     <string name="history_no_repos_hint">Новачок? Вперед на вкладку \"%s\" для старту!</string>
     <string name="history_contains_repos_hint">Це попередні синхронізовани репозиторії. Оберіть або додайте один для продовження</string>
-    <string name="projects_colon">Проекти:</string>
     <string name="clear_icons_cache">Очистити кеш значків</string>
     <string name="help">Допомога</string>
     <string name="open_online_help">Відкрити онлайн допомогу</string>

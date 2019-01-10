@@ -2,10 +2,8 @@
     <string name="original_string">Texto original:</string>
     <string name="translated_string_colon">Texto traducido:</string>
     <string name="next">Siguiente</string>
-    <string name="current_string_id">ID del texto:</string>
-    <string name="selected_locale">Idioma elegido:</string>
     <string name="welcome">¡Bienvenido/a a Stringlate! Introduce el nombre del proyecto y su dueño o copia la URL del repositorio antes de continuar.</string>
-    <string name="owner_hint">propietario/a</string>
+    <string name="owner_hint">dueño/a</string>
     <string name="repository_hint">repositorio</string>
     <string name="github_repo_url_hint">https://github.com/dueño/repositorio</string>
     <string name="update_strings">Actualizar strings.xml</string>
@@ -13,7 +11,7 @@
     <string name="loading_ellipsis">Cargando…</string>
     <string name="no_strings_found_update">No se ha encontrado ningún archivo strings.xml, por favor actualiza strings.xml.</string>
     <string name="repo_or_url_required">Por favor inserta el dueño del proyecto y su nombre o su URL.</string>
-    <string name="translated_string">Texto traducido</string>
+    <string name="translated_string">Texto traducido. Para palabras múltiples o caracteres especiales se recomienda comenzar con una copia del texto original</string>
     <string name="previous">Anterior</string>
     <string name="no_strings_left">No queda más texto.</string>
     <string name="save_error">No se han guardado los cambios.</string>
@@ -25,7 +23,7 @@
     <string name="delete_ellipsis">Borrar…</string>
     <string name="delete_string">Borrar texto</string>
     <string name="delete_locale">Borrar traducción</string>
-    <string name="delete_repository">Borrar repositorio</string>
+    <string name="delete_repository">Borrar repositorio (localmente)</string>
     <string name="no_locale_selected">No se ha elegido idioma.</string>
     <string name="sure_question">¿Estás seguro/a?</string>
     <string name="delete_locale_confirm_long">¿Realmente quieres borrar la traducción \"%s\"? Perderás todo el texto.</string>
@@ -62,14 +60,14 @@
     <string name="search">Buscar</string>
     <string name="search_apps_ellipsis">Buscar aplicaciones…</string>
     <string name="icon_cache_cleared">Limpiada caché de iconos (%s liberado).</string>
-    <string name="pulling_strings">Recibir nueva cadenas</string>
+    <string name="pulling_strings">Recibir cadenas nuevas</string>
     <string name="pulling_strings_long">Recibir nuevas cadenas mantendrá tu traducción intacta mientras posiblemente añada nuevas cadenas no traducidas aún. Deberías hacer eso antes de subir tus traducciones para asegurarte de haber traducido todo. ¿Deseas continuar?</string>
     <string name="history">Historial</string>
     <string name="add_project">Agregar proyecto</string>
+    <string name="repository_plural">Repositorios</string>
     <string name="start_translating">Empezar a traducir</string>
     <string name="history_no_repos_hint">¿Nuevo/a por aquí? Ve a la pestaña \"%s\" para comenzar.</string>
     <string name="history_contains_repos_hint">Estos son tus repositorios previamente sincronizados. Elige uno abajo o añade uno nuevo para continuar.</string>
-    <string name="projects_colon">Proyectos:</string>
     <string name="clear_icons_cache">Limpiar caché</string>
     <string name="help">Ayuda</string>
     <string name="open_online_help">Abrir ayuda online</string>
@@ -81,7 +79,7 @@
     <string name="github_yes_logged_long">Ya has iniciado sesión en GitHub. No hace falta nada más. Si algo no funciona puedes hacer clic en el botón otra vez para volver a comenzar.</string>
     <string name="login_to_github">Iniciar sesión en GitHub</string>
     <string name="auth_success">Autorización completada</string>
-    <string name="auth_failure">Falló la Autorización</string>
+    <string name="auth_failure">Falló la autorización</string>
     <string name="completing_auth_ellipsis">Finalizando autorización…</string>
     <string name="gist_github_login_needed">Para publicar Gists necesitas abrir la configuración de Stringlate, seleccionar \'% s\' y confirmar la solicitud de autorización en GitHub.</string>
     <string name="create_issue">Crear incidencia</string>
@@ -127,16 +125,40 @@
     <string name="syncing_now">Sincronizando:</string>
     <string name="wait_until_sync">Por favor espera hasta que el repositorio se sincronice.</string>
     <string name="settings">Ajustes</string>
-    <string name="pref_desc__language">Cambia el lenguaje de esta aplicación. Reinicia la aplicación para que tome los cambios</string>
-    <string name="pref_title__language">Lenguaje</string>
+    <string name="pref_desc__language">Cambia el idioma de esta aplicación. Reinicia la aplicación para que tome los cambios</string>
+    <string name="pref_title__language">Idioma</string>
     <string name="appearance">Apariencia</string>
-    <string name="user_accounts">Cuentas de Usuario</string>
+    <string name="user_accounts">Cuentas de usuario</string>
     <string name="more">Más</string>
     <string name="next_steps">Una vez has traducido todo el texto, abre el menú (los tres puntos arriba a la derecha) y selecciona \"%s\" para compartir tu trabajo con el dueño del proyecto para que revise y use tu trabajo.\n
-  \n
-  Si te gustaría volver a revisar algún texto que ya está traducido, activa la opción de \"%s\" para ello.</string>
+      \n
+      Si te gustaría volver a revisar algún texto que ya está traducido, activa la opción de \"%s\" para ello.</string>
     <string name="cancel_sync">¿Cancelar la sincronización?</string>
     <string name="exported_to_hastebin">Exportado satisfactoriamente a Hastebin. URL copiada al portapapeles</string>
     <string name="export_unsuccessful">Exportación sin éxito</string>
     <string name="base_branch_colon">Rama base:</string>
+    <string name="open_source_licenses">Licencias de software libre</string>
+    <string name="translate">Traducir</string>
+    <string name="help_this_app">Más información y ayuda</string>
+    <string name="bug_reports">Informar de fallos</string>
+    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">Más información sobre donar o apoyar este proyecto</string>
+    <string name="android_contribution_guide">Guía de contribuciones en Android</string>
+    <string name="more_info_on_how_to_contribute_to_foss_android_projects">Más información sobre contribuir a proyectos de software libre, especialmente aplicaciones de Android</string>
+    <string name="join_community">Unirse a la comunidad</string>
+    <string name="bug_reports_suggest_improvements">Enviar comentarios, informar de fallos o sugerir mejoras</string>
+    <string name="help_translating_this_app">Traducir esta aplicación a otros idiomas</string>
+    <string name="source_code">Código fuente</string>
+    <string name="project_license">Licencia del proyecto</string>
+    <string name="project_contribution_info">Información de contribuciones al proyecto</string>
+    <string name="more_info_on_how_to_contribute_to_this_project">Más información sobre cómo contribuir a este proyecto</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">Contribuir código al proyecto. Cualquiera es bienvenido a hacerlo, incluidos principiantes</string>
+    <string name="project_team">Equipo del proyecto</string>
+    <string name="community">Comunidad</string>
+    <string name="licenses">Licencias</string>
+    <string name="contributors">Contribuidores</string>
+    <string name="donate">Donar</string>
+    <string name="contribute">Contribuir</string>
+    <string name="view">Ver</string>
+    <string name="editing_font">Tipo de letra para edición</string>
+    <string name="copy_build_information">Copiar información de compilación</string>
 </resources>

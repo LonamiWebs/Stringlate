@@ -1,4 +1,4 @@
-package io.github.lonamiwebs.stringlate.activities;
+package io.github.lonamiwebs.stringlate.activities.info;
 
 import android.content.Intent;
 import android.net.Uri;

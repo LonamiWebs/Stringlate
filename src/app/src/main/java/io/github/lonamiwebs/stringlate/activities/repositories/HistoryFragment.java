@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InvalidObjectException;
+import java.util.List;
 
 import io.github.lonamiwebs.stringlate.R;
 import io.github.lonamiwebs.stringlate.adapters.RepoHandlerAdapter;
@@ -33,6 +34,7 @@ import io.github.lonamiwebs.stringlate.classes.Messenger;
 import io.github.lonamiwebs.stringlate.classes.RepoSyncTask;
 import io.github.lonamiwebs.stringlate.classes.repos.RepoHandler;
 import io.github.lonamiwebs.stringlate.classes.sources.GitSource;
+import io.github.lonamiwebs.stringlate.settings.AppSettings;
 import io.github.lonamiwebs.stringlate.utilities.RepoHandlerHelper;
 
 import static android.app.Activity.RESULT_OK;
@@ -44,6 +46,8 @@ import static io.github.lonamiwebs.stringlate.utilities.Constants.RESULT_OPEN_FI
 public class HistoryFragment extends Fragment {
 
     //region Members
+
+    private AppSettings mSettings;
 
     private RecyclerView mRepositoryListView;
     private RepoHandlerAdapter mRepositoryAdapter;
@@ -89,6 +93,7 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSettings = new AppSettings(getContext());
         // Add listeners for new repositories
         // TODO Should this be on onCreateView? There may be a very unlikely race condition
         Messenger.onRepoChange.add(changeListener);
@@ -134,7 +139,7 @@ public class HistoryFragment extends Fragment {
             case R.id.syncRepo:
                 // TODO Don't assume GitSource, neither empty branch
                 new RepoSyncTask(getContext(), mLastSelectedRepo,
-                        new GitSource(mLastSelectedRepo.settings.getSource(), ""), false).start();
+                        new GitSource(mLastSelectedRepo.settings.getSource(), "HEAD"), false).start();
                 return true;
             case R.id.importRepo:
                 importFromSd();
@@ -265,6 +270,14 @@ public class HistoryFragment extends Fragment {
     private final Messenger.OnRepoChange changeListener = new Messenger.OnRepoChange() {
         @Override
         public void onRepoAdded(final RepoHandler which) {
+            String defaultLocale = mSettings == null ? "" : mSettings.getDefaultLocale();
+            if (!defaultLocale.isEmpty()) {
+                List<String> available = which.getLocales();
+                if (!available.contains(defaultLocale)) {
+                    which.createLocale(defaultLocale);
+                }
+                which.settings.setLastLocale(defaultLocale);
+            }
             mRepositoryAdapter.notifyRepoAdded(which);
             mRepositoriesTitle.setVisibility(VISIBLE);
             mHistoryMessageTextView.setText(R.string.history_contains_repos_hint);

@@ -1,18 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <item
         android:id="@+id/searchStrings"
         android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/search"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
-        android:id="@+id/peekTranslations"
         android:icon="@drawable/ic_eye_white_24px"
-        android:title="@string/peek_translations"
-        app:showAsAction="ifRoom" />
+        android:title="@string/view"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction">
+        <menu>
+            <item
+                android:id="@+id/sortBy"
+                android:icon="@drawable/ic_sort_black_24dp"
+                android:title="@string/sort_by_ellipsis">
+                <menu>
+                    <item
+                        android:id="@+id/sortAlphabetically"
+                        android:title="@string/sort_alphabetically" />
+
+                    <item
+                        android:id="@+id/sortLength"
+                        android:title="@string/sort_string_length" />
+                </menu>
+            </item>
+
+            <item
+                android:id="@+id/peekTranslations"
+                android:icon="@drawable/ic_playlist_play_black_24dp"
+                android:title="@string/peek_translations"
+                app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/showTranslatedCheckBox"
+                android:checkable="true"
+                android:checked="false"
+                android:icon="@drawable/ic_check_black_24dp"
+                android:title="@string/show_translated_strings" />
+            <item
+                android:id="@+id/showIdenticalCheckBox"
+                android:checkable="true"
+                android:checked="false"
+                android:icon="@drawable/ic_priority_high_black_24dp"
+                android:title="@string/show_identical_strings_only" />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/action_open_project_homepage"
+        android:icon="@drawable/ic_public_black_24dp"
+        android:title="@string/open_project_homepage" />
 
     <item
         android:id="@+id/updateStrings"
@@ -26,29 +67,10 @@
 
 
     <item
-        android:id="@+id/action_open_project_homepage"
-        android:icon="@drawable/ic_public_black_24dp"
-        android:title="@string/open_project_homepage" />
-
-    <item
-        android:id="@+id/sortBy"
-        android:icon="@drawable/ic_sort_black_24dp"
-        android:title="@string/sort_by_ellipsis">
-        <menu>
-            <item
-                android:id="@+id/sortAlphabetically"
-                android:title="@string/sort_alphabetically" />
-
-            <item
-                android:id="@+id/sortLength"
-                android:title="@string/sort_string_length" />
-        </menu>
-    </item>
-
-    <item
         android:id="@+id/export"
-        android:icon="@drawable/ic_share_black_24dp"
-        android:title="@string/export_ellipsis">
+        android:icon="@drawable/ic_share_white_24dp"
+        android:title="@string/export_ellipsis"
+        app:showAsAction="always">
         <menu>
             <item
                 android:id="@+id/exportToSdcard"
@@ -108,16 +130,4 @@
                 android:title="@string/delete_repository" />
         </menu>
     </item>
-
-    <item
-        android:id="@+id/showTranslatedCheckBox"
-        android:checkable="true"
-        android:checked="false"
-        android:title="@string/show_translated_strings" />
-
-    <item
-        android:id="@+id/showIdenticalCheckBox"
-        android:checkable="true"
-        android:checked="false"
-        android:title="@string/show_identical_strings_only" />
 </menu>

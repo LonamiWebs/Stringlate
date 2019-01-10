@@ -1,5 +1,17 @@
 <resources>
     <string name="app_name" translatable="false">Stringlate</string>
+    <string name="app_license_name" translatable="false">MIT</string>
+    <string name="app_community_url" translatable="false">https://github.com/LonamiWebs/stringlate</string>
+    <string name="app_bugreport_url" translatable="false">https://github.com/LonamiWebs/stringlate/issues</string>
+    <string name="app_translate_url" translatable="false"><![CDATA[https://lonamiwebs.github.io/stringlate/translate?git=https%3A%2F%2Fgithub.com%2Flonamiwebs%2Fstringlate.git&project=stringlate]]></string>
+    <string name="app_web_url" translatable="false">https://lonamiwebs.github.io/stringlate/</string>
+    <string name="app_source_code_url" translatable="false">https://github.com/LonamiWebs/stringlate</string>
+    <string name="app_donate_url" translatable="false"><![CDATA[https://github.com/LonamiWebs/Stringlate#donations]]></string>
+    <string name="app_contribution_info_url" translatable="false">https://github.com/lonamiwebs/stringlate/blob/master/README.md#contributions</string>
+    <string name="app_contributors_url" translatable="false">https://github.com/LonamiWebs/Stringlate/graphs/contributors</string>
+    <string name="app_changelog_url" translatable="false">https://github.com/LonamiWebs/Stringlate/commits/master</string>
+
+
     <string name="slash" translatable="false">/</string>
     <string name="github" translatable="false">GitHub</string>
     <string name="email" translatable="false">E-Mail</string>
@@ -14,6 +26,9 @@
     <string name="export_gist" translatable="false">Gist</string>
     <string name="export_issue" translatable="false">Issue</string>
 
+    <string name="default_font_family" translatable="false">sans-serif-regular</string>
+
+    <string name="pref_key__editing_font" translatable="false">pref_key__editing_font</string>
     <string name="pref_key__github_authentication_request" translatable="false">pref_key__github_authentication_request</string>
     <string name="pref_key__language" translatable="false">pref_key__language</string>
     <string name="pref_key__download_icons" translatable="false">download_icons</string>
@@ -22,4 +37,23 @@
     <string name="pref_key__string_sorting" translatable="false">string_sorting</string>
     <string name="pref_key__github_client_id" translatable="false">pref_key__github_client_id</string>
     <string name="pref_key__github_client_secret" translatable="false">pref_key__github_client_secret</string>
+    <string name="pref_key__default_locale" translatable="false">pref_key__default_locale</string>
+
+    <string name="pref_key__more_info__settings" translatable="false">pref_key__more_info__settings</string>
+    <string name="pref_key__more_info__source_code" translatable="false">pref_key__more_info__source_code</string>
+    <string name="pref_key__more_info__project_license" translatable="false">pref_key__more_info__project_license</string>
+    <string name="pref_key__more_info__open_source_licenses" translatable="false">pref_key__more_info__open_source_licenses</string>
+    <string name="pref_key__more_info__bug_reports" translatable="false">pref_key__more_info__bug_reports</string>
+    <string name="pref_key__more_info__help" translatable="false">pref_key__more_info__help</string>
+    <string name="pref_key__more_info__rate_app" translatable="false">pref_key__more_info__rate_app</string>
+    <string name="pref_key__more_info__translate" translatable="false">pref_key__more_info__translate</string>
+    <string name="pref_key__more_info__join_community" translatable="false">pref_key__more_info__join_community</string>
+    <string name="pref_key__more_info__android_contribution_guide" translatable="false">pref_key__more_info__android_contribution_guide</string>
+    <string name="pref_key__more_info__app" translatable="false">pref_key__more_info__app</string>
+    <string name="pref_key__more_info__donate" translatable="false">pref_key__more_info__donate</string>
+    <string name="pref_key__more_info__project_contribution_info" translatable="false">pref_key__more_info__project_contribution_info</string>
+    <string name="pref_key__more_info__project_community" translatable="false">pref_key__more_info__project_community</string>
+    <string name="pref_key__more_info__project_team" translatable="false">pref_key__more_info__project_team</string>
+    <string name="pref_key__more_info__contributors_public_info" translatable="false">pref_key__more_info__contributors_public_info</string>
+    <string name="pref_key__more_info__copy_build_information" translatable="false">pref_key__more_info__copy_build_information</string>
 </resources>
