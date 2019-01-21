@@ -2,7 +2,7 @@
     <string name="original_string">Original string:</string>
     <string name="translated_string_colon">Translated string:</string>
     <string name="next">Next</string>
-    <string name="welcome">Welcome to Stringlate! Enter a GitHub project name and its owner or paste the repository\'s Git URL below to continue.</string>
+    <string name="welcome">Welcome to Stringlate! Enter a GitHub project name and its owner, or paste the repository\'s Git URL below to continue.</string>
     <string name="owner_hint">owner</string>
     <string name="repository_hint">repository</string>
     <string name="github_repo_url_hint">https://github.com/owner/repository</string>
@@ -10,8 +10,8 @@
     <string name="add_locale">Add new locale</string>
     <string name="loading_ellipsis">Loading…</string>
     <string name="no_strings_found_update">No strings.xml files were found, please update the strings.xml.</string>
-    <string name="repo_or_url_required">Please enter a project owner and name or an URL.</string>
-    <string name="translated_string">Translated string. For multiple words or special characters it is recommended to start with a copy  of original text</string>
+    <string name="repo_or_url_required">Please enter a project owner and name or a URL.</string>
+    <string name="translated_string">Translated string. For multiple words or special characters, it is recommended to start with a copy of original text</string>
     <string name="previous">Previous</string>
     <string name="no_strings_left">There are no more strings left.</string>
     <string name="save_error">Could not save changes.</string>
@@ -27,7 +27,7 @@
     <string name="no_locale_selected">There is no locale selected.</string>
     <string name="sure_question">Are you sure?</string>
     <string name="delete_locale_confirm_long">Do you really wish to delete the locale \"%s\"? All its strings will be lost.</string>
-    <string name="delete_repository_confirm_long">Do you really wish to delete the repository \"%s\"? The local clone will be erased from the phone memory, although it can be added again.</string>
+    <string name="delete_repository_confirm_long">Do you really wish to delete the repository \"%s\"? The local clone will be erased from the phone memory (although it can be added again).</string>
     <string name="export_ellipsis">Export…</string>
     <string name="export_sd_card">Export to SD card</string>
     <string name="export_share">Share generated xml</string>
@@ -75,8 +75,8 @@
     <string name="allow_download_icons">Allow downloading icons</string>
     <string name="not_translated">Not translated.</string>
     <string name="search_id_content_ellipsis">Search by ID or content…</string>
-    <string name="github_not_logged_long">In order to provide some extra functionality such as Gists, creating issues and pull requests, you need to authorize Stringlate. Click the button below to get started.</string>
-    <string name="github_yes_logged_long">You\'re already logged in to GitHub. No further action is required. If things are not working, you can always click the button again to start over.</string>
+    <string name="github_not_logged_long">In order to provide some extra functionality such as Gists and creating issues/pull requests, you need to authorize Stringlate. Click the button below to get started.</string>
+    <string name="github_yes_logged_long">You\'re already logged in to GitHub. No further action is required. If things are not working, you can always click the button again to re-authenticate.</string>
     <string name="login_to_github">Login to GitHub</string>
     <string name="auth_success">Authorization success</string>
     <string name="auth_failure">Authorization failure</string>
@@ -85,11 +85,11 @@
     <string name="create_issue">Create issue</string>
     <string name="creating_issue_long_ellipsis">Trying to create the issue on GitHub…</string>
     <string name="issue_description">Issue description (%x will be replaced with the translation):</string>
-    <string name="url_copied">The Url has been copied to your clipboard.</string>
-    <string name="share_url">Share Url</string>
-    <string name="create_issue_success">Your issue has been created, well done!</string>
+    <string name="url_copied">The URL has been copied to your clipboard.</string>
+    <string name="share_url">Share URL</string>
+    <string name="create_issue_success">Your issue has been created. Well done!</string>
     <string name="create_issue_error">The issue could not be created.</string>
-    <string name="can_push_no_pr">You seem to have write access to this repository. No pull request will be made.</string>
+    <string name="can_push_no_pr">You appear to have write access to this repository. No pull request will be made.</string>
     <string name="cannot_push_will_pr">You don\'t seem to have write access to this repository. Stringlate will fork it into your account (or use an existing fork), commit the translation you\'ve made and create the pull request.</string>
     <string name="create_pr">Create pull request</string>
     <string name="commit_message">Commit message</string>
@@ -132,7 +132,7 @@
     <string name="more">More</string>
     <string name="next_steps">Once all the strings are translated, tap the three dots menu on the top right and select \"%s\" to share your work with the project maintainer so they can review and use it.\n\nIf you would like to review some of the already translated strings, enable the \"%s\" option to do so.</string>
     <string name="cancel_sync">Cancel synchronization?</string>
-    <string name="exported_to_hastebin">Successfully exported to Hastebin. URL copied to clipboard</string>
+    <string name="exported_to_hastebin">Successfully exported to Hastebin. URL copied to clipboard.</string>
     <string name="export_unsuccessful">Export unsuccessful</string>
     <string name="base_branch_colon">Base branch:</string>
 
@@ -151,7 +151,7 @@
     <string name="project_license">Project License</string>
     <string name="project_contribution_info">Project contribution info</string>
     <string name="more_info_on_how_to_contribute_to_this_project">More info on how to contribute to this project</string>
-    <string name="contribute_code_to_this_project_anybody_welcome">Contribute code to the project. Everybody is welcome to do so, including newcomers</string>
+    <string name="contribute_code_to_this_project_anybody_welcome">Contribute code to the project. Everybody is welcome to do so, including newcomers.</string>
     <string name="project_team">Project Team</string>
     <string name="community">Community</string>
     <string name="licenses">Licenses</string>

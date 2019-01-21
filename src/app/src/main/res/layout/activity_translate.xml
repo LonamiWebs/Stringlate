@@ -5,12 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="8dp"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="4dp"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="8dp"
     tools:context="io.github.lonamiwebs.stringlate.activities.translate.TranslateActivity">
-
 
     <FrameLayout
         android:id="@+id/filter_applied_overlay_layout"
@@ -111,11 +110,11 @@
             android:layout_weight="36"
             android:background="?attr/editTextBackground"
             android:gravity="top|start"
-            android:textIsSelectable="true"
             android:hint="@string/original_string"
             android:nextFocusForward="@+id/nextButton"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
             android:textColor="?attr/editTextColor"
+            android:textIsSelectable="true"
             tools:ignore="Deprecated,RtlHardcoded,RtlSymmetry" />
 
 
@@ -130,8 +129,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="0dp"
                 android:includeFontPadding="false"
-                android:paddingBottom="0dp"
                 android:paddingTop="8dp"
+                android:paddingBottom="0dp"
                 android:text="@string/translated_string_colon"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold" />

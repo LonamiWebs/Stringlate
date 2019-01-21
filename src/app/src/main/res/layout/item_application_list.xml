@@ -5,10 +5,10 @@
     android:layout_height="?attr/listPreferredItemHeight"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:paddingEnd="?attr/listPreferredItemPaddingRight"
+    android:paddingStart="?attr/listPreferredItemPaddingLeft"
     android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-    android:paddingRight="?attr/listPreferredItemPaddingRight"
-    android:paddingStart="?attr/listPreferredItemPaddingLeft">
+    android:paddingEnd="?attr/listPreferredItemPaddingRight"
+    android:paddingRight="?attr/listPreferredItemPaddingRight">
 
     <ImageView
         android:id="@+id/appIcon"
@@ -39,10 +39,10 @@
                 android:ellipsize="end"
                 android:gravity="start"
                 android:maxLines="1"
-                android:paddingEnd="?attr/listPreferredItemPaddingRight"
-                android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-                android:paddingRight="?attr/listPreferredItemPaddingRight"
                 android:paddingStart="?attr/listPreferredItemPaddingLeft"
+                android:paddingLeft="?attr/listPreferredItemPaddingLeft"
+                android:paddingEnd="?attr/listPreferredItemPaddingRight"
+                android:paddingRight="?attr/listPreferredItemPaddingRight"
                 android:textAlignment="viewStart"
                 android:textSize="16sp" />
 
@@ -64,10 +64,10 @@
             android:ellipsize="end"
             android:gravity="start"
             android:maxLines="1"
-            android:paddingEnd="?attr/listPreferredItemPaddingRight"
-            android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-            android:paddingRight="?attr/listPreferredItemPaddingRight"
             android:paddingStart="?attr/listPreferredItemPaddingLeft"
+            android:paddingLeft="?attr/listPreferredItemPaddingLeft"
+            android:paddingEnd="?attr/listPreferredItemPaddingRight"
+            android:paddingRight="?attr/listPreferredItemPaddingRight"
             android:textAlignment="viewStart"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="14sp" />

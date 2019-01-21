@@ -1,6 +1,5 @@
 package io.github.lonamiwebs.stringlate.activities.repositories;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -49,7 +48,6 @@ public class HistoryFragment extends Fragment {
 
     private AppSettings mSettings;
 
-    private RecyclerView mRepositoryListView;
     private RepoHandlerAdapter mRepositoryAdapter;
 
     private TextView mHistoryMessageTextView;
@@ -67,7 +65,7 @@ public class HistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
 
-        mRepositoryListView = rootView.findViewById(R.id.repositoryListView);
+        RecyclerView mRepositoryListView = rootView.findViewById(R.id.repositoryListView);
         mRepositoryAdapter = new RepoHandlerAdapter(getContext());
 
         mRepositoryListView.setAdapter(mRepositoryAdapter);
@@ -159,12 +157,7 @@ public class HistoryFragment extends Fragment {
         new AlertDialog.Builder(getContext())
                 .setTitle(R.string.sure_question)
                 .setMessage(getString(R.string.delete_repository_confirm_long, repo.toString()))
-                .setPositiveButton(getString(R.string.delete_repository), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        repo.delete();
-                    }
-                })
+                .setPositiveButton(getString(R.string.delete_repository), (dialogInterface, i) -> repo.delete())
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show();
     }

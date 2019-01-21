@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
     tools:context="io.github.lonamiwebs.stringlate.activities.repositories.AddNewRepositoryFragment">
 
     <ScrollView
-        android:layout_above="@+id/translate_buttons"
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/translate_buttons"
+        android:layout_alignParentTop="true"
         android:fillViewport="true">
 
         <LinearLayout
@@ -41,8 +41,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/github_repo_url_hint"
-                android:inputType="textUri"
-                android:imeOptions="actionDone" />
+                android:imeOptions="actionDone"
+                android:inputType="textUri" />
 
             <TextView
                 style="@style/TextAppearance.AppCompat.Caption"
@@ -65,8 +65,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="@string/owner_hint"
-                    android:maxLines="1"
                     android:imeOptions="actionNext"
+                    android:maxLines="1"
                     android:nextFocusRight="@id/github_repositoryEditText" />
 
                 <TextView
@@ -80,8 +80,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="@string/repository_hint"
-                    android:maxLines="1"
-                    android:imeOptions="actionDone" />
+                    android:imeOptions="actionDone"
+                    android:maxLines="1" />
             </LinearLayout>
 
             <!-- Overscroll -->
@@ -104,8 +104,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/ic_explore_yellow_24dp"
             android:drawableStart="@drawable/ic_explore_yellow_24dp"
+            android:drawableLeft="@drawable/ic_explore_yellow_24dp"
             android:text="@string/discover" />
 
         <Button
@@ -114,8 +114,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/ic_play_circle_filled_yellow_24dp"
             android:drawableStart="@drawable/ic_play_circle_filled_yellow_24dp"
+            android:drawableLeft="@drawable/ic_play_circle_filled_yellow_24dp"
             android:text="@string/start_translating" />
     </LinearLayout>
 </RelativeLayout>

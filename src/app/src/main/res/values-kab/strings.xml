@@ -26,8 +26,8 @@
     <string name="delete_repository">Kkes akufi</string>
     <string name="no_locale_selected">Ulac tutlayt yettwafernen.</string>
     <string name="sure_question">S tidet ?</string>
-    <string name="delete_locale_confirm_long">Tebɣiḍ ad tekkseḍ tutlayt ' %s ' ? Akk izriren ad ruḥen.</string>
-    <string name="delete_repository_confirm_long">Tebɣiḍ ad tekkseḍ akufi ' %s ' ? Anɣel adigan ad yettwakkes seg ibenk, acu kan yezmer ad yettwarnu tikelt-nniḍen.</string>
+    <string name="delete_locale_confirm_long">Tebɣiḍ ad tekkseḍ tutlayt \' %s \' ? Akk izriren ad ruḥen.</string>
+    <string name="delete_repository_confirm_long">Tebɣiḍ ad tekkseḍ akufi \' %s \' ? Anɣel adigan ad yettwakkes seg ibenk, acu kan yezmer ad yettwarnu tikelt-nniḍen.</string>
     <string name="export_ellipsis">Sifeḍ…</string>
     <string name="export_sd_card">Sifeḍ ar tkarḍa SD</string>
     <string name="export_share">Bḍu XML yettwarnan</string>
@@ -54,7 +54,7 @@
     <string name="import_file_failed">Ur izmir ara ad yekter aferdis yettwafernen</string>
     <string name="import_file_success">Akter yedda</string>
     <string name="update_applications">Leqqem isnasen</string>
-    <string name="apps_repo_not_downloaded">Akufi n yisnasen ur d-yettwasider ara. Nal  taqeffalt '%s' n wumuɣ akken ad tsidreḍ neɣ ad tizmireḍ t waliḍ akk isnasen yellan.</string>
+    <string name="apps_repo_not_downloaded">Akufi n yisnasen ur d-yettwasider ara. Nal  taqeffalt \'%s\' n wumuɣ akken ad tsidreḍ neɣ ad tizmireḍ t waliḍ akk isnasen yellan.</string>
     <string name="sync_failed">Tuccḍa deg umtawi: %s.</string>
     <string name="done">Immed !</string>
     <string name="search">Nadi</string>
@@ -65,7 +65,7 @@
     <string name="history">Amazray</string>
     <string name="add_project">Rnu asenfaṛ</string>
     <string name="start_translating">Bdu tasuqilt</string>
-    <string name="history_no_repos_hint">Amaynut ? Ddu ar yiccer '%s'akken ad tebduḍ !</string>
+    <string name="history_no_repos_hint">Amaynut ? Ddu ar yiccer \'%s\'akken ad tebduḍ !</string>
     <string name="history_contains_repos_hint">Haten-ay ikifiyen-ik yemtawin yakan. Fren yiwen ddaw-a neɣ rnu wayeḍ akken ad tkemmleḍ.</string>
     <string name="clear_icons_cache">Sfeḍ tuffirt n tignitin</string>
     <string name="help">Tallelt</string>
@@ -104,9 +104,9 @@
     <string name="issue_title_colon">Azwel n uneqqis , ubug:</string>
     <string name="issue_title">Azwel n uneqqis n ubug</string>
     <string name="title_empty">Azwel ur izmir ara ad yili d ilem.</string>
-    <string name="issue_desc_x">Aglam n wugur yessefk ad yegber '%x' .</string>
+    <string name="issue_desc_x">Aglam n wugur yessefk ad yegber \'%x\' .</string>
     <string name="no_strings_to_export">Ulac ula d yiwen n uzrir ara tsifḍeḍ.</string>
-    <string name="filtering_strings_with">Asizdeg n yizriren s '%s'</string>
+    <string name="filtering_strings_with">Asizdeg n yizriren s \'%s\'</string>
     <string name="clear_filter">Kkes imzizdigen</string>
     <string name="sort_by_ellipsis">S mizzwer s…</string>
     <string name="sort_alphabetically">S ugemmay</string>

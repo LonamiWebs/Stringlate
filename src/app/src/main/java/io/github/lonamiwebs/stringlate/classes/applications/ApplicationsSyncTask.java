@@ -36,24 +36,13 @@ public class ApplicationsSyncTask extends Thread {
 
     @Override
     public void run() {
-        final boolean okay = mApplicationList.syncRepo(new Messenger.OnSyncProgress() {
-            @Override
-            public void onUpdate(final int stage, final float progress) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        onProgressUpdate(stage, progress);
-                    }
-                });
-            }
-        });
+        final boolean okay = mApplicationList.syncRepo((stage, progress) ->
+                mHandler.post(() ->
+                        onProgressUpdate(stage, progress)));
 
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                syncingLock.unlock();
-                Messenger.notifyApplicationSyncFinished(okay);
-            }
+        mHandler.post(() -> {
+            syncingLock.unlock();
+            Messenger.notifyApplicationSyncFinished(okay);
         });
     }
 

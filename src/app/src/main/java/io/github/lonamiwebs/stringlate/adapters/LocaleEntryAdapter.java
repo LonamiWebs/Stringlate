@@ -13,7 +13,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -95,7 +94,7 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
         mPreferredLocale = new AppSettings(context).getLanguage();
         mShowMoreLocales = true;
         if (localeCode.isEmpty()) {
-            initLocales(new ArrayList<Locale>(0));
+            initLocales(new ArrayList<>(0));
         } else {
             final ArrayList<Locale> locales = new ArrayList<>();
             for (Locale locale : Locale.getAvailableLocales())
@@ -109,28 +108,23 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
     public void initLocales(final Collection<Locale> locales) {
         mLocales = new ArrayList<>(locales.size());
         mFilteredLocales = new ArrayList<>(locales.size());
-        for (Locale locale : locales)
-            mLocales.add(locale);
+        mLocales.addAll(locales);
 
-        Collections.sort(mLocales, new Comparator<Locale>() {
-            @Override
-            public int compare(Locale o1, Locale o2) {
-                final boolean left = o1.getLanguage().equals(mPreferredLocale);
-                final boolean right = o2.getLanguage().equals(mPreferredLocale);
-                if (left != right) {
-                    if (left)
-                        return -1;
-                    else
-                        return +1;
-                } else {
-                    return LocaleString.getFullCode(o1).compareTo(LocaleString.getFullCode(o2));
-                }
+        Collections.sort(mLocales, (o1, o2) -> {
+            final boolean left = o1.getLanguage().equals(mPreferredLocale);
+            final boolean right = o2.getLanguage().equals(mPreferredLocale);
+            if (left != right) {
+                if (left)
+                    return -1;
+                else
+                    return +1;
+            } else {
+                return LocaleString.getFullCode(o1).compareTo(LocaleString.getFullCode(o2));
             }
         });
 
         // Initial collection is now sorted, so add everything to our filtered list
-        for (Locale locale : mLocales)
-            mFilteredLocales.add(locale);
+        mFilteredLocales.addAll(mLocales);
 
         notifyDataSetChanged();
     }
@@ -159,20 +153,14 @@ public class LocaleEntryAdapter extends RecyclerView.Adapter<LocaleEntryAdapter.
     @Override
     public void onBindViewHolder(final ViewHolder view, final int i) {
         view.update(mFilteredLocales.get(i));
-        ((LinearLayout) view.expand.getParent()).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onItemClick != null) {
-                    onItemClick.onLocaleExpanderSelected(mFilteredLocales.get(view.getAdapterPosition()));
-                }
+        ((LinearLayout) view.expand.getParent()).setOnClickListener(v -> {
+            if (onItemClick != null) {
+                onItemClick.onLocaleExpanderSelected(mFilteredLocales.get(view.getAdapterPosition()));
             }
         });
-        ((LinearLayout) view.displayLang.getParent()).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onItemClick != null) {
-                    onItemClick.onLocaleSelected(mFilteredLocales.get(view.getAdapterPosition()));
-                }
+        ((LinearLayout) view.displayLang.getParent()).setOnClickListener(v -> {
+            if (onItemClick != null) {
+                onItemClick.onLocaleSelected(mFilteredLocales.get(view.getAdapterPosition()));
             }
         });
     }

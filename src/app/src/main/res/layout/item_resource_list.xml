@@ -5,11 +5,11 @@
     android:layout_height="?attr/listPreferredItemHeight"
     android:baselineAligned="false"
     android:orientation="vertical"
-    android:paddingEnd="?attr/listPreferredItemPaddingRight"
-    android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-    android:paddingRight="?attr/listPreferredItemPaddingRight"
     android:paddingStart="?attr/listPreferredItemPaddingLeft"
-    android:paddingTop="8dp">
+    android:paddingLeft="?attr/listPreferredItemPaddingLeft"
+    android:paddingTop="8dp"
+    android:paddingEnd="?attr/listPreferredItemPaddingRight"
+    android:paddingRight="?attr/listPreferredItemPaddingRight">
 
     <LinearLayout
         android:layout_width="match_parent"

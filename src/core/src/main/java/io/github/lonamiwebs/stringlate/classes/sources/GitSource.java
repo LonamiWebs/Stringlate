@@ -87,7 +87,7 @@ public class GitSource implements StringsSource {
 
                 // TODO Can I use .getOrDefault()? It shows an error so let's not risk
                 if (!mLocaleFiles.containsKey(m.group(1)))
-                    mLocaleFiles.put(m.group(1), new ArrayList<File>());
+                    mLocaleFiles.put(m.group(1), new ArrayList<>());
 
                 mLocaleFiles.get(m.group(1)).add(resourceFile);
 

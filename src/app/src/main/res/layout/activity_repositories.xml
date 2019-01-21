@@ -31,6 +31,6 @@
         app:itemBackground="@color/bottomnav_bgcolor"
         app:itemIconTint="@drawable/bottomnav_color_selector"
         app:itemTextColor="@drawable/bottomnav_color_selector"
-        tools:elevation="2dp"
-        app:menu="@menu/nav_resources" />
+        app:menu="@menu/nav_resources"
+        tools:elevation="2dp" />
 </LinearLayout>

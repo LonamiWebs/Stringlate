@@ -12,20 +12,12 @@ public class ResourceStringComparator {
         switch (sortMethod) {
             default:
             case SORT_ALPHABETICALLY:
-                return new Comparator<ResTag>() {
-                    @Override
-                    public int compare(ResTag o1, ResTag o2) {
-                        return o1.compareTo(o2);
-                    }
-                };
+                return ResTag::compareTo;
             case SORT_STRING_LENGTH:
-                return new Comparator<ResTag>() {
-                    @Override
-                    public int compare(ResTag o1, ResTag o2) {
-                        int x = o1.getContentLength();
-                        int y = o2.getContentLength();
-                        return (x < y) ? -1 : ((x == y) ? 0 : 1);
-                    }
+                return (o1, o2) -> {
+                    int x = o1.getContentLength();
+                    int y = o2.getContentLength();
+                    return Integer.compare(x, y);
                 };
         }
     }

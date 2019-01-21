@@ -1,6 +1,5 @@
 package io.github.lonamiwebs.stringlate.dialogs;
 
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -17,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import java.util.ArrayList;
@@ -78,12 +76,7 @@ public class LocaleSelectionDialog extends DialogFragment {
             }
         }
 
-        mMoreSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                setupAdapter();
-            }
-        });
+        mMoreSwitch.setOnCheckedChangeListener((compoundButton, b) -> setupAdapter());
 
         mSearchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -100,12 +93,7 @@ public class LocaleSelectionDialog extends DialogFragment {
             }
         });
 
-        root.findViewById(R.id.cancel_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        root.findViewById(R.id.cancel_button).setOnClickListener(v -> dismiss());
 
         return root;
     }
@@ -131,7 +119,8 @@ public class LocaleSelectionDialog extends DialogFragment {
     }
 
     public void setupAdapter() {
-        mLocaleEntryAdapterLocales = new LocaleEntryAdapter(getActivity(), false, mMoreSwitch.isChecked());
+        mLocaleEntryAdapterLocales = new LocaleEntryAdapter(getActivity(),
+                false, mMoreSwitch.isChecked());
         mLocaleEntryAdapterLocales.onItemClick = new LocaleEntryAdapter.OnItemClick() {
             @Override
             public void onLocaleSelected(final Locale which) {

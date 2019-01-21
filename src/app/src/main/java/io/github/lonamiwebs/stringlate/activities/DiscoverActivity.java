@@ -2,7 +2,6 @@ package io.github.lonamiwebs.stringlate.activities;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -58,25 +57,20 @@ public class DiscoverActivity extends AppCompatActivity {
         mApplicationListView.setAdapter(mApplicationAdapter);
         mApplicationListView.setLayoutManager(new LinearLayoutManager(this));
 
-        mApplicationAdapter.onItemClick = new ApplicationAdapter.OnItemClick() {
-            @Override
-            public void onClick(final Intent data) {
-                setResult(RESULT_OK, data);
-                finish();
-            }
+        mApplicationAdapter.onItemClick = data -> {
+            setResult(RESULT_OK, data);
+            finish();
         };
 
         mApplicationListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0 || dy <= 0) {
-                    final LinearLayoutManager manager = (LinearLayoutManager)
-                            mApplicationListView.getLayoutManager();
+                final LinearLayoutManager manager = (LinearLayoutManager)
+                        mApplicationListView.getLayoutManager();
 
-                    if (manager.findFirstVisibleItemPosition() + manager.getChildCount() ==
-                            manager.getItemCount()) {
-                        mApplicationAdapter.loadMore();
-                    }
+                if (manager.findFirstVisibleItemPosition() + manager.getChildCount() ==
+                        manager.getItemCount()) {
+                    mApplicationAdapter.loadMore();
                 }
             }
         });

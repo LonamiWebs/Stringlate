@@ -101,18 +101,15 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     @Override
     public void onBindViewHolder(final ViewHolder view, final int i) {
         view.update(appsSlice.get(i));
-        view.root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onItemClick != null) {
-                    final ApplicationDetails app = appsSlice.get(view.getLayoutPosition());
-                    Intent data = new Intent();
-                    data.putExtra("url", app.getSourceCodeUrl());
-                    data.putExtra("web", app.getProjectWebUrl());
-                    data.putExtra("name", app.getProjectName());
-                    data.putExtra("mail", app.getProjectMail());
-                    onItemClick.onClick(data);
-                }
+        view.root.setOnClickListener(v -> {
+            if (onItemClick != null) {
+                final ApplicationDetails app = appsSlice.get(view.getLayoutPosition());
+                Intent data = new Intent();
+                data.putExtra("url", app.getSourceCodeUrl());
+                data.putExtra("web", app.getProjectWebUrl());
+                data.putExtra("name", app.getProjectName());
+                data.putExtra("mail", app.getProjectMail());
+                onItemClick.onClick(data);
             }
         });
     }
