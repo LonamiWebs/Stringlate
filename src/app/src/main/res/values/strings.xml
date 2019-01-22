@@ -161,5 +161,6 @@
     <string name="view">View</string>
     <string name="editing_font">Editing font</string>
     <string name="copy_build_information">Copy build information</string>
-
+    <string name="deprecated_long">NOTE: This application is no longer maintained and using it may do more harm than good. Please click the button to read the full notice. We\'re sorry for any inconvenience.</string>
+    <string name="deprecated_short">View deprecation notice</string>
 </resources>

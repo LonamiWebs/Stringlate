@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,8 @@ public class HistoryFragment extends Fragment {
 
     private AppSettings mSettings;
 
+    private Button mDeprecationButton;
+
     private RecyclerView mRepositoryListView;
     private RepoHandlerAdapter mRepositoryAdapter;
 
@@ -66,6 +69,10 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
+
+        mDeprecationButton = rootView.findViewById(R.id.deprecationButton);
+        mDeprecationButton.setOnClickListener(view -> startActivity(new Intent(
+                Intent.ACTION_VIEW, Uri.parse("https://lonamiwebs.github.io/stringlate/"))));
 
         mRepositoryListView = rootView.findViewById(R.id.repositoryListView);
         mRepositoryAdapter = new RepoHandlerAdapter(getContext());

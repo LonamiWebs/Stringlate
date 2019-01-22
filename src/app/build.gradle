@@ -15,8 +15,8 @@ android {
         minSdkVersion version_setup_minSdk
         targetSdkVersion version_setup_targetSdk
 
-        versionCode 1006
-        versionName "0.15.1"
+        versionCode 1007
+        versionName "0.15.2"
         applicationId "io.github.lonamiwebs.stringlate"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

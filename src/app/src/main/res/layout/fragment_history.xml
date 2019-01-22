@@ -9,6 +9,18 @@
     android:paddingTop="@dimen/activity_vertical_margin">
 
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/deprecated_long"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/deprecationButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/deprecated_short" />
+
+    <TextView
         android:id="@+id/historyMessageTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
